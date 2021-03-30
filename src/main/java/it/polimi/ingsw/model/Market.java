@@ -14,8 +14,8 @@ public class Market {
         double[] a= {2, 2, 2, 2, 1, 4};
         temp= (int) Math.floor(Math.random()*6);
         a[temp]--;
-        if(temp==5){
-            temp=6;
+        if(temp>=4){
+            temp=temp+1;
         }
         slide=Resources.transform(temp);
         for(int i=0; i<3; i++){
@@ -25,16 +25,12 @@ public class Market {
                     temp= (int) Math.floor(Math.random()*6);
                 }
                 a[temp]--;
-                if(temp==5){
-                    temp=6;
+                if(temp>=4){
+                    temp=temp+1;
                 }
                 market[i][j]=Resources.transform(temp);
             }
         }
-
-
-
-
     }
 
     public List<Resources> pushColumn(int columnIndex){

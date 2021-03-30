@@ -5,8 +5,8 @@ public enum Resources {
     COIN,
     STONE,
     SHIELD,
-    FAITH,
     WHATEVER,
+    FAITH,
     WHITE;
     public static Resources transform(int i) {
         switch (i) {
@@ -19,9 +19,9 @@ public enum Resources {
             case 3:
                 return SHIELD;
             case 4:
-                return FAITH;
-            case 5:
                 return WHATEVER;
+            case 5:
+                return FAITH;
             case 6:
                 return WHITE;
             default:
