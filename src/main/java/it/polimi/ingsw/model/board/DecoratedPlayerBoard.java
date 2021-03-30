@@ -46,4 +46,44 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     public ArrayList<Integer> getExtraResources() {
         return subBoard.getExtraResources();
     }
+
+    @Override
+    public boolean isResourceDiscounted(Resources resource) {
+        return subBoard.isResourceDiscounted(resource);
+    }
+
+    @Override
+    public int getResourceDiscount(Resources resource) {
+        return subBoard.getResourceDiscount(resource);
+    }
+
+    @Override
+    public void addDiscount(Resources resource, int amount) {
+        subBoard.addDiscount(resource, amount);
+    }
+
+    @Override
+    public void addSubstitute(Resources resource){
+        subBoard.addSubstitute(resource);
+    }
+
+    @Override
+    public ArrayList<Boolean> getSubstitutes(){
+        return subBoard.getSubstitutes();
+    }
+
+    @Override
+    public boolean isResourceSubstitutable(Resources resource){
+        return isResourceSubstitutable(resource);
+    }
+
+    @Override
+    public void addProduction(Resources resource) {
+        subBoard.addProduction(resource);
+    }
+
+    @Override
+    public ArrayList<Resources> getProductions(Resources resource) {
+        return subBoard.getProductions(resource);
+    }
 }

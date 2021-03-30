@@ -73,4 +73,44 @@ public class SimplePlayerBoard implements PlayerBoard {
     public void takeExtraResources(Resources resource, int quantity) {
         // throw new IllegalDecoratorException()
     }
+
+    @Override
+    public void addDiscount(Resources resource, int amount) {
+        // throw new IllegalDecoratorException()
+    }
+
+    @Override
+    public boolean isResourceDiscounted(Resources resource) {
+        return false;
+    }
+
+    @Override
+    public int getResourceDiscount(Resources resource) {
+        return 0;
+    }
+
+    @Override
+    public void addSubstitute(Resources resource){
+        // throw new IllegalDecoratorException()
+    }
+
+    @Override
+    public ArrayList<Boolean> getSubstitutes(){
+        return new ArrayList<Boolean>(Arrays.asList(false, false, false, false));
+    }
+
+    @Override
+    public boolean isResourceSubstitutable(Resources resource){
+        return false;
+    }
+
+    @Override
+    public void addProduction(Resources resource) {
+        // throw new IllegalDecoratorException()
+    }
+
+    @Override
+    public ArrayList<Resources> getProductions(Resources resource) {
+        return null;
+    }
 }
