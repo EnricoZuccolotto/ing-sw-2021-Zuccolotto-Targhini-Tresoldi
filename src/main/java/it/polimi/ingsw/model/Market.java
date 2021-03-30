@@ -1,15 +1,69 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.enums.Resources;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Market {
     private Resources[][] market;
     private Resources slide;
 
-    public Market(){}
+    public Market() {
+        market= new Resources[3][4];
+        int temp;
+        double[] a= {2, 2, 2, 2, 1, 4};
+        temp= (int) Math.floor(Math.random()*6);
+        a[temp]--;
+        if(temp==5){
+            temp=6;
+        }
+        slide=Resources.transform(temp);
+        for(int i=0; i<3; i++){
+            for(int j=0; j<4; j++){
+                temp= (int) Math.floor(Math.random()*6);
+                while(a[temp]==0){
+                    temp= (int) Math.floor(Math.random()*6);
+                }
+                a[temp]--;
+                if(temp==5){
+                    temp=6;
+                }
+                market[i][j]=Resources.transform(temp);
+            }
+        }
 
-    //public int pushColumn(int columnIndex){}
-    //public int pushRow(int rowIndex){}
+
+
+
+    }
+
+    public List<Resources> pushColumn(int columnIndex){
+        Resources temp;
+        List<Resources> ret= new ArrayList<Resources>();
+        temp=market[0][columnIndex];
+        ret.add(0, temp);
+        for(int i=1; i<3; i++){
+            market[i-1][columnIndex]=market[i][columnIndex];
+            ret.add(i, market[i-1][columnIndex]);
+        }
+        market[2][columnIndex]=slide;
+        slide=temp;
+        return ret;
+    }
+
+    public List<Resources> pushRow(int rowIndex){
+        Resources temp;
+        List<Resources> ret= new ArrayList<Resources>();
+        temp=market[rowIndex][0];
+        ret.add(0, temp);
+        for(int i=1; i<4; i++){
+            market[rowIndex][i-1]=market[rowIndex][i];
+            ret.add(i, market[rowIndex][i-1]);
+        }
+        market[rowIndex][3]=slide;
+        slide=temp;
+        return ret;
+    }
 
     public Resources[][] getMarket() {
         return market;
@@ -17,5 +71,21 @@ public class Market {
 
     public Resources getSlide() {
         return slide;
+    }
+
+    public void printMarket(){
+        System.out.println("slide is " +slide);
+        System.out.print(""+market[0][0]);
+        System.out.print("  "+market[0][1]);
+        System.out.print("  "+market[0][2]);
+        System.out.println("  "+market[0][3]);
+        System.out.print(""+market[1][0]);
+        System.out.print("  "+market[1][1]);
+        System.out.print("  "+market[1][2]);
+        System.out.println("  "+market[1][3]);
+        System.out.print(""+market[2][0]);
+        System.out.print("  "+market[2][1]);
+        System.out.print("  "+market[2][2]);
+        System.out.println("  "+market[2][3]);
     }
 }
