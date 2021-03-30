@@ -14,8 +14,8 @@ public class LeaderCard extends Card {
 
 
 
-    LeaderCard(int VP){
-        super(VP);
+    LeaderCard(int VP,int ID){
+        super(VP,ID);
         costResources = new int[4];
     }
 
