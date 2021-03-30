@@ -1,8 +1,7 @@
 package it.polimi.ingsw.model;
-import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.tools.DevelopmentCardParser;
+import it.polimi.ingsw.model.tools.CardParser;
 
 public class Game {
     private static Game instance = null;
@@ -33,6 +32,6 @@ public class Game {
     public void end() {}
     private void initializeDecks(){
 
-        this.decks= DevelopmentCardParser.parseCards();
+        this.decks= CardParser.parseDevCards();
     }
 }

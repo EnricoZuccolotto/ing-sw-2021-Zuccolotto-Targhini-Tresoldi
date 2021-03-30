@@ -38,10 +38,10 @@ public class DevelopmentCard extends Card {
         return level;
     }
     public void print(){
-       System.out.println("level:"+this.level);
-        System.out.println("color:"+this.color);
         System.out.println("ID:"+this.getID());
         System.out.println("VP:"+this.getVP());
+       System.out.println("level:"+this.level);
+        System.out.println("color:"+this.color);
         System.out.println("CostCard:");
         for (int i=0;i<4;i++ )
         System.out.print(this.costCard[i]);

@@ -6,17 +6,21 @@ import it.polimi.ingsw.model.enums.Colors;
 import java.util.ArrayList;
 
 public class LeaderCard extends Card {
-    private int[] costResources;
-    private int[] costColor;
-    private Advantages advantage;
-    private int[] effect1;
-    private int[] effect2;
+    private final int[] costResources;
+    private final int[] costColor;
+    private final Advantages advantage;
+    private final int[] effect1;
+    private final int[] effect2;
 
 
 
-    LeaderCard(int VP,int ID){
+    public LeaderCard(int VP, int ID,int [] costResources,int[] costColor,Advantages advantage,int[] effect1,int[] effect2){
         super(VP,ID);
-        costResources = new int[4];
+        this.costResources=costResources;
+        this.costColor=costColor;
+        this.advantage=advantage;
+        this.effect1=effect1;
+        this.effect2=effect2;
     }
 
 
@@ -38,5 +42,26 @@ public class LeaderCard extends Card {
 
     public int[] getEffect2() {
         return effect2;
+    }
+
+    public void print(){
+
+        System.out.println("ID:"+this.getID());
+        System.out.println("VP:"+this.getVP());
+        System.out.println("Advantages:"+this.advantage);
+        System.out.println("costResources:");
+        for (int i=0;i<4;i++ )
+            System.out.print(this.costResources[i]);
+        System.out.println("\ncostColor:");
+        for (int i=0;i<4;i++ )
+            System.out.print(this.costColor[i]);
+        System.out.println("\neffect1:");
+        for (int i=0;i<4;i++ )
+            System.out.print(this.effect1[i]);
+        if (effect2.length>0) {
+            System.out.println("\neffect2:");
+            for (int i = 0; i < 4; i++)
+                System.out.print(this.effect2[i]);
+        }
     }
 }

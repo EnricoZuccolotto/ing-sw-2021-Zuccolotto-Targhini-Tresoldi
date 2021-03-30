@@ -1,35 +1,38 @@
 package it.polimi.ingsw.model.tools;
 
 import com.google.gson.*;
+import it.polimi.ingsw.model.cards.LeaderCard;
+import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DevelopmentCardParser {
+public class CardParser {
 
 
 
 
-    private DevelopmentCardParser() {
+    private CardParser() {
         throw new IllegalStateException("Utility class");
     }
 
     /**
-     * Parse all the weapons from weapons.json
+     * Parse all the weapons from DevCards.json
      *
-     * @return a deck of all the WeaponCard
+     * @return a set of decks of all the DevCard
      */
 
-    public static Deck[][] parseCards() {
+    public static Deck[][] parseDevCards() {
         Deck [][]decks= new Deck[4][3];
         for(int i=0;i<4;i++)
             for(int j=0;j<3;j++)
                 decks[i][j]=new Deck();
 
-        InputStream is = DevelopmentCardParser.class.getClassLoader().getResourceAsStream("Json/Cards.json");
+        InputStream is = CardParser.class.getClassLoader().getResourceAsStream("Json/DevCards.json");
 
             if (is == null) {
                 System.out.println("Error");
@@ -67,6 +70,47 @@ public class DevelopmentCardParser {
         return decks;
     }
 
+    public static List<LeaderCard> parseLeadCards() {
+
+        List<LeaderCard> deck= new ArrayList<>();
+        InputStream is = CardParser.class.getClassLoader().getResourceAsStream("Json/LeaderCards.json");
+
+        if (is == null) {
+            System.out.println("Error");
+            return null;
+        }
+
+        JsonParser parser;
+        parser = new JsonParser();
+
+        JsonObject json = parser.parse(new InputStreamReader(is)).getAsJsonObject();
+        JsonArray LeadCards = json.getAsJsonArray("LeaderCards");
+
+        for (JsonElement LeadCard : LeadCards) {
+            JsonObject DevCard = LeadCard.getAsJsonObject();
+
+
+            //String imagePath = .get("image").getAsString();
+            int ID = DevCard.get("ID").getAsInt();
+            int VP = DevCard.get("VP").getAsInt();
+            JsonArray tmp = DevCard.get("costResources").getAsJsonArray();
+            int[] costResources = parseIntJsonArray(tmp);
+            tmp = DevCard.get("costColor").getAsJsonArray();
+            int[] costColor = parseIntJsonArray(tmp);
+            String tmp1=DevCard.get("advantage").getAsString();
+            Advantages a= Advantages.valueOf(tmp1);
+            tmp = DevCard.get("effect1").getAsJsonArray();
+            int[] effect1 = parseIntJsonArray(tmp);
+            tmp = DevCard.get("effect2").getAsJsonArray();
+            int[] effect2 = parseIntJsonArray(tmp);
+
+
+            // Card creation
+            deck.add(new LeaderCard(VP,ID, costResources,costColor,a,effect1,effect2));
+        }
+
+        return deck;
+    }
 
     static int[] parseIntJsonArray(JsonArray jsonArray) {
         List<Integer> list = new ArrayList<>();
