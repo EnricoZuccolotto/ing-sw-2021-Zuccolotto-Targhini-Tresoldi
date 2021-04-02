@@ -80,6 +80,9 @@ public class Warehouse {
                         temp = warehouse[1];
                         warehouse[1] = warehouse[0];
                         warehouse[0] = temp;
+                        temp=var[0];
+                        var[0]=var[1];
+                        var[1]=temp;
                         return true;
                     }
                     else return false;
@@ -89,6 +92,9 @@ public class Warehouse {
                         temp=warehouse[3];
                         warehouse[3]=warehouse[0];
                         warehouse[0]=temp;
+                        temp=var[0];
+                        var[0]=var[2];
+                        var[2]=temp;
                         return true;
                     }
                     else return false;
@@ -102,6 +108,9 @@ public class Warehouse {
                     temp=warehouse[4];
                     warehouse[4]=warehouse[2];
                     warehouse[2]=temp;
+                    temp=var[1];
+                    var[1]=var[2];
+                    var[2]=temp;
                     return true;
                 }
                 break;
@@ -123,18 +132,22 @@ public class Warehouse {
     }
 
     public boolean popResources(Resources resource){
-        int i=0;
+        int j=0, i=0;
         while(var[i]!=resource){
             i++;
             if(i==3){
                 return false;
             }
         }
+        j=i;
         if(i==2){
             i++;
         }
         while(warehouse[i+1]==resource){
             i++;
+        }
+        if(j==i || j==2 && i==3){
+            var[j]=Resources.WHITE;
         }
         warehouse[i]=Resources.WHITE;
         return true;
