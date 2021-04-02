@@ -36,8 +36,13 @@ public class Deck {
     }
 
     public void shuffle(){
-
         Collections.shuffle(deck);
     }
 
+    @Override
+    public String toString() {
+        return "Deck{" +
+                "deck=" + deck +
+                '}';
+    }
 }
