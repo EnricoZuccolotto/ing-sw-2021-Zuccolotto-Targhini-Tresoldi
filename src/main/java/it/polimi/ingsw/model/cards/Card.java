@@ -18,4 +18,13 @@ public class Card {
     public boolean getUncovered() { return uncovered; }
     public int getVP() { return VP; }
     public int getID() { return ID; }
+
+    @Override
+    public String toString() {
+        return "Card{" +
+                "VP=" + VP +
+                ", ID=" + ID +
+                ", uncovered=" + uncovered +
+                '}';
+    }
 }

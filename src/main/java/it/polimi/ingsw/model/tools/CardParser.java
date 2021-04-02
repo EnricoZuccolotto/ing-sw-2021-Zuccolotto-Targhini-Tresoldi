@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
+import it.polimi.ingsw.model.cards.Card;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -70,9 +71,38 @@ public class CardParser {
         return decks;
     }
 
-    public static List<LeaderCard> parseLeadCards() {
+    public static ArrayList<Card> parseFaithCards() {
 
-        List<LeaderCard> deck= new ArrayList<>();
+        ArrayList<Card> deck= new ArrayList<>();
+        InputStream is = CardParser.class.getClassLoader().getResourceAsStream("Json/FaithCards.json");
+
+        if (is == null) {
+            System.out.println("Error");
+            return null;
+        }
+
+        JsonParser parser;
+        parser = new JsonParser();
+
+        JsonObject json = parser.parse(new InputStreamReader(is)).getAsJsonObject();
+        JsonArray FaithCards = json.getAsJsonArray("FaithCards");
+
+        for (JsonElement papalCard : FaithCards) {
+            JsonObject DevCard = papalCard.getAsJsonObject();
+
+            //String imagePath = .get("image").getAsString();
+            int ID = DevCard.get("ID").getAsInt();
+            int VP = DevCard.get("VP").getAsInt();
+
+            // Card creation
+            deck.add(new Card(VP,ID));
+        }
+
+        return deck;
+    }
+    public static ArrayList<LeaderCard> parseLeadCards() {
+
+        ArrayList<LeaderCard> deck= new ArrayList<>();
         InputStream is = CardParser.class.getClassLoader().getResourceAsStream("Json/LeaderCards.json");
 
         if (is == null) {

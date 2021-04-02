@@ -2,6 +2,8 @@ package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.enums.Colors;
 
+import java.util.Arrays;
+
 public class DevelopmentCard extends Card {
     private final int[] costCard;
     private final int[] costProduction;
@@ -37,20 +39,16 @@ public class DevelopmentCard extends Card {
     public int getLevel() {
         return level;
     }
-    public void print(){
-        System.out.println("ID:"+this.getID());
-        System.out.println("VP:"+this.getVP());
-       System.out.println("level:"+this.level);
-        System.out.println("color:"+this.color);
-        System.out.println("CostCard:");
-        for (int i=0;i<4;i++ )
-        System.out.print(this.costCard[i]);
-        System.out.println("\nCostProd:");
-        for (int i=0;i<5;i++ )
-            System.out.print(this.costProduction[i]);
-        System.out.println("\nProdResult:");
-        for (int i=0;i<6;i++ )
-            System.out.print(this.productionResult[i]);
 
+    @Override
+    public String toString() {
+        return "DevelopmentCard{" +
+                super.toString()+
+                "costCard=" + Arrays.toString(costCard) +
+                ", costProduction=" + Arrays.toString(costProduction) +
+                ", productionResult=" + Arrays.toString(productionResult) +
+                ", color=" + color +
+                ", level=" + level +
+                '}';
     }
 }
