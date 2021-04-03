@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.board;
 
+import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 
@@ -22,10 +23,15 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
         subBoard.addLeaderCard(leaderCard);
     }
 
+
     @Override
     public int getVictoryPoints() {
         return subBoard.getVictoryPoints();
     }
+    @Override
+    public boolean addWarehouseResource(Resources r, int row){return subBoard.addWarehouseResource(r,row);}
+    @Override
+    public boolean addProductionCard(DevelopmentCard c){return subBoard.addProductionCard(c);}
 
     @Override
     public void addWarehouseSpace(Resources resource) {

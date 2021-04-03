@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.enums.Resources;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Market {
@@ -67,6 +68,14 @@ public class Market {
 
     public Resources getSlide() {
         return slide;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "market=" + Arrays.toString(market) +
+                ", slide=" + slide
+                ;
     }
 
     public void printMarket(){

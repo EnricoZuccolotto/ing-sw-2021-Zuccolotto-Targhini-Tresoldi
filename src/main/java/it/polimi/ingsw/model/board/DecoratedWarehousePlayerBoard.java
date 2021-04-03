@@ -30,7 +30,7 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard {
             }
         } else {
             // exception you cannot use this space
-        };
+        }
     }
 
     @Override
@@ -45,7 +45,7 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard {
             }
         } else {
             // exception you cannot use this space
-        };
+        }
     }
 
     @Override
@@ -53,4 +53,6 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard {
         // Copy in order to avoid exposing the rep
         return new ArrayList<Integer>(Arrays.asList(quantities.get(0), quantities.get(1), quantities.get(2), quantities.get(3)));
     }
+
+
 }

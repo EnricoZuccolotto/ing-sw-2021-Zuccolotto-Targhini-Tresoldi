@@ -2,20 +2,45 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.enums.Resources;
 
+import java.util.Arrays;
+
 public class Warehouse {
     private final Resources[] warehouse;
-    private Resources[] var= {Resources.WHITE, Resources.WHITE, Resources.WHITE};
+    private final Resources[] var= {Resources.WHITE, Resources.WHITE, Resources.WHITE};
     private int Resnum;
-    private Resources[] ResRow;
 
     public Warehouse() {
         warehouse = new Resources[6];
         Resnum = 0;
-        ResRow = new Resources[3];
         int i;
         for (i = 0; i < 6; i++) {
             warehouse[i] = Resources.WHITE;
         }
+    }
+    public int getResource(Resources r){
+      int c=0;
+
+        if(var[0].equals(r))
+            c+=1;
+
+        if(var[1].equals(r))
+        {
+           c+=1;
+           if(var[1].equals(warehouse[2]))
+               c+=1;
+        }
+
+        if(var[2].equals(r))
+        {
+            c+=1;
+            if(var[2].equals(warehouse[4]))
+                c+=1;
+            if(var[2].equals(warehouse[5]))
+               c+=1;
+        }
+
+        return c;
+
     }
 
     public boolean AddResources(Resources resource, int row) {
@@ -29,7 +54,7 @@ public class Warehouse {
                 if(warehouse[0]==Resources.WHITE){
                     warehouse[0]=resource;
                     var[0]=resource;
-                    Resnum+=Resnum;
+                    Resnum+=1;
                     return true;
                 }
                 else return false;  //riga piena
@@ -37,12 +62,12 @@ public class Warehouse {
                 if(warehouse[1]==Resources.WHITE){
                     warehouse[1]=resource;
                     var[1]=resource;
-                    Resnum+=Resnum;
+                    Resnum+=1;
                     return true;
                 }
                 else if(warehouse[1]==resource && warehouse[2]==Resources.WHITE){
                     warehouse[2]=resource;
-                    Resnum+=Resnum;
+                    Resnum+=1;
                     return true;
                 }
                 else return false; // riga piena o altre risorse nella riga
@@ -50,18 +75,18 @@ public class Warehouse {
                 if(warehouse[3]==Resources.WHITE) {
                     warehouse[3] = resource;
                     var[2]=resource;
-                    Resnum+=Resnum;
+                    Resnum+=1;
                     return true;
                 }
                 else if(warehouse[3]==resource){
                     if(warehouse[4]==Resources.WHITE){
                         warehouse[4]=resource;
-                        Resnum+=Resnum;
+                        Resnum+=1;
                         return true;
                     }
                     else if(warehouse[5]==Resources.WHITE){
                         warehouse[5]=resource;
-                        Resnum+=Resnum;
+                        Resnum+=1;
                         return true;
                     }
                 else return false;
@@ -119,20 +144,20 @@ public class Warehouse {
         return false;
     }
 
-    /*private void checkConsistency() {
-    }*/
-    public String toString(){
-        System.out.println(""+warehouse[0]);
-        System.out.print(""+warehouse[1]);
-        System.out.println("  "+warehouse[2]);
-        System.out.print(""+warehouse[3]);
-        System.out.print("  "+warehouse[4]);
-        System.out.println("  "+warehouse[5]);
-        return null;
+
+// per chiamare il metodo tostring System.out.println(w);
+    @Override
+    public String toString() {
+        return "Warehouse{" +
+                "warehouse=" + Arrays.toString(warehouse) +
+                ", var=" + Arrays.toString(var) +
+                ", Resnum=" + Resnum +
+                ", ResRow=" + Arrays.toString(var) +
+                '}';
     }
 
     public boolean popResources(Resources resource){
-        int j=0, i=0;
+        int j, i=0;
         while(var[i]!=resource){
             i++;
             if(i==3){
@@ -150,6 +175,7 @@ public class Warehouse {
             var[j]=Resources.WHITE;
         }
         warehouse[i]=Resources.WHITE;
+        Resnum--;
         return true;
     }
     public int Resourcesnumb(){

@@ -12,8 +12,12 @@ public class Game {
     private Player[] players;
     private FaithPath faithPath;
 
-    public Game(){
+    public Game(int numPlayers){
         this.decks=new Deck[4][3];
+        this.numPlayers=numPlayers;
+        this.players=new Player[numPlayers];
+        this.market= new Market();
+        this.faithPath= new FaithPath(numPlayers);
     }
 
     public void init() {
@@ -28,6 +32,8 @@ public class Game {
     public void addPlayer(Player player) {
 
     }
+
+
 
     public void end() {}
     private void initializeDecks(){

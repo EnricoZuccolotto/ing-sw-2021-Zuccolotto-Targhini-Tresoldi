@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.board;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import it.polimi.ingsw.model.enums.Resources;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class DecoratedChangePlayerBoard extends DecoratedPlayerBoard {
     @Override
     public void addSubstitute(Resources resource){
         substitutes.set(resource.ordinal(), true);
-    };
+    }
 
     @Override
     public ArrayList<Boolean> getSubstitutes(){
@@ -27,5 +27,5 @@ public class DecoratedChangePlayerBoard extends DecoratedPlayerBoard {
     @Override
     public boolean isResourceSubstitutable(Resources resource){
         return substitutes.get(resource.ordinal());
-    };
+    }
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.board;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+//import com.sun.org.apache.xpath.internal.operations.Bool;
+import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 
@@ -12,6 +13,9 @@ public interface PlayerBoard {
     public boolean getInkwell();
     public void addLeaderCard(LeaderCard leaderCard);
     public int getVictoryPoints();
+    public boolean addWarehouseResource(Resources r, int row);
+    public boolean addProductionCard(DevelopmentCard c);
+
 
     // Decorated warehouse methods
     public void addWarehouseSpace(Resources resource);

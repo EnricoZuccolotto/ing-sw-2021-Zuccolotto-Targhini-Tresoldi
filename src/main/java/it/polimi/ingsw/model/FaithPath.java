@@ -12,13 +12,9 @@ public class FaithPath {
     private int report;
     public FaithPath(int n){
         playerPositions=new int [n];
-        for(int i=0;i<n;i++) {
-            playerPositions[i]=0;
-        }
+
         playerPV=new int [n];
-        for(int i=0;i<n;i++) {
-            playerPV[i]=0;
-        }
+
         report=0;
         cards=CardParser.parseFaithCards();
 
