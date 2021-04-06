@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Market {
-    private Resources[][] market;
+    private final Resources[][] market;
     private Resources slide;
 
     public Market() {
