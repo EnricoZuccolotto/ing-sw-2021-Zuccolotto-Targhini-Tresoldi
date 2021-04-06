@@ -65,7 +65,6 @@ public class FaithPath {
     @Override
     public String toString() {
         return "FaithPath" +
-                "cards=" + cards +
                 ", playerPositions=" + Arrays.toString(playerPositions) +
                 ", playerPV=" + Arrays.toString(playerPV) +
                 ", report=" + report;

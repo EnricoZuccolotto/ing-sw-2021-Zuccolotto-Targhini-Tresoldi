@@ -26,4 +26,7 @@ public class Strongbox {
                 Arrays.toString(strongBox)
               ;
     }
+    public int getNumResources(){
+        return strongBox[0]+strongBox[1]+strongBox[2]+strongBox[3];
+    }
 }

@@ -24,10 +24,7 @@ public class SimplePlayerBoard implements PlayerBoard {
         leaderCards = new ArrayList<LeaderCard>(2);
         productionSpaces = new ArrayList<SpaceProd>();
         warehouse = new Warehouse();
-        strongbox.setResources(Resources.COIN,10);
-        strongbox.setResources(Resources.SHIELD,10);
-        strongbox.setResources(Resources.SERVANT,10);
-        strongbox.setResources(Resources.STONE,10);
+
     }
 
     @Override
@@ -55,6 +52,8 @@ public class SimplePlayerBoard implements PlayerBoard {
         for(SpaceProd sp : productionSpaces){
             VP += sp.getVictoryPoints();
         }
+        // Get resources number victory points
+        VP+=(strongbox.getNumResources()+warehouse.Resourcesnumb()+getExtraResources().stream().reduce(0, Integer::sum))/5;
 
         return VP;
     }
@@ -135,9 +134,9 @@ public class SimplePlayerBoard implements PlayerBoard {
             {
                if(c.getLevel()==1) {
                    if (productionSpaces.size() < 3) {
-                       System.out.println("aggiungo nuovo spazio");
+                       //System.out.println("aggiungo nuovo spazio");
                        productionSpaces.add(new SpaceProd(c));
-                       payResources(c.getCostCard());
+                       //paga risorse
                        return true;
                    }
                }
@@ -150,13 +149,13 @@ public class SimplePlayerBoard implements PlayerBoard {
 
                        if(possibilities.size()==1) {
                            productionSpaces.get(possibilities.get(0)).addCard(c);
-                           payResources(c.getCostCard());
-                           System.out.println("1 possibilità");
+                           //paga risorse
+                           //System.out.println("1 possibilità");
                            return true;
                        }
                        else
                            {
-                               System.out.println("Possibili soluzioni"+possibilities);
+                               //System.out.println("Possibili soluzioni"+possibilities);
                                //make a choice
                                //productionSpaces.get(possibilities.get(choice)).addCard(c);
                                // payResources(c.getCostCard());
@@ -167,40 +166,51 @@ public class SimplePlayerBoard implements PlayerBoard {
                return false;
             }
 
-    private void payResources(int [] r)
+    public boolean payResourcesWarehouse(int [] r)
     {
-        int tmp;
+
+
+        for(int  i=0;i<4;i++){
+            if(r[i]!=0)
+            {
+                if(r[i]-warehouse.getResource(Resources.transform(i))<=0) {
+                    for (int j = 0; j < warehouse.getResource(Resources.transform(i)); j++)
+                        warehouse.popResources(Resources.transform(i));
+                }
+                else return false;
+            }
+        }
+return true;
+    }
+    public boolean payResourcesSpecialWarehouse(int [] r){
         ArrayList<Integer> Er=getExtraResources();
         for(int  i=0;i<4;i++){
 
             if(r[i]!=0)
             {
-                tmp=r[i]- Er.get(i);
-                if(tmp>0)
-                    takeExtraResources(Resources.transform(i), Er.get(i));
-                else
-                    takeExtraResources(Resources.transform(i),r[i]);
-                tmp=tmp-warehouse.getResource(Resources.transform(i));
-                // se >0 devo prendere le risorse sia dalla strongobox che dalla warehouse
-                if(tmp>0) {
-                    for (int j = 0; j < warehouse.getResource(Resources.transform(i)); j++)
-                        warehouse.popResources(Resources.transform(i));
-                    strongbox.setResources(Resources.transform(i),strongbox.getResources(Resources.transform(i))-tmp);
-                }
-                // se <=0 devo prendere le risorse dalla warehouse
-                else
-                    for (int j = 0; j < r[i]; j++)
-                        warehouse.popResources(Resources.transform(i));
-
-            }
-            }
-
-
+              if(r[i]- Er.get(i)<=0)
+                  takeExtraResources(Resources.transform(i), r[i]);
+              else return false;
     }
+        }
+        return true;
+    }
+    public boolean payResourcesSpecialStrongbox(int [] r){
+        for(int  i=0;i<4;i++){
+
+            if(r[i]!=0)
+            {
+                if(r[i]- strongbox.getResources(Resources.transform(i))<=0)
+                    strongbox.setResources(Resources.transform(i),r[i]);
+                else return false;
+            }
+        }
+        return true;
+    }
+
    public boolean checkLevel(DevelopmentCard c){
         if(c.getLevel()==1) {
-            if (productionSpaces.size() < 3)
-                return true;
+            return productionSpaces.size() < 3;
         }
         else {
                     for (SpaceProd sp : productionSpaces)
@@ -208,7 +218,7 @@ public class SimplePlayerBoard implements PlayerBoard {
                             return true;
                 }
         //LowResourcesException
-       System.out.println("Livello insuff");
+      // System.out.println("Livello insuff");
       return false;
     }
 
@@ -223,7 +233,7 @@ public class SimplePlayerBoard implements PlayerBoard {
                 tmp=tmp-strongbox.getResources(Resources.transform(i));
                 if(tmp>0) {
                     //LowLevelException
-                    System.out.println("Risorse insuff");
+                  //  System.out.println("Risorse insuff");
                     return false;
                 }
 
@@ -240,7 +250,7 @@ public class SimplePlayerBoard implements PlayerBoard {
                     tmp+=sp.checkColor(c);
                 if(colors[c.ordinal()]-tmp>0) {
                 //LowColorsException
-                    System.out.println("colori insuff");
+                   // System.out.println("colori insuff");
                     return false;
                  }
             }

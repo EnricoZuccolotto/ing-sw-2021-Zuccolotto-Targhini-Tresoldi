@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.cards.Card;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CardParser {
@@ -138,7 +139,7 @@ public class CardParser {
             // Card creation
             deck.add(new LeaderCard(VP,ID, costResources,costColor,a,effect1,effect2));
         }
-
+        Collections.shuffle(deck);
         return deck;
     }
 
