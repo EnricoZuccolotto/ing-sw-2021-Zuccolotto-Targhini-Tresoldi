@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.board;
 
-//import com.sun.org.apache.xpath.internal.operations.Bool;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
@@ -18,7 +17,7 @@ public interface PlayerBoard {
 
 
     // Decorated warehouse methods
-    public void addWarehouseSpace(Resources resource);
+    public void addWarehouseSpace(Resources resource, int maxQuantity);
     public void addExtraResources(Resources resources, int quantity);
     public void takeExtraResources(Resources resource, int quantity);
     public ArrayList<Integer> getExtraResources();

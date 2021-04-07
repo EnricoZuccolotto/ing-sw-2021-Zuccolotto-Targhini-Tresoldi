@@ -7,23 +7,24 @@ import java.util.Arrays;
 
 public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard {
     private ArrayList<Integer> quantities;
-    private ArrayList<Boolean> enableSpecialWarehouse;
+    // This ArrayList contains the maximum number of possible resources
+    private ArrayList<Integer> enableSpecialWarehouse;
 
-    DecoratedWarehousePlayerBoard(PlayerBoard subBoard){
+    public DecoratedWarehousePlayerBoard(PlayerBoard subBoard){
         super(subBoard);
     }
 
     @Override
-    public void addWarehouseSpace(Resources resource) {
-        enableSpecialWarehouse.set(resource.ordinal(), true);
+    public void addWarehouseSpace(Resources resource, int maxQuantity) {
+        enableSpecialWarehouse.set(resource.ordinal(), maxQuantity);
     }
 
     @Override
     public void addExtraResources(Resources resource, int quantity) {
         int resourceIndex = resource.ordinal();
-        if(enableSpecialWarehouse.get(resourceIndex)){
+        if(enableSpecialWarehouse.get(resourceIndex) != 0){
             int currentAmount = quantities.get(resourceIndex);
-            if(currentAmount + quantity <= 2){
+            if(currentAmount + quantity <= enableSpecialWarehouse.get(resourceIndex)){
                 quantities.set(resourceIndex, currentAmount + quantity);
             } else {
                 // exception too many resources
@@ -36,7 +37,7 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard {
     @Override
     public void takeExtraResources(Resources resource, int quantity) {
         int resourceIndex = resource.ordinal();
-        if(enableSpecialWarehouse.get(resourceIndex)){
+        if(enableSpecialWarehouse.get(resourceIndex) != 0){
             int currentAmount = quantities.get(resourceIndex);
             if(currentAmount - quantity >= 0){
                 quantities.set(resourceIndex, currentAmount - quantity);

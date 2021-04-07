@@ -59,7 +59,7 @@ public class SimplePlayerBoard implements PlayerBoard {
     }
 
     @Override
-    public void addWarehouseSpace(Resources resource) {
+    public void addWarehouseSpace(Resources resource, int maxQuantity) {
         // throw new IllegalDecoratorException()
     }
 

@@ -34,8 +34,8 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     public boolean addProductionCard(DevelopmentCard c){return subBoard.addProductionCard(c);}
 
     @Override
-    public void addWarehouseSpace(Resources resource) {
-        subBoard.addWarehouseSpace(resource);
+    public void addWarehouseSpace(Resources resource, int maxQuantity) {
+        subBoard.addWarehouseSpace(resource, maxQuantity);
     }
 
     @Override

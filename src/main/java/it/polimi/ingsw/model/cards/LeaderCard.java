@@ -38,12 +38,20 @@ public class LeaderCard extends Card {
         return advantage;
     }
 
-    public int[] getEffect1() {
-        return effect1;
+    public ArrayList<Integer> getEffect1() {
+        ArrayList<Integer> result = new ArrayList<Integer>(4);
+        for(int effect : effect1){
+            result.add(effect);
+        }
+        return result;
     }
 
-    public int[] getEffect2() {
-        return effect2;
+    public ArrayList<Integer> getEffect2() {
+        ArrayList<Integer> result = new ArrayList<Integer>(4);
+        for(int effect : effect1){
+            result.add(effect);
+        }
+        return result;
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class DecoratedProductionPlayerBoard extends DecoratedPlayerBoard {
     private ArrayList<Boolean> productionInputs;
 
-    DecoratedProductionPlayerBoard(PlayerBoard subBoard){
+    public DecoratedProductionPlayerBoard(PlayerBoard subBoard){
         super(subBoard);
         productionInputs = new ArrayList<Boolean>(4);
     }

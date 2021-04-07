@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class DecoratedChangePlayerBoard extends DecoratedPlayerBoard {
     private ArrayList<Boolean> substitutes;
 
-    DecoratedChangePlayerBoard(PlayerBoard subBoard){
+    public DecoratedChangePlayerBoard(PlayerBoard subBoard){
         super(subBoard);
         substitutes = new ArrayList<Boolean>(4);
     }

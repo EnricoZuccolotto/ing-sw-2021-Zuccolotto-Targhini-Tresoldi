@@ -8,10 +8,18 @@ public class HumanPlayer extends Player {
 
     public HumanPlayer(String name,boolean inkwell){
         super(name);
-        this.playerBoard=new SimplePlayerBoard(inkwell);
-
+        this.playerBoard = new SimplePlayerBoard(inkwell);
     }
+
     public void doAction() {
 
+    }
+
+    public PlayerBoard getPlayerBoard(){
+        return playerBoard;
+    }
+
+    public void setPlayerBoard(PlayerBoard playerBoard){
+        this.playerBoard = playerBoard;
     }
 }

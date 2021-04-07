@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class DecoratedCostPlayerBoard extends DecoratedPlayerBoard {
     private ArrayList<Integer> discounts;
 
-    DecoratedCostPlayerBoard(PlayerBoard subBoard){
+    public DecoratedCostPlayerBoard(PlayerBoard subBoard){
         super(subBoard);
         discounts = new ArrayList<Integer>(4);
     }
