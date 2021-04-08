@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.board;
 
+import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
@@ -39,13 +40,13 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     }
 
     @Override
-    public void addExtraResources(Resources resources, int quantity) {
-        subBoard.addExtraResources(resources, quantity);
+    public boolean addExtraResources(Resources resources, int quantity) {
+        return subBoard.addExtraResources(resources, quantity);
     }
 
     @Override
-    public void takeExtraResources(Resources resource, int quantity) {
-        subBoard.takeExtraResources(resource, quantity);
+    public boolean takeExtraResources(Resources resource, int quantity) {
+        return subBoard.takeExtraResources(resource, quantity);
     }
 
     @Override
@@ -80,7 +81,7 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
 
     @Override
     public boolean isResourceSubstitutable(Resources resource){
-        return isResourceSubstitutable(resource);
+        return subBoard.isResourceSubstitutable(resource);
     }
 
     @Override

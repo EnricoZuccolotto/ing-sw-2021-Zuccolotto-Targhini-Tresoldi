@@ -3,7 +3,6 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.model.tools.CardParser;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
-
 import org.junit.Test;
 
 import static org.junit.Assert.*;

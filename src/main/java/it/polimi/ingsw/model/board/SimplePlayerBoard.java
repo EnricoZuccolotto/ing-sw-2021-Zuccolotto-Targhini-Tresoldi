@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.board;
 
+import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Colors;
@@ -60,7 +61,7 @@ public class SimplePlayerBoard implements PlayerBoard {
 
     @Override
     public void addWarehouseSpace(Resources resource, int maxQuantity) {
-        // throw new IllegalDecoratorException()
+        throw new IllegalDecoratorException();
     }
 
     @Override
@@ -69,18 +70,18 @@ public class SimplePlayerBoard implements PlayerBoard {
     }
 
     @Override
-    public void addExtraResources(Resources resources, int quantity) {
-        // throw new IllegalDecoratorException()
+    public boolean addExtraResources(Resources resources, int quantity) {
+        throw new IllegalDecoratorException();
     }
 
     @Override
-    public void takeExtraResources(Resources resource, int quantity) {
-        // throw new IllegalDecoratorException()
+    public boolean takeExtraResources(Resources resource, int quantity) {
+        throw new IllegalDecoratorException();
     }
 
     @Override
     public void addDiscount(Resources resource, int amount) {
-        // throw new IllegalDecoratorException()
+        throw new IllegalDecoratorException();
     }
 
     @Override
@@ -95,7 +96,7 @@ public class SimplePlayerBoard implements PlayerBoard {
 
     @Override
     public void addSubstitute(Resources resource){
-        // throw new IllegalDecoratorException()
+        throw new IllegalDecoratorException();
     }
 
     @Override
@@ -110,10 +111,7 @@ public class SimplePlayerBoard implements PlayerBoard {
 
     @Override
     public void addProduction(Resources resource) {
-
-
-
-        // throw new IllegalDecoratorException()
+        throw new IllegalDecoratorException();
     }
 
     @Override

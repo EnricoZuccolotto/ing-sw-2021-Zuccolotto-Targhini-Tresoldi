@@ -12,6 +12,17 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard {
 
     public DecoratedWarehousePlayerBoard(PlayerBoard subBoard){
         super(subBoard);
+        quantities = new ArrayList<Integer>(4);
+        // TODO: Move to an initializer static method
+        quantities.add(0);
+        quantities.add(0);
+        quantities.add(0);
+        quantities.add(0);
+        enableSpecialWarehouse = new ArrayList<Integer>(4);
+        enableSpecialWarehouse.add(0);
+        enableSpecialWarehouse.add(0);
+        enableSpecialWarehouse.add(0);
+        enableSpecialWarehouse.add(0);
     }
 
     @Override
@@ -20,32 +31,34 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard {
     }
 
     @Override
-    public void addExtraResources(Resources resource, int quantity) {
+    public boolean addExtraResources(Resources resource, int quantity) {
         int resourceIndex = resource.ordinal();
         if(enableSpecialWarehouse.get(resourceIndex) != 0){
             int currentAmount = quantities.get(resourceIndex);
             if(currentAmount + quantity <= enableSpecialWarehouse.get(resourceIndex)){
                 quantities.set(resourceIndex, currentAmount + quantity);
+                return true;
             } else {
-                // exception too many resources
+                return false;
             }
         } else {
-            // exception you cannot use this space
+            return false;
         }
     }
 
     @Override
-    public void takeExtraResources(Resources resource, int quantity) {
+    public boolean takeExtraResources(Resources resource, int quantity) {
         int resourceIndex = resource.ordinal();
         if(enableSpecialWarehouse.get(resourceIndex) != 0){
             int currentAmount = quantities.get(resourceIndex);
             if(currentAmount - quantity >= 0){
                 quantities.set(resourceIndex, currentAmount - quantity);
+                return true;
             } else {
-                // exception too few resources
+                return false;
             }
         } else {
-            // exception you cannot use this space
+            return false;
         }
     }
 

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.board;
 
+import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
@@ -9,30 +10,30 @@ import java.util.ArrayList;
 public interface PlayerBoard {
 
     // General methods
-    public boolean getInkwell();
-    public void addLeaderCard(LeaderCard leaderCard);
-    public int getVictoryPoints();
-    public boolean addWarehouseResource(Resources r, int row);
-    public boolean addProductionCard(DevelopmentCard c);
+    boolean getInkwell();
+    void addLeaderCard(LeaderCard leaderCard);
+    int getVictoryPoints();
+    boolean addWarehouseResource(Resources r, int row);
+    boolean addProductionCard(DevelopmentCard c);
 
 
     // Decorated warehouse methods
-    public void addWarehouseSpace(Resources resource, int maxQuantity);
-    public void addExtraResources(Resources resources, int quantity);
-    public void takeExtraResources(Resources resource, int quantity);
-    public ArrayList<Integer> getExtraResources();
+    void addWarehouseSpace(Resources resource, int maxQuantity) throws IllegalDecoratorException;
+    boolean addExtraResources(Resources resources, int quantity) throws IllegalDecoratorException;
+    boolean takeExtraResources(Resources resource, int quantity) throws IllegalDecoratorException;
+    ArrayList<Integer> getExtraResources();
 
     // Decorated cost methods
-    public void addDiscount(Resources resource, int amount);
-    public boolean isResourceDiscounted(Resources resource);
-    public int getResourceDiscount(Resources resource);
+    void addDiscount(Resources resource, int amount) throws IllegalDecoratorException;
+    boolean isResourceDiscounted(Resources resource);
+    int getResourceDiscount(Resources resource);
 
     // Decorated white marble
-    public void addSubstitute(Resources resource);
-    public ArrayList<Boolean> getSubstitutes();
-    public boolean isResourceSubstitutable(Resources resource);
+    void addSubstitute(Resources resource) throws IllegalDecoratorException;
+    ArrayList<Boolean> getSubstitutes();
+    boolean isResourceSubstitutable(Resources resource);
 
     // Decorated production
-    public void addProduction(Resources resource);
-    public ArrayList<Resources> getProductions(Resources resource);
+    void addProduction(Resources resource) throws IllegalDecoratorException;
+    ArrayList<Resources> getProductions(Resources resource);
 }
