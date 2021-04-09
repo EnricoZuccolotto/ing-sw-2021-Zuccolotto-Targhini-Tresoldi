@@ -1,41 +1,41 @@
 package it.polimi.ingsw.model.player;
 
-import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.enums.Colors;
-import it.polimi.ingsw.model.enums.Resources;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class BotPlayer extends Player {
-    private Game currentGame;
+    private GameBoard currentGameBoard;
     private ArrayList<BotActions> botActions;
     private int currentAction;
-    public BotPlayer(Game game) {
+    public BotPlayer(GameBoard gameBoard) {
         super("BotPlayer");
-        this.currentGame=game;
+        this.currentGameBoard = gameBoard;
         this.currentAction=0;
-        this.botActions=new ArrayList<>(8);
+        this.botActions=new ArrayList<>(7);
     }
 public void init(){
+
         botActions.add(BotActions.DiscardPurple);
     botActions.add(BotActions.DiscardGreen);
     botActions.add(BotActions.DiscardYellow);
     botActions.add(BotActions.DiscardBlue);
     botActions.add(BotActions.Blackcross1Shuffle);
-    for(int i=0;i<3;i++)
-        botActions.add(BotActions.BlackCross2);
+    botActions.add(BotActions.BlackCross2);
+    botActions.add(BotActions.BlackCross2);
     Collections.shuffle(botActions);
 }
 
     public void doAction() {
           switch (botActions.get(currentAction)){
               case BlackCross2:
-                  currentGame.movePlayerFaithPath(1,2);
+                  currentGameBoard.movePlayerFaithPath(1,2);
                   break;
               case Blackcross1Shuffle:
-                  currentGame.movePlayerFaithPath(1,1);
+                  currentGameBoard.movePlayerFaithPath(1,1);
                   Collections.shuffle(botActions);
                   currentAction=-1;
                   break;
@@ -59,8 +59,8 @@ public void init(){
         int i=0;
         while (cont<2 && i<3){
 
-                if(currentGame.getDeck(c.ordinal(),i).DeckLength()>0) {
-                    currentGame.getDeck(c.ordinal(), i).popLastCard();
+                if(currentGameBoard.getDeck(c.ordinal(),i).DeckLength()>0) {
+                    currentGameBoard.getDeck(c.ordinal(), i).popLastCard();
                     cont++;
                 }
                 else

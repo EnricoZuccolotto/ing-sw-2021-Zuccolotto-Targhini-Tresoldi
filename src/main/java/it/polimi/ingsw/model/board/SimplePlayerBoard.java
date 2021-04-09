@@ -19,6 +19,7 @@ public class SimplePlayerBoard implements PlayerBoard {
     private ArrayList<SpaceProd> productionSpaces;
     public Warehouse warehouse;
 
+
     public SimplePlayerBoard(boolean inkWell){
         this.inkWell = inkWell;
         strongbox = new Strongbox();
@@ -38,6 +39,10 @@ public class SimplePlayerBoard implements PlayerBoard {
         if(checkResources(leaderCard.getCostResources()))
             if(checkColors(leaderCard.getCostColor()))
                 leaderCards.add(leaderCard);
+    }
+    @Override
+    public void removeLeaderCard(LeaderCard c){
+        leaderCards.remove(c);
     }
 
     @Override

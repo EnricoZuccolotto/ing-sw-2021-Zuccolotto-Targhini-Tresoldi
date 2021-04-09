@@ -1,14 +1,16 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.controller.GameController;
-import it.polimi.ingsw.controller.Action;
+import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
 
+import java.util.List;
+
 public class ActionController {
-    public void getMarket(){
+    public void getMarket(GameBoard gameBoard, HumanPlayer humanPlayer, int index){
+        List<Resources> list= gameBoard.pushColumnMarket(index);
     }
     public void useProduction(){
     }
@@ -73,6 +75,9 @@ public class ActionController {
         }
     }
 
-    public void foldLeader(){
+    public void foldLeader(LeaderCard c, HumanPlayer player, int playerNumber, GameBoard gameBoard){
+        PlayerBoard pb=player.getPlayerBoard();
+        pb.removeLeaderCard(c);
+        gameBoard.movePlayerFaithPath(playerNumber,1);
     }
 }

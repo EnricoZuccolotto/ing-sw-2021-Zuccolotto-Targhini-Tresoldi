@@ -24,6 +24,8 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
         subBoard.addLeaderCard(leaderCard);
     }
 
+    @Override
+    public void removeLeaderCard(LeaderCard c){ subBoard.removeLeaderCard(c); }
 
     @Override
     public int getVictoryPoints() {

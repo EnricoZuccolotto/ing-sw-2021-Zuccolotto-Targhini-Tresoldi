@@ -1,7 +1,8 @@
 package it.polimi.ingsw.controller;
 
 public enum TurnState {
-    ACTION,
-    LEADERACTION,
+    FIRST_LEADER_ACTION,
+    NORMAL_ACTION,
+    LAST_LEADER_ACTION,
     END,
 }
