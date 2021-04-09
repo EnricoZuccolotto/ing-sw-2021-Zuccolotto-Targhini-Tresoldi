@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.board;
 
+import it.polimi.ingsw.exceptions.playerboard.IllegalResourceException;
 import it.polimi.ingsw.model.enums.Resources;
 
 import java.util.ArrayList;
@@ -10,20 +11,36 @@ public class DecoratedCostPlayerBoard extends DecoratedPlayerBoard {
     public DecoratedCostPlayerBoard(PlayerBoard subBoard){
         super(subBoard);
         discounts = new ArrayList<Integer>(4);
+        discounts.add(0);
+        discounts.add(0);
+        discounts.add(0);
+        discounts.add(0);
     }
 
     @Override
     public void addDiscount(Resources resource, int amount) {
-        discounts.set(resource.ordinal(), amount);
+        try {
+            discounts.set(resource.ordinal(), amount);
+        } catch (IndexOutOfBoundsException ex){
+            throw new IllegalResourceException();
+        }
     }
 
     @Override
     public boolean isResourceDiscounted(Resources resource) {
-        return discounts.get(resource.ordinal()) != 0;
+        try{
+            return discounts.get(resource.ordinal()) != 0;
+        } catch (IndexOutOfBoundsException ex){
+            throw new IllegalResourceException();
+        }
     }
 
     @Override
     public int getResourceDiscount(Resources resource) {
-        return discounts.get(resource.ordinal());
+        try {
+            return discounts.get(resource.ordinal());
+        } catch (IndexOutOfBoundsException ex){
+            throw new IllegalResourceException();
+        }
     }
 }

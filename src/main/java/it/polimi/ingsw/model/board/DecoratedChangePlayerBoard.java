@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.board;
 
 
+import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
+import it.polimi.ingsw.exceptions.playerboard.IllegalResourceException;
 import it.polimi.ingsw.model.enums.Resources;
 
 import java.util.ArrayList;
@@ -12,11 +14,19 @@ public class DecoratedChangePlayerBoard extends DecoratedPlayerBoard {
     public DecoratedChangePlayerBoard(PlayerBoard subBoard){
         super(subBoard);
         substitutes = new ArrayList<Boolean>(4);
+        substitutes.add(false);
+        substitutes.add(false);
+        substitutes.add(false);
+        substitutes.add(false);
     }
 
     @Override
     public void addSubstitute(Resources resource){
-        substitutes.set(resource.ordinal(), true);
+        try{
+            substitutes.set(resource.ordinal(), true);
+        } catch (IndexOutOfBoundsException ex){
+            throw new IllegalResourceException();
+        }
     }
 
     @Override
@@ -26,6 +36,10 @@ public class DecoratedChangePlayerBoard extends DecoratedPlayerBoard {
 
     @Override
     public boolean isResourceSubstitutable(Resources resource){
-        return substitutes.get(resource.ordinal());
+        try {
+            return substitutes.get(resource.ordinal());
+        } catch (IndexOutOfBoundsException ex){
+            throw new IllegalResourceException();
+        }
     }
 }

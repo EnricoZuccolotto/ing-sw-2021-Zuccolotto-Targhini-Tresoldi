@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.board;
 
+import it.polimi.ingsw.exceptions.playerboard.IllegalResourceException;
 import it.polimi.ingsw.model.enums.Resources;
 
 import java.util.ArrayList;
@@ -27,38 +28,50 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard {
 
     @Override
     public void addWarehouseSpace(Resources resource, int maxQuantity) {
-        enableSpecialWarehouse.set(resource.ordinal(), maxQuantity);
+        try {
+            enableSpecialWarehouse.set(resource.ordinal(), maxQuantity);
+        } catch(IndexOutOfBoundsException ex) {
+            throw new IllegalResourceException();
+        }
     }
 
     @Override
     public boolean addExtraResources(Resources resource, int quantity) {
         int resourceIndex = resource.ordinal();
-        if(enableSpecialWarehouse.get(resourceIndex) != 0){
-            int currentAmount = quantities.get(resourceIndex);
-            if(currentAmount + quantity <= enableSpecialWarehouse.get(resourceIndex)){
-                quantities.set(resourceIndex, currentAmount + quantity);
-                return true;
+        try{
+            if(enableSpecialWarehouse.get(resourceIndex) != 0){
+                int currentAmount = quantities.get(resourceIndex);
+                if(currentAmount + quantity <= enableSpecialWarehouse.get(resourceIndex)){
+                    quantities.set(resourceIndex, currentAmount + quantity);
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
-        } else {
-            return false;
+        } catch (IndexOutOfBoundsException ex){
+            throw new IllegalResourceException();
         }
     }
 
     @Override
     public boolean takeExtraResources(Resources resource, int quantity) {
         int resourceIndex = resource.ordinal();
-        if(enableSpecialWarehouse.get(resourceIndex) != 0){
-            int currentAmount = quantities.get(resourceIndex);
-            if(currentAmount - quantity >= 0){
-                quantities.set(resourceIndex, currentAmount - quantity);
-                return true;
+        try {
+            if (enableSpecialWarehouse.get(resourceIndex) != 0) {
+                int currentAmount = quantities.get(resourceIndex);
+                if (currentAmount - quantity >= 0) {
+                    quantities.set(resourceIndex, currentAmount - quantity);
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
-        } else {
-            return false;
+        } catch (IndexOutOfBoundsException ex){
+            throw new IllegalResourceException();
         }
     }
 
