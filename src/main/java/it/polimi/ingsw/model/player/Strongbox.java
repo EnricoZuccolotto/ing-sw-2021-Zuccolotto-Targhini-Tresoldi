@@ -19,6 +19,7 @@ public class Strongbox {
     public void setResources(Resources resource, int number) {
         this.strongBox[resource.ordinal()]=number;
     }
+    public void addResources(Resources resource, int number){ this.strongBox[resource.ordinal()]+=number; }
 
     @Override
     public String toString() {

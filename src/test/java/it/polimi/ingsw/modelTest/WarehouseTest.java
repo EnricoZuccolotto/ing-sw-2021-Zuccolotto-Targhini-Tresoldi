@@ -3,8 +3,6 @@ package it.polimi.ingsw.modelTest;
 import it.polimi.ingsw.model.player.Warehouse;
 import it.polimi.ingsw.model.enums.Resources;
 
-import java.util.Arrays;
-
 import org.junit.Test;
 import static org.junit.Assert.*;
 
