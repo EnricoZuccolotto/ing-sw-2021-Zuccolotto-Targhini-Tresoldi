@@ -170,6 +170,9 @@ public class Warehouse {
         }
         while(warehouse[i+1]==resource){
             i++;
+            if(i==5){
+                break;
+            }
         }
         if(j==i || j==2 && i==3){
             var[j]=Resources.WHITE;
@@ -180,5 +183,8 @@ public class Warehouse {
     }
     public int Resourcesnumb(){
         return Resnum;
+    }
+    public Resources getR(int p){
+        return warehouse[p];
     }
 }
