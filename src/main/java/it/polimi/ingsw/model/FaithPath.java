@@ -10,12 +10,14 @@ public class FaithPath {
     private int[] playerPositions;
     private int[] playerPV;
     private int report;
+    private boolean[][] cardstate;
     public FaithPath(int n){
         playerPositions=new int [n];
 
         playerPV=new int [n];
 
         report=0;
+        cardstate= new boolean[n][3];
         cards=CardParser.parseFaithCards();
 
     }
@@ -26,21 +28,26 @@ public class FaithPath {
      }
     private void checkReport(int player){
         int [] rep={5,8,12,16,19,24,25};
-        if(report<3){
-            for(int k=0;k<=playerPositions.length;k++){
-                if(playerPositions[(player+k)%playerPositions.length]==rep[report*2+1])
-                {
-                    System.out.println((player+k)%playerPositions.length);
-                    for(int i=0;i<playerPositions.length;i++)
-                        if(playerPositions[i]>=rep[report*2]) {
-                            playerPV[i] += cards.get(report).getVP();
+        for(int k=0;k<=playerPositions.length;k++) {
+            if (report < 3) {
+                if (playerPositions[(player + k) % playerPositions.length] == rep[report * 2 + 1]) {
+                    int i = 0;
+                    while (i < playerPositions.length) {
+                        int count = (player + k + i) % playerPositions.length;
+                        if (playerPositions[count] >= rep[report * 2]) {
+                            playerPV[count] += cards.get(report).getVP();
+                            cards.get(report).flipCard();
+                            cardstate[count][report] = true;
                         }
+                        i++;
+                    }
                     report++;
                 }
-        }}
-        else
-            if(playerPositions[player]>=25)
-            System.out.println("End game");
+            }
+            if (playerPositions[k] >= 25) {
+                System.out.println("End game");
+            }
+        }
     }
     public int get_PV(int player){
         if(playerPositions[player]>=24)
@@ -60,6 +67,10 @@ public class FaithPath {
         else if(playerPositions[player]>=3)
             playerPV[player]+=1;
         return playerPV[player];
+    }
+
+    public boolean getCardsState(int number, int player){
+        return cards.get(number).getUncovered() && cardstate[player][number];
     }
 
     @Override

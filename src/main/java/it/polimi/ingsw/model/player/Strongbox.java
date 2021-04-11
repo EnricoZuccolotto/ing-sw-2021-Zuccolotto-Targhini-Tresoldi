@@ -20,6 +20,7 @@ public class Strongbox {
         this.strongBox[resource.ordinal()]=number;
     }
     public void addResources(Resources resource, int number){ this.strongBox[resource.ordinal()]+=number; }
+    public void removeResources(Resources resource, int number){ this.strongBox[resource.ordinal()]-=number; }
 
     @Override
     public String toString() {

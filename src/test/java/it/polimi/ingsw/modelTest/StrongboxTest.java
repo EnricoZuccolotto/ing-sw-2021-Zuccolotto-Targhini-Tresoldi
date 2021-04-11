@@ -20,5 +20,8 @@ public class StrongboxTest {
         s.setResources(Resources.SERVANT, 10);
         s.setResources(Resources.COIN, 5);
         assertEquals(17, s.getNumResources());
+        s.removeResources(Resources.SERVANT, 5);
+        s.removeResources(Resources.COIN, 2);
+        assertEquals(10, s.getNumResources());
     }
 }
