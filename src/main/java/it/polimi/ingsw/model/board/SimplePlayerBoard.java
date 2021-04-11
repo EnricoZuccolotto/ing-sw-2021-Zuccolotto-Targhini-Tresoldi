@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
+import it.polimi.ingsw.exceptions.playerboard.WinnerException;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Colors;
@@ -28,7 +29,10 @@ public class SimplePlayerBoard implements PlayerBoard {
         warehouse = new Warehouse();
 
     }
-
+    @Override
+    public int getLeaderCardsNumber() {
+        return leaderCards.size();
+    }
     @Override
     public boolean getInkwell() {
         return inkWell;
@@ -127,47 +131,48 @@ public class SimplePlayerBoard implements PlayerBoard {
     public boolean addWarehouseResource(Resources r, int row){
         return warehouse.AddResources(r,row);
     }
+
     @Override
+    // Add a DevelopementCard to the production Spaces with only 1 choice possible
     public boolean addProductionCard(DevelopmentCard c){
-
-
-        ArrayList<Integer> possibilities=new ArrayList<>();
         if(checkResources(c.getCostCard()))
             if(checkLevel(c))
             {
                if(c.getLevel()==1) {
                    if (productionSpaces.size() < 3) {
-                       //System.out.println("aggiungo nuovo spazio");
                        productionSpaces.add(new SpaceProd(c));
-                       //paga risorse
+                       checkWinnerNumCards();
                        return true;
                    }
                }
                else
-                   {
                        for (SpaceProd sp: productionSpaces) {
-                           if (sp.getTop().getLevel() == c.getLevel()-1)
-                               possibilities.add(productionSpaces.indexOf(sp));
+                           if (sp.getTop().getLevel() == c.getLevel() - 1) {
+                               sp.addCard(c);
+                               checkWinnerNumCards();
+                               return true;
+                           }
                        }
+            }return false;
+    }
+    // Add a DevelopementCard to the production Space[index]
+    public boolean addProductionCard(DevelopmentCard c,int index){
+        if(checkResources(c.getCostCard()))
+            if(productionSpaces.get(index).getTop().getLevel()==c.getLevel()-1)
+            {
+                productionSpaces.get(index).addCard(c);
+                checkWinnerNumCards();
+                return true;
+            }
+        return false;
+    }
 
-                       if(possibilities.size()==1) {
-                           productionSpaces.get(possibilities.get(0)).addCard(c);
-                           //paga risorse
-                           //System.out.println("1 possibilità");
-                           return true;
-                       }
-                       else
-                           {
-                               //System.out.println("Possibili soluzioni"+possibilities);
-                               //make a choice
-                               //productionSpaces.get(possibilities.get(choice)).addCard(c);
-                               // payResources(c.getCostCard());
-                               return false;//ho un array con le possibili soluzioni possibilities
-                    }}
-                return false;
-            }
-               return false;
-            }
+public void checkWinnerNumCards(){
+    if(productionSpaces.get(0).getNumbCard()+productionSpaces.get(0).getNumbCard()+productionSpaces.get(0).getNumbCard()==7)
+        throw new WinnerException();
+}
+
+
 
     public boolean payResourcesWarehouse(int [] r)
     {

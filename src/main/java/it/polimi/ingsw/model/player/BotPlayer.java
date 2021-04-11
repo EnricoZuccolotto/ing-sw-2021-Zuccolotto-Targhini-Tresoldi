@@ -8,25 +8,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class BotPlayer extends Player {
-    private GameBoard currentGameBoard;
-    private ArrayList<BotActions> botActions;
+    private final GameBoard currentGameBoard;
+    private final ArrayList<BotActions> botActions;
     private int currentAction;
     public BotPlayer(GameBoard gameBoard) {
         super("BotPlayer");
         this.currentGameBoard = gameBoard;
         this.currentAction=0;
         this.botActions=new ArrayList<>(7);
+        init();
     }
 public void init(){
 
         botActions.add(BotActions.DiscardPurple);
-    botActions.add(BotActions.DiscardGreen);
-    botActions.add(BotActions.DiscardYellow);
-    botActions.add(BotActions.DiscardBlue);
-    botActions.add(BotActions.Blackcross1Shuffle);
-    botActions.add(BotActions.BlackCross2);
-    botActions.add(BotActions.BlackCross2);
-    Collections.shuffle(botActions);
+        botActions.add(BotActions.DiscardGreen);
+        botActions.add(BotActions.DiscardYellow);
+        botActions.add(BotActions.DiscardBlue);
+        botActions.add(BotActions.Blackcross1Shuffle);
+        botActions.add(BotActions.BlackCross2);
+        botActions.add(BotActions.BlackCross2);
+        Collections.shuffle(botActions);
 }
 
     public void doAction() {

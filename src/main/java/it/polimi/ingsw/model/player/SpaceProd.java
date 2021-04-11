@@ -39,7 +39,9 @@ public class SpaceProd {
     public DevelopmentCard getTop(){
         return spaceProd.peek();
     }
-
+    public int getNumbCard(){
+        return spaceProd.size();
+    }
     @Override
     public String toString() {
         return "SpaceProd"

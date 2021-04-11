@@ -16,6 +16,7 @@ public interface PlayerBoard {
     boolean addWarehouseResource(Resources r, int row);
     boolean addProductionCard(DevelopmentCard c);
     void removeLeaderCard(LeaderCard c);
+    public int getLeaderCardsNumber();
 
     // Decorated warehouse methods
     void addWarehouseSpace(Resources resource, int maxQuantity) throws IllegalDecoratorException;

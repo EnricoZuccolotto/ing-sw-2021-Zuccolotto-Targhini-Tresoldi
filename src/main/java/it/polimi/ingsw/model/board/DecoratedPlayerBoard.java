@@ -13,7 +13,8 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     public DecoratedPlayerBoard(PlayerBoard subBoard){
         this.subBoard = subBoard;
     }
-
+    @Override
+    public int getLeaderCardsNumber(){return subBoard.getLeaderCardsNumber();}
     @Override
     public boolean getInkwell() {
         return subBoard.getInkwell();
