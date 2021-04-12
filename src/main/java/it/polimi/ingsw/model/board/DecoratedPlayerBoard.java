@@ -34,6 +34,12 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     }
     @Override
     public boolean addWarehouseResource(Resources r, int row){return subBoard.addWarehouseResource(r,row);}
+
+    @Override
+    public boolean shiftWarehouseRows(int startingRow, int newRowPosition) {
+        return subBoard.shiftWarehouseRows(startingRow, newRowPosition);
+    }
+
     @Override
     public boolean addProductionCard(DevelopmentCard c){return subBoard.addProductionCard(c);}
 

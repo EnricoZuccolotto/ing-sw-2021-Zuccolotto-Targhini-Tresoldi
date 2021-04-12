@@ -14,6 +14,7 @@ public interface PlayerBoard {
     void addLeaderCard(LeaderCard leaderCard);
     int getVictoryPoints();
     boolean addWarehouseResource(Resources r, int row);
+    boolean shiftWarehouseRows(int startingRow, int newRowPosition);
     boolean addProductionCard(DevelopmentCard c);
     void removeLeaderCard(LeaderCard c);
     public int getLeaderCardsNumber();

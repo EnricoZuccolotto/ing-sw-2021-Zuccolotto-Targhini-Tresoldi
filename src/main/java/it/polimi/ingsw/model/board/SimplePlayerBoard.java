@@ -133,6 +133,11 @@ public class SimplePlayerBoard implements PlayerBoard {
     }
 
     @Override
+    public boolean shiftWarehouseRows(int startingRow, int newRowPosition) {
+        return warehouse.MoveRow(startingRow, newRowPosition);
+    }
+
+    @Override
     // Add a DevelopementCard to the production Spaces with only 1 choice possible
     public boolean addProductionCard(DevelopmentCard c){
         if(checkResources(c.getCostCard()))

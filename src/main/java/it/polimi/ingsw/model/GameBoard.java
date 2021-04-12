@@ -33,11 +33,11 @@ public class GameBoard {
     public ArrayList<HumanPlayer> getPlayers(){
         return players;
     }
-    public List<Resources> pushColumnMarket(int i){
+    public ArrayList<Resources> pushColumnMarket(int i){
         return market.pushColumn(i);
     }
-    public List<Resources> pushRowMarket(int i){
-        return market.pushColumn(i);
+    public ArrayList<Resources> pushRowMarket(int i){
+        return market.pushRow(i);
     }
     public void movePlayerFaithPath(int player,int n){faithPath.movePlayer(player,n);}
     public int get_PV(int player){return faithPath.get_PV(player);}

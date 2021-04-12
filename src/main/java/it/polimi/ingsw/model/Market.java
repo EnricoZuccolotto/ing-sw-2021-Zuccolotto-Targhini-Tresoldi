@@ -34,9 +34,9 @@ public class Market {
         }
     }
 
-    public List<Resources> pushColumn(int columnIndex){
+    public ArrayList<Resources> pushColumn(int columnIndex){
         Resources temp;
-        List<Resources> ret= new ArrayList<Resources>();
+        ArrayList<Resources> ret= new ArrayList<Resources>();
         temp=market[0][columnIndex];
         ret.add(0, temp);
         for(int i=1; i<3; i++){
@@ -48,9 +48,9 @@ public class Market {
         return ret;
     }
 
-    public List<Resources> pushRow(int rowIndex){
+    public ArrayList<Resources> pushRow(int rowIndex){
         Resources temp;
-        List<Resources> ret= new ArrayList<Resources>();
+        ArrayList<Resources> ret= new ArrayList<Resources>();
         temp=market[rowIndex][0];
         ret.add(0, temp);
         for(int i=1; i<4; i++){

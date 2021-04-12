@@ -38,6 +38,7 @@ public class RoundController {
     void nextTurn() {
         turncount++;
         playerInTurn = players.get(turncount % players.size());
+        turnstate = TurnState.FIRST_LEADER_ACTION;
     }
     void firstTurn(){
 

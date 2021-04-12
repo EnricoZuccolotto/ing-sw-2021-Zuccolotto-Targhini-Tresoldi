@@ -48,7 +48,7 @@ public class LeaderCard extends Card {
 
     public ArrayList<Integer> getEffect2() {
         ArrayList<Integer> result = new ArrayList<Integer>(4);
-        for(int effect : effect1){
+        for(int effect : effect2){
             result.add(effect);
         }
         return result;

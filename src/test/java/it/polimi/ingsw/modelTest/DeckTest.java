@@ -22,7 +22,7 @@ public class DeckTest {
     for(int i=1;i<49;i++)
         expected.add(i);
 
-    decks= CardParser.parseDevCards();
+    decks = CardParser.parseDevCards();
 
         for (int k = 0; k < 4; k++)
             for (int j = 0; j < 3; j++) {

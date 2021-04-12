@@ -6,12 +6,48 @@ import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
+
 
 public class ActionController {
-    public void getMarket(GameBoard gameBoard, HumanPlayer humanPlayer, int index){
-        List<Resources> list= gameBoard.pushColumnMarket(index);
+    public void getMarket(GameBoard gameBoard, HumanPlayer humanPlayer, int rowIndex, int colIndex){
+        // TODO: Check if player in turn
+        ArrayList<Resources> list;
+        if(rowIndex == 3){
+            list = gameBoard.pushColumnMarket(colIndex);
+        } else {
+            list = gameBoard.pushRowMarket(rowIndex);
+        }
+        // TODO: Send the list to the player
     }
+
+    public void addFaithPoint(GameBoard gameBoard, HumanPlayer humanPlayer){
+        // TODO: add resource discarding (all players except the current one get a faith point). To be handled on message receive.
+        int playerPosition = gameBoard.getPlayers().indexOf(humanPlayer);
+        gameBoard.movePlayerFaithPath(playerPosition, 1);
+        // TODO: model sends updates
+    }
+
+    public void addResourceToWarehouse(HumanPlayer player, Resources resource, int rowPosition){
+        if(player.getPlayerBoard().addWarehouseResource(resource, rowPosition)){
+            // Andato a buon fine
+            // TODO: Send model updates
+        } else {
+            // Errore
+        }
+    }
+
+    public void shiftWarehouseRows(HumanPlayer player, int startingRow, int newRowPosition){
+        // TODO: Check if player in turn
+        if(player.getPlayerBoard().shiftWarehouseRows(startingRow, newRowPosition)){
+            // Andato a buon fine
+            // TODO: Send model updates
+        } else {
+            // Errore
+        }
+    }
+
     public void useProduction(){
     }
     public void getProduction(){
