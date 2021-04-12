@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.model.player.Player;
 
 public class LobbyController {
-    private HumanPlayer inLobbyPlayer;
+    private Player inLobbyPlayer;
     private  int Playernumber;
 
     public LobbyController(){

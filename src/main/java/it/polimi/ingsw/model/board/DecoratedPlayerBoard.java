@@ -19,7 +19,10 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     public boolean getInkwell() {
         return subBoard.getInkwell();
     }
-
+    @Override
+    public boolean checkColors(int [] colors){return subBoard.checkColors(colors);}
+    @Override
+    public boolean checkResources(int [] resources){return subBoard.checkResources(resources);}
     @Override
     public void addLeaderCard(LeaderCard leaderCard) {
         subBoard.addLeaderCard(leaderCard);

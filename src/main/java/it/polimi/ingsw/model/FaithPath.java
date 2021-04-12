@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class FaithPath {
-    private ArrayList<Card> cards;
-    private int[] playerPositions;
-    private int[] playerPV;
-    private boolean[][] cardstate;
+    private final ArrayList<Card> cards;
+    private final int[] playerPositions;
+    private final int[] playerPV;
+    private final boolean[][] cardstate;
     private int report;
     public FaithPath(int n){
         playerPositions=new int [n];
@@ -39,7 +39,8 @@ public class FaithPath {
             playerReported.add(i);
 
             while( k<playerReported.size() && playerReported.size()!=0 && report<3) {
-                    if (playerPositions[playerReported.get((k+player)%playerReported.size())] == rep[report * 2 + 1]) {
+                     int w=playerReported.get((k+player)%playerReported.size());
+                    if (playerPositions[w] == rep[report * 2 + 1]) {
                          //check if the players are in a papal report
                         for( int count:playerReported) {
                             if (playerPositions[count] >= rep[report * 2]) {
@@ -51,9 +52,12 @@ public class FaithPath {
 
                         report++;
                         // remove the player that already reported because he can't be in another papal report space at the same time
-                        playerReported.remove(playerReported.get(k));
+                        playerReported.remove((Integer) w);
                         k=-1;
                     }
+                    else if (playerPositions[w] < rep[report * 2 + 1])
+                        playerReported.remove((Integer) w);
+
                k++;
                 }
 

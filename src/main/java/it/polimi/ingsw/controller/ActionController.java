@@ -1,5 +1,8 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.exceptions.playerboard.CardAlreadyUsedException;
+import it.polimi.ingsw.exceptions.playerboard.InsufficientColorsException;
+import it.polimi.ingsw.exceptions.playerboard.InsufficientResourcesException;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.cards.LeaderCard;
@@ -54,9 +57,17 @@ public class ActionController {
     }
     public void activateLeader(LeaderCard leaderCard, HumanPlayer player){
         // Check if card is already used and owned by the player
-        // TODO: Check player leader cards
+        // TODO: Check player leader cards(Color cost and resources cost)
+        if(!player.getPlayerBoard().checkColors(leaderCard.getCostColor()))
+        {
+            throw new InsufficientColorsException();
+        }
+        if(!player.getPlayerBoard().checkResources(leaderCard.getCostResources()))
+        {
+            throw new InsufficientResourcesException();
+        }
         if(leaderCard.getUncovered()){
-            // Eccezione carta già usata
+            throw new CardAlreadyUsedException();
         }
         leaderCard.flipCard();
 

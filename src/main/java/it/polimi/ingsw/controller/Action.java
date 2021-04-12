@@ -1,9 +1,13 @@
 package it.polimi.ingsw.controller;
 
 public enum Action {
-    std_getMarket,
-    std_useProduction,
-    std_getProduction,
-    ld_activeLeader,
-    ld_foldLeader
+    STD_GETMARKET,
+    STD_USEPRODUCTION,
+    STD_GETPRODUCTION,
+    SHIFT_WAREHOUSE,//scambio le righe
+    SORTING_WAREHOUSE,
+    LD_LEADERACTION,
+    LD_FOLD,
+    END_TURN
 }
+

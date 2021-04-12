@@ -31,7 +31,12 @@ public class SimplePlayerBoard implements PlayerBoard {
     }
     @Override
     public int getLeaderCardsNumber() {
-        return leaderCards.size();
+        int cont=0;
+        for(LeaderCard c:leaderCards)
+            if(!c.getUncovered())
+                cont++;
+
+            return cont;
     }
     @Override
     public boolean getInkwell() {
@@ -40,8 +45,6 @@ public class SimplePlayerBoard implements PlayerBoard {
 
     @Override
     public void addLeaderCard(LeaderCard leaderCard) {
-        if(checkResources(leaderCard.getCostResources()))
-            if(checkColors(leaderCard.getCostColor()))
                 leaderCards.add(leaderCard);
     }
     @Override
@@ -172,7 +175,7 @@ public class SimplePlayerBoard implements PlayerBoard {
         return false;
     }
 
-public void checkWinnerNumCards(){
+private void checkWinnerNumCards(){
     if(productionSpaces.get(0).getNumbCard()+productionSpaces.get(0).getNumbCard()+productionSpaces.get(0).getNumbCard()==7)
         throw new WinnerException();
 }
@@ -245,7 +248,6 @@ return true;
                 tmp=tmp-warehouse.getResource(Resources.transform(i));
                 tmp=tmp-strongbox.getResources(Resources.transform(i));
                 if(tmp>0) {
-                    //LowLevelException
                   //  System.out.println("Risorse insuff");
                     return false;
                 }
