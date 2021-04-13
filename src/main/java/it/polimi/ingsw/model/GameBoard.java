@@ -21,7 +21,6 @@ public class GameBoard {
         this.decks= CardParser.parseDevCards();
         this.players=new ArrayList<>();
         this.market= new Market();
-
     }
 
     public void init(GameBoard gameBoard) {
@@ -45,6 +44,7 @@ public class GameBoard {
         return market.pushRow(i);
     }
     public void movePlayerFaithPath(int player,int n){faithPath.movePlayer(player,n);}
+    public int getPlayerFaithPathPosition(int player){return faithPath.getPosition(player);}
     public int get_PV(int player){return faithPath.get_PV(player);}
 
     public Deck getDeck(int color,int level) {

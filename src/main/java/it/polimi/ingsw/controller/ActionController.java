@@ -211,7 +211,7 @@ public class ActionController {
     }
 
 public void isResourcesAvailable(HumanPlayer player,int [] resWar,int [] resStr,int [] resSpeWar){
-         if(!player.getPlayerBoard().checkResourcesSpecialWarehouse(resSpeWar)||!player.getPlayerBoard().payResourcesStrongbox(resStr)||!player.getPlayerBoard().checkResourcesWarehouse(resWar))
+         if(!player.getPlayerBoard().checkResourcesSpecialWarehouse(resSpeWar)||!player.getPlayerBoard().checkResourcesStrongbox(resStr)||!player.getPlayerBoard().checkResourcesWarehouse(resWar))
         throw new InsufficientResourcesException();
 }
 

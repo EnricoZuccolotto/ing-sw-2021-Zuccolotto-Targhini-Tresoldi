@@ -85,6 +85,9 @@ public class FaithPath {
     public boolean getCardsState(int number, int player){
         return cards.get(number).getUncovered() && cardstate[player][number];
     }
+    public int getPosition(int player){
+        return playerPositions[player];
+    }
 
     @Override
     public String toString() {

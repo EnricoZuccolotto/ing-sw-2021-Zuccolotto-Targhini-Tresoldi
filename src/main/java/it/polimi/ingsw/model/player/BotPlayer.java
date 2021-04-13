@@ -1,16 +1,19 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.exceptions.playerboard.WinnerException;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.enums.Colors;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 public class BotPlayer extends Player {
     private final GameBoard currentGameBoard;
     private final ArrayList<BotActions> botActions;
     private int currentAction;
+
     public BotPlayer(GameBoard gameBoard) {
         super("BotPlayer");
         this.currentGameBoard = gameBoard;
@@ -55,17 +58,28 @@ public void init(){
           }
           currentAction++;
     }
-    private void discard(Colors c){
+    public void discard(Colors c){
         int cont=0;
         int i=0;
+        int sum=0;
         while (cont<2 && i<3){
-
                 if(currentGameBoard.getDeck(c.ordinal(),i).DeckLength()>0) {
                     currentGameBoard.getDeck(c.ordinal(), i).popLastCard();
                     cont++;
                 }
                 else
                 i++;
-
+        }
+        for(i=0; i<3; i++){
+            sum=+currentGameBoard.getDeck(c.ordinal(),i).DeckLength();
+        }
+        if(sum==0){
+            throw new WinnerException();
+        }
     }
-}}
+
+    public BotActions getCurrentAction(){
+        return botActions.get(currentAction);
+    }
+
+}

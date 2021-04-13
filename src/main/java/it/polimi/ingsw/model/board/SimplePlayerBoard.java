@@ -147,7 +147,6 @@ public class SimplePlayerBoard implements PlayerBoard {
     @Override
     // Add a DevelopementCard to the production Spaces with only 1 choice possible
     public boolean addProductionCard(DevelopmentCard c){
-        if(checkResources(c.getCostCard()))
             if(checkLevel(c))
             {
                if(c.getLevel()==1) {
@@ -171,7 +170,6 @@ public class SimplePlayerBoard implements PlayerBoard {
     @Override
     // Add a DevelopementCard to the production Space[index]
     public boolean addProductionCard(DevelopmentCard c,int index){
-        if(checkResources(c.getCostCard()))
             if(productionSpaces.get(index).getTop().getLevel()==c.getLevel()-1)
             {
                 productionSpaces.get(index).addCard(c);
@@ -189,9 +187,11 @@ public class SimplePlayerBoard implements PlayerBoard {
         return productionSpaces.get(index).getTop().getProductionResult();
     }
 
-private void checkWinnerNumCards(){
-    if(productionSpaces.get(0).getNumbCard()+productionSpaces.get(0).getNumbCard()+productionSpaces.get(0).getNumbCard()==7)
-        throw new WinnerException();
+private void checkWinnerNumCards() {
+    if (productionSpaces.size() == 3) {
+        if (productionSpaces.get(0).getNumbCard() + productionSpaces.get(1).getNumbCard() + productionSpaces.get(2).getNumbCard() == 7)
+            throw new WinnerException();
+    }
 }
 
 
@@ -202,13 +202,13 @@ private void checkWinnerNumCards(){
             if(r[i]!=0)
             {
                 if(r[i]-warehouse.getResource(Resources.transform(i))<=0) {
-                    for (int j = 0; j < warehouse.getResource(Resources.transform(i)); j++)
+                    for (int j = 0; j < r[i]; j++)
                         warehouse.popResources(Resources.transform(i));
                 }
                 else return false;
             }
         }
-return true;
+            return true;
     }
     @Override
     public boolean checkResourcesWarehouse(int [] r)
@@ -236,11 +236,10 @@ return true;
     @Override
     public boolean payResourcesStrongbox(int [] r){
         for(int  i=0;i<4;i++){
-
             if(r[i]!=0)
             {
                 if(r[i]- strongbox.getResources(Resources.transform(i))<=0)
-                    strongbox.setResources(Resources.transform(i),r[i]);
+                    strongbox.removeResources(Resources.transform(i),r[i]);
                 else return false;
             }
         }
