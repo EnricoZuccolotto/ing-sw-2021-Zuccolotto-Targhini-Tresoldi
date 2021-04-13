@@ -29,7 +29,6 @@ public class ActionController {
     }
 
     public void addFaithPoint(GameBoard gameBoard, HumanPlayer humanPlayer){
-        // TODO: add resource discarding (all players except the current one get a faith point). To be handled on message receive.
         int playerPosition = gameBoard.getPlayers().indexOf(humanPlayer);
         gameBoard.movePlayerFaithPath(playerPosition, 1);
         // TODO: model sends updates. To be handled in the model.

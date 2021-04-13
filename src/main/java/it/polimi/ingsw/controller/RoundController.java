@@ -57,21 +57,26 @@ public class RoundController {
     }
 
     public void handle_sortingWarehouse(SetResourceMessage message) {
+        Message reply;
         if(playerInTurn.getName().equals(message.getPlayerName())){
             if(message.getResource() == null) {
                 // Messaggio che indica la fine delle risorse, chiama nextState()
             }
             if(message.getResource() == Resources.FAITH){
+                // TODO: Handle faith point check
                 actionController.addFaithPoint(gameBoardInstance, playerInTurn);
+                reply = new ResourceAckMessage(message.getPlayerName(), message.getReceivedResourceIndex());
+            } else {
+                reply = actionController.addResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getReceivedResourceIndex());
             }
-            Message reply = actionController.addResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getReceivedResourceIndex());
         } else {
-            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+            reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
         }
         // TODO: Send message
     }
 
     public void handle_discardResource(DiscardResourceMessage message) {
+        Message reply;
         if(playerInTurn.getName().equals(message.getPlayerName())){
             for(HumanPlayer player : players){
                 // Every player except the current one get a faith point
@@ -79,9 +84,11 @@ public class RoundController {
                     actionController.addFaithPoint(gameBoardInstance, player);
                 }
             }
+            reply = new ResourceAckMessage(message.getPlayerName(), message.getReceivedResourceIndex());
         } else {
-            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+            reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
         }
+        // TODO: Send message
     }
 
     public void handle_useProduction(){
