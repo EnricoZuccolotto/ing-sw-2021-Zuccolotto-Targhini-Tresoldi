@@ -27,21 +27,40 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     public void addLeaderCard(LeaderCard leaderCard) {
         subBoard.addLeaderCard(leaderCard);
     }
-
+    @Override
+    public boolean checkResourcesStrongbox(int [] r){return subBoard.checkResourcesStrongbox(r);}
+    @Override
+    public boolean checkResourcesWarehouse(int [] r){return subBoard.checkResourcesWarehouse(r);}
+    @Override
+    public boolean payResourcesStrongbox(int [] r){return subBoard.payResourcesStrongbox(r);}
+    @Override
+    public boolean payResourcesWarehouse(int [] r){return subBoard.payResourcesWarehouse(r); }
     @Override
     public void removeLeaderCard(LeaderCard c){ subBoard.removeLeaderCard(c); }
-
+    @Override
+    public LeaderCard getLeaderCard(int index ){return subBoard.getLeaderCard(index);}
+    @Override
+    public int[] getProductionCost(int index){return subBoard.getProductionCost(index);}
+    @Override
+    public int[] getProductionResult(int index){return subBoard.getProductionResult(index);}
     @Override
     public int getVictoryPoints() {
         return subBoard.getVictoryPoints();
     }
     @Override
     public boolean addWarehouseResource(Resources r, int row){return subBoard.addWarehouseResource(r,row);}
-
+    @Override
+    public boolean checkResourcesSpecialWarehouse(int [] r){return subBoard.checkResourcesSpecialWarehouse(r);}
+    @Override
+    public boolean payResourcesSpecialWarehouse(int [] r){ return subBoard.payResourcesSpecialWarehouse(r); }
+    @Override
+    public void addStrongboxResource(Resources r, int quantities){subBoard.addStrongboxResource(r,quantities);}
     @Override
     public boolean shiftWarehouseRows(int startingRow, int newRowPosition) {
         return subBoard.shiftWarehouseRows(startingRow, newRowPosition);
     }
+    @Override
+    public boolean addProductionCard(DevelopmentCard c,int index){return subBoard.addProductionCard(c,index);}
 
     @Override
     public boolean addProductionCard(DevelopmentCard c){return subBoard.addProductionCard(c);}

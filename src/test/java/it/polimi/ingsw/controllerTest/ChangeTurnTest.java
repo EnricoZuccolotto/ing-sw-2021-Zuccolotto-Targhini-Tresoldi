@@ -17,13 +17,13 @@ public class ChangeTurnTest {
         gb.addPlayer(new HumanPlayer("Harry",false));
         gb.addPlayer(new HumanPlayer("Enry",false));
         RoundController g=new RoundController(gb);
-        g.setPlayerInTurn(gb.getPlayers().get(0));
+        //g.setPlayerInTurn(gb.getPlayers().get(0));
         gb.getPlayers().get(0).getPlayerBoard().addLeaderCard(new LeaderCard(1,1,null,null,null,null,null));
 
         g.handle_activeLeader();
         HumanPlayer p=g.getPlayerInTurn();
         assertEquals(g.getTurnstate(), TurnState.NORMAL_ACTION);
-        g.handle_getProduction();
+        //g.handle_getProduction();
         assertEquals(g.getTurnstate(), TurnState.FIRST_LEADER_ACTION);
         assertNotEquals(g.getPlayerInTurn(), p);
     }
@@ -33,7 +33,7 @@ public class ChangeTurnTest {
         gb.addPlayer(new HumanPlayer("Harry",false));
         gb.addPlayer(new HumanPlayer("Enry",false));
         RoundController g=new RoundController(gb);
-        g.setPlayerInTurn(gb.getPlayers().get(0));
+        //g.setPlayerInTurn(gb.getPlayers().get(0));
         gb.getPlayers().get(0).getPlayerBoard().addLeaderCard(new LeaderCard(1,1,null,null,null,null,null));
         gb.getPlayers().get(0).getPlayerBoard().addLeaderCard(new LeaderCard(2,1,null,null,null,null,null));
         assertEquals(g.getTurnstate(), TurnState.FIRST_LEADER_ACTION);
@@ -61,7 +61,7 @@ public class ChangeTurnTest {
         gb.addPlayer(new HumanPlayer("Harry", false));
         gb.addPlayer(new HumanPlayer("Enry", false));
         RoundController g = new RoundController(gb);
-        g.setPlayerInTurn(gb.getPlayers().get(0));
+        //g.setPlayerInTurn(gb.getPlayers().get(0));
         assertEquals(g.getTurnstate(), TurnState.FIRST_LEADER_ACTION);
         try{
             g.handle_activeLeader();

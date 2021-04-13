@@ -13,13 +13,13 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard {
 
     public DecoratedWarehousePlayerBoard(PlayerBoard subBoard){
         super(subBoard);
-        quantities = new ArrayList<Integer>(4);
+        quantities = new ArrayList<>(4);
         // TODO: Move to an initializer static method
         quantities.add(0);
         quantities.add(0);
         quantities.add(0);
         quantities.add(0);
-        enableSpecialWarehouse = new ArrayList<Integer>(4);
+        enableSpecialWarehouse = new ArrayList<>(4);
         enableSpecialWarehouse.add(0);
         enableSpecialWarehouse.add(0);
         enableSpecialWarehouse.add(0);
@@ -78,8 +78,46 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard {
     @Override
     public ArrayList<Integer> getExtraResources() {
         // Copy in order to avoid exposing the rep
-        return new ArrayList<Integer>(Arrays.asList(quantities.get(0), quantities.get(1), quantities.get(2), quantities.get(3)));
+        return new ArrayList<>(Arrays.asList(quantities.get(0), quantities.get(1), quantities.get(2), quantities.get(3)));
     }
+    @Override
+    public boolean payResourcesSpecialWarehouse(int [] r){
+        ArrayList<Integer> Er=getExtraResources();
+        for(int  i=0;i<4;i++){
 
+            if(r[i]!=0)
+            {
+                if(r[i]- Er.get(i)<=0)
+                    takeExtraResources(Resources.transform(i), r[i]);
+                else return false;
+            }
+        }
+        return true;
+    }
+    @Override
+    public boolean checkResourcesSpecialWarehouse(int [] r){
+        ArrayList<Integer> Er=getExtraResources();
+        for(int  i=0;i<4;i++){
+            if(r[i]!=0)
+            {
+                if( Er.get(i)<r[i])
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public boolean checkResources(int [] resources){
+        int [] tmp=new int[4];
+        ArrayList<Integer> Er=getExtraResources();
+        for(int  i=0;i<4;i++)
+            if(resources[i]!=0)
+            {
+                tmp[i]=resources[i]-Er.get(i);
+            }
+        return subBoard.checkResources(tmp);
+
+    }
 
 }

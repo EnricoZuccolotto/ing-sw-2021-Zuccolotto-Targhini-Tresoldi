@@ -20,6 +20,18 @@ public interface PlayerBoard {
     int getLeaderCardsNumber();
     boolean checkColors(int [] colors);
     boolean checkResources(int [] resources);
+    boolean checkResourcesStrongbox(int [] r);
+    boolean checkResourcesWarehouse(int [] r);
+    boolean payResourcesStrongbox(int [] r);
+    boolean payResourcesWarehouse(int [] r);
+    boolean addProductionCard(DevelopmentCard c,int index);
+    boolean payResourcesSpecialWarehouse(int [] r);
+    boolean checkResourcesSpecialWarehouse(int [] r);
+    void addStrongboxResource(Resources r, int quantities);
+    LeaderCard getLeaderCard(int index );
+    int[] getProductionCost(int index);
+    int[] getProductionResult(int index);
+
     // Decorated warehouse methods
     void addWarehouseSpace(Resources resource, int maxQuantity) throws IllegalDecoratorException;
     boolean addExtraResources(Resources resources, int quantity) throws IllegalDecoratorException;

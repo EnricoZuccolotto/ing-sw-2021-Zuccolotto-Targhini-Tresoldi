@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
+import it.polimi.ingsw.exceptions.playerboard.InsufficientLevelException;
 import it.polimi.ingsw.exceptions.playerboard.WinnerException;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
@@ -18,14 +19,14 @@ public class SimplePlayerBoard implements PlayerBoard {
     private boolean inkWell;
     private ArrayList<LeaderCard> leaderCards;
     private ArrayList<SpaceProd> productionSpaces;
-    public Warehouse warehouse;
+    private Warehouse warehouse;
 
 
     public SimplePlayerBoard(boolean inkWell){
         this.inkWell = inkWell;
         strongbox = new Strongbox();
-        leaderCards = new ArrayList<LeaderCard>(2);
-        productionSpaces = new ArrayList<SpaceProd>();
+        leaderCards = new ArrayList<>(2);
+        productionSpaces = new ArrayList<>();
         warehouse = new Warehouse();
 
     }
@@ -42,7 +43,10 @@ public class SimplePlayerBoard implements PlayerBoard {
     public boolean getInkwell() {
         return inkWell;
     }
-
+    @Override
+    public LeaderCard getLeaderCard(int index ){
+        return leaderCards.get(index);
+    }
     @Override
     public void addLeaderCard(LeaderCard leaderCard) {
                 leaderCards.add(leaderCard);
@@ -78,7 +82,7 @@ public class SimplePlayerBoard implements PlayerBoard {
 
     @Override
     public ArrayList<Integer> getExtraResources() {
-        return new ArrayList<Integer>(Arrays.asList(0, 0, 0, 0));
+        return new ArrayList<>(Arrays.asList(0, 0, 0, 0));
     }
 
     @Override
@@ -113,7 +117,7 @@ public class SimplePlayerBoard implements PlayerBoard {
 
     @Override
     public ArrayList<Boolean> getSubstitutes(){
-        return new ArrayList<Boolean>(Arrays.asList(false, false, false, false));
+        return new ArrayList<>(Arrays.asList(false, false, false, false));
     }
 
     @Override
@@ -161,8 +165,10 @@ public class SimplePlayerBoard implements PlayerBoard {
                                return true;
                            }
                        }
-            }return false;
+            }
+        throw new InsufficientLevelException();
     }
+    @Override
     // Add a DevelopementCard to the production Space[index]
     public boolean addProductionCard(DevelopmentCard c,int index){
         if(checkResources(c.getCostCard()))
@@ -172,7 +178,15 @@ public class SimplePlayerBoard implements PlayerBoard {
                 checkWinnerNumCards();
                 return true;
             }
-        return false;
+        throw new InsufficientLevelException();
+    }
+    @Override
+    public int[] getProductionCost(int index){
+        return productionSpaces.get(index).getTop().getCostProduction();
+    }
+    @Override
+    public int[] getProductionResult(int index){
+        return productionSpaces.get(index).getTop().getProductionResult();
     }
 
 private void checkWinnerNumCards(){
@@ -181,11 +195,9 @@ private void checkWinnerNumCards(){
 }
 
 
-
+    @Override
     public boolean payResourcesWarehouse(int [] r)
     {
-
-
         for(int  i=0;i<4;i++){
             if(r[i]!=0)
             {
@@ -198,20 +210,31 @@ private void checkWinnerNumCards(){
         }
 return true;
     }
-    public boolean payResourcesSpecialWarehouse(int [] r){
-        ArrayList<Integer> Er=getExtraResources();
+    @Override
+    public boolean checkResourcesWarehouse(int [] r)
+    {
         for(int  i=0;i<4;i++){
-
             if(r[i]!=0)
             {
-              if(r[i]- Er.get(i)<=0)
-                  takeExtraResources(Resources.transform(i), r[i]);
-              else return false;
-    }
+                if(warehouse.getResource(Resources.transform(i))<r[i]) {
+                   return false;
+                }
+            }
         }
         return true;
     }
-    public boolean payResourcesSpecialStrongbox(int [] r){
+    @Override
+    public boolean checkResourcesSpecialWarehouse(int [] r) {
+        for (int i = 0; i < 4; i++) {
+            if (r[i] != 0)
+                return false;
+        }
+        return true;
+    }
+    @Override
+    public boolean payResourcesSpecialWarehouse(int [] r){return true;}
+    @Override
+    public boolean payResourcesStrongbox(int [] r){
         for(int  i=0;i<4;i++){
 
             if(r[i]!=0)
@@ -223,8 +246,19 @@ return true;
         }
         return true;
     }
+    @Override
+    public boolean checkResourcesStrongbox(int [] r){
+        for(int  i=0;i<4;i++){
+            if(r[i]!=0)
+            {
+                if(strongbox.getResources(Resources.transform(i))<r[i] )
+                    return false;
+            }
+        }
+        return true;
+    }
 
-   public boolean checkLevel(DevelopmentCard c){
+    private boolean checkLevel(DevelopmentCard c){
         if(c.getLevel()==1) {
             return productionSpaces.size() < 3;
         }
@@ -233,22 +267,17 @@ return true;
                         if (sp.getTop().getLevel() == c.getLevel() - 1)
                             return true;
                 }
-        //LowResourcesException
-      // System.out.println("Livello insuff");
-      return false;
+       throw new InsufficientLevelException();
     }
-
+    @Override
     public boolean checkResources(int [] resources){
         int  tmp;
-        ArrayList<Integer> Er=getExtraResources();
         for(int  i=0;i<4;i++)
             if(resources[i]!=0)
             {
-                tmp=resources[i]-Er.get(i);
-                tmp=tmp-warehouse.getResource(Resources.transform(i));
+                tmp=resources[i]-warehouse.getResource(Resources.transform(i));
                 tmp=tmp-strongbox.getResources(Resources.transform(i));
                 if(tmp>0) {
-                  //  System.out.println("Risorse insuff");
                     return false;
                 }
 
@@ -256,6 +285,7 @@ return true;
         return true;
 
     }
+    @Override
     public boolean checkColors(int [] colors){
         int tmp;
         for(Colors c:Colors.values()){
@@ -264,14 +294,17 @@ return true;
                 for(SpaceProd sp:productionSpaces)
                     tmp+=sp.checkColor(c);
                 if(colors[c.ordinal()]-tmp>0) {
-                //LowColorsException
-                   // System.out.println("colori insuff");
                     return false;
                  }
             }
             }
         return true;
     }
+    @Override
+    public void addStrongboxResource(Resources r, int quantities){
+         strongbox.addResources(r,quantities);
+    }
+
 
     @Override
     public String toString() {

@@ -8,7 +8,6 @@ import it.polimi.ingsw.model.tools.CardParser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 public class GameBoard {
     private Market market;
@@ -20,7 +19,6 @@ public class GameBoard {
 
     public GameBoard(){
         this.decks= CardParser.parseDevCards();
-        this.decks=new Deck[4][3];
         this.players=new ArrayList<>();
         this.market= new Market();
 

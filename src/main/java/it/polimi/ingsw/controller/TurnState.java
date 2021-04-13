@@ -8,6 +8,7 @@ public enum TurnState {
     NORMAL_ACTION,
     WAREHOUSE_ACTION,
     LAST_LEADER_ACTION,
+    PRODUCTION_ACTIONS,
     END;
     public static boolean isPossible(TurnState turnState,Action action){
         ArrayList<Action> possibleActions=new ArrayList<>();
@@ -44,6 +45,14 @@ public enum TurnState {
            }
            case LAST_LEADER_ACTION:
            {
+               possibleActions.add( Action.LD_LEADERACTION);
+               possibleActions.add( Action.LD_FOLD);
+               possibleActions.add( Action.SHIFT_WAREHOUSE);
+               possibleActions.add( Action.END_TURN);
+           }
+           case PRODUCTION_ACTIONS:
+           {
+               possibleActions.add( Action.STD_USEPRODUCTION);
                possibleActions.add( Action.LD_LEADERACTION);
                possibleActions.add( Action.LD_FOLD);
                possibleActions.add( Action.SHIFT_WAREHOUSE);

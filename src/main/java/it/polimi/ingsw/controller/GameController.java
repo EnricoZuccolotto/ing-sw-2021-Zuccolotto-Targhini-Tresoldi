@@ -37,14 +37,7 @@ public class GameController {
         switch (action) {
             case LD_FOLD:
                  leaderFoldCheck(action);
-            case LD_LEADERACTION:
-                leaderActionCheck(action);
-            case STD_GETPRODUCTION:
-                getProductionCheck(action);
-            case STD_USEPRODUCTION:
-                useProductionCheck(action);
-            case STD_GETMARKET:
-                getMarketCheck(action);
+
             case END_TURN:
                 endTurnCheck(action);
 
@@ -71,6 +64,22 @@ public class GameController {
             case DISCARD_RESOURCE:
                 if(validateAction(Action.SORTING_WAREHOUSE))
                     roundController.handle_discardResource((DiscardResourceMessage) message);
+                else buildInvalidResponse();
+            case GET_PRODUCTIONCARD:
+                if(validateAction(Action.STD_GETPRODUCTION))
+                    roundController.handle_getProduction((GetProductionCardMessage) message);
+                else buildInvalidResponse();
+            case USE_BASE_PRODUCTION:
+                if(validateAction(Action.STD_USEPRODUCTION))
+                    roundController.handle_useBaseProduction((UseProductionBaseMessage) message);
+                else buildInvalidResponse();
+            case USE_NORMAL_PRODUCTION:
+                if(validateAction(Action.STD_USEPRODUCTION))
+                    roundController.handle_useNormalProduction((UseProductionNormalMessage) message);
+                else buildInvalidResponse();
+            case USE_SPECIAL_PRODUCTION:
+                if(validateAction(Action.STD_USEPRODUCTION))
+                    roundController.handle_useSpecialProduction((UseProductionSpecialMessage) message);
                 else buildInvalidResponse();
         }
     }
