@@ -25,6 +25,7 @@ public class FaithPath {
      public void movePlayer(int player,int n){
         playerPositions[player]+=n;
         checkReport(player);
+        // TODO: notifyObserver()
      }
     private void checkReport(int player){
         int [] rep={5,8,12,16,19,24};

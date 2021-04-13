@@ -8,41 +8,44 @@ import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
+import it.polimi.ingsw.network.messages.ErrorMessage;
+import it.polimi.ingsw.network.messages.MarketReplyMessage;
+import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.messages.ResourceAckMessage;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 
 public class ActionController {
-    public void getMarket(GameBoard gameBoard, HumanPlayer humanPlayer, int rowIndex, int colIndex){
-        // TODO: Check if player in turn
+    public MarketReplyMessage getMarket(GameBoard gameBoard, HumanPlayer humanPlayer, int rowIndex, int colIndex){
         ArrayList<Resources> list;
         if(rowIndex == 3){
             list = gameBoard.pushColumnMarket(colIndex);
         } else {
             list = gameBoard.pushRowMarket(rowIndex);
         }
-        // TODO: Send the list to the player
+        return new MarketReplyMessage(humanPlayer.getName(), list);
     }
 
     public void addFaithPoint(GameBoard gameBoard, HumanPlayer humanPlayer){
         // TODO: add resource discarding (all players except the current one get a faith point). To be handled on message receive.
         int playerPosition = gameBoard.getPlayers().indexOf(humanPlayer);
         gameBoard.movePlayerFaithPath(playerPosition, 1);
-        // TODO: model sends updates
+        // TODO: model sends updates. To be handled in the model.
     }
 
-    public void addResourceToWarehouse(HumanPlayer player, Resources resource, int rowPosition){
+    public Message addResourceToWarehouse(HumanPlayer player, Resources resource, int rowPosition, int receivedResourceIndex){
+        Message reply;
         if(player.getPlayerBoard().addWarehouseResource(resource, rowPosition)){
-            // Andato a buon fine
-            // TODO: Send model updates
+            reply = new ResourceAckMessage(player.getName(), receivedResourceIndex);
         } else {
-            // Errore
+            reply = new ErrorMessage(player.getName(), "Invalid warehouse move!");
         }
+        return reply;
     }
 
     public void shiftWarehouseRows(HumanPlayer player, int startingRow, int newRowPosition){
-        // TODO: Check if player in turn
         if(player.getPlayerBoard().shiftWarehouseRows(startingRow, newRowPosition)){
             // Andato a buon fine
             // TODO: Send model updates

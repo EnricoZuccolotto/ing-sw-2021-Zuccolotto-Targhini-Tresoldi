@@ -96,7 +96,9 @@ public class Warehouse {
         }
         return false;
     }
-    public boolean MoveRow(int start, int end) {    //considero sempre che start<end
+    public boolean MoveRow(int start, int end) {
+        //considero sempre che start<end
+        // TODO: Add notifyObserver()
         Resources temp;
         switch(start){
             case 1:

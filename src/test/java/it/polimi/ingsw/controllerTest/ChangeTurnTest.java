@@ -17,7 +17,7 @@ public class ChangeTurnTest {
         gb.addPlayer(new HumanPlayer("Harry",false));
         gb.addPlayer(new HumanPlayer("Enry",false));
         RoundController g=new RoundController(gb);
-        g.setPlayerinTurn(gb.getPlayers().get(0));
+        g.setPlayerInTurn(gb.getPlayers().get(0));
         gb.getPlayers().get(0).getPlayerBoard().addLeaderCard(new LeaderCard(1,1,null,null,null,null,null));
 
         g.handle_activeLeader();
@@ -33,15 +33,15 @@ public class ChangeTurnTest {
         gb.addPlayer(new HumanPlayer("Harry",false));
         gb.addPlayer(new HumanPlayer("Enry",false));
         RoundController g=new RoundController(gb);
-        g.setPlayerinTurn(gb.getPlayers().get(0));
+        g.setPlayerInTurn(gb.getPlayers().get(0));
         gb.getPlayers().get(0).getPlayerBoard().addLeaderCard(new LeaderCard(1,1,null,null,null,null,null));
         gb.getPlayers().get(0).getPlayerBoard().addLeaderCard(new LeaderCard(2,1,null,null,null,null,null));
         assertEquals(g.getTurnstate(), TurnState.FIRST_LEADER_ACTION);
-        g.handle_getMarket();
+        //g.handle_getMarket();
         HumanPlayer p=g.getPlayerInTurn();
         assertEquals(g.getTurnstate(), TurnState.WAREHOUSE_ACTION);
-        g.handle_sortingWarehouse();
-        g.handle_shiftWarehouse();
+        //g.handle_sortingWarehouse();
+        // g.handle_shiftWarehouse();
         g.handle_activeLeader();
         assertEquals(g.getTurnstate(), TurnState.LAST_LEADER_ACTION);
         g.handle_foldLeader();
@@ -61,7 +61,7 @@ public class ChangeTurnTest {
         gb.addPlayer(new HumanPlayer("Harry", false));
         gb.addPlayer(new HumanPlayer("Enry", false));
         RoundController g = new RoundController(gb);
-        g.setPlayerinTurn(gb.getPlayers().get(0));
+        g.setPlayerInTurn(gb.getPlayers().get(0));
         assertEquals(g.getTurnstate(), TurnState.FIRST_LEADER_ACTION);
         try{
             g.handle_activeLeader();

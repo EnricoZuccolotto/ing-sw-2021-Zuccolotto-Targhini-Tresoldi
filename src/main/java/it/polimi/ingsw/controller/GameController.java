@@ -1,12 +1,8 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.GameBoard;
-import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.player.HumanPlayer;
-import it.polimi.ingsw.model.tools.CardParser;
-
-import java.util.ArrayList;
-import java.util.Random;
+import it.polimi.ingsw.network.messages.*;
 
 
 public class GameController {
@@ -36,19 +32,15 @@ public class GameController {
 
     }
 
-
+    // FIXME: Move this code to handle messages. This code will be moved as soon as the messages are implemented.
     public void OnMessage(Action action){
         switch (action) {
             case LD_FOLD:
                  leaderFoldCheck(action);
             case LD_LEADERACTION:
                 leaderActionCheck(action);
-            case SHIFT_WAREHOUSE:
-                shiftWarehouseCheck(action);
             case STD_GETPRODUCTION:
                 getProductionCheck(action);
-            case SORTING_WAREHOUSE:
-                sortingWarehouseCheck(action);
             case STD_USEPRODUCTION:
                 useProductionCheck(action);
             case STD_GETMARKET:
@@ -61,6 +53,32 @@ public class GameController {
         }
 
     }
+
+    public void onMessage(Message message){
+        switch(message.getMessageType()){
+            case MARKET_REQUEST:
+                if(validateAction(Action.STD_GETMARKET))
+                    roundController.handle_getMarket((MarketRequestMessage) message);
+                else buildInvalidResponse();
+            case SHIFT_WAREHOUSE:
+                if(validateAction(Action.SHIFT_WAREHOUSE))
+                    roundController.handle_shiftWarehouse((ShiftWarehouseMessage) message);
+                else buildInvalidResponse();
+            case SET_RESOURCE:
+                if(validateAction(Action.SORTING_WAREHOUSE))
+                    roundController.handle_sortingWarehouse((SetResourceMessage) message);
+                else buildInvalidResponse();
+            case DISCARD_RESOURCE:
+                if(validateAction(Action.SORTING_WAREHOUSE))
+                    roundController.handle_discardResource((DiscardResourceMessage) message);
+                else buildInvalidResponse();
+        }
+    }
+
+    public void buildInvalidResponse() {
+
+    }
+
     private void leaderFoldCheck(Action action){
         if(TurnState.isPossible(roundController.getTurnstate(),action))
             roundController.handle_foldLeader();
@@ -71,17 +89,7 @@ public class GameController {
             roundController.handle_activeLeader();
         //else return buildInvalidResponse();
     }
-    private void shiftWarehouseCheck(Action action){
-        if(TurnState.isPossible(roundController.getTurnstate(),action))
-            roundController.handle_activeLeader();
-        //else return buildInvalidResponse();
-    }
     private void getProductionCheck(Action action){
-        if(TurnState.isPossible(roundController.getTurnstate(),action))
-            roundController.handle_activeLeader();
-        //else return buildInvalidResponse();
-    }
-    private void sortingWarehouseCheck(Action action){
         if(TurnState.isPossible(roundController.getTurnstate(),action))
             roundController.handle_activeLeader();
         //else return buildInvalidResponse();
@@ -100,6 +108,9 @@ public class GameController {
         if(TurnState.isPossible(roundController.getTurnstate(),action))
             roundController.handle_activeLeader();
         //else return buildInvalidResponse();
+    }
+    private boolean validateAction(Action action){
+        return TurnState.isPossible(roundController.getTurnstate(), action);
     }
     void firstTurn(){
 

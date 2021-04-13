@@ -3,9 +3,11 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.exceptions.playerboard.IllegalActionException;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.cards.LeaderCard;
+import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.tools.CardParser;
+import it.polimi.ingsw.network.messages.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.Random;
 public class RoundController {
 
     private GameBoard gameBoardInstance;
+    private ActionController actionController;
     private int turncount;
     private HumanPlayer playerInTurn;
     private TurnState turnState;
@@ -27,13 +30,60 @@ public class RoundController {
         this.players= gameBoardInstance.getPlayers();
         this.turnState=TurnState.FIRST_LEADER_ACTION;
         this.leaderActions=0;
+        this.actionController = new ActionController();
+        // FIXME: Example, should be the player with the inkwell
+        this.playerInTurn = players.get(0);
     }
-    public void setPlayerinTurn(HumanPlayer player){
+    public void setPlayerInTurn(HumanPlayer player){
         this.playerInTurn=player;
     }
-    public void handle_getMarket(){
-        turnState=nextState(Action.STD_GETMARKET);
+
+    public void handle_getMarket(MarketRequestMessage message){
+        if(playerInTurn.getName().equals(message.getPlayerName())){
+            MarketReplyMessage reply = actionController.getMarket(gameBoardInstance, playerInTurn, message.getRowIndex(), message.getColIndex());
+        } else {
+            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+        }
+        // TODO: Send back the message
+        turnState = nextState(Action.STD_GETMARKET);
     }
+
+    public void handle_shiftWarehouse(ShiftWarehouseMessage message) {
+        if(playerInTurn.getName().equals(message.getPlayerName())){
+            actionController.shiftWarehouseRows(playerInTurn, message.getStartingPos(), message.getNewRowPos());
+        } else {
+            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+        }
+    }
+
+    public void handle_sortingWarehouse(SetResourceMessage message) {
+        if(playerInTurn.getName().equals(message.getPlayerName())){
+            if(message.getResource() == null) {
+                // Messaggio che indica la fine delle risorse, chiama nextState()
+            }
+            if(message.getResource() == Resources.FAITH){
+                actionController.addFaithPoint(gameBoardInstance, playerInTurn);
+            }
+            Message reply = actionController.addResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getReceivedResourceIndex());
+        } else {
+            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+        }
+        // TODO: Send message
+    }
+
+    public void handle_discardResource(DiscardResourceMessage message) {
+        if(playerInTurn.getName().equals(message.getPlayerName())){
+            for(HumanPlayer player : players){
+                // Every player except the current one get a faith point
+                if(player.getName() != playerInTurn.getName()){
+                    actionController.addFaithPoint(gameBoardInstance, player);
+                }
+            }
+        } else {
+            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+        }
+    }
+
     public void handle_useProduction(){
         turnState=nextState(Action.STD_USEPRODUCTION);
     }
@@ -57,12 +107,7 @@ public class RoundController {
 
         turnState=nextState(Action.LD_FOLD);
     }
-    public void handle_sortingWarehouse() {
-       //todo: se non ci sono risorse da mettere a posto invoca il metodo nextState
-    }
-    public void handle_shiftWarehouse() {
 
-    }
     void handle_firstTurn() throws InstantiationException {
         ArrayList<LeaderCard> leaderCards= CardParser.parseLeadCards();
         if(leaderCards==null)
@@ -122,7 +167,6 @@ public class RoundController {
                 }
 
             }
-
             case WAREHOUSE_ACTION:
             case LAST_LEADER_ACTION:
             {
