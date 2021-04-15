@@ -1,6 +1,8 @@
 package it.polimi.ingsw.network.messages;
 
 public enum MessageType {
+    //first action
+    FIRST_ACTION,
     // Market actions
     MARKET_REQUEST,
     MARKET_REPLY,
@@ -13,6 +15,11 @@ public enum MessageType {
     USE_NORMAL_PRODUCTION,
     USE_SPECIAL_PRODUCTION,
     USE_BASE_PRODUCTION,
+    //Leader actionS
+    FOLD_LEADER,
+    ACTIVE_LEADER,
+    //END TURN ACTION
+    END_TURN,
     // Generic messages,
     ERROR,
 }

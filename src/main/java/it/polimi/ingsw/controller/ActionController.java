@@ -29,9 +29,9 @@ public class ActionController {
         return new MarketReplyMessage(humanPlayer.getName(), list);
     }
 
-    public void addFaithPoint(GameBoard gameBoard, HumanPlayer humanPlayer){
+    public void addFaithPoint(GameBoard gameBoard, HumanPlayer humanPlayer,int n){
         int playerPosition = gameBoard.getPlayers().indexOf(humanPlayer);
-        gameBoard.movePlayerFaithPath(playerPosition, 1);
+        gameBoard.movePlayerFaithPath(playerPosition, n);
         // TODO: model sends updates. To be handled in the model.
     }
 
@@ -59,28 +59,28 @@ public class ActionController {
             if(output.ordinal()>4)
                 throw new IllegalResourceException();
             int cont=0;
+
             for(int i=0;i<4;i++)
                 cont+=resSpeWar[i]+resStr[i]+resWar[i];
             if(cont!=n)
                 throw new IllegalResourceException();
 
 
-//controllo se le risorse ho abbastanza risorse nei magazzini rispetto alle divisioni mandate
+        //controllo se le risorse ho abbastanza risorse nei magazzini rispetto alle divisioni mandate
         isResourcesAvailable(player, resWar, resStr, resSpeWar);
 
 
         //pago le varie risorse
-        player.getPlayerBoard().payResourcesStrongbox(resStr);
-        player.getPlayerBoard().payResourcesSpecialWarehouse(resSpeWar);
-        player.getPlayerBoard().payResourcesWarehouse(resWar);
+        payResources(player, resWar, resStr, resSpeWar);
 
-        //aggiungo la risorsa d'output
+        //aggiungo le risorse d'output
         player.getPlayerBoard().addStrongboxResource(output,1);
 
 
     }
     public void useNormalProduction(HumanPlayer player,int index,int [] resWar,int [] resStr,int [] resSpeWar){
         //check se le risorse mandate dal player sono uguali al costo della carta
+
         int [] cost=player.getPlayerBoard().getProductionCost(index);
         for(int i=0;i<4;i++)
             if(cost[i]!=(resWar[i]+resSpeWar[i]+resStr[i]))
@@ -90,14 +90,13 @@ public class ActionController {
         isResourcesAvailable(player, resWar, resStr, resSpeWar);
 
         //pago le varie risorse
-        player.getPlayerBoard().payResourcesStrongbox(resStr);
-        player.getPlayerBoard().payResourcesSpecialWarehouse(resSpeWar);
-        player.getPlayerBoard().payResourcesWarehouse(resWar);
+        payResources(player, resWar, resStr, resSpeWar);
 
         //aggiungo le risorse
         int [] result=player.getPlayerBoard().getProductionResult(index);
         for(int i=0;i<4;i++)
             player.getPlayerBoard().addStrongboxResource(Resources.transform(i),result[i]);
+
 
     }
     public void useSpecialProduction(HumanPlayer player,Resources output ,int index,int [] resWar,int [] resStr,int [] resSpeWar){
@@ -107,10 +106,11 @@ public class ActionController {
         for(int i=0;i<4;i++)
             if(cost.get(i)!=resSpeWar[i]+resStr[i]+resWar[i])
                 throw new IllegalResourceException();
-            useBaseProduction(player, 2, output, resWar, resStr, resSpeWar);
+
+            useBaseProduction(player, 1, output, resWar, resStr, resSpeWar);
     }
 
-    public void getProduction(int color,int level,GameBoard gameBoard,Optional<Integer> index,HumanPlayer player,int [] resWar,int [] resStr,int [] resSpeWar){
+    public void getProduction(int color,int level,GameBoard gameBoard,int index,HumanPlayer player,int [] resWar,int [] resStr,int [] resSpeWar){
         DevelopmentCard card=gameBoard.getDeck(color,level).getFirstCard();
 
         //check se le risorse mandate dal player sono uguali al costo della carta
@@ -122,15 +122,13 @@ public class ActionController {
         isResourcesAvailable(player, resWar, resStr, resSpeWar);
 
         //provo ad aggiungere la carta nel posto che vuole lui o se non specificato nell'unico posto libero
-        if(index.isPresent())
-            player.getPlayerBoard().addProductionCard(card,index.get());
-        else
+        if(index<0)
             player.getPlayerBoard().addProductionCard(card);
+        else
+        player.getPlayerBoard().addProductionCard(card,index);
 
         //pago le varie risorse
-        player.getPlayerBoard().payResourcesStrongbox(resStr);
-        player.getPlayerBoard().payResourcesSpecialWarehouse(resSpeWar);
-        player.getPlayerBoard().payResourcesWarehouse(resWar);
+        payResources(player, resWar, resStr, resSpeWar);
 
         // tolgo la carta
         gameBoard.getDeck(color,level).popFirstCard();
@@ -159,8 +157,8 @@ public class ActionController {
                     player.setPlayerBoard(new DecoratedProductionPlayerBoard(player.getPlayerBoard()));
                 }
                 // Add the corresponding effect
-                for(Integer i : leaderCard.getEffect1()){
-                    if(i != 0){
+                for(int i=0;i<4;i++){
+                    if(leaderCard.getEffect1().get(i)!=0){
                         player.getPlayerBoard().addProduction(Resources.transform(i));
                     }
                 }
@@ -170,9 +168,9 @@ public class ActionController {
                     player.setPlayerBoard(new DecoratedCostPlayerBoard(player.getPlayerBoard()));
                 }
                 // Add the corresponding effect
-                for(Integer i : leaderCard.getEffect1()){
-                    if(i != 0){
-                        player.getPlayerBoard().addDiscount(Resources.transform(i), i);
+                for(int i=0;i<4;i++){
+                    if(leaderCard.getEffect1().get(i)!=0){
+                        player.getPlayerBoard().addDiscount(Resources.transform(i),leaderCard.getEffect1().get(i));
                     }
                 }
             case CHANGE:
@@ -181,8 +179,8 @@ public class ActionController {
                     player.setPlayerBoard(new DecoratedChangePlayerBoard(player.getPlayerBoard()));
                 }
                 // Add the corresponding effect
-                for(Integer i : leaderCard.getEffect1()){
-                    if(i != 0){
+                for(int i=0;i<4;i++){
+                    if(leaderCard.getEffect1().get(i)!=0){
                         player.getPlayerBoard().addSubstitute(Resources.transform(i));
                     }
                 }
@@ -202,8 +200,25 @@ public class ActionController {
         }
     }
 
-    public void foldLeader(LeaderCard c, HumanPlayer player, int playerNumber){
+    public void firstAction(int index1,int index2, HumanPlayer player){
         PlayerBoard pb=player.getPlayerBoard();
+        if (index1==index2)
+            throw new IllegalActionException();
+
+        if(index1>index2)
+        {
+            int n;
+            n=index1;
+            index1=index2;
+            index2=n;
+        }
+        foldLeader(index2,player);
+        foldLeader(index1,player);
+
+    }
+    public void foldLeader(int index, HumanPlayer player){
+        PlayerBoard pb=player.getPlayerBoard();
+        LeaderCard c= pb.getLeaderCard(index);
         if(!c.getUncovered()) {
             pb.removeLeaderCard(c);
         }
@@ -214,6 +229,10 @@ public void isResourcesAvailable(HumanPlayer player,int [] resWar,int [] resStr,
          if(!player.getPlayerBoard().checkResourcesSpecialWarehouse(resSpeWar)||!player.getPlayerBoard().checkResourcesStrongbox(resStr)||!player.getPlayerBoard().checkResourcesWarehouse(resWar))
         throw new InsufficientResourcesException();
 }
-
+    public void payResources(HumanPlayer player,int [] resWar,int [] resStr,int [] resSpeWar){
+        player.getPlayerBoard().payResourcesStrongbox(resStr);
+        player.getPlayerBoard().payResourcesSpecialWarehouse(resSpeWar);
+        player.getPlayerBoard().payResourcesWarehouse(resWar);
+    }
 
 }

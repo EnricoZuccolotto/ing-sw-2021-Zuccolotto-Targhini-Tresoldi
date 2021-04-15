@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 public enum Action {
+    FIRST_ACTION,
     STD_GETMARKET,
     STD_USEPRODUCTION,
     STD_GETPRODUCTION,

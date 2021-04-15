@@ -15,7 +15,7 @@ public enum TurnState {
        switch (turnState){
            case FIRST_TURN:
            {
-               possibleActions.add( Action.LD_FOLD);
+               possibleActions.add( Action.FIRST_ACTION);
            }
            case FIRST_LEADER_ACTION: {
                possibleActions.add( Action.LD_LEADERACTION);

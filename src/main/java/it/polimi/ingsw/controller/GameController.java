@@ -28,24 +28,12 @@ public class GameController {
     }
     public void StartGame(){
       gameBoardInstance.init(gameBoardInstance);
-      firstTurn();
+      roundController.handle_firstTurn();
 
     }
 
     // FIXME: Move this code to handle messages. This code will be moved as soon as the messages are implemented.
-    public void OnMessage(Action action){
-        switch (action) {
-            case LD_FOLD:
-                 leaderFoldCheck(action);
 
-            case END_TURN:
-                endTurnCheck(action);
-
-            default:    // this must never be reached in a normal Game!
-                System.out.println("GAME STATE ERROR FOR THIS MESSAGE");
-        }
-
-    }
 
     public void onMessage(Message message){
         switch(message.getMessageType()){
@@ -81,6 +69,18 @@ public class GameController {
                 if(validateAction(Action.STD_USEPRODUCTION))
                     roundController.handle_useSpecialProduction((UseProductionSpecialMessage) message);
                 else buildInvalidResponse();
+            case END_TURN:
+                if(validateAction(Action.END_TURN))
+                    roundController.handle_endTurn();
+                else buildInvalidResponse();
+            case FOLD_LEADER:
+                if(validateAction(Action.LD_FOLD))
+                    roundController.handle_foldLeader((FoldLeaderMessage) message);
+                else buildInvalidResponse();
+            case FIRST_ACTION:
+                if(validateAction(Action.FIRST_ACTION))
+                    roundController.handle_firstAction((FirstActionMessage) message);
+                else buildInvalidResponse();
         }
     }
 
@@ -88,38 +88,9 @@ public class GameController {
 
     }
 
-    private void leaderFoldCheck(Action action){
-        if(TurnState.isPossible(roundController.getTurnstate(),action))
-            roundController.handle_foldLeader();
-        //else return buildInvalidResponse();
-    }
-    private void leaderActionCheck(Action action){
-        if(TurnState.isPossible(roundController.getTurnstate(),action))
-            roundController.handle_activeLeader();
-        //else return buildInvalidResponse();
-    }
-    private void getProductionCheck(Action action){
-        if(TurnState.isPossible(roundController.getTurnstate(),action))
-            roundController.handle_activeLeader();
-        //else return buildInvalidResponse();
-    }
-    private void useProductionCheck(Action action){
-        if(TurnState.isPossible(roundController.getTurnstate(),action))
-            roundController.handle_activeLeader();
-        //else return buildInvalidResponse();
-    }
-    private void getMarketCheck(Action action){
-        if(TurnState.isPossible(roundController.getTurnstate(),action))
-            roundController.handle_activeLeader();
-        //else return buildInvalidResponse();
-    }
-    private void endTurnCheck(Action action){
-        if(TurnState.isPossible(roundController.getTurnstate(),action))
-            roundController.handle_activeLeader();
-        //else return buildInvalidResponse();
-    }
+
     private boolean validateAction(Action action){
-        return TurnState.isPossible(roundController.getTurnstate(), action);
+        return TurnState.isPossible(roundController.getTurnState(), action);
     }
     void firstTurn(){
 

@@ -31,6 +31,10 @@ public class SimplePlayerBoard implements PlayerBoard {
 
     }
     @Override
+    public int getProductionNumber() {
+        return productionSpaces.size()+1;
+    }
+    @Override
     public int getLeaderCardsNumber() {
         int cont=0;
         for(LeaderCard c:leaderCards)

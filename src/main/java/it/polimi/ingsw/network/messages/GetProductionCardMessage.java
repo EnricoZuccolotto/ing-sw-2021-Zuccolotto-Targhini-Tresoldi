@@ -9,9 +9,9 @@ import java.util.Optional;
 public class GetProductionCardMessage extends ProductionMessage{
     private final int  color;
     private final int  level;
-    private  final Optional<Integer> index;
+    private  final int index;
 
-    public GetProductionCardMessage(String playerName, MessageType messageType, int[] resSpeWar, int[] resWar, int[] resStr, int color, int level, Optional<Integer> index) {
+    public GetProductionCardMessage(String playerName, MessageType messageType, int[] resSpeWar, int[] resWar, int[] resStr, int color, int level, int index) {
         super(playerName, messageType, resSpeWar, resWar, resStr);
         this.color = color;
         this.level = level;
@@ -26,7 +26,7 @@ public class GetProductionCardMessage extends ProductionMessage{
         return level;
     }
 
-    public Optional<Integer> getIndex() {
+    public int getIndex() {
         return index;
     }
 

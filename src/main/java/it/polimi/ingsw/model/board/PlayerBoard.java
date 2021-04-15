@@ -31,6 +31,7 @@ public interface PlayerBoard {
     LeaderCard getLeaderCard(int index );
     int[] getProductionCost(int index);
     int[] getProductionResult(int index);
+    int getProductionNumber();
 
     // Decorated warehouse methods
     void addWarehouseSpace(Resources resource, int maxQuantity) throws IllegalDecoratorException;

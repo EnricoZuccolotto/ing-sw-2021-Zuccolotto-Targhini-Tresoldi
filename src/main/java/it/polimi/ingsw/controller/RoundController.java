@@ -5,46 +5,42 @@ import it.polimi.ingsw.exceptions.playerboard.IllegalActionException;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.player.HumanPlayer;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.player.Warehouse;
 import it.polimi.ingsw.model.tools.CardParser;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.network.messages.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Random;
+
 
 public class RoundController {
 
-    private GameBoard gameBoardInstance;
-    private int turncount;
+    private final GameBoard gameBoardInstance;
+    private int turnCount;
     private HumanPlayer playerInTurn;
     private TurnState turnState;
-    private ActionController actionController;
-    private ArrayList<HumanPlayer> players;
-    private int leaderActions;
+    private final ActionController actionController;
+    private final ArrayList<HumanPlayer> players;
     private ArrayList<Integer> productions;
 
 
     public RoundController(GameBoard gameBoardInstance) {
-        this.turncount=0;
+        this.turnCount =0;
         this.gameBoardInstance = gameBoardInstance;
         this.players= gameBoardInstance.getPlayers();
-        this.turnState=TurnState.FIRST_LEADER_ACTION;
-        this.leaderActions=0;
+        this.turnState=TurnState.FIRST_TURN;
         this.productions=new ArrayList<>(4);
         this.actionController = new ActionController();
         // FIXME: Example, should be the player with the inkwell
         this.playerInTurn = players.get(0);
     }
-    public void setPlayerinTurn(HumanPlayer player){
+    public void setPlayerInTurn(HumanPlayer player){
         this.playerInTurn=player;
     }
     public void handle_getMarket(MarketRequestMessage message){
 
+
             if(playerInTurn.getName().equals(message.getPlayerName())){
                 MarketReplyMessage reply = actionController.getMarket(gameBoardInstance, playerInTurn, message.getRowIndex(), message.getColIndex());
-                turnState=nextState(Action.STD_GETMARKET);
+                nextState(Action.STD_GETMARKET);
             } else {
                 ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
             }
@@ -60,10 +56,10 @@ public class RoundController {
         if(playerInTurn.getName().equals(message.getPlayerName())){
             if(message.getResource() == null) {
                 // Messaggio che indica la fine delle risorse,
-                turnState=nextState(Action.SORTING_WAREHOUSE);
+              nextState(Action.SORTING_WAREHOUSE);
             }
             if(message.getResource() == Resources.FAITH){
-                actionController.addFaithPoint(gameBoardInstance, playerInTurn);
+                actionController.addFaithPoint(gameBoardInstance, playerInTurn,1);
             }
             Message reply = actionController.addResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getReceivedResourceIndex());
         } else {
@@ -76,7 +72,7 @@ public class RoundController {
             for(HumanPlayer player : players){
                 // Every player except the current one get a faith point
                 if(!player.getName().equals(playerInTurn.getName())){
-                    actionController.addFaithPoint(gameBoardInstance, player);
+                    actionController.addFaithPoint(gameBoardInstance, player,1);
                 }
             }
         } else {
@@ -85,15 +81,15 @@ public class RoundController {
     }
     public void handle_useBaseProduction(UseProductionBaseMessage message){
         if(playerInTurn.getName().equals(message.getPlayerName())){
-            if(productions.contains(4))
+            if(productions.contains(3))
                 throw new CardAlreadyUsedException();
             else
             actionController.useBaseProduction(playerInTurn,2,message.getOutput(), message.getResWar(), message.getResStr(), message.getResSpeWar());
         } else {
             ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
         }
-        productions.add(4);
-        turnState=nextState(Action.STD_USEPRODUCTION);
+        productions.add(3);
+       nextState(Action.STD_USEPRODUCTION);
     }
     public void handle_useNormalProduction(UseProductionNormalMessage message){
         if(playerInTurn.getName().equals(message.getPlayerName())){
@@ -105,20 +101,22 @@ public class RoundController {
             ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
         }
         productions.add(message.getIndex());
-        turnState=nextState(Action.STD_USEPRODUCTION);
+        int faith=playerInTurn.getPlayerBoard().getProductionCost(message.getIndex())[Resources.FAITH.ordinal()];
+        actionController.addFaithPoint(gameBoardInstance,playerInTurn,faith);
+       nextState(Action.STD_USEPRODUCTION);
     }
     public void handle_useSpecialProduction(UseProductionSpecialMessage message){
         if(playerInTurn.getName().equals(message.getPlayerName())){
-            if(productions.contains(message.getIndex()))
+            if(productions.contains(message.getIndex()+4))
                 throw new CardAlreadyUsedException();
             else
                 actionController.useSpecialProduction(playerInTurn,message.getOutput(),message.getIndex(), message.getResWar(), message.getResStr(), message.getResSpeWar());
         } else {
             ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
         }
-        productions.add(message.getIndex());
-        actionController.addFaithPoint(gameBoardInstance,playerInTurn);
-        turnState=nextState(Action.STD_USEPRODUCTION);
+        productions.add(message.getIndex()+4);
+        actionController.addFaithPoint(gameBoardInstance,playerInTurn,1);
+        nextState(Action.STD_USEPRODUCTION);
     }
     public void handle_getProduction(GetProductionCardMessage message){
         if(playerInTurn.getName().equals(message.getPlayerName())){
@@ -126,35 +124,43 @@ public class RoundController {
         } else {
             ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
         }
-        turnState=nextState(Action.STD_GETPRODUCTION);
+      nextState(Action.STD_GETPRODUCTION);
     }
     public void handle_activeLeader(){
-        if (leaderActions == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
+        if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
             turnState=TurnState.NORMAL_ACTION;
             throw new IllegalActionException();
         }
-        leaderActions++;
-        turnState=nextState(Action.LD_LEADERACTION);
+
+       nextState(Action.LD_LEADERACTION);
     }
-    public void handle_foldLeader(){
-        if (leaderActions == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
+    public void handle_foldLeader(FoldLeaderMessage message){
+        if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
             turnState=TurnState.NORMAL_ACTION;
             throw new IllegalActionException();
         }
-        leaderActions++;
+        if(playerInTurn.getName().equals(message.getPlayerName())){
+            actionController.foldLeader(message.getIndex(), playerInTurn);
+        } else {
+            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+        }
+        actionController.addFaithPoint(gameBoardInstance,playerInTurn,1);
+        nextState(Action.LD_FOLD);
+    }
+    public void handle_firstAction(FirstActionMessage message){
+        if(playerInTurn.getName().equals(message.getPlayerName())){
+            actionController.firstAction(message.getIndex1(),message.getIndex2(), playerInTurn);
+        } else {
+            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+        }
+        nextTurn();
 
-        turnState=nextState(Action.LD_FOLD);
     }
-    public void handle_sortingWarehouse() {
-       //todo: se non ci sono risorse da mettere a posto invoca il metodo nextState
-    }
-    public void handle_shiftWarehouse() {
 
-    }
-    void handle_firstTurn() throws InstantiationException {
+    public void handle_firstTurn()  {
         ArrayList<LeaderCard> leaderCards= CardParser.parseLeadCards();
         if(leaderCards==null)
-            throw new InstantiationException("Failed to load leader cards");
+            throw new IllegalActionException();
         else
         for(HumanPlayer player:players) {
             for (int i=0;i<4;i++)
@@ -164,16 +170,19 @@ public class RoundController {
         }}
     }
     public void handle_endTurn() {
-        turnState=TurnState.FIRST_LEADER_ACTION;
         nextTurn();
     }
     void nextTurn() {
-        turncount++;
-        leaderActions=0;
-        playerInTurn = players.get(turncount % players.size());
+        int playersNumber=players.size();
+        turnCount++;
+        productions.clear();
+        if(playersNumber==1)
+            gameBoardInstance.getBot().doAction();
+        nextState(Action.END_TURN);
+        playerInTurn = players.get(turnCount % players.size());
     }
 
-    public TurnState getTurnstate() {
+    public TurnState getTurnState() {
         return turnState;
     }
 
@@ -181,48 +190,65 @@ public class RoundController {
         return playerInTurn;
     }
 
-    public TurnState nextState(Action action) {
+    public void nextState(Action action) {
+
         switch (turnState) {
+            case FIRST_TURN:
+            {
+                if (players.size() == turnCount)
+                        turnState = TurnState.FIRST_LEADER_ACTION;
+
+                break;
+            }
             case FIRST_LEADER_ACTION:
             {
-                if(action.equals(Action.STD_GETMARKET))
-                    return TurnState.WAREHOUSE_ACTION;
-                else if(action.equals(Action.STD_GETPRODUCTION)||action.equals(Action.STD_USEPRODUCTION))
-                {
-                    if (leaderActions == playerInTurn.getPlayerBoard().getLeaderCardsNumber())
-                        nextTurn();
-                    return TurnState.FIRST_LEADER_ACTION;
+                if(action.equals(Action.LD_LEADERACTION)||action.equals(Action.LD_FOLD)){
+                if(0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
+                    turnState = TurnState.NORMAL_ACTION;
+                    break;
                 }
-                else if(leaderActions == playerInTurn.getPlayerBoard().getLeaderCardsNumber())
-                    return TurnState.NORMAL_ACTION;
+                break;
+                }
+                turnState = TurnState.NORMAL_ACTION;
             }
             case NORMAL_ACTION:
             {
-                if(action.equals(Action.SORTING_WAREHOUSE))
-                    return TurnState.WAREHOUSE_ACTION;
+                if(action.equals(Action.STD_USEPRODUCTION))
+                {
+                    turnState = TurnState.PRODUCTION_ACTIONS;
+                }
+                else if(action.equals(Action.STD_GETMARKET)) {
+                    turnState = TurnState.WAREHOUSE_ACTION;
+                    break;
+                }
                 else {
-                    if (leaderActions == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
-                        nextTurn();
-                        return TurnState.FIRST_LEADER_ACTION;
+                        turnState = TurnState.LAST_LEADER_ACTION;
+                    }
+                }
 
-                    } else
-                        return TurnState.LAST_LEADER_ACTION;
+            case WAREHOUSE_ACTION:
+            case PRODUCTION_ACTIONS: {
+            if(action.equals(Action.STD_USEPRODUCTION)){
+                if(productions.size()==playerInTurn.getPlayerBoard().getProductionNumber())
+                    turnState=TurnState.LAST_LEADER_ACTION;
+            }
+            else turnState=TurnState.LAST_LEADER_ACTION;
+            }
+            case LAST_LEADER_ACTION:
+            {
+                if(action.equals(Action.END_TURN)) {
+                    turnState = TurnState.FIRST_LEADER_ACTION;
+                    break;
+                }
+                if (0== playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
+                    nextTurn();
+                    turnState= TurnState.FIRST_LEADER_ACTION;
+                }
+                break;
                 }
 
             }
-
-            case WAREHOUSE_ACTION:
-            case LAST_LEADER_ACTION:
-            {
-                if (leaderActions == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
-                    nextTurn();
-                    return TurnState.FIRST_LEADER_ACTION;
-
-                } else
-                    return TurnState.LAST_LEADER_ACTION;
             }
-            }
-          return TurnState.FIRST_LEADER_ACTION;
         }
-    }
+
 

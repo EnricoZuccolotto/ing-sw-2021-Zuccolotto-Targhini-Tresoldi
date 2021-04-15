@@ -40,7 +40,7 @@ public class ActionGetProductionTest {
         player.getPlayerBoard().addExtraResources(Resources.SHIELD,3);
 
 
-        actionController.getProduction(0, 1, gameBoard, Optional.empty(), player,new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3});
+        actionController.getProduction(0, 1, gameBoard,-1, player,new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3});
 
         assertEquals(0, gameBoard.getDeck(0, 1).DeckLength());
         assertEquals(player.getPlayerBoard().getExtraResources().get(3),(Integer)0);
@@ -59,14 +59,18 @@ public class ActionGetProductionTest {
         player.getPlayerBoard().addStrongboxResource(Resources.SHIELD,3);
         player.getPlayerBoard().addStrongboxResource(Resources.STONE,2);
         try {
-            actionController.getProduction(0, 1, gameBoard, Optional.empty(), player,new int[]{0,0,0,0}, new int[]{0, 1, 0, 3}, new int[]{0, 0, 0, 0});
+            actionController.getProduction(0, 1, gameBoard, -1, player,new int[]{0,0,0,0}, new int[]{0, 1, 0, 3}, new int[]{0, 0, 0, 0});
             fail();
         }catch(InsufficientResourcesException e){
             assertTrue(true);
         }
-
         assertEquals(1, gameBoard.getDeck(0, 1).DeckLength());
-    }
+
+        actionController.getProduction(0, 1, gameBoard, -1, player,new int[]{0,0,0,0}, new int[]{0, 1, 2, 3}, new int[]{0, 0, 0, 0});
+        gameBoard.getDeck(0,1).addCard(new DevelopmentCard(4,2,new int[]{0,0,0,0},null,null, Colors.BLUE,2));
+        actionController.getProduction(0, 1, gameBoard, -1, player,new int[]{0,0,0,0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0});
+        assertEquals(0, gameBoard.getDeck(0, 1).DeckLength());
+        }
     @Test
     public void WrongNumberResources(){
         ActionController actionController=new ActionController();
@@ -89,13 +93,15 @@ public class ActionGetProductionTest {
 
         player.getPlayerBoard().addExtraResources(Resources.SHIELD,3);
     try {
-    actionController.getProduction(0, 1, gameBoard, Optional.empty(), player,new int[]{0,0,0,0}, new int[]{0, 1, 2, 3}, new int[]{0, 0, 0, 0});
+    actionController.getProduction(0, 1, gameBoard, -1, player,new int[]{0,0,2,0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3});
     fail();
     }catch(InsufficientResourcesException e){
         assertTrue(true);
     }
-
         assertEquals(1, gameBoard.getDeck(0, 1).DeckLength());
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE,2);
+        actionController.getProduction(0, 1, gameBoard, -1, player,new int[]{0,0,2,0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3});
+        assertEquals(0, gameBoard.getDeck(0, 1).DeckLength());
     }
 
 
@@ -109,11 +115,11 @@ public class ActionGetProductionTest {
         for (int i=0;i<4;i++)
             gameBoard.getDeck(0,1).popFirstCard();
 
-        gameBoard.getDeck(0,1).addCard(new DevelopmentCard(4,2,new int[]{0,0,0,0},null,null, Colors.BLUE,0));
+        gameBoard.getDeck(0,1).addCard(new DevelopmentCard(4,2,new int[]{0,0,0,0},null,null, Colors.BLUE,1));
 
         gameBoard.getDeck(0,1).addCard(new DevelopmentCard(4,2,new int[]{0,1,2,3},null,null, Colors.BLUE,3));
 
-        actionController.getProduction(0, 1, gameBoard, Optional.empty(), player,new int[]{0,0,0,0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0});
+        actionController.getProduction(0, 1, gameBoard, -1, player,new int[]{0,0,0,0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0});
         player.getPlayerBoard().addStrongboxResource(Resources.COIN,1);
         player.getPlayerBoard().addWarehouseResource(Resources.STONE,2);
         player.getPlayerBoard().addWarehouseResource(Resources.STONE,2);
@@ -127,11 +133,12 @@ public class ActionGetProductionTest {
 
         player.getPlayerBoard().addExtraResources(Resources.SHIELD,3);
         try {
-            actionController.getProduction(0, 1, gameBoard, Optional.of(0), player,new int[]{0,0,2,0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3});
+            actionController.getProduction(0, 1, gameBoard, -1, player,new int[]{0,0,2,0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3});
             fail();
         }catch(InsufficientLevelException e){
             assertTrue(true);
         }
+
 
         assertEquals(1, gameBoard.getDeck(0, 1).DeckLength());
     }

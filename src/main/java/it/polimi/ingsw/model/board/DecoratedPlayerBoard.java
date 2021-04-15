@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.board;
 
-import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
@@ -15,6 +14,8 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     }
     @Override
     public int getLeaderCardsNumber(){return subBoard.getLeaderCardsNumber();}
+    @Override
+    public int getProductionNumber(){return subBoard.getProductionNumber();}
     @Override
     public boolean getInkwell() {
         return subBoard.getInkwell();

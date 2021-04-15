@@ -11,7 +11,7 @@ public class DecoratedProductionPlayerBoard extends DecoratedPlayerBoard {
 
     public DecoratedProductionPlayerBoard(PlayerBoard subBoard){
         super(subBoard);
-        productionInputs = new ArrayList<Boolean>(4);
+        productionInputs = new ArrayList<>(4);
         productionInputs.add(false);
         productionInputs.add(false);
         productionInputs.add(false);
@@ -26,12 +26,19 @@ public class DecoratedProductionPlayerBoard extends DecoratedPlayerBoard {
             throw new IllegalResourceException();
         }
     }
+    @Override
+    public int getProductionNumber(){
+        int cont=0;
+        for(int i=0;i<4;i++)
+            if(productionInputs.get(i))
+                cont+=1;
+        return cont+subBoard.getProductionNumber();}
 
     @Override
     public ArrayList<Resources> getProductions(Resources resource) {
         try{
             if(productionInputs.get(resource.ordinal())){
-                return new ArrayList<Resources>(Arrays.asList(Resources.WHATEVER, Resources.FAITH));
+                return new ArrayList<>(Arrays.asList(Resources.WHATEVER, Resources.FAITH));
             } else {
                 return null;
             }
