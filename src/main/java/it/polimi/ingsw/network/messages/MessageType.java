@@ -22,4 +22,5 @@ public enum MessageType {
     END_TURN,
     // Generic messages,
     ERROR,
+    PING,
 }
