@@ -291,7 +291,7 @@ private void checkWinnerNumCards() {
     @Override
     public boolean checkColors(int [] colors){
         int tmp;
-        for(Colors c:Colors.values()){
+        for(Colors c: Colors.values()){
             tmp=0;
             if(colors[c.ordinal()]!=0){
                 for(SpaceProd sp:productionSpaces)

@@ -7,24 +7,73 @@ import it.polimi.ingsw.model.enums.Resources;
 
 import java.util.ArrayList;
 
+/**
+ * This interface represents a player board.
+ */
 public interface PlayerBoard {
 
     // General methods
     boolean getInkwell();
+
+    /**
+     * Adds a leader card to the player board
+     * @param leaderCard Card to be added
+     */
     void addLeaderCard(LeaderCard leaderCard);
+
+    /**
+     * Get victory points for the end of the game.
+     * @return Victory points for current user.
+     */
     int getVictoryPoints();
-    boolean addWarehouseResource(Resources r, int row);
+
+    /**
+     * Adds a resource to the warehouse
+     * @param resource Resource type to add
+     * @param row Warehouse position [1,2,3]
+     * @return Success or failure of the addition.
+     */
+    boolean addWarehouseResource(Resources resource, int row);
+
+    /**
+     * Moves rows in the warehouse
+     * @param startingRow Row to move [1,2,3]
+     * @param newRowPosition Desired row position after shift.
+     * @return Success or failure
+     */
     boolean shiftWarehouseRows(int startingRow, int newRowPosition);
-    boolean addProductionCard(DevelopmentCard c);
-    void removeLeaderCard(LeaderCard c);
+
+    /**
+     * Adds production card in the only possible place
+     * @see PlayerBoard#addProductionCard(DevelopmentCard, int)
+     */
+    boolean addProductionCard(DevelopmentCard card);
+
+    /**
+     * Adds a production card to the board
+     * @param card Card to be added
+     * @param index Position
+     * @return Success or failure
+     */
+    boolean addProductionCard(DevelopmentCard card, int index);
+
+    /**
+     * Discard a leader card.
+     * @param card Card to be discarded
+     */
+    void removeLeaderCard(LeaderCard card);
+
+    /**
+     * Gets covered leader card number
+     * @return Covered leader card number.
+     */
     int getLeaderCardsNumber();
-    boolean checkColors(int [] colors);
+    boolean checkColors(int[] colors);
     boolean checkResources(int [] resources);
     boolean checkResourcesStrongbox(int [] r);
     boolean checkResourcesWarehouse(int [] r);
     boolean payResourcesStrongbox(int [] r);
     boolean payResourcesWarehouse(int [] r);
-    boolean addProductionCard(DevelopmentCard c,int index);
     boolean payResourcesSpecialWarehouse(int [] r);
     boolean checkResourcesSpecialWarehouse(int [] r);
     void addStrongboxResource(Resources r, int quantities);

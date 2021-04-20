@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model.board;
 
-
-import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
 import it.polimi.ingsw.exceptions.playerboard.IllegalResourceException;
 import it.polimi.ingsw.model.enums.Resources;
 

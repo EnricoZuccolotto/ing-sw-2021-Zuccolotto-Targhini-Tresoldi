@@ -5,11 +5,12 @@ import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.BotPlayer;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.model.tools.CardParser;
+import it.polimi.ingsw.observer.Observable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
-public class GameBoard {
+public class GameBoard extends Observable {
     private Market market;
     private  Deck[][] decks;
     private ArrayList<HumanPlayer> players;

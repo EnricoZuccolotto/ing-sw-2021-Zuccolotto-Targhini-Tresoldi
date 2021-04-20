@@ -1,5 +1,8 @@
 package it.polimi.ingsw.controller;
 
+/**
+ * This enum contains all possible game actions.
+ */
 public enum Action {
     FIRST_ACTION,
     STD_GETMARKET,

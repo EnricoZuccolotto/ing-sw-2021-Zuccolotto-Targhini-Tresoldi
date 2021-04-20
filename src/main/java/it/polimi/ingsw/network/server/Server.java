@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.view.NetworkLayerView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,12 @@ public class Server {
     }
 
     public void onLogin(String nickname, SocketConnection connection){
-        // TODO: Remember to synchronize every access to clients.
+        NetworkLayerView view = new NetworkLayerView(connection);
+        // TODO: Check if game started
+        gameController.addPlayer(nickname, view);
+        synchronized (lock){
+            clients.put(nickname, connection);
+        }
     }
 
     public void onMessage(Message message){
@@ -29,6 +35,6 @@ public class Server {
     }
 
     public void onDisconnect(SocketConnection connection){
-
+        // TODO: Handle disconnection
     }
 }

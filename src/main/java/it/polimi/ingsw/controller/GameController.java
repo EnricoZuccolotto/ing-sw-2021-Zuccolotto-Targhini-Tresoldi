@@ -3,6 +3,12 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.view.NetworkLayerView;
+import it.polimi.ingsw.view.View;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class GameController {
@@ -11,6 +17,7 @@ public class GameController {
     private GameBoard gameBoardInstance;
     private LobbyController lobby;
     private RoundController roundController;
+    private Map<String, View> viewMap;
 
     public GameController() {
         //this.server = server;
@@ -18,13 +25,20 @@ public class GameController {
         this.lobby = new LobbyController();
         this.gameBoardInstance = new GameBoard();
         this.roundController = new RoundController(gameBoardInstance);
+        viewMap = Collections.synchronizedMap(new HashMap<>());
     }
     public GameBoard getInstance(){
         return gameBoardInstance;
     }
     public void doAction(){}
-    public void addPlayer(String name){
+    public void addPlayer(String name, View view){
+        // TODO: Handle local single player
+        addView(name, (NetworkLayerView) view);
         gameBoardInstance.addPlayer(new HumanPlayer(name,false));
+    }
+    public void addView(String name, NetworkLayerView view){
+        viewMap.put(name, view);
+        gameBoardInstance.addObserver(view);
     }
     public void StartGame(){
       gameBoardInstance.init(gameBoardInstance);
@@ -36,6 +50,7 @@ public class GameController {
 
 
     public void onMessage(Message message){
+        // TODO: Special warehouse actions
         switch(message.getMessageType()){
             case MARKET_REQUEST:
                 if(validateAction(Action.STD_GETMARKET))
@@ -92,9 +107,11 @@ public class GameController {
     private boolean validateAction(Action action){
         return TurnState.isPossible(roundController.getTurnState(), action);
     }
+
     void firstTurn(){
 
     }
+
     public void endGame(){}
     public GameState getGameState(){
         return gamestate;

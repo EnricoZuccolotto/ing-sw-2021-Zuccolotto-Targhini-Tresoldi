@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.cards;
 import java.util.ArrayList;
 import java.util.Collections;
 
-
+// Indici 0, 1, 2
 public class Deck {
     private  final ArrayList<DevelopmentCard> deck;
 

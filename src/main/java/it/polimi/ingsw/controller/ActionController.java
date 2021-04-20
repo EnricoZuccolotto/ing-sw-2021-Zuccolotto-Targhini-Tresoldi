@@ -13,13 +13,22 @@ import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.ResourceAckMessage;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
-
+/**
+ * This class handles all possible game actions.
+ */
 public class ActionController {
 
-
+    /**
+     * Starts a market action by specifying the row or column the user wants to get.
+     * @param gameBoard Current game.
+     * @param humanPlayer Player that requested the action
+     * @param rowIndex Market row index. To obtain a column this must be set to 3.
+     * @param colIndex Column index. If rowIndex == 3 this indicates the column, else this number is not considered
+     * @return
+     */
     public MarketReplyMessage getMarket(GameBoard gameBoard, HumanPlayer humanPlayer, int rowIndex, int colIndex){
+        // TODO: Set this action to only modify the model, the model will send updates to the client.
         ArrayList<Resources> list;
         if(rowIndex == 3){
             list = gameBoard.pushColumnMarket(colIndex);
@@ -29,9 +38,15 @@ public class ActionController {
         return new MarketReplyMessage(humanPlayer.getName(), list);
     }
 
-    public void addFaithPoint(GameBoard gameBoard, HumanPlayer humanPlayer,int n){
+    /**
+     * Adds a faith point for player {@code humanPlayer}.
+     * @param gameBoard Current game.
+     * @param humanPlayer Player that needs new faith points.
+     * @param number Number of faith points to be added
+     */
+    public void addFaithPoint(GameBoard gameBoard, HumanPlayer humanPlayer, int number){
         int playerPosition = gameBoard.getPlayers().indexOf(humanPlayer);
-        gameBoard.movePlayerFaithPath(playerPosition, n);
+        gameBoard.movePlayerFaithPath(playerPosition, number);
         // TODO: model sends updates. To be handled in the model.
     }
 
@@ -56,32 +71,29 @@ public class ActionController {
 
     public void useBaseProduction(HumanPlayer player,int n,Resources output,int [] resWar,int [] resStr,int [] resSpeWar){
         //check se le risorse mandate dal player sono giuste
-            if(output.ordinal()>4)
-                throw new IllegalResourceException();
-            int cont=0;
+        if(output.ordinal()>4)
+            throw new IllegalResourceException();
+        int cont = 0;
 
-            for(int i=0;i<4;i++)
-                cont+=resSpeWar[i]+resStr[i]+resWar[i];
-            if(cont!=n)
-                throw new IllegalResourceException();
-
+        for(int i=0;i<4;i++)
+            cont += resSpeWar[i]+resStr[i]+resWar[i];
+        if(cont != n)
+            throw new IllegalResourceException();
 
         //controllo se le risorse ho abbastanza risorse nei magazzini rispetto alle divisioni mandate
         isResourcesAvailable(player, resWar, resStr, resSpeWar);
-
 
         //pago le varie risorse
         payResources(player, resWar, resStr, resSpeWar);
 
         //aggiungo le risorse d'output
         player.getPlayerBoard().addStrongboxResource(output,1);
-
-
     }
-    public void useNormalProduction(HumanPlayer player,int index,int [] resWar,int [] resStr,int [] resSpeWar){
-        //check se le risorse mandate dal player sono uguali al costo della carta
 
-        int [] cost=player.getPlayerBoard().getProductionCost(index);
+    public void useNormalProduction(HumanPlayer player,int index,int [] resWar,int [] resStr,int [] resSpeWar){
+        // check se le risorse mandate dal player sono uguali al costo della carta
+
+        int[] cost = player.getPlayerBoard().getProductionCost(index);
         for(int i=0;i<4;i++)
             if(cost[i]!=(resWar[i]+resSpeWar[i]+resStr[i]))
                 throw new InsufficientResourcesException();
@@ -122,10 +134,11 @@ public class ActionController {
         isResourcesAvailable(player, resWar, resStr, resSpeWar);
 
         //provo ad aggiungere la carta nel posto che vuole lui o se non specificato nell'unico posto libero
+        // Se indice = -1 aggiungi nel primo punto disponibile
         if(index<0)
             player.getPlayerBoard().addProductionCard(card);
         else
-        player.getPlayerBoard().addProductionCard(card,index);
+            player.getPlayerBoard().addProductionCard(card,index);
 
         //pago le varie risorse
         payResources(player, resWar, resStr, resSpeWar);
