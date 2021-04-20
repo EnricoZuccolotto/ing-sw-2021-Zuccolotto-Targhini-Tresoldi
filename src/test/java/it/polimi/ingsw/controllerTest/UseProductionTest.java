@@ -10,9 +10,8 @@ import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
+import it.polimi.ingsw.model.tools.ExchangeResources;
 import org.junit.Test;
-
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -37,20 +36,20 @@ public class UseProductionTest {
         player.getPlayerBoard().addExtraResources(Resources.SHIELD,3);
 //wrong number of resources given
     try {
-    actionController.useBaseProduction(player,2,Resources.COIN,new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3});
+    actionController.useBaseProduction(player,2,Resources.COIN,new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3}));
     fail();
     }catch (IllegalResourceException e){
         assertTrue (true);
     }
     //wrong resource given
         try {
-            actionController.useBaseProduction(player,2,Resources.FAITH,new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3});
+            actionController.useBaseProduction(player,2,Resources.FAITH,new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3}));
             fail();
         }catch (IllegalResourceException e){
             assertTrue (true);
         }
         //normal functioning
-        actionController.useBaseProduction(player,2,Resources.SHIELD,new int[]{0, 0, 1, 0}, new int[]{0,0, 0, 0}, new int[]{0, 0, 0, 1});
+        actionController.useBaseProduction(player,2,Resources.SHIELD,new ExchangeResources(new int[]{0, 0, 1, 0}, new int[]{0,0, 0, 0}, new int[]{0, 0, 0, 1}));
 
          assertTrue(player.getPlayerBoard().checkResourcesStrongbox(new int[]{0,0,0,1}));
         assertEquals(player.getPlayerBoard().getExtraResources().get(3),(Integer)2);
@@ -76,7 +75,7 @@ public class UseProductionTest {
         player.getPlayerBoard().addExtraResources(Resources.SHIELD,3);
         // card not active
         try {
-            actionController.useSpecialProduction(player,Resources.COIN,0,new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3});
+            actionController.useSpecialProduction(player,Resources.COIN,0,new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3}));
             fail();
         }catch (IllegalActionException e){
             assertTrue (true);
@@ -84,20 +83,20 @@ public class UseProductionTest {
         player.getPlayerBoard().getLeaderCard(0).flipCard();
     //wrong number of resources given
         try {
-            actionController.useSpecialProduction(player,Resources.COIN,0,new int[]{0, 0, 0, 0}, new int[]{0,0, 0, 0}, new int[]{0, 0, 0, 3});
+            actionController.useSpecialProduction(player,Resources.COIN,0,new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0,0, 0, 0}, new int[]{0, 0, 0, 3}));
             fail();
         }catch (IllegalResourceException e){
             assertTrue (true);
         }
         //wrong resource given
         try {
-            actionController.useSpecialProduction(player,Resources.FAITH,0,new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3});
+            actionController.useSpecialProduction(player,Resources.FAITH,0,new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3}));
             fail();
         }catch (IllegalResourceException e){
             assertTrue (true);
         }
         //normal functioning
-        actionController.useSpecialProduction(player,Resources.COIN,0,new int[]{0, 0, 0, 0}, new int[]{0,0, 0, 0}, new int[]{0, 0, 0, 1});
+        actionController.useSpecialProduction(player,Resources.COIN,0,new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0,0, 0, 0}, new int[]{0, 0, 0, 1}));
 
         assertTrue(player.getPlayerBoard().checkResourcesStrongbox(new int[]{0,1,0,0}));
         assertEquals(player.getPlayerBoard().getExtraResources().get(3),(Integer)2);
@@ -113,8 +112,8 @@ public class UseProductionTest {
         for (int i=0;i<4;i++)
             gameBoard.getDeck(0,1).popFirstCard();
 
-        gameBoard.getDeck(0,1).addCard(new DevelopmentCard(4,2,new int[]{0,0,0,0},new int[]{0,1,2,0},new int[]{7,5,2,0,0,2}, Colors.BLUE,1));
-        actionController.getProduction(0,1,gameBoard,-1,player,new int[]{0,0,0,0},new int[]{0,0,0,0},new int[]{0,0,0,0,0,25});
+        gameBoard.getDeck(0,1).addCard(new DevelopmentCard(4,2,new int[]{0,0,0,0},new int[]{0,1,2,0},new int[]{7,5,2,0,2}, Colors.BLUE,1));
+        actionController.getProduction(0,1,gameBoard,-1,player,new ExchangeResources(new int[]{0,0,0,0},new int[]{0,0,0,0},new int[]{0,0,0,0,25}));
         player.setPlayerBoard(new DecoratedWarehousePlayerBoard(player.getPlayerBoard()));
         LeaderCard leaderCard=new LeaderCard(1,2,null,null,null,new int []{0,1,0,0},new int []{0,5,0,0});
         // Add the corresponding effect
@@ -128,28 +127,28 @@ public class UseProductionTest {
         player.getPlayerBoard().addExtraResources(Resources.COIN,4);
         //wrong index given
         try {
-            actionController.useNormalProduction(player,2,new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3});
+            actionController.useNormalProduction(player,2,new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3}));
             fail();
         }catch (IndexOutOfBoundsException e){
             assertTrue (true);
         }
         //wrong number of resources given
         try {
-            actionController.useNormalProduction(player,0,new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3});
+            actionController.useNormalProduction(player,0,new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0,1, 0, 0}, new int[]{0, 0, 0, 3}));
             fail();
         }catch (InsufficientResourcesException e){
             assertTrue (true);
         }
         //correct resources but not enough int the warehouse
         try {
-            actionController.useNormalProduction(player,0,new int[]{0, 0, 2, 0}, new int[]{0,0, 0, 0}, new int[]{0, 1, 0, 0});
+            actionController.useNormalProduction(player,0,new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0,0, 0, 0}, new int[]{0, 1, 0, 0}));
             fail();
         }catch (InsufficientResourcesException e){
             assertTrue (true);
         }
         player.getPlayerBoard().addWarehouseResource(Resources.STONE,2);
         //normal functioning
-        actionController.useNormalProduction(player,0,new int[]{0, 0, 2, 0}, new int[]{0,0, 0, 0}, new int[]{0, 1, 0, 0});
+        actionController.useNormalProduction(player,0,new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0,0, 0, 0}, new int[]{0, 1, 0, 0}));
 
         assertTrue(player.getPlayerBoard().checkResourcesStrongbox(new int[]{7,5,2,0}));
         assertEquals(player.getPlayerBoard().getExtraResources().get(1),(Integer)3);

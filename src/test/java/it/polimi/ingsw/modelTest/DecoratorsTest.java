@@ -1,4 +1,4 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.modelTest;
 
 import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
 import it.polimi.ingsw.exceptions.playerboard.IllegalResourceException;

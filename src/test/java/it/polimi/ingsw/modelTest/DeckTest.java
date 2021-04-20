@@ -38,8 +38,8 @@ public class DeckTest {
                     assertEquals(c.getColor().ordinal(),k);
                     assertEquals(c.getLevel(),j+1);
                     assertEquals(4, c.getCostCard().length);
-                    assertEquals(5, c.getCostProduction().length);
-                    assertEquals(6, c.getProductionResult().length);
+                    assertEquals(4, c.getCostProduction().length);
+                    assertEquals(5, c.getProductionResult().length);
                     expected.remove((Integer) c.getID());
                     deck.popFirstCard();
                     assertEquals(deck.DeckLength(), 3 - i);

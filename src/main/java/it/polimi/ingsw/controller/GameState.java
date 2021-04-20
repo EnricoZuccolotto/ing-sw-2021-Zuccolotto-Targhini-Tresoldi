@@ -5,5 +5,7 @@ public enum GameState {
     GAMESTARTED,
     IDOL,
     TURN,
+    SINGLEPLAYER,
+    MULTIPLAYER,
     END
 }

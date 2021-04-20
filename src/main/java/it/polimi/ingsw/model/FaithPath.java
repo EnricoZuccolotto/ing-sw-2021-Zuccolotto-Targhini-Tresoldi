@@ -30,7 +30,7 @@ public class FaithPath {
     private void checkReport(int player){
         int [] rep={5,8,12,16,19,24};
         int k=0;
-        if (playerPositions[k] >= 25) {
+        if (playerPositions[player] >= 25) {
             throw new WinnerException();
         }
 

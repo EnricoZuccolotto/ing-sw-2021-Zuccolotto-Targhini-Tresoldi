@@ -11,8 +11,9 @@ import it.polimi.ingsw.network.messages.ErrorMessage;
 import it.polimi.ingsw.network.messages.MarketReplyMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.ResourceAckMessage;
-
+import it.polimi.ingsw.model.tools.ExchangeResources;
 import java.util.ArrayList;
+
 
 /**
  * This class handles all possible game actions.
@@ -69,40 +70,48 @@ public class ActionController {
         }
     }
 
-    public void useBaseProduction(HumanPlayer player,int n,Resources output,int [] resWar,int [] resStr,int [] resSpeWar){
+    public void useBaseProduction(HumanPlayer player, int n, Resources output, ExchangeResources exchangeResources){
         //check se le risorse mandate dal player sono giuste
-        if(output.ordinal()>4)
-            throw new IllegalResourceException();
-        int cont = 0;
+        int [] resWar= exchangeResources.getWarehouse();
+        int [] resStr=exchangeResources.getStrongbox();
+        int [] resSpeWar= exchangeResources.getSpecialWarehouse();
+            if(output.ordinal()>4)
+                throw new IllegalResourceException();
+            int cont=0;
 
         for(int i=0;i<4;i++)
             cont += resSpeWar[i]+resStr[i]+resWar[i];
         if(cont != n)
             throw new IllegalResourceException();
 
+
         //controllo se le risorse ho abbastanza risorse nei magazzini rispetto alle divisioni mandate
-        isResourcesAvailable(player, resWar, resStr, resSpeWar);
+        isResourcesAvailable(player,exchangeResources);
+
 
         //pago le varie risorse
-        payResources(player, resWar, resStr, resSpeWar);
+        payResources(player, exchangeResources);
 
         //aggiungo le risorse d'output
         player.getPlayerBoard().addStrongboxResource(output,1);
     }
 
-    public void useNormalProduction(HumanPlayer player,int index,int [] resWar,int [] resStr,int [] resSpeWar){
-        // check se le risorse mandate dal player sono uguali al costo della carta
 
-        int[] cost = player.getPlayerBoard().getProductionCost(index);
+    public void useNormalProduction(HumanPlayer player,int index,ExchangeResources exchangeResources){
+        //check se le risorse mandate dal player sono uguali al costo della carta
+        int [] resWar= exchangeResources.getWarehouse();
+        int [] resStr=exchangeResources.getStrongbox();
+        int [] resSpeWar= exchangeResources.getSpecialWarehouse();
+        int [] cost=player.getPlayerBoard().getProductionCost(index);
         for(int i=0;i<4;i++)
             if(cost[i]!=(resWar[i]+resSpeWar[i]+resStr[i]))
                 throw new InsufficientResourcesException();
 
         //controllo se le risorse ho abbastanza risorse nei magazzini rispetto alle divisioni mandate
-        isResourcesAvailable(player, resWar, resStr, resSpeWar);
+        isResourcesAvailable(player, exchangeResources);
 
         //pago le varie risorse
-        payResources(player, resWar, resStr, resSpeWar);
+        payResources(player,exchangeResources);
 
         //aggiungo le risorse
         int [] result=player.getPlayerBoard().getProductionResult(index);
@@ -111,7 +120,10 @@ public class ActionController {
 
 
     }
-    public void useSpecialProduction(HumanPlayer player,Resources output ,int index,int [] resWar,int [] resStr,int [] resSpeWar){
+    public void useSpecialProduction(HumanPlayer player,Resources output ,int index,ExchangeResources exchangeResources){
+        int [] resWar= exchangeResources.getWarehouse();
+        int [] resStr=exchangeResources.getStrongbox();
+        int [] resSpeWar= exchangeResources.getSpecialWarehouse();
         if(!player.getPlayerBoard().getLeaderCard(index).getUncovered())
             throw new IllegalActionException();
         ArrayList<Integer> cost=player.getPlayerBoard().getLeaderCard(index).getEffect1();
@@ -119,36 +131,47 @@ public class ActionController {
             if(cost.get(i)!=resSpeWar[i]+resStr[i]+resWar[i])
                 throw new IllegalResourceException();
 
-            useBaseProduction(player, 1, output, resWar, resStr, resSpeWar);
+            useBaseProduction(player, 1, output, exchangeResources);
     }
 
-    public void getProduction(int color,int level,GameBoard gameBoard,int index,HumanPlayer player,int [] resWar,int [] resStr,int [] resSpeWar){
+    public void getProduction(int color,int level,GameBoard gameBoard,int index,HumanPlayer player,ExchangeResources exchangeResources){
+        int [] resWar= exchangeResources.getWarehouse();
+        int [] resStr=exchangeResources.getStrongbox();
+        int [] resSpeWar= exchangeResources.getSpecialWarehouse();
+        Boolean winner=false;
         DevelopmentCard card=gameBoard.getDeck(color,level).getFirstCard();
-
+        if(card==null)
+        throw new IllegalActionException();
         //check se le risorse mandate dal player sono uguali al costo della carta
         for(int i=0;i<4;i++)
             if(card.getCostCard()[i]!=(resWar[i]+resSpeWar[i]+resStr[i]))
                 throw new InsufficientResourcesException();
 
             //controllo se le risorse ho abbastanza risorse nei magazzini rispetto alle divisioni mandate
-        isResourcesAvailable(player, resWar, resStr, resSpeWar);
+        isResourcesAvailable(player, exchangeResources);
 
         //provo ad aggiungere la carta nel posto che vuole lui o se non specificato nell'unico posto libero
-        // Se indice = -1 aggiungi nel primo punto disponibile
-        if(index<0)
-            player.getPlayerBoard().addProductionCard(card);
-        else
-            player.getPlayerBoard().addProductionCard(card,index);
-
+         try {
+             if (index < 0)
+                 player.getPlayerBoard().addProductionCard(card);
+             else
+                 player.getPlayerBoard().addProductionCard(card, index);
+         }catch (WinnerException e){
+             winner=true;
+         }
         //pago le varie risorse
-        payResources(player, resWar, resStr, resSpeWar);
+        payResources(player, exchangeResources);
 
         // tolgo la carta
         gameBoard.getDeck(color,level).popFirstCard();
+       if (winner)
+           throw new WinnerException();
+
     }
-    public void activateLeader(LeaderCard leaderCard, HumanPlayer player){
+    public void activateLeader(int index, HumanPlayer player){
         // Check if card is already used and owned by the player
         // TODO: Check player leader cards(Color cost and resources cost)
+        LeaderCard leaderCard=player.getPlayerBoard().getLeaderCard(index);
         if(!player.getPlayerBoard().checkColors(leaderCard.getCostColor()))
         {
             throw new InsufficientColorsException();
@@ -214,7 +237,7 @@ public class ActionController {
     }
 
     public void firstAction(int index1,int index2, HumanPlayer player){
-        PlayerBoard pb=player.getPlayerBoard();
+
         if (index1==index2)
             throw new IllegalActionException();
 
@@ -227,7 +250,34 @@ public class ActionController {
         }
         foldLeader(index2,player);
         foldLeader(index1,player);
-
+    }
+    public void secondAction(ArrayList<Resources> resources,int indexPlayer, HumanPlayer player){
+        switch (indexPlayer){
+            case 0:
+                break;
+            case 1:
+            case 2:
+            {
+                if(resources.size()==1) {
+                    if(resources.get(0).ordinal()>=4)
+                        throw new IllegalResourceException();
+                    player.getPlayerBoard().addStrongboxResource(resources.get(0), 1);
+                }
+                else throw new IllegalActionException();
+                break;
+            }
+            case 3:
+            {
+                if(resources.size()==2) {
+                    if(resources.get(0).ordinal()>=4||resources.get(1).ordinal()>=4)
+                        throw new IllegalResourceException();
+                    player.getPlayerBoard().addStrongboxResource(resources.get(0), 1);
+                    player.getPlayerBoard().addStrongboxResource(resources.get(1), 1);
+                }
+                else throw new IllegalActionException();
+                break;
+            }
+        }
     }
     public void foldLeader(int index, HumanPlayer player){
         PlayerBoard pb=player.getPlayerBoard();
@@ -238,14 +288,14 @@ public class ActionController {
         else throw new IllegalActionException();
     }
 
-public void isResourcesAvailable(HumanPlayer player,int [] resWar,int [] resStr,int [] resSpeWar){
-         if(!player.getPlayerBoard().checkResourcesSpecialWarehouse(resSpeWar)||!player.getPlayerBoard().checkResourcesStrongbox(resStr)||!player.getPlayerBoard().checkResourcesWarehouse(resWar))
+public void isResourcesAvailable(HumanPlayer player,ExchangeResources exchangeResources){
+         if(!player.getPlayerBoard().checkResourcesSpecialWarehouse(exchangeResources.getSpecialWarehouse())||!player.getPlayerBoard().checkResourcesStrongbox(exchangeResources.getStrongbox())||!player.getPlayerBoard().checkResourcesWarehouse(exchangeResources.getWarehouse()))
         throw new InsufficientResourcesException();
 }
-    public void payResources(HumanPlayer player,int [] resWar,int [] resStr,int [] resSpeWar){
-        player.getPlayerBoard().payResourcesStrongbox(resStr);
-        player.getPlayerBoard().payResourcesSpecialWarehouse(resSpeWar);
-        player.getPlayerBoard().payResourcesWarehouse(resWar);
+    public void payResources(HumanPlayer player,ExchangeResources exchangeResources){
+        player.getPlayerBoard().payResourcesStrongbox(exchangeResources.getStrongbox());
+        player.getPlayerBoard().payResourcesSpecialWarehouse(exchangeResources.getSpecialWarehouse());
+        player.getPlayerBoard().payResourcesWarehouse(exchangeResources.getWarehouse());
     }
 
 }

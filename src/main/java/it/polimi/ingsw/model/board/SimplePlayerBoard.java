@@ -20,7 +20,7 @@ public class SimplePlayerBoard implements PlayerBoard {
     private ArrayList<LeaderCard> leaderCards;
     private ArrayList<SpaceProd> productionSpaces;
     private Warehouse warehouse;
-
+    private int VP;
 
     public SimplePlayerBoard(boolean inkWell){
         this.inkWell = inkWell;
@@ -30,6 +30,13 @@ public class SimplePlayerBoard implements PlayerBoard {
         warehouse = new Warehouse();
 
     }
+    @Override
+    public void setVP(int VP) {
+        this.VP = VP;
+    }
+
+
+
     @Override
     public int getProductionNumber() {
         return productionSpaces.size()+1;
@@ -61,11 +68,12 @@ public class SimplePlayerBoard implements PlayerBoard {
     }
 
     @Override
-    public int getVictoryPoints() {
+    public int getVictoryPointsCards() {
         int VP = 0;
 
         // Get leadercards victory points
         for(LeaderCard card : leaderCards){
+            if(card.getUncovered())
             VP += card.getVP();
         }
 
@@ -73,11 +81,18 @@ public class SimplePlayerBoard implements PlayerBoard {
         for(SpaceProd sp : productionSpaces){
             VP += sp.getVictoryPoints();
         }
-        // Get resources number victory points
-        VP+=(strongbox.getNumResources()+warehouse.Resourcesnumb()+getExtraResources().stream().reduce(0, Integer::sum))/5;
-
         return VP;
     }
+    @Override
+    public int getNumberResources() {
+        int n;
+
+        // Get resources number victory points
+       n=(strongbox.getNumResources()+warehouse.Resourcesnumb());
+
+        return n;
+    }
+
 
     @Override
     public void addWarehouseSpace(Resources resource, int maxQuantity) {

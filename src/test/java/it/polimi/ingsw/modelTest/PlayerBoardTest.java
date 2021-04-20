@@ -3,14 +3,16 @@ package it.polimi.ingsw.modelTest;
 import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
 import it.polimi.ingsw.exceptions.playerboard.InsufficientLevelException;
 import it.polimi.ingsw.exceptions.playerboard.WinnerException;
+import it.polimi.ingsw.model.board.DecoratedWarehousePlayerBoard;
+import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.board.SimplePlayerBoard;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
-import java.util.Arrays;
 
 import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.model.player.HumanPlayer;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -42,7 +44,9 @@ public class PlayerBoardTest {
         assertEquals(0,s.getLeaderCardsNumber());
         s.addLeaderCard(g);
         s.addLeaderCard(l);
-        assertEquals(8, s.getVictoryPoints());
+        g.flipCard();
+        l.flipCard();
+        assertEquals(8, s.getVictoryPointsCards());
     }
     @Test
     public void ExtraBoardTest(){
@@ -125,7 +129,7 @@ public class PlayerBoardTest {
         assertTrue(s.addWarehouseResource(Resources.SERVANT, 3));
         assertTrue(s.addWarehouseResource(Resources.COIN, 2));
         assertTrue(s.addWarehouseResource(Resources.COIN, 2));
-        assertEquals(1,s.getVictoryPoints());
+        assertEquals(1,Math.floorDiv(s.getNumberResources(),5));
     }
     @Test
     public void ProdcardTest(){
@@ -194,7 +198,7 @@ public class PlayerBoardTest {
             assertTrue(true);
         }
         assertTrue(s.checkColors(col3));
-        assertEquals(12,s.getVictoryPoints());
+        assertEquals(12,s.getVictoryPointsCards());
     }
     @Test
     public void StrongTest(){
@@ -222,6 +226,25 @@ public class PlayerBoardTest {
         assertTrue(s.checkResourcesStrongbox(a));
         assertFalse(s.checkResourcesStrongbox(d));
         assertTrue(s.payResourcesStrongbox(c));
-        assertEquals(2, s.getVictoryPoints());
+        assertEquals(2,Math.floorDiv(s.getNumberResources(),5));
+    }
+    @Test
+    public void VictoryPointsTest(){
+        HumanPlayer player = new HumanPlayer("test", true);
+        PlayerBoard board = new DecoratedWarehousePlayerBoard(player.getPlayerBoard());
+        board.addWarehouseSpace(Resources.COIN, 2);
+        board.addExtraResources(Resources.COIN,2);
+        board.addStrongboxResource(Resources.STONE,15);
+        board.addWarehouseResource(Resources.SHIELD,3);
+        board.addWarehouseResource(Resources.SHIELD,3);
+        board.addWarehouseResource(Resources.SHIELD,3);
+        assertEquals(board.getVictoryPointsCards(),0);
+        assertEquals(board.getNumberResources(),20);
+        board.addLeaderCard(new LeaderCard(10,2,null,null,null,new int []{0,0,0,1},new int []{0,0,0,3}));
+        assertEquals(0,board.getVictoryPointsCards());
+        board.getLeaderCard(0).flipCard();
+        assertEquals(10,board.getVictoryPointsCards());
+        board.addProductionCard(new DevelopmentCard(4,2,new int[]{0,0,0,0},new int[]{0,1,2,0},new int[]{7,5,2,0,0,2}, Colors.BLUE,1));
+        assertEquals(14,board.getVictoryPointsCards());
     }
 }

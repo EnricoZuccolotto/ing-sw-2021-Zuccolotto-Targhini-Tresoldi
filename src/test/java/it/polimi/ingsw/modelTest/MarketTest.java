@@ -14,9 +14,12 @@ public class MarketTest {
         Market m=new Market();
         ArrayList<Resources> r=init();
     r.remove(m.getSlide());
-        for (int i=0;i<4;i++)
+
+        for (int i=0;i<4;i++) {
+
             r.removeAll(m.pushColumn(i));
 
+        }
     assertEquals(0, r.size());
 
     }
@@ -25,9 +28,11 @@ public class MarketTest {
         Market m = new Market();
         ArrayList<Resources> r = init();
         r.remove(m.getSlide());
-        for (int i=0;i<3;i++)
+
+        for (int i=0;i<3;i++) {
             r.removeAll(m.pushRow(i));
 
+        }
 
         assertEquals(0, r.size());
     }

@@ -1,8 +1,9 @@
 package it.polimi.ingsw.network.messages;
 
 public enum MessageType {
-    //first action
+    //first actionS
     FIRST_ACTION,
+    SECOND_ACTION,
     // Market actions
     MARKET_REQUEST,
     MARKET_REPLY,

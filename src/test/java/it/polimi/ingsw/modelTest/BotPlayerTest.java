@@ -18,7 +18,10 @@ public class BotPlayerTest {
     @Test
     public void discardTest() {
         GameBoard g = new GameBoard();
-        BotPlayer b = new BotPlayer(g);
+        HumanPlayer h=new HumanPlayer("Luca",true);
+        g.addPlayer(h);
+        g.init(g);
+        BotPlayer b = g.getBot();
         assertEquals(4, g.getDeck(0, 0).DeckLength());
         assertEquals(4, g.getDeck(1, 0).DeckLength());
         assertEquals(4, g.getDeck(2, 0).DeckLength());
@@ -56,7 +59,7 @@ public class BotPlayerTest {
         HumanPlayer h=new HumanPlayer("Luca",true);
         g.addPlayer(h);
         g.init(g);
-        BotPlayer b = new BotPlayer(g);
+        BotPlayer b = g.getBot();
         int i=0;
         while (!(BotActions.BlackCross2.equals(b.getCurrentAction()))) {
             if (BotActions.Blackcross1Shuffle.equals(b.getCurrentAction())) {
@@ -76,7 +79,7 @@ public class BotPlayerTest {
         HumanPlayer h=new HumanPlayer("Luca",true);
         g.addPlayer(h);
         g.init(g);
-        BotPlayer b = new BotPlayer(g);
+        BotPlayer b = g.getBot();
         int i=0;
         while (!(BotActions.Blackcross1Shuffle.equals(b.getCurrentAction()))) {
             if (BotActions.BlackCross2.equals(b.getCurrentAction())) {

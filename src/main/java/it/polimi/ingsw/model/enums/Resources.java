@@ -5,9 +5,9 @@ public enum Resources {
     COIN,
     STONE,
     SHIELD,
-    WHATEVER,
     FAITH,
-    WHITE;
+    WHITE,
+    WHATEVER;
     public static Resources transform(int i) {
         switch (i) {
             case 0:
@@ -19,11 +19,11 @@ public enum Resources {
             case 3:
                 return SHIELD;
             case 4:
-                return WHATEVER;
-            case 5:
                 return FAITH;
-            case 6:
+            case 5:
                 return WHITE;
+            case 6:
+                return WHATEVER;
             default:
                 throw new IllegalStateException("Unexpected value: " + i);
         }

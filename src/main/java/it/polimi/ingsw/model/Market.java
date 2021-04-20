@@ -15,9 +15,7 @@ public class Market {
         double[] a= {2, 2, 2, 2, 1, 4};
         temp= (int) Math.floor(Math.random()*6);
         a[temp]--;
-        if(temp>=4){
-            temp=temp+1;
-        }
+
         slide=Resources.transform(temp);
         for(int i=0; i<3; i++){
             for(int j=0; j<4; j++){
@@ -26,9 +24,6 @@ public class Market {
                     temp= (int) Math.floor(Math.random()*6);
                 }
                 a[temp]--;
-                if(temp>=4){
-                    temp=temp+1;
-                }
                 market[i][j]=Resources.transform(temp);
             }
         }
@@ -36,7 +31,7 @@ public class Market {
 
     public ArrayList<Resources> pushColumn(int columnIndex){
         Resources temp;
-        ArrayList<Resources> ret= new ArrayList<Resources>();
+        ArrayList<Resources> ret= new ArrayList<>();
         temp=market[0][columnIndex];
         ret.add(0, temp);
         for(int i=1; i<3; i++){
@@ -50,7 +45,7 @@ public class Market {
 
     public ArrayList<Resources> pushRow(int rowIndex){
         Resources temp;
-        ArrayList<Resources> ret= new ArrayList<Resources>();
+        ArrayList<Resources> ret= new ArrayList<>();
         temp=market[rowIndex][0];
         ret.add(0, temp);
         for(int i=1; i<4; i++){

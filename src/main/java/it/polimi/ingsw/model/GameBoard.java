@@ -1,5 +1,4 @@
 package it.polimi.ingsw.model;
-import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.BotPlayer;
@@ -56,6 +55,8 @@ public class GameBoard extends Observable {
     public void addPlayer(HumanPlayer player) {
      players.add(player);
     }
+
+
 
     public void end() {}
 

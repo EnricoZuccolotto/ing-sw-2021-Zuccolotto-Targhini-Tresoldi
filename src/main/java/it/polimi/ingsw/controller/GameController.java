@@ -3,13 +3,14 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.network.messages.*;
+import  it.polimi.ingsw.view.*;
+import it.polimi.ingsw.network.server.*;
 import it.polimi.ingsw.view.NetworkLayerView;
 import it.polimi.ingsw.view.View;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 
 public class GameController {
     private GameState gamestate;
@@ -26,6 +27,7 @@ public class GameController {
         this.gameBoardInstance = new GameBoard();
         this.roundController = new RoundController(gameBoardInstance);
         viewMap = Collections.synchronizedMap(new HashMap<>());
+
     }
     public GameBoard getInstance(){
         return gameBoardInstance;
@@ -41,7 +43,9 @@ public class GameController {
         gameBoardInstance.addObserver(view);
     }
     public void StartGame(){
+        roundController.init(gameBoardInstance.getPlayers().get(0));
       gameBoardInstance.init(gameBoardInstance);
+      gamestate=roundController.getGameState();
       roundController.handle_firstTurn();
 
     }
@@ -89,13 +93,23 @@ public class GameController {
                     roundController.handle_endTurn();
                 else buildInvalidResponse();
             case FOLD_LEADER:
-                if(validateAction(Action.LD_FOLD))
-                    roundController.handle_foldLeader((FoldLeaderMessage) message);
+                if(validateAction(Action.LD_ACTION))
+                    roundController.handle_foldLeader((LeaderMessage) message);
+                else buildInvalidResponse();
+            case ACTIVE_LEADER:
+                if(validateAction(Action.LD_ACTION))
+                    roundController.handle_activeLeader((LeaderMessage) message);
                 else buildInvalidResponse();
             case FIRST_ACTION:
                 if(validateAction(Action.FIRST_ACTION))
                     roundController.handle_firstAction((FirstActionMessage) message);
                 else buildInvalidResponse();
+            case SECOND_ACTION:
+                if(validateAction(Action.FIRST_ACTION))
+                    roundController.handle_secondAction((SecondActionMessage) message);
+                else buildInvalidResponse();
+                if(roundController.isWinner())
+                    endGame();
         }
     }
 
@@ -112,8 +126,18 @@ public class GameController {
 
     }
 
-    public void endGame(){}
     public GameState getGameState(){
-        return gamestate;
+        return gamestate;}
+    public void endGame(){
+        for (HumanPlayer player:gameBoardInstance.getPlayers())
+        {
+            int VP=0;
+            VP+=player.getPlayerBoard().getVictoryPointsCards();
+            VP+=gameBoardInstance.get_PV(gameBoardInstance.getPlayers().indexOf(player));
+            VP+=Math.floorDiv(player.getPlayerBoard().getNumberResources(),5);
+            player.getPlayerBoard().setVP(VP);
+        }
+       gamestate=GameState.END;
     }
+
 }

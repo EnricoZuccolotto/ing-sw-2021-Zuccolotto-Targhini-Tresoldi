@@ -15,11 +15,15 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     @Override
     public int getLeaderCardsNumber(){return subBoard.getLeaderCardsNumber();}
     @Override
+    public int getNumberResources(){return subBoard.getNumberResources();}
+    @Override
     public int getProductionNumber(){return subBoard.getProductionNumber();}
     @Override
     public boolean getInkwell() {
         return subBoard.getInkwell();
     }
+    @Override
+    public void setVP(int VP){subBoard.setVP(VP);}
     @Override
     public boolean checkColors(int [] colors){return subBoard.checkColors(colors);}
     @Override
@@ -45,8 +49,8 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     @Override
     public int[] getProductionResult(int index){return subBoard.getProductionResult(index);}
     @Override
-    public int getVictoryPoints() {
-        return subBoard.getVictoryPoints();
+    public int getVictoryPointsCards() {
+        return subBoard.getVictoryPointsCards();
     }
     @Override
     public boolean addWarehouseResource(Resources r, int row){return subBoard.addWarehouseResource(r,row);}

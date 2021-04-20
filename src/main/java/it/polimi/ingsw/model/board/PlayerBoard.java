@@ -21,11 +21,12 @@ public interface PlayerBoard {
      */
     void addLeaderCard(LeaderCard leaderCard);
 
+
     /**
-     * Get victory points for the end of the game.
-     * @return Victory points for current user.
+     * Get victory points of the cards for the end of the game.
+     * @return Victory points of the cards for current user.
      */
-    int getVictoryPoints();
+    int getVictoryPointsCards();
 
     /**
      * Adds a resource to the warehouse
@@ -68,6 +69,7 @@ public interface PlayerBoard {
      * @return Covered leader card number.
      */
     int getLeaderCardsNumber();
+
     boolean checkColors(int[] colors);
     boolean checkResources(int [] resources);
     boolean checkResourcesStrongbox(int [] r);
@@ -81,6 +83,8 @@ public interface PlayerBoard {
     int[] getProductionCost(int index);
     int[] getProductionResult(int index);
     int getProductionNumber();
+    int getNumberResources();
+    void setVP(int VP);
 
     // Decorated warehouse methods
     void addWarehouseSpace(Resources resource, int maxQuantity) throws IllegalDecoratorException;

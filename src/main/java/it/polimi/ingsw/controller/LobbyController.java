@@ -1,7 +1,6 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.controller.GameController;
-import it.polimi.ingsw.model.player.HumanPlayer;
+
 import it.polimi.ingsw.model.player.Player;
 
 public class LobbyController {

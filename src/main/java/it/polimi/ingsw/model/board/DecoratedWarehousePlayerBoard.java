@@ -119,5 +119,8 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard {
         return subBoard.checkResources(tmp);
 
     }
+    public int getNumberResources(){
+        return quantities.stream().reduce(0, Integer::sum)+subBoard.getNumberResources();
+    }
 
 }
