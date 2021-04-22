@@ -4,158 +4,381 @@
     {
       "ID": 49,
       "VP": 2,
-      "costResources": [0,0,0,0],
-      "costColor": [0,1,0,1],
-      "advantage":"SALES",
-      "effect1": [1,0,0,0],
-      "effect2":[]
-
+      "costResources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "advantage": "SALES",
+      "effect": [
+        1,
+        0,
+        0,
+        0
+      ]
     },
     {
       "ID": 50,
       "VP": 2,
-      "costResources": [0,0,0,0],
-      "costColor": [1,0,1,0],
-      "advantage":"SALES",
-      "effect1": [0,0,0,1],
-      "effect2":[]
+      "costResources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "advantage": "SALES",
+      "effect": [
+        0,
+        0,
+        0,
+        1
+      ]
     },
     {
       "ID": 51,
       "VP": 2,
-      "costResources": [0,0,0,0],
-      "costColor": [1,0,0,1],
-      "advantage":"SALES",
-      "effect1": [0,0,1,0],
-      "effect2":[]
+      "costResources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "advantage": "SALES",
+      "effect": [
+        0,
+        0,
+        1,
+        0
+      ]
     },
     {
       "ID": 52,
       "VP": 2,
-      "costResources": [0,0,0,0],
-      "costColor": [0,1,1,0],
-      "advantage":"SALES",
-      "effect1": [0,1,0,0],
-      "effect2":[]
+      "costResources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "advantage": "SALES",
+      "effect": [
+        0,
+        1,
+        0,
+        0
+      ]
     },
     {
       "ID": 53,
       "VP": 3,
-      "costResources": [0,5,0,0],
-      "costColor": [0,0,0,0],
-      "advantage":"WAREHOUSE",
-      "effect1": [0,0,1,0],
-      "effect2":[0,0,2,0]
+      "costResources": [
+        0,
+        5,
+        0,
+        0
+      ],
+      "costColor": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "advantage": "WAREHOUSE",
+      "effect": [
+        0,
+        0,
+        2,
+        0
+      ]
     }
   ,
     {
       "ID": 54,
       "VP": 3,
-      "costResources": [0,0,5,0],
-      "costColor": [0,0,0,0],
-      "advantage":"WAREHOUSE",
-      "effect1": [1,0,0,0],
-      "effect2":[2,0,0,0]
+      "costResources": [
+        0,
+        0,
+        5,
+        0
+      ],
+      "costColor": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "advantage": "WAREHOUSE",
+      "effect": [
+        2,
+        0,
+        0,
+        0
+      ]
     }
   ,
     {
       "ID": 55,
       "VP": 3,
-      "costResources": [5,0,0,0],
-      "costColor": [0,0,0,0],
-      "advantage":"WAREHOUSE",
-      "effect1": [0,0,0,1],
-      "effect2":[0,0,0,2]
+      "costResources": [
+        5,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "advantage": "WAREHOUSE",
+      "effect": [
+        0,
+        0,
+        0,
+        2
+      ]
     }
   ,
     {
       "ID": 56,
       "VP": 3,
-      "costResources": [0,0,0,5],
-      "costColor": [0,0,0,0],
-      "advantage":"WAREHOUSE",
-      "effect1": [0,1,0,0],
-      "effect2":[0,2,0,0]
+      "costResources": [
+        0,
+        0,
+        0,
+        5
+      ],
+      "costColor": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "advantage": "WAREHOUSE",
+      "effect": [
+        0,
+        2,
+        0,
+        0
+      ]
     }
   ,
     {
       "ID": 57,
       "VP": 5,
-      "costResources": [0,0,0,0],
-      "costColor": [1,2,0,0],
-      "advantage":"CHANGE",
-      "effect1": [1,0,0,0],
-      "effect2":[]
+      "costResources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        1,
+        2,
+        0,
+        0
+      ],
+      "advantage": "CHANGE",
+      "effect": [
+        1,
+        0,
+        0,
+        0
+      ]
     }
   ,
     {
       "ID": 58,
       "VP": 5,
-      "costResources": [0,0,0,0],
-      "costColor": [0,0,1,2],
-      "advantage":"CHANGE",
-      "effect1": [0,0,0,1],
-      "effect2":[]
+      "costResources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        0,
+        0,
+        1,
+        2
+      ],
+      "advantage": "CHANGE",
+      "effect": [
+        0,
+        0,
+        0,
+        1
+      ]
     }
   ,
     {
       "ID": 59,
       "VP": 5,
-      "costResources": [0,0,0,0],
-      "costColor": [2,1,0,0],
-      "advantage":"CHANGE",
-      "effect1": [0,0,1,0],
-      "effect2":[]
+      "costResources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        2,
+        1,
+        0,
+        0
+      ],
+      "advantage": "CHANGE",
+      "effect": [
+        0,
+        0,
+        1,
+        0
+      ]
     }
   ,
     {
       "ID": 60,
       "VP": 5,
-      "costResources": [0,0,0,0],
-      "costColor": [0,0,2,1],
-      "advantage":"CHANGE",
-      "effect1": [0,1,0,0],
-      "effect2":[]
+      "costResources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        0,
+        0,
+        2,
+        1
+      ],
+      "advantage": "CHANGE",
+      "effect": [
+        0,
+        1,
+        0,
+        0
+      ]
     }
   ,
     {
       "ID": 61,
       "VP": 4,
-      "costResources": [0,0,0,0],
-      "costColor": [0,1,0,0],
-      "advantage":"PROD",
-      "effect1": [0,0,0,1],
-      "effect2":[]
+      "costResources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "advantage": "PROD",
+      "effect": [
+        0,
+        0,
+        0,
+        1
+      ]
     }
   ,
     {
       "ID": 62,
       "VP": 4,
-      "costResources": [0,0,0,0],
-      "costColor": [1,0,0,0],
-      "advantage":"PROD",
-      "effect1": [1,0,0,0],
-      "effect2":[]
+      "costResources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "advantage": "PROD",
+      "effect": [
+        1,
+        0,
+        0,
+        0
+      ]
     }
   ,
     {
       "ID": 63,
       "VP": 4,
-      "costResources": [0,0,0,0],
-      "costColor": [0,0,1,0],
-      "advantage":"PROD",
-      "effect1": [0,0,1,0],
-      "effect2":[]
+      "costResources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "advantage": "PROD",
+      "effect": [
+        0,
+        0,
+        1,
+        0
+      ]
     }
   ,
     {
       "ID": 64,
       "VP": 4,
-      "costResources": [0,0,0,0],
-      "costColor": [0,0,0,1],
-      "advantage":"PROD",
-      "effect1": [0,1,0,0],
-      "effect2":[]
+      "costResources": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "costColor": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "advantage": "PROD",
+      "effect": [
+        0,
+        1,
+        0,
+        0
+      ]
     }
   ]
 }

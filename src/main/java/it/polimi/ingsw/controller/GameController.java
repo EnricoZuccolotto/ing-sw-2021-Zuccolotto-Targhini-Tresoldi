@@ -3,8 +3,6 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.network.messages.*;
-import  it.polimi.ingsw.view.*;
-import it.polimi.ingsw.network.server.*;
 import it.polimi.ingsw.view.NetworkLayerView;
 import it.polimi.ingsw.view.View;
 
@@ -15,10 +13,10 @@ import java.util.Map;
 public class GameController {
     private GameState gamestate;
     //private  Server server;
-    private GameBoard gameBoardInstance;
-    private LobbyController lobby;
-    private RoundController roundController;
-    private Map<String, View> viewMap;
+    private final GameBoard gameBoardInstance;
+    private final LobbyController lobby;
+    private final RoundController roundController;
+    private final Map<String, View> viewMap;
 
     public GameController() {
         //this.server = server;
@@ -32,7 +30,7 @@ public class GameController {
     public GameBoard getInstance(){
         return gameBoardInstance;
     }
-    public void doAction(){}
+
     public void addPlayer(String name, View view){
         // TODO: Handle local single player
         addView(name, (NetworkLayerView) view);
@@ -53,67 +51,91 @@ public class GameController {
 
     }
 
-    // FIXME: Move this code to handle messages. This code will be moved as soon as the messages are implemented.
 
-
-    public void onMessage(Message message){
+    public void onMessage(Message message) {
         // TODO: Special warehouse actions
-        switch(message.getMessageType()){
-            case MARKET_REQUEST:
-                if(validateAction(Action.STD_GETMARKET))
+        switch (message.getMessageType()) {
+            case MARKET_REQUEST: {
+                if (validateAction(Action.STD_GETMARKET))
                     roundController.handle_getMarket((MarketRequestMessage) message);
                 else buildInvalidResponse();
-            case SHIFT_WAREHOUSE:
-                if(validateAction(Action.SHIFT_WAREHOUSE))
+                break;
+            }
+            case SHIFT_WAREHOUSE: {
+                if (validateAction(Action.SHIFT_WAREHOUSE))
                     roundController.handle_shiftWarehouse((ShiftWarehouseMessage) message);
                 else buildInvalidResponse();
-            case SET_RESOURCE:
-                if(validateAction(Action.SORTING_WAREHOUSE))
+                break;
+            }
+            case SET_RESOURCE: {
+                if (validateAction(Action.SORTING_WAREHOUSE))
                     roundController.handle_sortingWarehouse((SetResourceMessage) message);
                 else buildInvalidResponse();
-            case DISCARD_RESOURCE:
-                if(validateAction(Action.SORTING_WAREHOUSE))
+                break;
+            }
+            case DISCARD_RESOURCE: {
+                if (validateAction(Action.SORTING_WAREHOUSE))
                     roundController.handle_discardResource((DiscardResourceMessage) message);
                 else buildInvalidResponse();
-            case GET_PRODUCTIONCARD:
-                if(validateAction(Action.STD_GETPRODUCTION))
+                break;
+            }
+            case GET_PRODUCTIONCARD: {
+                if (validateAction(Action.STD_GETPRODUCTION))
                     roundController.handle_getProduction((GetProductionCardMessage) message);
                 else buildInvalidResponse();
-            case USE_BASE_PRODUCTION:
-                if(validateAction(Action.STD_USEPRODUCTION))
+                break;
+            }
+            case USE_BASE_PRODUCTION: {
+                if (validateAction(Action.STD_USEPRODUCTION))
                     roundController.handle_useBaseProduction((UseProductionBaseMessage) message);
                 else buildInvalidResponse();
-            case USE_NORMAL_PRODUCTION:
-                if(validateAction(Action.STD_USEPRODUCTION))
+                break;
+            }
+            case USE_NORMAL_PRODUCTION: {
+                if (validateAction(Action.STD_USEPRODUCTION))
                     roundController.handle_useNormalProduction((UseProductionNormalMessage) message);
                 else buildInvalidResponse();
-            case USE_SPECIAL_PRODUCTION:
-                if(validateAction(Action.STD_USEPRODUCTION))
+                break;
+            }
+            case USE_SPECIAL_PRODUCTION: {
+                if (validateAction(Action.STD_USEPRODUCTION))
                     roundController.handle_useSpecialProduction((UseProductionSpecialMessage) message);
                 else buildInvalidResponse();
-            case END_TURN:
-                if(validateAction(Action.END_TURN))
+                break;
+            }
+            case END_TURN: {
+                if (validateAction(Action.END_TURN))
                     roundController.handle_endTurn();
                 else buildInvalidResponse();
-            case FOLD_LEADER:
-                if(validateAction(Action.LD_ACTION))
+                break;
+            }
+            case FOLD_LEADER: {
+                if (validateAction(Action.LD_ACTION))
                     roundController.handle_foldLeader((LeaderMessage) message);
                 else buildInvalidResponse();
-            case ACTIVE_LEADER:
-                if(validateAction(Action.LD_ACTION))
+                break;
+            }
+            case ACTIVE_LEADER: {
+                if (validateAction(Action.LD_ACTION))
                     roundController.handle_activeLeader((LeaderMessage) message);
                 else buildInvalidResponse();
-            case FIRST_ACTION:
-                if(validateAction(Action.FIRST_ACTION))
+                break;
+            }
+            case FIRST_ACTION: {
+                if (validateAction(Action.FIRST_ACTION))
                     roundController.handle_firstAction((FirstActionMessage) message);
                 else buildInvalidResponse();
-            case SECOND_ACTION:
-                if(validateAction(Action.FIRST_ACTION))
+                break;
+            }
+            case SECOND_ACTION: {
+                if (validateAction(Action.FIRST_ACTION))
                     roundController.handle_secondAction((SecondActionMessage) message);
                 else buildInvalidResponse();
-                if(roundController.isWinner())
-                    endGame();
+                break;
+            }
         }
+        if (roundController.isWinner())
+            endGame();
     }
 
     public void buildInvalidResponse() {
@@ -125,12 +147,7 @@ public class GameController {
         return TurnState.isPossible(roundController.getTurnState(), action);
     }
 
-    void firstTurn(){
 
-    }
-
-    public GameState getGameState(){
-        return gamestate;}
     public void endGame(){
         for (HumanPlayer player:gameBoardInstance.getPlayers())
         {

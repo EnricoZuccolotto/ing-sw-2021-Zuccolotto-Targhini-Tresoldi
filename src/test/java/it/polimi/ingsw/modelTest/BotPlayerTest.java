@@ -1,15 +1,12 @@
 package it.polimi.ingsw.modelTest;
 
 import it.polimi.ingsw.exceptions.playerboard.WinnerException;
+import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.player.BotPlayer;
-import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 import static org.junit.Assert.*;
 
@@ -18,40 +15,39 @@ public class BotPlayerTest {
     @Test
     public void discardTest() {
         GameBoard g = new GameBoard();
-        HumanPlayer h=new HumanPlayer("Luca",true);
+        HumanPlayer h = new HumanPlayer("Luca", true);
         g.addPlayer(h);
         g.init(g);
         BotPlayer b = g.getBot();
-        assertEquals(4, g.getDeck(0, 0).DeckLength());
-        assertEquals(4, g.getDeck(1, 0).DeckLength());
-        assertEquals(4, g.getDeck(2, 0).DeckLength());
-        assertEquals(4, g.getDeck(3, 0).DeckLength());
+        assertEquals(4, g.getDeck(Colors.BLUE, 1).DeckLength());
+        assertEquals(4, g.getDeck(Colors.YELLOW, 1).DeckLength());
+        assertEquals(4, g.getDeck(Colors.PURPLE, 1).DeckLength());
+        assertEquals(4, g.getDeck(Colors.GREEN, 1).DeckLength());
         b.discard(Colors.BLUE);
-        assertEquals(2, g.getDeck(0, 0).DeckLength());
-        assertEquals(4, g.getDeck(1, 0).DeckLength());
+        assertEquals(2, g.getDeck(Colors.BLUE, 1).DeckLength());
+        assertEquals(4, g.getDeck(Colors.YELLOW, 1).DeckLength());
         b.discard(Colors.YELLOW);
-        assertEquals(2, g.getDeck(1, 0).DeckLength());
+        assertEquals(2, g.getDeck(Colors.YELLOW, 1).DeckLength());
         b.discard(Colors.PURPLE);
-        assertEquals(2, g.getDeck(2, 0).DeckLength());
+        assertEquals(2, g.getDeck(Colors.PURPLE, 1).DeckLength());
         b.discard(Colors.GREEN);
-        assertEquals(2, g.getDeck(3, 0).DeckLength());
+        assertEquals(2, g.getDeck(Colors.GREEN, 1).DeckLength());
         b.discard(Colors.BLUE);
-        assertEquals(0, g.getDeck(0, 0).DeckLength());
+        assertEquals(0, g.getDeck(Colors.BLUE, 1).DeckLength());
         b.discard(Colors.BLUE);
-        assertEquals(0, g.getDeck(0, 0).DeckLength());
-        assertEquals(2, g.getDeck(0, 1).DeckLength());
+        assertEquals(0, g.getDeck(Colors.BLUE, 1).DeckLength());
+        assertEquals(2, g.getDeck(Colors.BLUE, 2).DeckLength());
         b.discard(Colors.BLUE);
-        assertEquals(0, g.getDeck(0, 1).DeckLength());
+        assertEquals(0, g.getDeck(Colors.BLUE, 2).DeckLength());
         b.discard(Colors.BLUE);
-        assertEquals(2, g.getDeck(0, 2).DeckLength());
+        assertEquals(2, g.getDeck(Colors.BLUE, 3).DeckLength());
         try {
             b.discard(Colors.BLUE);
             fail();
-        }
-        catch(WinnerException e){
+        } catch (WinnerException e) {
             assertTrue(true);
         }
-        assertEquals(0, g.getDeck(0, 2).DeckLength());
+        assertEquals(0, g.getDeck(Colors.BLUE, 3).DeckLength());
     }
     @Test
     public void BlackCross2Test() {

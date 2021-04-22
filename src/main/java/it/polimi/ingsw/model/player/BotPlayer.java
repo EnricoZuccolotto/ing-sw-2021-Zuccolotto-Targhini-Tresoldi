@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.enums.Colors;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
 
 public class BotPlayer extends Player {
     private final GameBoard currentGameBoard;
@@ -59,21 +58,20 @@ public void init(){
           currentAction++;
     }
     public void discard(Colors c){
-        int cont=0;
-        int i=0;
-        int sum=0;
-        while (cont<2 && i<3){
-                if(currentGameBoard.getDeck(c.ordinal(),i).DeckLength()>0) {
-                    currentGameBoard.getDeck(c.ordinal(), i).popLastCard();
-                    cont++;
-                }
-                else
+        int cont = 0;
+        int i = 1;
+        int sum = 0;
+        while (cont < 2 && i < 4) {
+            if (currentGameBoard.getDeck(c, i).DeckLength() > 0) {
+                currentGameBoard.getDeck(c, i).popLastCard();
+                cont++;
+            } else
                 i++;
         }
-        for(i=0; i<3; i++){
-            sum=+currentGameBoard.getDeck(c.ordinal(),i).DeckLength();
+        for (i = 1; i < 4; i++) {
+            sum = +currentGameBoard.getDeck(c, i).DeckLength();
         }
-        if(sum==0){
+        if (sum == 0) {
             throw new WinnerException();
         }
     }

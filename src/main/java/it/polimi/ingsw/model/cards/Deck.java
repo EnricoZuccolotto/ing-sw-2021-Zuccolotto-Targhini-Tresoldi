@@ -3,42 +3,78 @@ package it.polimi.ingsw.model.cards;
 import java.util.ArrayList;
 import java.util.Collections;
 
-// Indici 0, 1, 2
-public class Deck {
-    private  final ArrayList<DevelopmentCard> deck;
 
-    public Deck(){
-     deck=new ArrayList<>();
+/**
+ * This class represents a deck of Development card.
+ */
+public class Deck {
+    private final ArrayList<DevelopmentCard> deck;
+
+    /**
+     * Build a deck with size equals a zero.
+     */
+    public Deck() {
+        deck = new ArrayList<>();
     }
 
-    public ArrayList<DevelopmentCard> getDeck(){
+    /**
+     * Gets the deck.
+     */
+    public ArrayList<DevelopmentCard> getDeck() {
         return deck;
     }
-    public void addCard(DevelopmentCard c){
+
+    /**
+     * Add a Development card to the deck.
+     *
+     * @param c card to add
+     * @throws NullPointerException if the card is null.
+     */
+    public void addCard(DevelopmentCard c) {
         if (c == null) throw new NullPointerException("DevelopmentCard cannot be null");
         deck.add(c);
     }
-    public int DeckLength(){
+
+    /**
+     * Gets the number of cards contained in the deck.
+     *
+     * @return the size of the deck.
+     */
+    public int DeckLength() {
         return deck.size();
     }
 
-    public  DevelopmentCard getFirstCard(){
-
+    /**
+     * Gets the first card of the deck.
+     *
+     * @return the first card of the deck.
+     */
+    public DevelopmentCard getFirstCard() {
         return (DevelopmentCard) deck.toArray()[0];
     }
 
-    public DevelopmentCard popFirstCard(){
-        try {
-            return deck.remove(0);
-        } catch (IndexOutOfBoundsException e) {
-            return null;
-        }
-    }
-    public void popLastCard(){
-            deck.remove(deck.size()-1);
+    /**
+     * Remove the first card of the deck.
+     *
+     * @throws IndexOutOfBoundsException if the deck has 0 cards.
+     */
+    public void popFirstCard() {
+        deck.remove(0);
     }
 
-    public void shuffle(){
+    /**
+     * Remove the last card of the deck.
+     *
+     * @throws IndexOutOfBoundsException if the deck has 0 cards.
+     */
+    public void popLastCard() {
+        deck.remove(deck.size() - 1);
+    }
+
+    /**
+     * Shuffle the cards in the deck.
+     */
+    public void shuffle() {
         Collections.shuffle(deck);
     }
 

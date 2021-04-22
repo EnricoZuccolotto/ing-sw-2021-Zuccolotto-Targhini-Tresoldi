@@ -8,12 +8,12 @@ import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.board.SimplePlayerBoard;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
-
 import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class PlayerBoardTest {
@@ -27,21 +27,21 @@ public class PlayerBoardTest {
     }
     @Test
     public void LeadCardTest(){
-        SimplePlayerBoard s= new SimplePlayerBoard(true);
+        SimplePlayerBoard s = new SimplePlayerBoard(true);
         assertEquals(0, s.getLeaderCardsNumber());
-        int[] a={0, 0};
-        LeaderCard l= new LeaderCard(5,1,a,a, Advantages.CHANGE,a,a);
+        int[] a = {0, 0};
+        LeaderCard l = new LeaderCard(5, 1, a, a, Advantages.CHANGE, a);
         s.addLeaderCard(l);
         assertEquals(l, s.getLeaderCard(0));
-        assertEquals(1,s.getLeaderCardsNumber());
-        LeaderCard g= new LeaderCard(3,1,a,a, Advantages.CHANGE,a,a);
+        assertEquals(1, s.getLeaderCardsNumber());
+        LeaderCard g = new LeaderCard(3, 1, a, a, Advantages.CHANGE, a);
         s.addLeaderCard(g);
         assertEquals(g, s.getLeaderCard(1));
         assertEquals(2, s.getLeaderCardsNumber());
         s.removeLeaderCard(l);
-        assertEquals(1,s.getLeaderCardsNumber());
+        assertEquals(1, s.getLeaderCardsNumber());
         s.removeLeaderCard(g);
-        assertEquals(0,s.getLeaderCardsNumber());
+        assertEquals(0, s.getLeaderCardsNumber());
         s.addLeaderCard(g);
         s.addLeaderCard(l);
         g.flipCard();
@@ -219,32 +219,33 @@ public class PlayerBoardTest {
         assertTrue(s.payResourcesStrongbox(c));
         assertTrue(s.checkResourcesStrongbox(c));
         s.addWarehouseResource(Resources.SERVANT,2);
-        s.addStrongboxResource(Resources.SHIELD,2);
-        s.addStrongboxResource(Resources.COIN,2);
+        s.addStrongboxResource(Resources.SHIELD, 2);
+        s.addStrongboxResource(Resources.COIN, 2);
         assertTrue(s.checkResources(d));
         assertTrue(s.checkResources(a));
         assertTrue(s.checkResourcesStrongbox(a));
         assertFalse(s.checkResourcesStrongbox(d));
         assertTrue(s.payResourcesStrongbox(c));
-        assertEquals(2,Math.floorDiv(s.getNumberResources(),5));
+        assertEquals(2, Math.floorDiv(s.getNumberResources(), 5));
     }
+
     @Test
-    public void VictoryPointsTest(){
+    public void VictoryPointsTest() {
         HumanPlayer player = new HumanPlayer("test", true);
         PlayerBoard board = new DecoratedWarehousePlayerBoard(player.getPlayerBoard());
         board.addWarehouseSpace(Resources.COIN, 2);
-        board.addExtraResources(Resources.COIN,2);
-        board.addStrongboxResource(Resources.STONE,15);
-        board.addWarehouseResource(Resources.SHIELD,3);
-        board.addWarehouseResource(Resources.SHIELD,3);
-        board.addWarehouseResource(Resources.SHIELD,3);
-        assertEquals(board.getVictoryPointsCards(),0);
-        assertEquals(board.getNumberResources(),20);
-        board.addLeaderCard(new LeaderCard(10,2,null,null,null,new int []{0,0,0,1},new int []{0,0,0,3}));
-        assertEquals(0,board.getVictoryPointsCards());
+        board.addExtraResources(Resources.COIN, 2);
+        board.addStrongboxResource(Resources.STONE, 15);
+        board.addWarehouseResource(Resources.SHIELD, 3);
+        board.addWarehouseResource(Resources.SHIELD, 3);
+        board.addWarehouseResource(Resources.SHIELD, 3);
+        assertEquals(board.getVictoryPointsCards(), 0);
+        assertEquals(board.getNumberResources(), 20);
+        board.addLeaderCard(new LeaderCard(10, 2, null, null, null, new int[]{0, 0, 0, 3}));
+        assertEquals(0, board.getVictoryPointsCards());
         board.getLeaderCard(0).flipCard();
-        assertEquals(10,board.getVictoryPointsCards());
-        board.addProductionCard(new DevelopmentCard(4,2,new int[]{0,0,0,0},new int[]{0,1,2,0},new int[]{7,5,2,0,0,2}, Colors.BLUE,1));
-        assertEquals(14,board.getVictoryPointsCards());
+        assertEquals(10, board.getVictoryPointsCards());
+        board.addProductionCard(new DevelopmentCard(4, 2, new int[]{0, 0, 0, 0}, new int[]{0, 1, 2, 0}, new int[]{7, 5, 2, 0, 0, 2}, Colors.BLUE, 1));
+        assertEquals(14, board.getVictoryPointsCards());
     }
 }

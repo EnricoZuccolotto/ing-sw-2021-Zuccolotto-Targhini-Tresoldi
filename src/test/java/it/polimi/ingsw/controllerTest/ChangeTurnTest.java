@@ -24,145 +24,147 @@ public class ChangeTurnTest {
     public void FirstTurnTest(){
         ArrayList<LeaderCard> expected=new ArrayList<>();
         GameBoard gb=new GameBoard();
-        gb.addPlayer(new HumanPlayer("Harry",false));
-        gb.addPlayer(new HumanPlayer("Enry",false));
+        gb.addPlayer(new HumanPlayer("Harry", false));
+        gb.addPlayer(new HumanPlayer("Enry", false));
         gb.init(gb);
-        RoundController g=new RoundController(gb);
+        RoundController g = new RoundController(gb);
         g.init(gb.getPlayers().get(0));
         g.handle_firstTurn();
         expected.add(gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(0));
         expected.add(gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(1));
         expected.add(gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(2));
         expected.add(gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(3));
-        assertEquals(gb.getPlayers().get(0).getPlayerBoard().getLeaderCardsNumber(),4);
-        assertEquals(gb.getPlayers().get(1).getPlayerBoard().getLeaderCardsNumber(),4);
+        assertEquals(gb.getPlayers().get(0).getPlayerBoard().getLeaderCardsNumber(), 4);
+        assertEquals(gb.getPlayers().get(1).getPlayerBoard().getLeaderCardsNumber(), 4);
         assertEquals(g.getTurnState(), TurnState.FIRST_TURN);
-        g.handle_firstAction(new FirstActionMessage("Harry", MessageType.FIRST_ACTION,2,3));
-        assertEquals(gb.getPlayers().get(0).getPlayerBoard().getLeaderCardsNumber(),2);
+        g.handle_firstAction(new FirstActionMessage("Harry", 2, 3));
+        assertEquals(gb.getPlayers().get(0).getPlayerBoard().getLeaderCardsNumber(), 2);
         expected.remove(3);
         expected.remove(2);
-        assertEquals(expected.get(0),gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(0));
-        assertEquals(expected.get(1),gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(1));
+        assertEquals(expected.get(0), gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(0));
+        assertEquals(expected.get(1), gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(1));
         assertEquals(g.getTurnState(), TurnState.FIRST_TURN);
         expected.clear();
         expected.add(gb.getPlayers().get(1).getPlayerBoard().getLeaderCard(0));
         expected.add(gb.getPlayers().get(1).getPlayerBoard().getLeaderCard(1));
         expected.add(gb.getPlayers().get(1).getPlayerBoard().getLeaderCard(2));
         expected.add(gb.getPlayers().get(1).getPlayerBoard().getLeaderCard(3));
-        g.handle_firstAction(new FirstActionMessage("Enry", MessageType.FIRST_ACTION,1,0));
-        assertEquals(2,gb.getPlayers().get(1).getPlayerBoard().getLeaderCardsNumber());
+        g.handle_firstAction(new FirstActionMessage("Enry", 1, 0));
+        assertEquals(2, gb.getPlayers().get(1).getPlayerBoard().getLeaderCardsNumber());
         expected.remove(1);
         expected.remove(0);
-        assertEquals(expected.get(0),gb.getPlayers().get(1).getPlayerBoard().getLeaderCard(0));
-        assertEquals(expected.get(1),gb.getPlayers().get(1).getPlayerBoard().getLeaderCard(1));
+        assertEquals(expected.get(0), gb.getPlayers().get(1).getPlayerBoard().getLeaderCard(0));
+        assertEquals(expected.get(1), gb.getPlayers().get(1).getPlayerBoard().getLeaderCard(1));
         assertEquals("Harry", g.getPlayerInTurn().getName());
 
-    } @Test
-    public void SecondTurnTest(){
-        ArrayList<LeaderCard> expected=new ArrayList<>();
-        GameBoard gb=new GameBoard();
-        gb.addPlayer(new HumanPlayer("Harry",false));
-        gb.addPlayer(new HumanPlayer("Enry",false));
-        gb.addPlayer(new HumanPlayer("Ron",false));
-        gb.addPlayer(new HumanPlayer("Hermione",false));
-        gb.init(gb);
-        RoundController g=new RoundController(gb);
-        g.init(gb.getPlayers().get(0));
-        g.handle_firstTurn();
-        g.handle_firstAction(new FirstActionMessage("Harry", MessageType.FIRST_ACTION,2,3));
-        g.handle_firstAction(new FirstActionMessage("Enry", MessageType.FIRST_ACTION,1,0));
-        g.handle_firstAction(new FirstActionMessage("Ron", MessageType.FIRST_ACTION,2,3));
-        g.handle_firstAction(new FirstActionMessage("Hermione", MessageType.FIRST_ACTION,1,0));
-        assertEquals(g.getTurnState(),TurnState.SECOND_TURN);
-        ArrayList<Resources> r=new ArrayList<>();
-        r.add(Resources.STONE);
-        try{
-            g.handle_secondAction(new SecondActionMessage("Hermione",MessageType.SECOND_ACTION,r));
-            fail();
-        }catch (IllegalActionException e){
-            assertEquals(0,0);
-        }
-        g.handle_secondAction(new SecondActionMessage("Ron",MessageType.SECOND_ACTION,r));
-        assertTrue(gb.getPlayers().get(2).getPlayerBoard().checkResourcesStrongbox(new int[]{0,0,1,0}));
-        g.handle_secondAction(new SecondActionMessage("Enry",MessageType.SECOND_ACTION,r));
-        assertTrue(gb.getPlayers().get(1).getPlayerBoard().checkResourcesStrongbox(new int[]{0,0,1,0}));
-        assertEquals(1,gb.getPlayerFaithPathPosition(2));
-        r.add(Resources.SHIELD);
-        g.handle_secondAction(new SecondActionMessage("Hermione",MessageType.SECOND_ACTION,r));
-        assertTrue(gb.getPlayers().get(3).getPlayerBoard().checkResourcesStrongbox(new int[]{0,0,1,1}));
-        assertEquals(1,gb.getPlayerFaithPathPosition(3));
-        assertEquals(g.getTurnState(),TurnState.FIRST_LEADER_ACTION);
-        assertEquals(g.getPlayerInTurn().getName(),"Harry");
     }
 
     @Test
-    public void FirstActionIsLeader(){
-        GameBoard gb=new GameBoard();
-        gb.addPlayer(new HumanPlayer("Harry",false));
-        gb.addPlayer(new HumanPlayer("Enry",false));
+    public void SecondTurnTest() {
+        GameBoard gb = new GameBoard();
+        gb.addPlayer(new HumanPlayer("Harry", false));
+        gb.addPlayer(new HumanPlayer("Enry", false));
+        gb.addPlayer(new HumanPlayer("Ron", false));
+        gb.addPlayer(new HumanPlayer("Hermione", false));
         gb.init(gb);
-        ArrayList<Resources> r=new ArrayList<>();
+        RoundController g = new RoundController(gb);
+        g.init(gb.getPlayers().get(0));
+        g.handle_firstTurn();
+        g.handle_firstAction(new FirstActionMessage("Harry", 2, 3));
+        g.handle_firstAction(new FirstActionMessage("Enry", 1, 0));
+        g.handle_firstAction(new FirstActionMessage("Ron", 2, 3));
+        g.handle_firstAction(new FirstActionMessage("Hermione", 1, 0));
+        assertEquals(g.getTurnState(), TurnState.SECOND_TURN);
+        ArrayList<Resources> r = new ArrayList<>();
         r.add(Resources.STONE);
-        RoundController g=new RoundController(gb);
+        try {
+            g.handle_secondAction(new SecondActionMessage("Hermione", r));
+            fail();
+        } catch (IllegalActionException e) {
+            assertEquals(0, 0);
+        }
+        g.handle_secondAction(new SecondActionMessage("Ron", r));
+        assertTrue(gb.getPlayers().get(2).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 0, 1, 0}));
+        g.handle_secondAction(new SecondActionMessage("Enry", r));
+        assertTrue(gb.getPlayers().get(1).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 0, 1, 0}));
+        assertEquals(1, gb.getPlayerFaithPathPosition(2));
+        r.add(Resources.SHIELD);
+        g.handle_secondAction(new SecondActionMessage("Hermione", r));
+        assertTrue(gb.getPlayers().get(3).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 0, 1, 1}));
+        assertEquals(1, gb.getPlayerFaithPathPosition(3));
+        assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
+        assertEquals(g.getPlayerInTurn().getName(), "Harry");
+    }
+
+    @Test
+    public void FirstActionIsLeader() {
+        GameBoard gb = new GameBoard();
+        gb.addPlayer(new HumanPlayer("Harry", false));
+        gb.addPlayer(new HumanPlayer("Enry", false));
+        gb.init(gb);
+        ArrayList<Resources> r = new ArrayList<>();
+        r.add(Resources.STONE);
+        RoundController g = new RoundController(gb);
         g.init(gb.getPlayers().get(0));
         g.handle_firstTurn();
 
-        g.handle_firstAction(new FirstActionMessage("Harry", MessageType.FIRST_ACTION,2,3));
-        g.handle_firstAction(new FirstActionMessage("Enry", MessageType.FIRST_ACTION,1,0));
+        g.handle_firstAction(new FirstActionMessage("Harry", 2, 3));
+        g.handle_firstAction(new FirstActionMessage("Enry", 1, 0));
 
-        g.handle_secondAction(new SecondActionMessage("Enry",MessageType.SECOND_ACTION,r));
+        g.handle_secondAction(new SecondActionMessage("Enry", r));
 
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
-        if(TurnState.isPossible(g.getTurnState(),Action.LD_ACTION)) {
-            g.handle_foldLeader(new LeaderMessage("Harry",MessageType.FOLD_LEADER,0));
+        if (TurnState.isPossible(g.getTurnState(), Action.LD_ACTION)) {
+            g.handle_foldLeader(new LeaderMessage("Harry", MessageType.FOLD_LEADER, 0));
         }
-        HumanPlayer p=g.getPlayerInTurn();
+        HumanPlayer p = g.getPlayerInTurn();
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
-        if(TurnState.isPossible(g.getTurnState(),Action.STD_GETPRODUCTION))
+        if (TurnState.isPossible(g.getTurnState(), Action.STD_GETPRODUCTION))
             g.nextState(Action.STD_GETPRODUCTION);
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
-        if(TurnState.isPossible(g.getTurnState(),Action.LD_ACTION)) {
+        if (TurnState.isPossible(g.getTurnState(), Action.LD_ACTION)) {
             g.nextState(Action.LD_ACTION);
             gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(0).flipCard();
         }
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
-        if(TurnState.isPossible(g.getTurnState(),Action.END_TURN)) {
+        if (TurnState.isPossible(g.getTurnState(), Action.END_TURN)) {
             g.handle_endTurn();
         }
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
         assertNotEquals(g.getPlayerInTurn(), p);
 
     }
+
     @Test
-    public void FirstActionIsStd(){
-        GameBoard gb=new GameBoard();
-        gb.addPlayer(new HumanPlayer("Harry",false));
-        gb.addPlayer(new HumanPlayer("Enry",false));
-        ArrayList<Resources> r=new ArrayList<>();
+    public void FirstActionIsStd() {
+        GameBoard gb = new GameBoard();
+        gb.addPlayer(new HumanPlayer("Harry", false));
+        gb.addPlayer(new HumanPlayer("Enry", false));
+        ArrayList<Resources> r = new ArrayList<>();
         r.add(Resources.STONE);
-        RoundController g=new RoundController(gb);
+        RoundController g = new RoundController(gb);
         g.init(gb.getPlayers().get(0));
         g.handle_firstTurn();
 
-        g.handle_firstAction(new FirstActionMessage("Harry", MessageType.FIRST_ACTION,2,3));
-        g.handle_firstAction(new FirstActionMessage("Enry", MessageType.FIRST_ACTION,1,0));
+        g.handle_firstAction(new FirstActionMessage("Harry", 2, 3));
+        g.handle_firstAction(new FirstActionMessage("Enry", 1, 0));
 
-        g.handle_secondAction(new SecondActionMessage("Enry",MessageType.SECOND_ACTION,r));
+        g.handle_secondAction(new SecondActionMessage("Enry", r));
 
         assertEquals("Harry", g.getPlayerInTurn().getName());
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
-        if(TurnState.isPossible(g.getTurnState(),Action.STD_GETMARKET))
+        if (TurnState.isPossible(g.getTurnState(), Action.STD_GETMARKET))
             g.nextState(Action.STD_GETMARKET);
-        HumanPlayer p=g.getPlayerInTurn();
+        HumanPlayer p = g.getPlayerInTurn();
         assertEquals(g.getTurnState(), TurnState.WAREHOUSE_ACTION);
-        if(TurnState.isPossible(g.getTurnState(),Action.SORTING_WAREHOUSE))
+        if (TurnState.isPossible(g.getTurnState(), Action.SORTING_WAREHOUSE))
             g.nextState(Action.SORTING_WAREHOUSE);
-        if(TurnState.isPossible(g.getTurnState(),Action.SHIFT_WAREHOUSE))
+        if (TurnState.isPossible(g.getTurnState(), Action.SHIFT_WAREHOUSE))
             g.nextState(Action.SHIFT_WAREHOUSE);
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
         if(TurnState.isPossible(g.getTurnState(),Action.LD_ACTION)) {
-            g.nextState(Action.LD_ACTION);
             gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(0).flipCard();
+            g.nextState(Action.LD_ACTION);
         }
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
         if(TurnState.isPossible(g.getTurnState(),Action.END_TURN)) {

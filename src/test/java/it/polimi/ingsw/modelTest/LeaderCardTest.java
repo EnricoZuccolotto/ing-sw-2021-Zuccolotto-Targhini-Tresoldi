@@ -1,7 +1,6 @@
 package it.polimi.ingsw.modelTest;
 
 import it.polimi.ingsw.model.cards.LeaderCard;
-import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.tools.CardParser;
 import org.junit.Test;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class LeaderCardTest {
     @Test
@@ -41,9 +39,8 @@ public class LeaderCardTest {
                     assertEquals(c.getCostColor().length,4);
                     assertEquals(c.getCostResources().length,4);
                     expect.remove(c.getAdvantage());
-                    assertEquals(c.getEffect1().size(),4);
+                    assertEquals(c.getEffect().size(), 4);
                     expected.remove((Integer) c.getID());
-
                 }
 
 

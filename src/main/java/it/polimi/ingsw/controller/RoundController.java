@@ -5,10 +5,11 @@ import it.polimi.ingsw.exceptions.playerboard.IllegalActionException;
 import it.polimi.ingsw.exceptions.playerboard.WinnerException;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.cards.LeaderCard;
+import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.model.tools.CardParser;
-import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.network.messages.*;
+
 import java.util.ArrayList;
 
 
@@ -35,9 +36,7 @@ public class RoundController {
         this.productions=new ArrayList<>(4);
         this.actionController = new ActionController();
         this.Winner=false;
-
         // FIXME: Example, should be the player with the inkwell
-
         this.winnerPlayer=-2;
     }
     public void init(HumanPlayer playerInTurn){
@@ -228,6 +227,7 @@ public class RoundController {
                 nextTurn();
             }
         }
+
 
     }
 

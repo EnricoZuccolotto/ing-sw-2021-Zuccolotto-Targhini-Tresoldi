@@ -3,11 +3,11 @@ package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 
-public class UseProductionBaseMessage extends ProductionMessage{
-   private final Resources output;
+public class UseProductionBaseMessage extends ProductionMessage {
+    private final Resources output;
 
-    public UseProductionBaseMessage(String playerName, MessageType messageType, ExchangeResources exchangeResources, Resources output) {
-        super(playerName, messageType, exchangeResources);
+    public UseProductionBaseMessage(String playerName, ExchangeResources exchangeResources, Resources output) {
+        super(playerName, MessageType.USE_BASE_PRODUCTION, exchangeResources);
         this.output = output;
     }
 

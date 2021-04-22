@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.enums;
-
+/**
+ * This enum contains all possible type of resource.
+ */
 public enum Resources {
     SERVANT,
     COIN,
@@ -8,6 +10,13 @@ public enum Resources {
     FAITH,
     WHITE,
     WHATEVER;
+
+    /**
+     * Transform an integer into a Resource
+     *
+     * @param i integer to transform
+     * @return the integer into a Resource
+     */
     public static Resources transform(int i) {
         switch (i) {
             case 0:

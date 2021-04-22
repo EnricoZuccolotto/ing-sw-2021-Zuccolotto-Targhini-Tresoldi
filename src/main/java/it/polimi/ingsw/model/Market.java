@@ -1,72 +1,92 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.enums.Resources;
-import it.polimi.ingsw.network.messages.MarketMessage;
+import it.polimi.ingsw.network.messages.MarketUpdateMessage;
 import it.polimi.ingsw.observer.Observable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
+/**
+ * This class represents the market.
+ * market is a matrix of resources 3x4
+ * slide represents the resource in the slide.
+ */
 public class Market extends Observable implements Serializable {
     private final Resources[][] market;
     private Resources slide;
 
+    /**
+     * Build a new market with the correct number of resources in random position.
+     */
     public Market() {
-        market= new Resources[3][4];
+        market = new Resources[3][4];
         int temp;
-        double[] a= {2, 2, 2, 2, 1, 4};
-        temp= (int) Math.floor(Math.random()*6);
+        double[] a = {2, 2, 2, 2, 1, 4};
+        temp = (int) Math.floor(Math.random() * 6);
         a[temp]--;
 
-        slide=Resources.transform(temp);
-        for(int i=0; i<3; i++){
-            for(int j=0; j<4; j++){
-                temp= (int) Math.floor(Math.random()*6);
-                while(a[temp]==0){
-                    temp= (int) Math.floor(Math.random()*6);
+        slide = Resources.transform(temp);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 4; j++) {
+                temp = (int) Math.floor(Math.random() * 6);
+                while (a[temp] == 0) {
+                    temp = (int) Math.floor(Math.random() * 6);
                 }
                 a[temp]--;
-                market[i][j]=Resources.transform(temp);
+                market[i][j] = Resources.transform(temp);
             }
         }
     }
 
-    public ArrayList<Resources> pushColumn(int columnIndex){
+    /**
+     * Gets the column index of resources from the market.
+     *
+     * @param columnIndex number of the column
+     * @return the column of resources from the market.
+     */
+    public ArrayList<Resources> pushColumn(int columnIndex) {
         Resources temp;
-        ArrayList<Resources> ret= new ArrayList<>();
-        temp=market[0][columnIndex];
+        ArrayList<Resources> ret = new ArrayList<>();
+        temp = market[0][columnIndex];
         ret.add(0, temp);
-        for(int i=1; i<3; i++){
-            market[i-1][columnIndex]=market[i][columnIndex];
-            ret.add(i, market[i-1][columnIndex]);
+        for (int i = 1; i < 3; i++) {
+            market[i - 1][columnIndex] = market[i][columnIndex];
+            ret.add(i, market[i - 1][columnIndex]);
         }
-        market[2][columnIndex]=slide;
-        slide=temp;
-        notifyObserver(new MarketMessage("server", this));
+        market[2][columnIndex] = slide;
+        slide = temp;
+        notifyObserver(new MarketUpdateMessage("server", this));
         return ret;
     }
 
-    public ArrayList<Resources> pushRow(int rowIndex){
+    /**
+     * Gets the row index of resources from the market.
+     *
+     * @param rowIndex number of the row
+     * @return the row of resources from the market.
+     */
+    public ArrayList<Resources> pushRow(int rowIndex) {
         Resources temp;
-        ArrayList<Resources> ret= new ArrayList<>();
-        temp=market[rowIndex][0];
+        ArrayList<Resources> ret = new ArrayList<>();
+        temp = market[rowIndex][0];
         ret.add(0, temp);
-        for(int i=1; i<4; i++){
-            market[rowIndex][i-1]=market[rowIndex][i];
-            ret.add(i, market[rowIndex][i-1]);
+        for (int i = 1; i < 4; i++) {
+            market[rowIndex][i - 1] = market[rowIndex][i];
+            ret.add(i, market[rowIndex][i - 1]);
         }
-        market[rowIndex][3]=slide;
-        slide=temp;
-        notifyObserver(new MarketMessage("server", this));
+        market[rowIndex][3] = slide;
+        slide = temp;
+        notifyObserver(new MarketUpdateMessage("server", this));
         return ret;
     }
 
-    public Resources[][] getMarket() {
-        return market;
-    }
-
+    /**
+     * Gets the resource in the slide
+     *
+     * @return the resource in the slide
+     */
     public Resources getSlide() {
         return slide;
     }
@@ -75,7 +95,7 @@ public class Market extends Observable implements Serializable {
     public String toString() {
         return
                 "market=" + Arrays.toString(market) +
-                ", slide=" + slide
+                        ", slide=" + slide
                 ;
     }
 

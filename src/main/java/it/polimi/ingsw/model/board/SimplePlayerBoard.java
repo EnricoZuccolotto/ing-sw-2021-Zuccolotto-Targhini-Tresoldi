@@ -10,21 +10,20 @@ import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.SpaceProd;
 import it.polimi.ingsw.model.player.Strongbox;
 import it.polimi.ingsw.model.player.Warehouse;
-import it.polimi.ingsw.observer.Observable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SimplePlayerBoard implements PlayerBoard, Serializable {
-    private Strongbox strongbox;
-    private boolean inkWell;
-    private ArrayList<LeaderCard> leaderCards;
-    private ArrayList<SpaceProd> productionSpaces;
-    private Warehouse warehouse;
+    private final Strongbox strongbox;
+    private final boolean inkWell;
+    private final ArrayList<LeaderCard> leaderCards;
+    private final ArrayList<SpaceProd> productionSpaces;
+    private final Warehouse warehouse;
     private int VP;
 
-    public SimplePlayerBoard(boolean inkWell){
+    public SimplePlayerBoard(boolean inkWell) {
         this.inkWell = inkWell;
         strongbox = new Strongbox();
         leaderCards = new ArrayList<>(2);
@@ -32,6 +31,7 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         warehouse = new Warehouse();
 
     }
+
     @Override
     public void setVP(int VP) {
         this.VP = VP;
@@ -90,7 +90,7 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         int n;
 
         // Get resources number victory points
-       n=(strongbox.getNumResources()+warehouse.Resourcesnumb());
+        n = (strongbox.getNumResources() + warehouse.ResourceNumber());
 
         return n;
     }
@@ -222,11 +222,10 @@ private void checkWinnerNumCards() {
         for(int  i=0;i<4;i++){
             if(r[i]!=0)
             {
-                if(r[i]-warehouse.getResource(Resources.transform(i))<=0) {
+                if (r[i] - warehouse.getNumberResource(Resources.transform(i)) <= 0) {
                     for (int j = 0; j < r[i]; j++)
                         warehouse.popResources(Resources.transform(i));
-                }
-                else return false;
+                } else return false;
             }
         }
             return true;
@@ -234,11 +233,10 @@ private void checkWinnerNumCards() {
     @Override
     public boolean checkResourcesWarehouse(int [] r)
     {
-        for(int  i=0;i<4;i++){
-            if(r[i]!=0)
-            {
-                if(warehouse.getResource(Resources.transform(i))<r[i]) {
-                   return false;
+        for(int  i=0;i<4;i++) {
+            if (r[i] != 0) {
+                if (warehouse.getNumberResource(Resources.transform(i)) < r[i]) {
+                    return false;
                 }
             }
         }
@@ -292,12 +290,11 @@ private void checkWinnerNumCards() {
     @Override
     public boolean checkResources(int [] resources){
         int  tmp;
-        for(int  i=0;i<4;i++)
-            if(resources[i]!=0)
-            {
-                tmp=resources[i]-warehouse.getResource(Resources.transform(i));
-                tmp=tmp-strongbox.getResources(Resources.transform(i));
-                if(tmp>0) {
+        for (int i = 0; i < 4; i++)
+            if (resources[i] != 0) {
+                tmp = resources[i] - warehouse.getNumberResource(Resources.transform(i));
+                tmp = tmp - strongbox.getResources(Resources.transform(i));
+                if (tmp > 0) {
                     return false;
                 }
 

@@ -1,15 +1,11 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.model.enums.Resources;
-
-import java.util.ArrayList;
-
-public class FirstActionMessage extends Message{
-    int index1,index2;
+public class FirstActionMessage extends Message {
+    int index1, index2;
 
 
-    public FirstActionMessage(String playerName, MessageType messageType, int index1, int index2) {
-        super(playerName, messageType);
+    public FirstActionMessage(String playerName, int index1, int index2) {
+        super(playerName, MessageType.FIRST_ACTION);
         this.index1 = index1;
         this.index2 = index2;
     }

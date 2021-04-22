@@ -4,12 +4,12 @@ import it.polimi.ingsw.model.enums.Resources;
 
 import java.util.ArrayList;
 
-public class SecondActionMessage extends Message{
+public class SecondActionMessage extends Message {
 
     ArrayList<Resources> resources;
 
-    public SecondActionMessage(String playerName, MessageType messageType,  ArrayList<Resources> resources) {
-        super(playerName, messageType);
+    public SecondActionMessage(String playerName, ArrayList<Resources> resources) {
+        super(playerName, MessageType.SECOND_ACTION);
         this.resources = resources;
     }
 

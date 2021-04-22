@@ -66,30 +66,87 @@ public interface PlayerBoard {
 
     /**
      * Gets covered leader card number
+     *
      * @return Covered leader card number.
      */
     int getLeaderCardsNumber();
 
     boolean checkColors(int[] colors);
-    boolean checkResources(int [] resources);
-    boolean checkResourcesStrongbox(int [] r);
-    boolean checkResourcesWarehouse(int [] r);
-    boolean payResourcesStrongbox(int [] r);
-    boolean payResourcesWarehouse(int [] r);
-    boolean payResourcesSpecialWarehouse(int [] r);
-    boolean checkResourcesSpecialWarehouse(int [] r);
+
+    boolean checkResources(int[] resources);
+
+    boolean checkResourcesStrongbox(int[] r);
+
+    boolean checkResourcesWarehouse(int[] r);
+
+    boolean payResourcesStrongbox(int[] r);
+
+    boolean payResourcesWarehouse(int[] r);
+
+    boolean payResourcesSpecialWarehouse(int[] r);
+
+    boolean checkResourcesSpecialWarehouse(int[] r);
+
+    /**
+     * Adds a resource to the strongbox
+     *
+     * @param r          Resource type to add
+     * @param quantities number of resources to add
+     */
     void addStrongboxResource(Resources r, int quantities);
-    LeaderCard getLeaderCard(int index );
+
+    /**
+     * Gets a LeaderCard from the hand of the player
+     *
+     * @param index position of the card
+     * @return the card in position index.
+     */
+    LeaderCard getLeaderCard(int index);
+
+    /**
+     * Gets the cost of the production in index position
+     *
+     * @param index position of the card
+     * @return the cost of the production in index position.
+     */
     int[] getProductionCost(int index);
+
+    /**
+     * Gets the result of the production in index position
+     *
+     * @param index position of the card
+     * @return the result of the production in index position.
+     */
     int[] getProductionResult(int index);
+
+    /**
+     * Gets the number of production card possessed by the player.
+     *
+     * @return the number of production card possessed by the player.
+     */
     int getProductionNumber();
+
+    /**
+     * Gets the number of resources of any type possessed by the player.
+     *
+     * @return the number of resources of any type possessed by the player.
+     */
     int getNumberResources();
+
+    /**
+     * Sets the victory points of the player.
+     *
+     * @param VP number of victory points
+     */
     void setVP(int VP);
 
     // Decorated warehouse methods
     void addWarehouseSpace(Resources resource, int maxQuantity) throws IllegalDecoratorException;
+
     boolean addExtraResources(Resources resources, int quantity) throws IllegalDecoratorException;
+
     boolean takeExtraResources(Resources resource, int quantity) throws IllegalDecoratorException;
+
     ArrayList<Integer> getExtraResources();
 
     // Decorated cost methods
