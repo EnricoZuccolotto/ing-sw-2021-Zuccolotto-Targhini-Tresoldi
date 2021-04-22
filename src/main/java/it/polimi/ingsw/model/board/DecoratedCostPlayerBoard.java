@@ -3,9 +3,10 @@ package it.polimi.ingsw.model.board;
 import it.polimi.ingsw.exceptions.playerboard.IllegalResourceException;
 import it.polimi.ingsw.model.enums.Resources;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class DecoratedCostPlayerBoard extends DecoratedPlayerBoard {
+public class DecoratedCostPlayerBoard extends DecoratedPlayerBoard implements Serializable {
     private ArrayList<Integer> discounts;
 
     public DecoratedCostPlayerBoard(PlayerBoard subBoard){

@@ -10,11 +10,13 @@ import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.SpaceProd;
 import it.polimi.ingsw.model.player.Strongbox;
 import it.polimi.ingsw.model.player.Warehouse;
+import it.polimi.ingsw.observer.Observable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SimplePlayerBoard implements PlayerBoard {
+public class SimplePlayerBoard implements PlayerBoard, Serializable {
     private Strongbox strongbox;
     private boolean inkWell;
     private ArrayList<LeaderCard> leaderCards;

@@ -60,6 +60,14 @@ public class GameBoard extends Observable {
 
     public void end() {}
 
+    public Market getMarket(){
+        return market;
+    }
+
+    public FaithPath getFaithPath(){
+        return faithPath;
+    }
+
     @Override
     public String toString() {
         return

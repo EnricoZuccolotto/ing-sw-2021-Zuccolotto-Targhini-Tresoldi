@@ -2,9 +2,10 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.enums.Resources;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class Warehouse {
+public class Warehouse implements Serializable {
     private final Resources[] warehouse;
     private final Resources[] var= {Resources.WHITE, Resources.WHITE, Resources.WHITE};
     private int Resnum;

@@ -3,10 +3,11 @@ package it.polimi.ingsw.model.board;
 import it.polimi.ingsw.exceptions.playerboard.IllegalResourceException;
 import it.polimi.ingsw.model.enums.Resources;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard {
+public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard implements Serializable {
     private ArrayList<Integer> quantities;
     // This ArrayList contains the maximum number of possible resources
     private ArrayList<Integer> enableSpecialWarehouse;

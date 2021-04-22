@@ -3,10 +3,11 @@ package it.polimi.ingsw.model.board;
 import it.polimi.ingsw.exceptions.playerboard.IllegalResourceException;
 import it.polimi.ingsw.model.enums.Resources;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class DecoratedChangePlayerBoard extends DecoratedPlayerBoard {
+public class DecoratedChangePlayerBoard extends DecoratedPlayerBoard implements Serializable {
     private ArrayList<Boolean> substitutes;
 
     public DecoratedChangePlayerBoard(PlayerBoard subBoard){

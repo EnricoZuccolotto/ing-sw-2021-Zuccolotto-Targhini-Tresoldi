@@ -7,8 +7,8 @@ public enum MessageType {
     // Market actions
     MARKET_REQUEST,
     MARKET_REPLY,
+    MARKET_CHANGED,
     SET_RESOURCE,
-    RESOURCE_ACK,
     DISCARD_RESOURCE,
     SHIFT_WAREHOUSE,
     //Production action
@@ -24,4 +24,6 @@ public enum MessageType {
     // Generic messages,
     ERROR,
     PING,
+    HUMAN_PLAYER_UPDATE,
+    FAITH_PATH_UPDATE
 }

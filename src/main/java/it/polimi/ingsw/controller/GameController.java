@@ -41,6 +41,9 @@ public class GameController {
     public void addView(String name, NetworkLayerView view){
         viewMap.put(name, view);
         gameBoardInstance.addObserver(view);
+        gameBoardInstance.getMarket().addObserver(view);
+        gameBoardInstance.getFaithPath().addObserver(view);
+        // TODO: Get player from username and add observer.
     }
     public void StartGame(){
         roundController.init(gameBoardInstance.getPlayers().get(0));

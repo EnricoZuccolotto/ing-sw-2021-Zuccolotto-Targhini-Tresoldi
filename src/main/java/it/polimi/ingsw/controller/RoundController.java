@@ -52,13 +52,11 @@ public class RoundController {
         this.playerInTurn=player;
     }
     public void handle_getMarket(MarketRequestMessage message){
-
-
-            if(playerInTurn.getName().equals(message.getPlayerName())){
-                MarketReplyMessage reply = actionController.getMarket(gameBoardInstance, playerInTurn, message.getRowIndex(), message.getColIndex());
+         if(playerInTurn.getName().equals(message.getPlayerName())){
+                playerInTurn.setTemporaryResourceStorage(actionController.getMarket(gameBoardInstance, playerInTurn, message.getRowIndex(), message.getColIndex()));
                 nextState(Action.STD_GETMARKET);
             } else {
-                ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+             // TODO: Send error
             }
 
     }
@@ -66,7 +64,7 @@ public class RoundController {
         if(playerInTurn.getName().equals(message.getPlayerName())){
             actionController.shiftWarehouseRows(playerInTurn, message.getStartingPos(), message.getNewRowPos());
         } else {
-            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+            // TODO: Error
         }
     }
     public void handle_sortingWarehouse(SetResourceMessage message) {
@@ -78,22 +76,17 @@ public class RoundController {
             if(message.getResource() == Resources.FAITH){
                 handle_addFaithPoint(1);
             }
-            Message reply = actionController.addResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getReceivedResourceIndex());
+            actionController.addResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getReceivedResourceIndex());
         } else {
-            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+            // TODO: Error
         }
-        // TODO: Send message
     }
     public void handle_discardResource(DiscardResourceMessage message) {
         if(playerInTurn.getName().equals(message.getPlayerName())){
-            for(HumanPlayer player : players){
-                // Every player except the current one get a faith point
-                if(!player.getName().equals(playerInTurn.getName())){
-                   handle_addFaithPoint(1);
-                }
-            }
+            int playerIndex = 1; // TODO: Get player index
+            gameBoardInstance.getFaithPath().movePlayersExceptSelected(playerIndex, 1);
         } else {
-            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+            // TODO: Error
         }
     }
     public void handle_useBaseProduction(UseProductionBaseMessage message){

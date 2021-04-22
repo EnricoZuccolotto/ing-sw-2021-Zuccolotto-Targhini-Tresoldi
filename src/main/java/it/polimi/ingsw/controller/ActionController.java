@@ -7,10 +7,6 @@ import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
-import it.polimi.ingsw.network.messages.ErrorMessage;
-import it.polimi.ingsw.network.messages.MarketReplyMessage;
-import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.ResourceAckMessage;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 import java.util.ArrayList;
 
@@ -26,17 +22,16 @@ public class ActionController {
      * @param humanPlayer Player that requested the action
      * @param rowIndex Market row index. To obtain a column this must be set to 3.
      * @param colIndex Column index. If rowIndex == 3 this indicates the column, else this number is not considered
-     * @return
+     * @return List of market-obtained resources
      */
-    public MarketReplyMessage getMarket(GameBoard gameBoard, HumanPlayer humanPlayer, int rowIndex, int colIndex){
-        // TODO: Set this action to only modify the model, the model will send updates to the client.
+    public ArrayList<Resources> getMarket(GameBoard gameBoard, HumanPlayer humanPlayer, int rowIndex, int colIndex){
         ArrayList<Resources> list;
         if(rowIndex == 3){
             list = gameBoard.pushColumnMarket(colIndex);
         } else {
             list = gameBoard.pushRowMarket(rowIndex);
         }
-        return new MarketReplyMessage(humanPlayer.getName(), list);
+        return list;
     }
 
     /**
@@ -48,25 +43,27 @@ public class ActionController {
     public void addFaithPoint(GameBoard gameBoard, HumanPlayer humanPlayer, int number){
         int playerPosition = gameBoard.getPlayers().indexOf(humanPlayer);
         gameBoard.movePlayerFaithPath(playerPosition, number);
-        // TODO: model sends updates. To be handled in the model.
     }
 
-    public Message addResourceToWarehouse(HumanPlayer player, Resources resource, int rowPosition, int receivedResourceIndex){
-        Message reply;
-        if(player.getPlayerBoard().addWarehouseResource(resource, rowPosition)){
-            reply = new ResourceAckMessage(player.getName(), receivedResourceIndex);
+    public void addResourceToWarehouse(HumanPlayer player, Resources resource, int rowPosition, int receivedResourceIndex){
+        if(player.getTemporaryResourceStorage().get(receivedResourceIndex).equals(resource)){
+            if(rowPosition == 0)
+                player.getPlayerBoard().addExtraResources(resource, 1);
+            else
+                player.getPlayerBoard().addWarehouseResource(resource, rowPosition);
+            player.removeItemFromTemporaryList(receivedResourceIndex);
+            player.sendUpdateToPlayer();
+            // TODO: handle errors.
         } else {
-            reply = new ErrorMessage(player.getName(), "Invalid warehouse move!");
+            // TODO: Resource not found
         }
-        return reply;
     }
 
     public void shiftWarehouseRows(HumanPlayer player, int startingRow, int newRowPosition){
         if(player.getPlayerBoard().shiftWarehouseRows(startingRow, newRowPosition)){
-            // Andato a buon fine
-            // TODO: Send model updates
+            player.sendUpdateToPlayer();
         } else {
-            // Errore
+            // TODO: Error
         }
     }
 

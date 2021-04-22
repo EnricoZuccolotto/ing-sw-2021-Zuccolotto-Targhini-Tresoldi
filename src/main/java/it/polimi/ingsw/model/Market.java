@@ -1,11 +1,15 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.network.messages.MarketMessage;
+import it.polimi.ingsw.observer.Observable;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Market {
+public class Market extends Observable implements Serializable {
     private final Resources[][] market;
     private Resources slide;
 
@@ -40,6 +44,7 @@ public class Market {
         }
         market[2][columnIndex]=slide;
         slide=temp;
+        notifyObserver(new MarketMessage("server", this));
         return ret;
     }
 
@@ -54,6 +59,7 @@ public class Market {
         }
         market[rowIndex][3]=slide;
         slide=temp;
+        notifyObserver(new MarketMessage("server", this));
         return ret;
     }
 

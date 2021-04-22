@@ -2,11 +2,14 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.exceptions.playerboard.WinnerException;
 import it.polimi.ingsw.model.tools.CardParser;
 import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.network.messages.FaithPathUpdateMessage;
+import it.polimi.ingsw.observer.Observable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class FaithPath {
+public class FaithPath extends Observable implements Serializable {
     private final ArrayList<Card> cards;
     private final int[] playerPositions;
     private final int[] playerPV;
@@ -25,8 +28,19 @@ public class FaithPath {
      public void movePlayer(int player,int n){
         playerPositions[player]+=n;
         checkReport(player);
-        // TODO: notifyObserver()
+        notifyObserver(new FaithPathUpdateMessage(this));
      }
+
+    public void movePlayersExceptSelected(int player,int n){
+        for(int i : playerPositions){
+            if(i != player){
+                playerPositions[player]+=n;
+                checkReport(player);
+            }
+        }
+        notifyObserver(new FaithPathUpdateMessage(this));
+    }
+
     private void checkReport(int player){
         int [] rep={5,8,12,16,19,24};
         int k=0;

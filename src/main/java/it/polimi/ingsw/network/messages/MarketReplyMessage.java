@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class MarketReplyMessage extends Message {
     private final ArrayList<Resources> resources;
+
     public MarketReplyMessage(String playerName, ArrayList<Resources> resources){
         super(playerName, MessageType.MARKET_REPLY);
         this.resources = resources;
