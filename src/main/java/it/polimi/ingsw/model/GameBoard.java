@@ -1,4 +1,6 @@
 package it.polimi.ingsw.model;
+import it.polimi.ingsw.model.Communication.Communication;
+import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
@@ -25,6 +27,8 @@ public class GameBoard extends Observable {
     private final ArrayList<HumanPlayer> players;
     private final FaithPath faithPath;
     private Optional<BotPlayer> Bot;
+    private Communication publicCommunication;
+
 
     /**
      * Build a new Game board.
@@ -152,6 +156,15 @@ public class GameBoard extends Observable {
      */
     public FaithPath getFaithPath() {
         return faithPath;
+    }
+
+    public Communication getPrivateCommunication() {
+        return publicCommunication;
+    }
+
+    public void setPrivateCommunication(String communication, CommunicationMessage communicationMessage) {
+        this.publicCommunication.setCommunicationMessage(communicationMessage);
+        this.publicCommunication.setMessage(communication);
     }
 
     @Override

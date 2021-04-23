@@ -25,7 +25,6 @@ public class GameController {
         this.gameBoardInstance = new GameBoard();
         this.roundController = new RoundController(gameBoardInstance);
         viewMap = Collections.synchronizedMap(new HashMap<>());
-
     }
     public GameBoard getInstance(){
         return gameBoardInstance;
@@ -34,7 +33,7 @@ public class GameController {
     public void addPlayer(String name, View view){
         // TODO: Handle local single player
         addView(name, (NetworkLayerView) view);
-        gameBoardInstance.addPlayer(new HumanPlayer(name,false));
+        gameBoardInstance.addPlayer(new HumanPlayer(name, false));
     }
     public void addView(String name, NetworkLayerView view){
         viewMap.put(name, view);
@@ -45,9 +44,9 @@ public class GameController {
     }
     public void StartGame(){
         roundController.init(gameBoardInstance.getPlayers().get(0));
-      gameBoardInstance.init(gameBoardInstance);
-      gamestate=roundController.getGameState();
-      roundController.handle_firstTurn();
+        gameBoardInstance.init(gameBoardInstance);
+        gamestate = GameState.GAMESTARTED;
+        roundController.handle_firstTurn();
 
     }
 

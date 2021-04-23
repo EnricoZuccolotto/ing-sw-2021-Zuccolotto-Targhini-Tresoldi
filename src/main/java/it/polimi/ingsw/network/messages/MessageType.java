@@ -26,4 +26,6 @@ public enum MessageType {
     PING,
     HUMAN_PLAYER_UPDATE,
     FAITH_PATH_UPDATE
+
+
 }

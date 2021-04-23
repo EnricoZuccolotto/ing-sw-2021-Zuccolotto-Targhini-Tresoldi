@@ -7,21 +7,32 @@ import it.polimi.ingsw.model.enums.Colors;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
+/**
+ * This class represents a bot player.
+ * currentGameBoard is the game board used by the bot player
+ * botActions represents the stack of solo action token(DiscardPurple,DiscardGreen,DiscardYellow,DiscardBlue,Blackcross1Shuffle,BlackCross2, BlackCross2);
+ * currentAction is an index used to scroll the array list of botAction, represents the next bot action that the bot must do.
+ */
 public class BotPlayer extends Player {
     private final GameBoard currentGameBoard;
     private final ArrayList<BotActions> botActions;
     private int currentAction;
 
+    /**
+     * Build a new bot player working in the game board
+     */
     public BotPlayer(GameBoard gameBoard) {
-        super("BotPlayer");
+        super("Lorenzo il Magnifico");
         this.currentGameBoard = gameBoard;
-        this.currentAction=0;
-        this.botActions=new ArrayList<>(7);
+        this.currentAction = 0;
+        this.botActions = new ArrayList<>(7);
         init();
     }
-public void init(){
 
+    /**
+     * Generate the list of the possible action that the bot can do, and it shuffles the list.
+     */
+    private void init() {
         botActions.add(BotActions.DiscardPurple);
         botActions.add(BotActions.DiscardGreen);
         botActions.add(BotActions.DiscardYellow);
@@ -30,34 +41,43 @@ public void init(){
         botActions.add(BotActions.BlackCross2);
         botActions.add(BotActions.BlackCross2);
         Collections.shuffle(botActions);
-}
+    }
 
+    /**
+     * Make the bot do the next action
+     */
     public void doAction() {
-          switch (botActions.get(currentAction)){
-              case BlackCross2:
-                  currentGameBoard.movePlayerFaithPath(1,2);
-                  break;
-              case Blackcross1Shuffle:
-                  currentGameBoard.movePlayerFaithPath(1,1);
-                  Collections.shuffle(botActions);
-                  currentAction=-1;
-                  break;
+        switch (botActions.get(currentAction)) {
+            case BlackCross2:
+                currentGameBoard.movePlayerFaithPath(1, 2);
+                break;
+            case Blackcross1Shuffle:
+                currentGameBoard.movePlayerFaithPath(1, 1);
+                Collections.shuffle(botActions);
+                currentAction = -1;
+                break;
               case DiscardBlue:
                   discard(Colors.BLUE);
                   break;
               case DiscardGreen:
                   discard(Colors.GREEN);
                   break;
-              case DiscardPurple:
-                  discard(Colors.PURPLE);
-                  break;
-              case DiscardYellow:
-                  discard(Colors.YELLOW);
-                  break;
-          }
-          currentAction++;
+            case DiscardPurple:
+                discard(Colors.PURPLE);
+                break;
+            case DiscardYellow:
+                discard(Colors.YELLOW);
+                break;
+        }
+        currentAction++;
     }
-    public void discard(Colors c){
+
+    /**
+     * Discard 2 Development Cards of the indicated type from the bottom of the grid, from the lowest level to the highest
+     *
+     * @param c color type.
+     */
+    public void discard(Colors c) {
         int cont = 0;
         int i = 1;
         int sum = 0;
@@ -76,7 +96,12 @@ public void init(){
         }
     }
 
-    public BotActions getCurrentAction(){
+    /**
+     * Gets the current action of the bot.
+     *
+     * @return the current BotAction.
+     */
+    public BotActions getCurrentAction() {
         return botActions.get(currentAction);
     }
 

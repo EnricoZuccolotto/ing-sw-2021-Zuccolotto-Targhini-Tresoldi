@@ -57,7 +57,6 @@ public class RoundController {
             } else {
              // TODO: Send error
             }
-
     }
     public void handle_shiftWarehouse(ShiftWarehouseMessage message) {
         if(playerInTurn.getName().equals(message.getPlayerName())){
@@ -133,26 +132,26 @@ public class RoundController {
                 actionController.getProduction(message.getColor(), message.getLevel(), gameBoardInstance,message.getIndex(),playerInTurn, message.getExchangeResources());
             }catch (WinnerException e){
                 winnerPlayer=players.indexOf(playerInTurn);
-                if(gameState==GameState.SINGLEPLAYER)
-                {
+                if (gameState == GameState.SINGLEPLAYER) {
                     nextTurn();
                 }
             }
-             } else {
+        } else {
             ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
         }
-      nextState(Action.STD_GETPRODUCTION);
+        nextState(Action.STD_GETPRODUCTION);
     }
-    public void handle_activeLeader(LeaderMessage message){
+
+    public void handle_activeLeader(LeaderMessage message) {
         if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
-            turnState=TurnState.NORMAL_ACTION;
+            turnState = TurnState.NORMAL_ACTION;
             throw new IllegalActionException();
         }
-        if(playerInTurn.getName().equals(message.getPlayerName())){
+        if (playerInTurn.getName().equals(message.getPlayerName())) {
             try {
                 actionController.activateLeader(message.getIndex(), playerInTurn);
-            }catch (WinnerException e){
-                winnerPlayer=players.indexOf(playerInTurn);
+            } catch (WinnerException e) {
+                winnerPlayer = players.indexOf(playerInTurn);
             }
         } else {
             ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");

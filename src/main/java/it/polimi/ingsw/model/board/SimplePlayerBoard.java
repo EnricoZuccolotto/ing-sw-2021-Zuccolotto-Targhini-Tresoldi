@@ -29,7 +29,6 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         leaderCards = new ArrayList<>(2);
         productionSpaces = new ArrayList<>();
         warehouse = new Warehouse();
-
     }
 
     @Override
@@ -37,33 +36,35 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         this.VP = VP;
     }
 
-
-
     @Override
     public int getProductionNumber() {
         return productionSpaces.size()+1;
     }
+
     @Override
     public int getLeaderCardsNumber() {
         int cont=0;
         for(LeaderCard c:leaderCards)
             if(!c.getUncovered())
                 cont++;
-
             return cont;
     }
+
     @Override
     public boolean getInkwell() {
         return inkWell;
     }
+
     @Override
     public LeaderCard getLeaderCard(int index ){
         return leaderCards.get(index);
     }
+
     @Override
     public void addLeaderCard(LeaderCard leaderCard) {
                 leaderCards.add(leaderCard);
     }
+
     @Override
     public void removeLeaderCard(LeaderCard c){
         leaderCards.remove(c);
@@ -72,26 +73,23 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     @Override
     public int getVictoryPointsCards() {
         int VP = 0;
-
         // Get leadercards victory points
         for(LeaderCard card : leaderCards){
             if(card.getUncovered())
             VP += card.getVP();
         }
-
         // Get production cards victory points
         for(SpaceProd sp : productionSpaces){
             VP += sp.getVictoryPoints();
         }
         return VP;
     }
+
     @Override
     public int getNumberResources() {
         int n;
-
         // Get resources number victory points
         n = (strongbox.getNumResources() + warehouse.ResourceNumber());
-
         return n;
     }
 
@@ -155,6 +153,7 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     public ArrayList<Resources> getProductions(Resources resource) {
         return null;
     }
+
     @Override
     public boolean addWarehouseResource(Resources r, int row){
         return warehouse.AddResources(r,row);
@@ -199,21 +198,23 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
             }
         throw new InsufficientLevelException();
     }
+
     @Override
     public int[] getProductionCost(int index){
         return productionSpaces.get(index).getTop().getCostProduction();
     }
+
     @Override
     public int[] getProductionResult(int index){
         return productionSpaces.get(index).getTop().getProductionResult();
     }
 
-private void checkWinnerNumCards() {
-    if (productionSpaces.size() == 3) {
-        if (productionSpaces.get(0).getNumbCard() + productionSpaces.get(1).getNumbCard() + productionSpaces.get(2).getNumbCard() == 7)
-            throw new WinnerException();
+    private void checkWinnerNumCards() {
+        if (productionSpaces.size() == 3) {
+            if (productionSpaces.get(0).getNumbCard() + productionSpaces.get(1).getNumbCard() + productionSpaces.get(2).getNumbCard() == 7)
+                throw new WinnerException();
+        }
     }
-}
 
 
     @Override
@@ -228,8 +229,9 @@ private void checkWinnerNumCards() {
                 } else return false;
             }
         }
-            return true;
+        return true;
     }
+
     @Override
     public boolean checkResourcesWarehouse(int [] r)
     {
@@ -242,6 +244,7 @@ private void checkWinnerNumCards() {
         }
         return true;
     }
+
     @Override
     public boolean checkResourcesSpecialWarehouse(int [] r) {
         for (int i = 0; i < 4; i++) {
@@ -250,8 +253,10 @@ private void checkWinnerNumCards() {
         }
         return true;
     }
+
     @Override
     public boolean payResourcesSpecialWarehouse(int [] r){return true;}
+
     @Override
     public boolean payResourcesStrongbox(int [] r){
         for(int  i=0;i<4;i++){
@@ -264,6 +269,7 @@ private void checkWinnerNumCards() {
         }
         return true;
     }
+
     @Override
     public boolean checkResourcesStrongbox(int [] r){
         for(int  i=0;i<4;i++){
@@ -287,6 +293,7 @@ private void checkWinnerNumCards() {
                 }
        throw new InsufficientLevelException();
     }
+
     @Override
     public boolean checkResources(int [] resources){
         int  tmp;
@@ -297,11 +304,10 @@ private void checkWinnerNumCards() {
                 if (tmp > 0) {
                     return false;
                 }
-
             }
         return true;
-
     }
+
     @Override
     public boolean checkColors(int [] colors){
         int tmp;
@@ -317,11 +323,11 @@ private void checkWinnerNumCards() {
             }
         return true;
     }
+
     @Override
     public void addStrongboxResource(Resources r, int quantities){
          strongbox.addResources(r,quantities);
     }
-
 
     @Override
     public String toString() {
