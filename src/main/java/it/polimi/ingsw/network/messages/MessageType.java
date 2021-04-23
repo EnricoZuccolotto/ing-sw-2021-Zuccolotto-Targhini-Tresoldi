@@ -25,5 +25,8 @@ public enum MessageType {
     ERROR,
     PING,
     HUMAN_PLAYER_UPDATE,
-    FAITH_PATH_UPDATE
+    FAITH_PATH_UPDATE,
+    // Lobby message
+    JOIN_GAME,
+    SET_GAME
 }
