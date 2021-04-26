@@ -3,6 +3,9 @@ package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 
+/**
+ *
+ */
 public class GetProductionCardMessage extends ProductionMessage {
     private final Colors color;
     private final int level;

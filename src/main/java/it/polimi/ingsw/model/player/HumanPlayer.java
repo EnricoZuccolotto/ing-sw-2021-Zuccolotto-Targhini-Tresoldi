@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.player;
 import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.board.SimplePlayerBoard;
 import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.network.messages.HumanPlayerUpdateMessage;
 import it.polimi.ingsw.network.messages.MarketReplyMessage;
 
@@ -50,6 +51,7 @@ public class HumanPlayer extends Player implements Serializable {
     }
 
     public void sendUpdateToPlayer(){
-        notifyObserver(new HumanPlayerUpdateMessage(this));
+        CompressedPlayerBoard playerBoardToSend = new CompressedPlayerBoard(this);
+        notifyObserver(new HumanPlayerUpdateMessage(playerBoardToSend));
     }
 }

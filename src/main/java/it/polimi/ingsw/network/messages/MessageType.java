@@ -1,5 +1,8 @@
 package it.polimi.ingsw.network.messages;
 
+/**
+ * Enum with all possible message types. Needed to identify each message.
+ */
 public enum MessageType {
     //first actionS
     FIRST_ACTION,
