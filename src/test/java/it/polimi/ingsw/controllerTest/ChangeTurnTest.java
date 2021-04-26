@@ -4,7 +4,7 @@ package it.polimi.ingsw.controllerTest;
 import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.RoundController;
 import it.polimi.ingsw.controller.TurnState;
-import it.polimi.ingsw.exceptions.playerboard.IllegalActionException;
+import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
@@ -77,12 +77,10 @@ public class ChangeTurnTest {
         assertEquals(g.getTurnState(), TurnState.SECOND_TURN);
         ArrayList<Resources> r = new ArrayList<>();
         r.add(Resources.STONE);
-        try {
-            g.handle_secondAction(new SecondActionMessage("Hermione", r));
-            fail();
-        } catch (IllegalActionException e) {
-            assertEquals(0, 0);
-        }
+
+        g.handle_secondAction(new SecondActionMessage("Hermione", r));
+        assertEquals(gb.getPlayer("Hermione").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.ILLEGAL_ACTION);
+
         g.handle_secondAction(new SecondActionMessage("Ron", r));
         assertTrue(gb.getPlayers().get(2).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 0, 1, 0}));
         g.handle_secondAction(new SecondActionMessage("Enry", r));
@@ -140,6 +138,7 @@ public class ChangeTurnTest {
         GameBoard gb = new GameBoard();
         gb.addPlayer(new HumanPlayer("Harry", false));
         gb.addPlayer(new HumanPlayer("Enry", false));
+        gb.init(gb);
         ArrayList<Resources> r = new ArrayList<>();
         r.add(Resources.STONE);
         RoundController g = new RoundController(gb);

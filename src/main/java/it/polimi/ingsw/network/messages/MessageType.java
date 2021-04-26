@@ -27,8 +27,10 @@ public enum MessageType {
     // Generic messages,
     ERROR,
     PING,
+    //Update
     HUMAN_PLAYER_UPDATE,
-    FAITH_PATH_UPDATE
-
+    FAITH_PATH_UPDATE,
+    //Connection messages
+    LOGIN
 
 }

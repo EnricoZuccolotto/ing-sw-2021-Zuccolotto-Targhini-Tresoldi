@@ -1,9 +1,8 @@
 package it.polimi.ingsw.controllerTest;
 
 import it.polimi.ingsw.controller.ActionController;
-import it.polimi.ingsw.exceptions.playerboard.InsufficientLevelException;
-import it.polimi.ingsw.exceptions.playerboard.InsufficientResourcesException;
 import it.polimi.ingsw.exceptions.playerboard.WinnerException;
+import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.board.DecoratedWarehousePlayerBoard;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
@@ -61,12 +60,9 @@ public class ActionGetProductionTest {
         player.getPlayerBoard().addStrongboxResource(Resources.COIN, 1);
         player.getPlayerBoard().addStrongboxResource(Resources.SHIELD, 3);
         player.getPlayerBoard().addStrongboxResource(Resources.STONE, 2);
-        try {
-            actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 1, 0, 3}, new int[]{0, 0, 0, 0}));
-            fail();
-        } catch (InsufficientResourcesException e) {
-            assertTrue(true);
-        }
+
+        actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 1, 0, 3}, new int[]{0, 0, 0, 0}));
+        assertEquals(player.getPrivateCommunication().getMessage(), "The resources sent are different from the cost of the card");
         assertEquals(1, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
 
         actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 1, 2, 3}, new int[]{0, 0, 0, 0}));
@@ -97,12 +93,9 @@ public class ActionGetProductionTest {
         }
 
         player.getPlayerBoard().addExtraResources(Resources.SHIELD, 3);
-        try {
-            actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
-            fail();
-        } catch (InsufficientResourcesException e) {
-            assertTrue(true);
-        }
+
+        actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
+        assertEquals(player.getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.INSUFFICIENT_RESOURCES);
         assertEquals(1, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
         player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
         actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
@@ -138,12 +131,9 @@ public class ActionGetProductionTest {
         }
 
         player.getPlayerBoard().addExtraResources(Resources.SHIELD, 3);
-        try {
-            actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
-            fail();
-        } catch (InsufficientLevelException e) {
-            assertTrue(true);
-        }
+
+        actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
+        assertEquals(player.getPrivateCommunication().getMessage(), "You don't have a space available");
 
 
         assertEquals(1, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());

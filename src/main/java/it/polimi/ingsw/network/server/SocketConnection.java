@@ -20,7 +20,7 @@ public class SocketConnection implements Runnable {
     private ObjectInputStream input;
     private ObjectOutputStream output;
 
-    private Thread socketConnectionThread;
+    private final Thread socketConnectionThread;
 
     public SocketConnection(SocketServer socketServer, Socket client){
         this.socketServer = socketServer;
@@ -53,9 +53,11 @@ public class SocketConnection implements Runnable {
                     Message message = (Message) input.readObject();
 
                     if(message != null){
-                        if(message.getMessageType() != MessageType.PING){
-                            // If connection message add onLogin()
-                            socketServer.onMessage(message);
+                        if(message.getMessageType() != MessageType.PING) {
+                            if (message.getMessageType() == MessageType.LOGIN)
+                                socketServer.onLogin(message.getPlayerName(), this);
+                            else
+                                socketServer.onMessage(message);
                         }
                     }
                 }

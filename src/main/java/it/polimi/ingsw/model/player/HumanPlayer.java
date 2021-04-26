@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.board.SimplePlayerBoard;
 import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.network.messages.HumanPlayerUpdateMessage;
 import it.polimi.ingsw.network.messages.MarketReplyMessage;
 
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 public class HumanPlayer extends Player implements Serializable {
     private PlayerBoard playerBoard;
     private ArrayList<Resources> temporaryResourceStorage;
-    private Communication privateCommunication;
+    private final Communication privateCommunication;
 
     /**
      * Build a new human player with the name and the inkwell specified.
@@ -29,6 +30,7 @@ public class HumanPlayer extends Player implements Serializable {
      */
     public HumanPlayer(String name, boolean inkwell) {
         super(name);
+        privateCommunication = new Communication();
         this.playerBoard = new SimplePlayerBoard(inkwell);
         temporaryResourceStorage = new ArrayList<>();
     }
@@ -99,6 +101,7 @@ public class HumanPlayer extends Player implements Serializable {
      * Send the updated player to the view.
      */
     public void sendUpdateToPlayer() {
-        notifyObserver(new HumanPlayerUpdateMessage(this));
+        CompressedPlayerBoard playerBoardToSend = new CompressedPlayerBoard(this);
+        notifyObserver(new HumanPlayerUpdateMessage(playerBoardToSend));
     }
 }
