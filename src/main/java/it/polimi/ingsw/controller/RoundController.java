@@ -231,8 +231,8 @@ public class RoundController {
     }
 
     public void handle_firstTurn()  {
-        ArrayList<LeaderCard> leaderCards= CardParser.parseLeadCards();
-        if(leaderCards==null)
+        ArrayList<LeaderCard> leaderCards = CardParser.parseLeadCards();
+        if(leaderCards == null)
             throw new IllegalActionException();
         else
         for(HumanPlayer player:players) {

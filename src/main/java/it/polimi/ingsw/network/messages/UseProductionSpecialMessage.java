@@ -3,10 +3,20 @@ package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 
+/**
+ * This class is sent by the client in order to activate Leader Card special production.
+ */
 public class UseProductionSpecialMessage extends ProductionMessage {
     private final Resources output;
     private final int index;
 
+    /**
+     * Default constructor.
+     * @param playerName Player name.
+     * @param exchangeResources Resources that are spent in order to activate production.
+     * @param output Expected resources output.
+     * @param index Index of current leader card.
+     */
     public UseProductionSpecialMessage(String playerName, ExchangeResources exchangeResources, Resources output, int index) {
         super(playerName, MessageType.USE_SPECIAL_PRODUCTION, exchangeResources);
         this.output = output;
