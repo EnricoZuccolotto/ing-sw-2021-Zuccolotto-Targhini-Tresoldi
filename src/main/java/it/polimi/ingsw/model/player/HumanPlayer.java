@@ -42,6 +42,7 @@ public class HumanPlayer extends Player implements Serializable {
     public void setPrivateCommunication(String communication, CommunicationMessage communicationMessage) {
         this.privateCommunication.setCommunicationMessage(communicationMessage);
         this.privateCommunication.setMessage(communication);
+        sendUpdateToPlayer();
     }
 
     public void doAction() {

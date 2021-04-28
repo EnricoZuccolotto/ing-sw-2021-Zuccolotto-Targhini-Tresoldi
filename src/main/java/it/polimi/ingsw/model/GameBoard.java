@@ -159,11 +159,11 @@ public class GameBoard extends Observable {
         return faithPath;
     }
 
-    public Communication getPrivateCommunication() {
+    public Communication getPublicCommunication() {
         return publicCommunication;
     }
 
-    public void setPrivateCommunication(String communication, CommunicationMessage communicationMessage) {
+    public void setPublicCommunication(String communication, CommunicationMessage communicationMessage) {
         this.publicCommunication.setCommunicationMessage(communicationMessage);
         this.publicCommunication.setMessage(communication);
     }

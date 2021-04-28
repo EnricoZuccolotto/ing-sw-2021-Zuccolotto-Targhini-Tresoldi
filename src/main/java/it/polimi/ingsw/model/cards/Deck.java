@@ -1,5 +1,9 @@
 package it.polimi.ingsw.model.cards;
 
+import it.polimi.ingsw.network.messages.DeckUpdateMessage;
+import it.polimi.ingsw.observer.Observable;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -7,7 +11,7 @@ import java.util.Collections;
 /**
  * This class represents a deck of Development card.
  */
-public class Deck {
+public class Deck extends Observable implements Serializable {
     private final ArrayList<DevelopmentCard> deck;
 
     /**
@@ -60,6 +64,7 @@ public class Deck {
      */
     public void popFirstCard() {
         deck.remove(0);
+        notifyObserver(new DeckUpdateMessage(this));
     }
 
     /**
@@ -69,6 +74,7 @@ public class Deck {
      */
     public void popLastCard() {
         deck.remove(deck.size() - 1);
+        notifyObserver(new DeckUpdateMessage(this));
     }
 
     /**
