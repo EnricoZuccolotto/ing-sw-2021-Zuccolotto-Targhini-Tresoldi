@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.exceptions.playerboard.CardAlreadyUsedException;
 import it.polimi.ingsw.exceptions.playerboard.IllegalActionException;
 import it.polimi.ingsw.exceptions.playerboard.WinnerException;
+import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
@@ -50,150 +50,139 @@ public class RoundController {
     public void setPlayerInTurn(HumanPlayer player){
         this.playerInTurn=player;
     }
-    public void handle_getMarket(MarketRequestMessage message){
-         if(playerInTurn.getName().equals(message.getPlayerName())){
-                playerInTurn.setTemporaryResourceStorage(actionController.getMarket(gameBoardInstance, playerInTurn, message.getRowIndex(), message.getColIndex()));
-                nextState(Action.STD_GETMARKET);
-            } else {
-             // TODO: Send error
-            }
 
+    public void handle_getMarket(MarketRequestMessage message){
+        if (isYourTurn(message.getPlayerName())) {
+            playerInTurn.setTemporaryResourceStorage(actionController.getMarket(gameBoardInstance, playerInTurn, message.getRowIndex(), message.getColIndex()));
+
+            nextState(Action.STD_GETMARKET);
+        }
     }
     public void handle_shiftWarehouse(ShiftWarehouseMessage message) {
-        if(playerInTurn.getName().equals(message.getPlayerName())){
+        if (isYourTurn(message.getPlayerName())) {
             actionController.shiftWarehouseRows(playerInTurn, message.getStartingPos(), message.getNewRowPos());
-        } else {
-            // TODO: Error
         }
     }
     public void handle_sortingWarehouse(SetResourceMessage message) {
-        if(playerInTurn.getName().equals(message.getPlayerName())){
-            if(message.getResource() == null) {
+        if (isYourTurn(message.getPlayerName())) {
+            if (message.getResource() == null) {
                 // Messaggio che indica la fine delle risorse,
-              nextState(Action.SORTING_WAREHOUSE);
+                nextState(Action.SORTING_WAREHOUSE);
             }
-            if(message.getResource() == Resources.FAITH){
-                handle_addFaithPoint(1);
+            if (message.getResource() == Resources.FAITH) {
+                handle_addFaithPoint(1, playerInTurn);
             }
             actionController.addResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getReceivedResourceIndex());
-        } else {
-            // TODO: Error
         }
     }
     public void handle_discardResource(DiscardResourceMessage message) {
-        if(playerInTurn.getName().equals(message.getPlayerName())){
-            int playerIndex = 1; // TODO: Get player index
-            gameBoardInstance.getFaithPath().movePlayersExceptSelected(playerIndex, 1);
-        } else {
-            // TODO: Error
+        if (isYourTurn(message.getPlayerName())) {
+            movePlayersExceptSelected(1);
         }
     }
-    public void handle_useBaseProduction(UseProductionBaseMessage message){
-        if(playerInTurn.getName().equals(message.getPlayerName())){
-            if(productions.contains(3))
-                throw new CardAlreadyUsedException();
-            else
-            actionController.useBaseProduction(playerInTurn,2,message.getOutput(), message.getExchangeResources());
-        } else {
-            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+
+    public void handle_useBaseProduction(UseProductionBaseMessage message) {
+        if (isYourTurn(message.getPlayerName())) {
+            if (productions.contains(3))
+                playerInTurn.setPrivateCommunication("You already used this production", CommunicationMessage.CARD_ALREADY_USED);
+            else {
+                if (actionController.useBaseProduction(playerInTurn, 2, message.getOutput(), message.getExchangeResources())) {
+                    productions.add(3);
+                    nextState(Action.STD_USEPRODUCTION);
+                }
+            }
         }
-        productions.add(3);
-       nextState(Action.STD_USEPRODUCTION);
+
     }
-    public void handle_useNormalProduction(UseProductionNormalMessage message){
-        if(playerInTurn.getName().equals(message.getPlayerName())){
-            if(productions.contains(message.getIndex()))
-                throw new CardAlreadyUsedException();
-            else
-                actionController.useNormalProduction(playerInTurn,message.getIndex(), message.getExchangeResources());
-        } else {
-            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+    public void handle_useNormalProduction(UseProductionNormalMessage message) {
+        if (isYourTurn(message.getPlayerName())) {
+            if (productions.contains(message.getIndex()))
+                playerInTurn.setPrivateCommunication("You already used this production", CommunicationMessage.CARD_ALREADY_USED);
+            else {
+                if (actionController.useNormalProduction(playerInTurn, message.getIndex(), message.getExchangeResources())) {
+                    productions.add(message.getIndex());
+                    int faith = playerInTurn.getPlayerBoard().getProductionResult(message.getIndex())[Resources.FAITH.ordinal()];
+                    handle_addFaithPoint(faith, playerInTurn);
+                    nextState(Action.STD_USEPRODUCTION);
+                }
+            }
         }
-        productions.add(message.getIndex());
-        int faith=playerInTurn.getPlayerBoard().getProductionResult(message.getIndex())[Resources.FAITH.ordinal()];
-        handle_addFaithPoint(faith);
-       nextState(Action.STD_USEPRODUCTION);
+
     }
-    public void handle_useSpecialProduction(UseProductionSpecialMessage message){
-        if(playerInTurn.getName().equals(message.getPlayerName())){
-            if(productions.contains(message.getIndex()+4))
-                throw new CardAlreadyUsedException();
-            else
-                actionController.useSpecialProduction(playerInTurn,message.getOutput(),message.getIndex(),message.getExchangeResources());
-        } else {
-            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
+
+    public void handle_useSpecialProduction(UseProductionSpecialMessage message) {
+        if (isYourTurn(message.getPlayerName())) {
+            if (productions.contains(message.getIndex() + 4))
+                playerInTurn.setPrivateCommunication("You already used this production", CommunicationMessage.CARD_ALREADY_USED);
+            else {
+                if (actionController.useSpecialProduction(playerInTurn, message.getOutput(), message.getIndex(), message.getExchangeResources())) {
+                    productions.add(message.getIndex() + 4);
+                    handle_addFaithPoint(1, playerInTurn);
+                    nextState(Action.STD_USEPRODUCTION);
+                }
+            }
         }
-        productions.add(message.getIndex()+4);
-        handle_addFaithPoint(1);
-        nextState(Action.STD_USEPRODUCTION);
     }
-    public void handle_getProduction(GetProductionCardMessage message){
-        if(playerInTurn.getName().equals(message.getPlayerName())){
+
+    public void handle_getProduction(GetProductionCardMessage message) {
+        if (isYourTurn(message.getPlayerName())) {
             try {
-                actionController.getProduction(message.getColor(), message.getLevel(), gameBoardInstance,message.getIndex(),playerInTurn, message.getExchangeResources());
-            }catch (WinnerException e){
-                winnerPlayer=players.indexOf(playerInTurn);
-                if(gameState==GameState.SINGLEPLAYER)
-                {
+                if (actionController.getProduction(message.getColor(), message.getLevel(), gameBoardInstance, message.getIndex(), playerInTurn, message.getExchangeResources()))
+                    nextState(Action.STD_GETPRODUCTION);
+            } catch (WinnerException e) {
+                winnerPlayer = players.indexOf(playerInTurn);
+                if (gameState == GameState.SINGLEPLAYER) {
                     nextTurn();
                 }
             }
-             } else {
-            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
         }
-      nextState(Action.STD_GETPRODUCTION);
     }
-    public void handle_activeLeader(LeaderMessage message){
-        if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
-            turnState=TurnState.NORMAL_ACTION;
-            throw new IllegalActionException();
-        }
-        if(playerInTurn.getName().equals(message.getPlayerName())){
-            try {
-                actionController.activateLeader(message.getIndex(), playerInTurn);
-            }catch (WinnerException e){
-                winnerPlayer=players.indexOf(playerInTurn);
-            }
-        } else {
-            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
-        }
-       nextState(Action.LD_ACTION);
-    }
-    public void handle_foldLeader(LeaderMessage message){
-        if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
-            turnState=TurnState.NORMAL_ACTION;
-            throw new IllegalActionException();
-        }
-        if(playerInTurn.getName().equals(message.getPlayerName())){
-            actionController.foldLeader(message.getIndex(), playerInTurn);
-        } else {
-            ErrorMessage reply = new ErrorMessage(message.getPlayerName(), "This is not your turn!");
-        }
-        handle_addFaithPoint(1);
-        nextState(Action.LD_ACTION);
-    }
-    public void handle_firstAction(FirstActionMessage message){
-        boolean flag=false;
-        synchronized (productions){
-            for (HumanPlayer player : players) {
 
+    public void handle_activeLeader(LeaderMessage message) {
+        if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
+            turnState = TurnState.NORMAL_ACTION;
+            playerInTurn.setPrivateCommunication("You cannot do leader action", CommunicationMessage.CARD_ALREADY_USED);
+        } else if (isYourTurn(message.getPlayerName())) {
+            if (actionController.activateLeader(message.getIndex(), playerInTurn))
+                nextState(Action.LD_ACTION);
+        }
+    }
+
+    public void handle_foldLeader(LeaderMessage message) {
+        if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
+            turnState = TurnState.NORMAL_ACTION;
+            playerInTurn.setPrivateCommunication("You cannot do leader action", CommunicationMessage.CARD_ALREADY_USED);
+        } else if (isYourTurn(message.getPlayerName())) {
+            if (actionController.foldLeader(message.getIndex(), playerInTurn)) {
+                handle_addFaithPoint(1, playerInTurn);
+                nextState(Action.LD_ACTION);
+            }
+        }
+    }
+
+    public void handle_firstAction(FirstActionMessage message) {
+        boolean flag = false;
+        synchronized (productions) {
+            for (HumanPlayer player : players) {
                 if (player.getName().equals(message.getPlayerName())) {
                     flag = true;
-                    int n=players.indexOf(player);
+                    int n = players.indexOf(player);
                     if (productions.contains(n))
-                        throw new IllegalActionException();
+                        flag = false;
                     else {
-                        actionController.firstAction(message.getIndex1(), message.getIndex2(), player);
-                        productions.add(n);
-                        break;
+                        if (actionController.firstAction(message.getIndex1(), message.getIndex2(), player)) {
+                            productions.add(n);
+                            nextState(Action.END_TURN);
+                            break;
+                        }
                     }
-                    }
+                }
             }
             if (!flag)
-                throw new IllegalActionException();
-            nextState(Action.END_TURN);
+                gameBoardInstance.getPlayer(message.getPlayerName()).setPrivateCommunication("This is not your turn", CommunicationMessage.ILLEGAL_ACTION);
         }
     }
+
     public void handle_secondAction(SecondActionMessage message){
         boolean flag=false;
         synchronized (productions){
@@ -202,59 +191,74 @@ public class RoundController {
                     flag = true;
                     int n=players.indexOf(player);
                     if (productions.contains(n))
-                        throw new IllegalActionException();
-                    else{
-                        actionController.secondAction(message.getResources(), n,player); }
-                    if(n>=2)
-                        actionController.addFaithPoint(gameBoardInstance,player,1);
-                    productions.add(n);
-                    break;
+                        flag = false;
+
+                    else {
+                        if (actionController.secondAction(message.getResources(), n, player)) {
+                            if (n >= 2)
+                                actionController.addFaithPoint(gameBoardInstance, player, 1);
+                            productions.add(n);
+                            nextState(Action.END_TURN);
+                            break;
+                        }
+                    }
                 }
             }
             if (!flag)
-                throw new IllegalActionException();
-            nextState(Action.END_TURN);
+                gameBoardInstance.getPlayer(message.getPlayerName()).setPrivateCommunication("You cannot do this action", CommunicationMessage.ILLEGAL_ACTION);
         }
     }
 
-    public void handle_addFaithPoint(int quantities){
+    public void handle_addFaithPoint(int quantities, HumanPlayer player) {
         try {
-            actionController.addFaithPoint(gameBoardInstance, playerInTurn, quantities);
-        }catch (WinnerException e){
-            winnerPlayer=players.indexOf(playerInTurn);
-            if(gameState==GameState.SINGLEPLAYER)
-            {
+            actionController.addFaithPoint(gameBoardInstance, player, quantities);
+        } catch (WinnerException e) {
+            winnerPlayer = players.indexOf(player);
+            if (gameState == GameState.SINGLEPLAYER) {
                 nextTurn();
             }
         }
 
-
     }
 
+
     public void handle_firstTurn()  {
-        ArrayList<LeaderCard> leaderCards= CardParser.parseLeadCards();
-        if(leaderCards==null)
+        ArrayList<LeaderCard> leaderCards = CardParser.parseLeadCards();
+        if(leaderCards == null)
             throw new IllegalActionException();
         else
         for(HumanPlayer player:players) {
-            for (int i=0;i<4;i++)
-            {
-            player.getPlayerBoard().addLeaderCard(leaderCards.get(0));
-            leaderCards.remove(0);
-        }}
+            for (int i=0;i<4;i++) {
+                player.getPlayerBoard().addLeaderCard(leaderCards.get(0));
+                leaderCards.remove(0);
+            }
+        }
     }
+
     public void handle_endTurn() {
+        int quantities = playerInTurn.getTemporaryResourceStorage().size();
+        movePlayersExceptSelected(quantities);
         nextTurn();
     }
+
+    public void movePlayersExceptSelected(int quantities) {
+        if (gameState.equals(GameState.MULTIPLAYER)) {
+            for (HumanPlayer player : players)
+                if (!player.getName().equals(playerInTurn.getName()))
+                    handle_addFaithPoint(quantities, player);
+        } else if (gameState.equals(GameState.SINGLEPLAYER))
+            handle_addFaithPoint(quantities, null);
+    }
+
     void nextTurn() {
-        int playersNumber=players.size();
+        int playersNumber = players.size();
         turnCount++;
         productions.clear();
         checkWinner(playersNumber);
-        if(gameState.equals(GameState.SINGLEPLAYER))
+        if (gameState.equals(GameState.SINGLEPLAYER))
             handle_Bot();
         nextState(Action.END_TURN);
-        playerInTurn = players.get((firstPlayer+turnCount) % players.size());
+        playerInTurn = players.get((firstPlayer + turnCount) % players.size());
     }
     private void checkWinner(int playersNumber){
         switch (gameState){
@@ -296,13 +300,21 @@ public class RoundController {
         return Winner;
     }
 
+    private boolean isYourTurn(String name) {
+        if (playerInTurn.getName().equals(name))
+            return true;
+        else {
+            gameBoardInstance.getPlayer(name).setPrivateCommunication("This is not your turn", CommunicationMessage.ILLEGAL_ACTION);
+            return false;
+        }
+    }
+
     public void nextState(Action action) {
 
         switch (turnState) {
-            case FIRST_TURN:
-            {
+            case FIRST_TURN: {
                 if (players.size() == productions.size()) {
-                    if(gameState==GameState.MULTIPLAYER) {
+                    if (gameState == GameState.MULTIPLAYER) {
                         turnState = TurnState.SECOND_TURN;
                         productions.clear();
                         productions.add(0);

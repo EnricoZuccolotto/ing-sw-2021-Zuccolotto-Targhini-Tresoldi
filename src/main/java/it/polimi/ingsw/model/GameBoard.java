@@ -1,4 +1,7 @@
 package it.polimi.ingsw.model;
+
+import it.polimi.ingsw.model.Communication.Communication;
+import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
@@ -8,7 +11,6 @@ import it.polimi.ingsw.model.tools.CardParser;
 import it.polimi.ingsw.observer.Observable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -25,11 +27,14 @@ public class GameBoard extends Observable {
     private final ArrayList<HumanPlayer> players;
     private final FaithPath faithPath;
     private Optional<BotPlayer> Bot;
+    private final Communication publicCommunication;
+
 
     /**
      * Build a new Game board.
      */
     public GameBoard() {
+        publicCommunication = new Communication();
         this.decks = CardParser.parseDevCards();
         this.players = new ArrayList<>();
         this.market = new Market();
@@ -154,11 +159,19 @@ public class GameBoard extends Observable {
         return faithPath;
     }
 
-    @Override
-    public String toString() {
-        return
-                Arrays.toString(decks) +
-                        "" + faithPath
-                ;
+    public Communication getPrivateCommunication() {
+        return publicCommunication;
+    }
+
+    public void setPrivateCommunication(String communication, CommunicationMessage communicationMessage) {
+        this.publicCommunication.setCommunicationMessage(communicationMessage);
+        this.publicCommunication.setMessage(communication);
+    }
+
+    public HumanPlayer getPlayer(String name) {
+        for (HumanPlayer player : players)
+            if (player.getName().equals(name))
+                return player;
+        return null;
     }
 }

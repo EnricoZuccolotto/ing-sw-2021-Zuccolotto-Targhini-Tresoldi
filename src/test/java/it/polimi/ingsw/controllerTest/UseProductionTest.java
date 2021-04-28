@@ -1,8 +1,7 @@
 package it.polimi.ingsw.controllerTest;
+
 import it.polimi.ingsw.controller.ActionController;
-import it.polimi.ingsw.exceptions.playerboard.IllegalActionException;
-import it.polimi.ingsw.exceptions.playerboard.IllegalResourceException;
-import it.polimi.ingsw.exceptions.playerboard.InsufficientResourcesException;
+import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.board.DecoratedWarehousePlayerBoard;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
@@ -13,7 +12,8 @@ import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class UseProductionTest {
     @Test
@@ -35,20 +35,15 @@ public class UseProductionTest {
         player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
         player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
         player.getPlayerBoard().addExtraResources(Resources.SHIELD, 3);
-//wrong number of resources given
-        try {
-            actionController.useBaseProduction(player, 2, Resources.COIN, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
-            fail();
-        } catch (IllegalResourceException e) {
-            assertTrue(true);
-        }
+        //wrong number of resources given
+
+        actionController.useBaseProduction(player, 2, Resources.COIN, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
+        assertEquals(player.getPrivateCommunication().getMessage(), "You sent the wrong number of resources");
         //wrong resource given
-        try {
-            actionController.useBaseProduction(player, 2, Resources.FAITH, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
-            fail();
-        } catch (IllegalResourceException e) {
-            assertTrue(true);
-        }
+
+        actionController.useBaseProduction(player, 2, Resources.FAITH, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
+        assertEquals(player.getPrivateCommunication().getMessage(), "The resource you sent is not SHIELD,STONE,SERVANT,COIN.");
+
         //normal functioning
         actionController.useBaseProduction(player, 2, Resources.SHIELD, new ExchangeResources(new int[]{0, 0, 1, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}));
 
@@ -77,27 +72,22 @@ public class UseProductionTest {
         player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
         player.getPlayerBoard().addExtraResources(Resources.SHIELD, 3);
         // card not active
-        try {
-            actionController.useSpecialProduction(player, Resources.COIN, 0, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
-            fail();
-        } catch (IllegalActionException e) {
-            assertTrue(true);
-        }
+
+        actionController.useSpecialProduction(player, Resources.COIN, 0, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
+        assertEquals(player.getPrivateCommunication().getMessage(), "You need to activate this card to use it");
+
         player.getPlayerBoard().getLeaderCard(0).flipCard();
         //wrong number of resources given
-        try {
-            actionController.useSpecialProduction(player,Resources.COIN,0,new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0,0, 0, 0}, new int[]{0, 0, 0, 3}));
-            fail();
-        }catch (IllegalResourceException e){
-            assertTrue (true);
-        }
+
+        actionController.useSpecialProduction(player, Resources.COIN, 0, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 3}));
+        assertEquals(player.getPrivateCommunication().getMessage(), "You sent the wrong number of resources");
+
+
         //wrong resource given
-        try {
-            actionController.useSpecialProduction(player, Resources.FAITH, 0, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
-            fail();
-        } catch (IllegalResourceException e) {
-            assertTrue(true);
-        }
+
+        actionController.useSpecialProduction(player, Resources.FAITH, 0, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}));
+        assertEquals(player.getPrivateCommunication().getMessage(), "The resource you sent is not SHIELD,STONE,SERVANT,COIN.");
+
         //normal functioning
         actionController.useSpecialProduction(player, Resources.COIN, 0, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}));
 
@@ -131,32 +121,25 @@ public class UseProductionTest {
         player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
         player.getPlayerBoard().addExtraResources(Resources.COIN, 4);
         //wrong index given
-        try {
-            actionController.useNormalProduction(player, 2, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
-            fail();
-        } catch (IndexOutOfBoundsException e) {
-            assertTrue(true);
-        }
-        //wrong number of resources given
-        try {
-            actionController.useNormalProduction(player, 0, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
-            fail();
-        }catch (InsufficientResourcesException e){
-            assertTrue (true);
-        }
-        //correct resources but not enough int the warehouse
-        try {
-            actionController.useNormalProduction(player,0,new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0,0, 0, 0}, new int[]{0, 1, 0, 0}));
-            fail();
-        }catch (InsufficientResourcesException e){
-            assertTrue (true);
-        }
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE,2);
-        //normal functioning
-        actionController.useNormalProduction(player,0,new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0,0, 0, 0}, new int[]{0, 1, 0, 0}));
 
-        assertTrue(player.getPlayerBoard().checkResourcesStrongbox(new int[]{7,5,2,0}));
-        assertEquals(player.getPlayerBoard().getExtraResources().get(1),(Integer)3);
+        actionController.useNormalProduction(player, 2, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
+        assertEquals(player.getPrivateCommunication().getMessage(), "You don't have a card in this position");
+        //wrong number of resources given
+
+        actionController.useNormalProduction(player, 0, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3}));
+        assertEquals(player.getPrivateCommunication().getMessage(), "That's not the cost of the card, you have sent the wrong number of resources");
+
+        //correct resources but not enough int the warehouse
+
+        actionController.useNormalProduction(player, 0, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 1, 0, 0}));
+        assertEquals(player.getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.INSUFFICIENT_RESOURCES);
+
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
+        //normal functioning
+        actionController.useNormalProduction(player, 0, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 1, 0, 0}));
+
+        assertTrue(player.getPlayerBoard().checkResourcesStrongbox(new int[]{7, 5, 2, 0}));
+        assertEquals(player.getPlayerBoard().getExtraResources().get(1), (Integer) 3);
 
     }
 

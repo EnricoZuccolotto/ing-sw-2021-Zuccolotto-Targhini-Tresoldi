@@ -1,8 +1,10 @@
 package it.polimi.ingsw.network.messages;
 
+/**
+ *
+ */
 public class FirstActionMessage extends Message {
     int index1, index2;
-
 
     public FirstActionMessage(String playerName, int index1, int index2) {
         super(playerName, MessageType.FIRST_ACTION);

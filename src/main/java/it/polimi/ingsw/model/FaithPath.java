@@ -56,15 +56,6 @@ public class FaithPath extends Observable implements Serializable {
         notifyObserver(new FaithPathUpdateMessage(this));
     }
 
-    public void movePlayersExceptSelected(int player, int n) {
-        for (int i : playerPositions) {
-            if (i != player) {
-                playerPositions[player] += n;
-                checkReport(player);
-            }
-        }
-        notifyObserver(new FaithPathUpdateMessage(this));
-    }
 
     /**
      * Check the position of each player and when a Faith Marker reaches (or goes beyond) a Pope

@@ -4,6 +4,9 @@ import it.polimi.ingsw.model.enums.Resources;
 
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class SecondActionMessage extends Message {
 
     ArrayList<Resources> resources;

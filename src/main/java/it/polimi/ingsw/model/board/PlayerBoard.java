@@ -12,11 +12,16 @@ import java.util.ArrayList;
  */
 public interface PlayerBoard {
 
-    // General methods
+    /**
+     * Gets the inkwell of the player
+     *
+     * @return the state of the inkwell in this player board.
+     */
     boolean getInkwell();
 
     /**
      * Adds a leader card to the player board
+     *
      * @param leaderCard Card to be added
      */
     void addLeaderCard(LeaderCard leaderCard);
@@ -71,21 +76,70 @@ public interface PlayerBoard {
      */
     int getLeaderCardsNumber();
 
+    /**
+     * Controls if the player has enough colors in total
+     *
+     * @param colors quantity of colors to check
+     * @return Success or failure
+     */
     boolean checkColors(int[] colors);
 
+    /**
+     * Controls if the player has enough resources in total
+     *
+     * @param resources quantity of colors to check
+     * @return Success or failure
+     */
     boolean checkResources(int[] resources);
 
+    /**
+     * Controls if the player has enough resources in the strongbox
+     *
+     * @param r quantity of resources to check
+     * @return Success or failure
+     */
     boolean checkResourcesStrongbox(int[] r);
 
+    /**
+     * Controls if the player has enough resources in the warehouse
+     *
+     * @param r quantity of resources to check
+     * @return Success or failure
+     */
     boolean checkResourcesWarehouse(int[] r);
 
+    /**
+     * Controls if the player has enough resources in the special warehouse
+     *
+     * @param r quantity of resources to check
+     * @return Success or failure
+     */
+    boolean checkResourcesSpecialWarehouse(int[] r);
+
+    /**
+     * Remove from the strongbox the quantities of resources contained in the array r
+     *
+     * @param r quantity of resources to pay
+     * @return Success or failure
+     */
     boolean payResourcesStrongbox(int[] r);
 
+    /**
+     * Remove from the warehouse the quantities of resources contained in the array r
+     *
+     * @param r quantity of resources to pay
+     * @return Success or failure
+     */
     boolean payResourcesWarehouse(int[] r);
 
+    /**
+     * Remove from the special warehouse the quantities of resources contained in the array r
+     *
+     * @param r quantity of resources to pay
+     * @return Success or failure
+     */
     boolean payResourcesSpecialWarehouse(int[] r);
 
-    boolean checkResourcesSpecialWarehouse(int[] r);
 
     /**
      * Adds a resource to the strongbox
@@ -97,7 +151,6 @@ public interface PlayerBoard {
 
     /**
      * Gets a LeaderCard from the hand of the player
-     *
      * @param index position of the card
      * @return the card in position index.
      */
@@ -105,7 +158,6 @@ public interface PlayerBoard {
 
     /**
      * Gets the cost of the production in index position
-     *
      * @param index position of the card
      * @return the cost of the production in index position.
      */
@@ -113,7 +165,6 @@ public interface PlayerBoard {
 
     /**
      * Gets the result of the production in index position
-     *
      * @param index position of the card
      * @return the result of the production in index position.
      */
@@ -121,7 +172,6 @@ public interface PlayerBoard {
 
     /**
      * Gets the number of production card possessed by the player.
-     *
      * @return the number of production card possessed by the player.
      */
     int getProductionNumber();
@@ -140,26 +190,102 @@ public interface PlayerBoard {
      */
     void setVP(int VP);
 
-    // Decorated warehouse methods
+    //Decorated special warehouse method
+
+    /**
+     * Adds a special warehouse space for the resource of maxQuantities
+     *
+     * @param resource    type of Resource
+     * @param maxQuantity max number of resources that the special warehouse can contain of that type
+     */
     void addWarehouseSpace(Resources resource, int maxQuantity) throws IllegalDecoratorException;
 
+    /**
+     * Adds quantity of resource to the special warehouse
+     *
+     * @param resources type of Resource
+     * @param quantity  number of resource to add
+     * @return success or failure
+     */
     boolean addExtraResources(Resources resources, int quantity) throws IllegalDecoratorException;
 
+    /**
+     * Removes quantity of resource to the special warehouse
+     *
+     * @param resource type of Resource
+     * @param quantity number of resource to remove
+     * @return success or failure
+     */
     boolean takeExtraResources(Resources resource, int quantity) throws IllegalDecoratorException;
 
+    /**
+     * Gets the extra resources contained in the special warehouse
+     *
+     * @return the extra resources contained in the special warehouse
+     */
     ArrayList<Integer> getExtraResources();
 
+
     // Decorated cost methods
+
+    /**
+     * Adds a discount for the resource of an amount
+     *
+     * @param resource type of Resource
+     * @param amount   amount of discount
+     */
     void addDiscount(Resources resource, int amount) throws IllegalDecoratorException;
+
+    /**
+     * Gets if the resources is discounted
+     *
+     * @return true if the resource is discounted, else false
+     */
     boolean isResourceDiscounted(Resources resource);
+
+    /**
+     * Gets the amount of discount for the resource
+     *
+     * @param resource type of Resource
+     * @return the amount of discount for the resource
+     */
     int getResourceDiscount(Resources resource);
 
     // Decorated white marble
+
+    /**
+     * Adds the possibility to change the resource white to the resource
+     *
+     * @param resource type of Resource
+     */
     void addSubstitute(Resources resource) throws IllegalDecoratorException;
+
+    /**
+     * Gets the array list of possible substitute
+     *
+     * @return the array list of possible substitute
+     */
     ArrayList<Boolean> getSubstitutes();
+
+    /**
+     * Gets if the resources is substitutable
+     *
+     * @return true if the resources is substitutable, else false
+     */
     boolean isResourceSubstitutable(Resources resource);
 
     // Decorated production
+
+    /**
+     * Adds a special production for the resource
+     *
+     * @param resource type of Resource
+     */
     void addProduction(Resources resource) throws IllegalDecoratorException;
+
+    /**
+     * Gets the result of the special productions
+     * @return Gets the result of the special productions
+     */
     ArrayList<Resources> getProductions(Resources resource);
 }
