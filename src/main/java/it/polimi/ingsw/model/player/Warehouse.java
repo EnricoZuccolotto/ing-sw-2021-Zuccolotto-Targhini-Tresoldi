@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.model.enums.WarehousePositions;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -116,7 +117,6 @@ public class Warehouse implements Serializable {
      * @return true if the operation succeeded, else false.
      */
     public boolean MoveRow(int start, int end) {
-
         Resources temp;
         switch (start) {
             case 1:

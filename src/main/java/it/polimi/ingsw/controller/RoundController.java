@@ -388,6 +388,10 @@ public class RoundController {
         return gameState;
     }
 
+    public ActionController getActionController() {
+        return actionController;
+    }
+
     public int getWinnerPlayer() {
         return winnerPlayer;
     }

@@ -242,6 +242,7 @@ public class ActionController {
                         player.getPlayerBoard().addProduction(Resources.transform(i));
                     }
                 }
+                break;
             case SALES:
                 // Check if there is another leaderCard of the same type
                 if (!(player.getPlayerBoard() instanceof DecoratedCostPlayerBoard)) {
@@ -253,6 +254,7 @@ public class ActionController {
                         player.getPlayerBoard().addDiscount(Resources.transform(i), leaderCard.getEffect().get(i));
                     }
                 }
+                break;
             case CHANGE:
                 // Check if there is another leaderCard of the same type
                 if (!(player.getPlayerBoard() instanceof DecoratedChangePlayerBoard)) {
@@ -264,6 +266,7 @@ public class ActionController {
                         player.getPlayerBoard().addSubstitute(Resources.transform(i));
                     }
                 }
+                break;
             case WAREHOUSE:
                 // Check if there is another leaderCard of the same type
                 if (!(player.getPlayerBoard() instanceof DecoratedWarehousePlayerBoard)) {
@@ -275,6 +278,7 @@ public class ActionController {
                         player.getPlayerBoard().addWarehouseSpace(Resources.transform(i), leaderCard.getEffect().get(i));
                     }
                 }
+                break;
             default:
 
         }

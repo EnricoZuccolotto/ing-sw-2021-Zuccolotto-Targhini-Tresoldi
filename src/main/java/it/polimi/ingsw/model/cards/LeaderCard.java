@@ -92,4 +92,6 @@ public class LeaderCard extends Card {
                 ", effect1=" + Arrays.toString(effect) +
                 '}';
     }
+
+    // TODO: Implement equals()
 }
