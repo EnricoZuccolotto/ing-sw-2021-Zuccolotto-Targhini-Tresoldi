@@ -52,8 +52,9 @@ public class ActionController {
     }
 
     public void addResourceToWarehouse(HumanPlayer player, Resources resource, int rowPosition, int receivedResourceIndex){
-        if(player.getTemporaryResourceStorage().get(receivedResourceIndex).equals(resource)){
-            if(rowPosition == 0)
+        Resources item = player.getTemporaryResourceStorage().get(receivedResourceIndex);
+        if (item.equals(resource) || (item.equals(Resources.WHITE) && player.getPlayerBoard().isResourceSubstitutable(resource))) {
+            if (rowPosition == 0)
                 player.getPlayerBoard().addExtraResources(resource, 1);
             else
                 player.getPlayerBoard().addWarehouseResource(resource, rowPosition);
@@ -69,7 +70,7 @@ public class ActionController {
         if(player.getPlayerBoard().shiftWarehouseRows(startingRow, newRowPosition)){
             player.sendUpdateToPlayer();
         } else {
-            // TODO: Error
+            player.setPrivateCommunication("You cannot switch these rows", CommunicationMessage.ILLEGAL_ACTION);
         }
     }
 
@@ -205,6 +206,8 @@ public class ActionController {
             if (winner)
                 throw new WinnerException();
         } else return false;
+
+
         return true;
     }
 
@@ -239,6 +242,7 @@ public class ActionController {
                         player.getPlayerBoard().addProduction(Resources.transform(i));
                     }
                 }
+                break;
             case SALES:
                 // Check if there is another leaderCard of the same type
                 if (!(player.getPlayerBoard() instanceof DecoratedCostPlayerBoard)) {
@@ -250,6 +254,7 @@ public class ActionController {
                         player.getPlayerBoard().addDiscount(Resources.transform(i), leaderCard.getEffect().get(i));
                     }
                 }
+                break;
             case CHANGE:
                 // Check if there is another leaderCard of the same type
                 if (!(player.getPlayerBoard() instanceof DecoratedChangePlayerBoard)) {
@@ -261,6 +266,7 @@ public class ActionController {
                         player.getPlayerBoard().addSubstitute(Resources.transform(i));
                     }
                 }
+                break;
             case WAREHOUSE:
                 // Check if there is another leaderCard of the same type
                 if (!(player.getPlayerBoard() instanceof DecoratedWarehousePlayerBoard)) {
@@ -272,6 +278,7 @@ public class ActionController {
                         player.getPlayerBoard().addWarehouseSpace(Resources.transform(i), leaderCard.getEffect().get(i));
                     }
                 }
+                break;
             default:
 
         }
@@ -302,8 +309,10 @@ public class ActionController {
 
     public boolean secondAction(ArrayList<Resources> resources, int indexPlayer, HumanPlayer player) {
         switch (indexPlayer) {
-            case 0:
-                break;
+            case 0: {
+                player.setPrivateCommunication("You can't play in this preparation turn", CommunicationMessage.ILLEGAL_ACTION);
+                return false;
+            }
             case 1:
             case 2: {
                 if (resources.size() == 1) {

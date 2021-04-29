@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 public class SocketClient extends Observable {
 
     private static final int TIMEOUT = 10000;
-    private static final Logger LOGGER = Logger.getLogger(SocketClient.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(SocketClient.class.getName());
     private final Socket socket;
     private final ObjectOutputStream outputStm;
     private final ObjectInputStream inputStm;

@@ -19,14 +19,14 @@ import java.util.Optional;
  * decks represents the 12 deck of 4 cards each one of 1 color(Blue,Yellow,Purple,Green) and 1 level(1,2,3)
  * players represents the players that are playing
  * faithPath represents the faith path.
- * Bot represents the bot player, if there is one.
+ * bot represents the bot player, if there is one.
  */
 public class GameBoard extends Observable {
     private final Market market;
     private final Deck[][] decks;
     private final ArrayList<HumanPlayer> players;
     private final FaithPath faithPath;
-    private Optional<BotPlayer> Bot;
+    private Optional<BotPlayer> bot;
     private final Communication publicCommunication;
 
 
@@ -49,7 +49,7 @@ public class GameBoard extends Observable {
     public void init(GameBoard gameBoard) {
         if (players.size() == 1) {
             this.faithPath.init(2);
-            Bot = Optional.of(new BotPlayer(gameBoard));
+            bot = Optional.of(new BotPlayer(gameBoard));
         } else this.faithPath.init(players.size());
     }
 
@@ -59,7 +59,7 @@ public class GameBoard extends Observable {
      * @return the bot player
      */
     public BotPlayer getBot() {
-        return Bot.orElse(null);
+        return bot.orElse(null);
     }
 
     /**
@@ -159,11 +159,11 @@ public class GameBoard extends Observable {
         return faithPath;
     }
 
-    public Communication getPrivateCommunication() {
+    public Communication getPublicCommunication() {
         return publicCommunication;
     }
 
-    public void setPrivateCommunication(String communication, CommunicationMessage communicationMessage) {
+    public void setPublicCommunication(String communication, CommunicationMessage communicationMessage) {
         this.publicCommunication.setCommunicationMessage(communicationMessage);
         this.publicCommunication.setMessage(communication);
     }

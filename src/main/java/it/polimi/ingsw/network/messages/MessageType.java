@@ -30,6 +30,7 @@ public enum MessageType {
     //Update
     HUMAN_PLAYER_UPDATE,
     FAITH_PATH_UPDATE,
+    DECKS_UPDATE,
     //Connection messages
     LOGIN
 
