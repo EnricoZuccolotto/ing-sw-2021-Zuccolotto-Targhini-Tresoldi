@@ -32,6 +32,9 @@ public enum MessageType {
     FAITH_PATH_UPDATE,
     DECKS_UPDATE,
     //Connection messages
-    LOGIN
+    LOGIN,
+    // Lobby message
+    JOIN_GAME,
+    SET_GAME
 
 }

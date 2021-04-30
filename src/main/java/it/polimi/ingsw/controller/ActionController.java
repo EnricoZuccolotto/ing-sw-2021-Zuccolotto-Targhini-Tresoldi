@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.exceptions.playerboard.IllegalActionException;
 import it.polimi.ingsw.exceptions.playerboard.InsufficientLevelException;
 import it.polimi.ingsw.exceptions.playerboard.WinnerException;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
@@ -9,6 +10,7 @@ import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 
@@ -22,52 +24,66 @@ public class ActionController {
 
     /**
      * Starts a market action by specifying the row or column the user wants to get.
+     *
      * @param gameBoard Current game.
-     * @param humanPlayer Player that requested the action
-     * @param rowIndex Market row index. To obtain a column this must be set to 3.
-     * @param colIndex Column index. If rowIndex == 3 this indicates the column, else this number is not considered
+     * @param rowIndex  Market row index. To obtain a column this must be set to 3.
+     * @param colIndex  Column index. If rowIndex == 3 this indicates the column, else this number is not considered
      * @return List of market-obtained resources
      */
-    public ArrayList<Resources> getMarket(GameBoard gameBoard, HumanPlayer humanPlayer, int rowIndex, int colIndex){
+    public ArrayList<Resources> getMarket(GameBoard gameBoard, int rowIndex, int colIndex) {
         ArrayList<Resources> list;
-        if(rowIndex == 3){
+        if (rowIndex == 3 && (colIndex >= 0 && colIndex <= 3)) {
             list = gameBoard.pushColumnMarket(colIndex);
-        } else {
+        } else if (rowIndex >= 0 && rowIndex <= 2) {
             list = gameBoard.pushRowMarket(rowIndex);
-        }
+        } else throw new IllegalActionException();
         return list;
     }
 
     /**
      * Adds a faith point for player {@code humanPlayer}.
-     * @param gameBoard Current game.
+     *
+     * @param gameBoard   Current game.
      * @param humanPlayer Player that needs new faith points.
-     * @param number Number of faith points to be added
+     * @param number      Number of faith points to be added
      */
-    public void addFaithPoint(GameBoard gameBoard, HumanPlayer humanPlayer, int number){
+    public void addFaithPoint(GameBoard gameBoard, HumanPlayer humanPlayer, int number) {
         if (humanPlayer != null) {
             int playerPosition = gameBoard.getPlayers().indexOf(humanPlayer);
             gameBoard.movePlayerFaithPath(playerPosition, number);
         } else gameBoard.movePlayerFaithPath(1, number);
     }
 
-    public void addResourceToWarehouse(HumanPlayer player, Resources resource, int rowPosition, int receivedResourceIndex){
-        Resources item = player.getTemporaryResourceStorage().get(receivedResourceIndex);
+    public boolean addResourceToWarehouse(HumanPlayer player, Resources resource, WarehousePositions position, int receivedResourceIndex) {
+        Resources item;
+        try {
+            item = player.getTemporaryResourceStorage().get(receivedResourceIndex);
+        } catch (IndexOutOfBoundsException exception) {
+            player.setPrivateCommunication(exception.getMessage(), CommunicationMessage.ILLEGAL_ACTION);
+            return false;
+        }
         if (item.equals(resource) || (item.equals(Resources.WHITE) && player.getPlayerBoard().isResourceSubstitutable(resource))) {
-            if (rowPosition == 0)
-                player.getPlayerBoard().addExtraResources(resource, 1);
-            else
-                player.getPlayerBoard().addWarehouseResource(resource, rowPosition);
+            if (position.equals(WarehousePositions.SPECIAL_WAREHOUSE)) {
+                if (!player.getPlayerBoard().addExtraResources(resource, 1)) {
+                    player.setPrivateCommunication("You can't insert this resource in this position", CommunicationMessage.ILLEGAL_ACTION);
+                    return false;
+                }
+            } else if (!player.getPlayerBoard().addWarehouseResource(resource, position)) {
+                player.setPrivateCommunication("You can't insert this resource in this position", CommunicationMessage.ILLEGAL_ACTION);
+                return false;
+            }
             player.removeItemFromTemporaryList(receivedResourceIndex);
             player.sendUpdateToPlayer();
-            // TODO: handle errors.
+
         } else {
             player.setPrivateCommunication("Resource not found", CommunicationMessage.INSUFFICIENT_RESOURCES);
+            return false;
         }
+        return true;
     }
 
-    public void shiftWarehouseRows(HumanPlayer player, int startingRow, int newRowPosition){
-        if(player.getPlayerBoard().shiftWarehouseRows(startingRow, newRowPosition)){
+    public void shiftWarehouseRows(HumanPlayer player, WarehousePositions startingRow, WarehousePositions newRowPosition) {
+        if (player.getPlayerBoard().shiftWarehouseRows(startingRow, newRowPosition)) {
             player.sendUpdateToPlayer();
         } else {
             player.setPrivateCommunication("You cannot switch these rows", CommunicationMessage.ILLEGAL_ACTION);
@@ -75,7 +91,7 @@ public class ActionController {
     }
 
     public boolean useBaseProduction(HumanPlayer player, int n, Resources output, ExchangeResources exchangeResources) {
-        //check se le risorse mandate dal player sono giuste
+
         int[] resWar = exchangeResources.getWarehouse();
         int[] resStr = exchangeResources.getStrongbox();
         int[] resSpeWar = exchangeResources.getSpecialWarehouse();
@@ -93,23 +109,18 @@ public class ActionController {
         }
 
 
-        //controllo se le risorse ho abbastanza risorse nei magazzini rispetto alle divisioni mandate
         if (isResourcesAvailable(player, exchangeResources, true)) {
-
-            //pago le varie risorse
             payResources(player, exchangeResources);
-
-            //aggiungo le risorse d'output
             player.getPlayerBoard().addStrongboxResource(output, 1);
         } else return false;
-        //aggiorno la view
+
+
         player.sendUpdateToPlayer();
         return true;
     }
 
 
     public boolean useNormalProduction(HumanPlayer player, int index, ExchangeResources exchangeResources) {
-        //check se le risorse mandate dal player sono uguali al costo della carta
         int[] resWar = exchangeResources.getWarehouse();
         int[] resStr = exchangeResources.getStrongbox();
         int[] resSpeWar = exchangeResources.getSpecialWarehouse();
@@ -126,20 +137,14 @@ public class ActionController {
                 player.setPrivateCommunication("That's not the cost of the card, you have sent the wrong number of resources", CommunicationMessage.INSUFFICIENT_RESOURCES);
                 return false;
             }
-
-        //controllo se le risorse ho abbastanza risorse nei magazzini rispetto alle divisioni mandate
         if (isResourcesAvailable(player, exchangeResources, true)) {
-
-
-            //pago le varie risorse
             payResources(player, exchangeResources);
-
-            //aggiungo le risorse
             int[] result = player.getPlayerBoard().getProductionResult(index);
             for (int i = 0; i < 4; i++)
                 player.getPlayerBoard().addStrongboxResource(Resources.transform(i), result[i]);
         } else return false;
-        //aggiorno la view
+
+
         player.sendUpdateToPlayer();
         return true;
     }
@@ -173,16 +178,14 @@ public class ActionController {
             player.setPrivateCommunication("This deck is empty", CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
-        //check se le risorse mandate dal player sono uguali al costo della carta
+
         for (int i = 0; i < 4; i++)
             if (card.getCostCard()[i] != (resWar[i] + resSpeWar[i] + resStr[i])) {
                 player.setPrivateCommunication("The resources sent are different from the cost of the card", CommunicationMessage.ILLEGAL_ACTION);
                 return false;
             }
-        //controllo se le risorse ho abbastanza risorse nei magazzini rispetto alle divisioni mandate
         if (isResourcesAvailable(player, exchangeResources, false)) {
 
-            //provo ad aggiungere la carta nel posto che vuole lui o se non specificato nell'unico posto libero
             try {
                 if (index < 0)
                     player.getPlayerBoard().addProductionCard(card);
@@ -194,13 +197,9 @@ public class ActionController {
                 player.setPrivateCommunication("You don't have a space available", CommunicationMessage.ILLEGAL_ACTION);
                 return false;
             }
-            //pago le varie risorse
             payResources(player, exchangeResources);
-
-            // tolgo la carta
             gameBoard.getDeck(color, level).popFirstCard();
 
-            //aggiorno la view
             player.sendUpdateToPlayer();
 
             if (winner)
@@ -282,7 +281,7 @@ public class ActionController {
             default:
 
         }
-        //aggiorno la view
+
         player.sendUpdateToPlayer();
         return true;
     }
@@ -302,7 +301,7 @@ public class ActionController {
         }
         foldLeader(index2, player);
         foldLeader(index1, player);
-        //aggiorno la view
+
         player.sendUpdateToPlayer();
         return true;
     }
@@ -343,7 +342,7 @@ public class ActionController {
                 break;
             }
         }
-        //aggiorno la view
+
         player.sendUpdateToPlayer();
         return true;
     }
@@ -363,7 +362,7 @@ public class ActionController {
             player.setPrivateCommunication("You cannot discard this card.", CommunicationMessage.CARD_ALREADY_USED);
             return false;
         }
-        //aggiorno la view
+
         player.sendUpdateToPlayer();
         return true;
     }

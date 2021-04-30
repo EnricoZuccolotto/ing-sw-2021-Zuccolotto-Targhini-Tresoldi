@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import org.junit.Test;
 
@@ -98,7 +99,7 @@ public class PlayerBoardTest {
             assertTrue(true);
         }
         assertEquals(4, s.getSubstitutes().size());
-        for(int i=0; i<4; i++){
+        for (int i = 0; i < 4; i++) {
             assertFalse(s.getSubstitutes().get(i));
         }
         assertFalse(s.isResourceSubstitutable(Resources.COIN));
@@ -106,15 +107,16 @@ public class PlayerBoardTest {
         assertTrue(s.payResourcesSpecialWarehouse(a));
         assertTrue(s.checkResourcesSpecialWarehouse(a));
     }
+
     @Test
-    public void WareTest(){
-        SimplePlayerBoard s= new SimplePlayerBoard(true);
-        int[] a={0,2,0,0};
-        int[] b={0,1,0,0};
-        assertTrue(s.addWarehouseResource(Resources.COIN, 3));
-        assertTrue(s.addWarehouseResource(Resources.COIN, 3));
-        assertFalse(s.addWarehouseResource(Resources.COIN, 2));
-        assertTrue(s.shiftWarehouseRows(2,3));
+    public void WareTest() {
+        SimplePlayerBoard s = new SimplePlayerBoard(true);
+        int[] a = {0, 2, 0, 0};
+        int[] b = {0, 1, 0, 0};
+        assertTrue(s.addWarehouseResource(Resources.COIN, WarehousePositions.WAREHOUSE_THIRD_ROW));
+        assertTrue(s.addWarehouseResource(Resources.COIN, WarehousePositions.WAREHOUSE_THIRD_ROW));
+        assertFalse(s.addWarehouseResource(Resources.COIN, WarehousePositions.WAREHOUSE_SECOND_ROW));
+        assertTrue(s.shiftWarehouseRows(WarehousePositions.WAREHOUSE_SECOND_ROW, WarehousePositions.WAREHOUSE_THIRD_ROW));
         assertTrue(s.checkResources(a));
         assertTrue(s.checkResources(b));
         assertTrue(s.checkResourcesWarehouse(a));
@@ -124,12 +126,12 @@ public class PlayerBoardTest {
         assertFalse(s.checkResources(b));
         assertFalse(s.checkResourcesWarehouse(a));
         assertFalse(s.checkResourcesWarehouse(b));
-        assertTrue(s.addWarehouseResource(Resources.SERVANT, 3));
-        assertTrue(s.addWarehouseResource(Resources.SERVANT, 3));
-        assertTrue(s.addWarehouseResource(Resources.SERVANT, 3));
-        assertTrue(s.addWarehouseResource(Resources.COIN, 2));
-        assertTrue(s.addWarehouseResource(Resources.COIN, 2));
-        assertEquals(1,Math.floorDiv(s.getNumberResources(),5));
+        assertTrue(s.addWarehouseResource(Resources.SERVANT, WarehousePositions.WAREHOUSE_THIRD_ROW));
+        assertTrue(s.addWarehouseResource(Resources.SERVANT, WarehousePositions.WAREHOUSE_THIRD_ROW));
+        assertTrue(s.addWarehouseResource(Resources.SERVANT, WarehousePositions.WAREHOUSE_THIRD_ROW));
+        assertTrue(s.addWarehouseResource(Resources.COIN, WarehousePositions.WAREHOUSE_SECOND_ROW));
+        assertTrue(s.addWarehouseResource(Resources.COIN, WarehousePositions.WAREHOUSE_SECOND_ROW));
+        assertEquals(1, Math.floorDiv(s.getNumberResources(), 5));
     }
     @Test
     public void ProdcardTest(){
@@ -211,14 +213,14 @@ public class PlayerBoardTest {
         s.addStrongboxResource(Resources.SHIELD,5);
         assertTrue(s.checkResourcesStrongbox(a));
         assertFalse(s.checkResourcesStrongbox(b));
-        s.addWarehouseResource(Resources.STONE, 1);
+        s.addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_FIRST_ROW);
         assertFalse(s.checkResourcesStrongbox(b));
         s.addStrongboxResource(Resources.STONE, 3);
         assertTrue(s.payResourcesStrongbox(b));
         assertTrue(s.checkResourcesStrongbox(b));
         assertTrue(s.payResourcesStrongbox(c));
         assertTrue(s.checkResourcesStrongbox(c));
-        s.addWarehouseResource(Resources.SERVANT,2);
+        s.addWarehouseResource(Resources.SERVANT, WarehousePositions.WAREHOUSE_SECOND_ROW);
         s.addStrongboxResource(Resources.SHIELD, 2);
         s.addStrongboxResource(Resources.COIN, 2);
         assertTrue(s.checkResources(d));
@@ -236,9 +238,9 @@ public class PlayerBoardTest {
         board.addWarehouseSpace(Resources.COIN, 2);
         board.addExtraResources(Resources.COIN, 2);
         board.addStrongboxResource(Resources.STONE, 15);
-        board.addWarehouseResource(Resources.SHIELD, 3);
-        board.addWarehouseResource(Resources.SHIELD, 3);
-        board.addWarehouseResource(Resources.SHIELD, 3);
+        board.addWarehouseResource(Resources.SHIELD, WarehousePositions.WAREHOUSE_THIRD_ROW);
+        board.addWarehouseResource(Resources.SHIELD, WarehousePositions.WAREHOUSE_THIRD_ROW);
+        board.addWarehouseResource(Resources.SHIELD, WarehousePositions.WAREHOUSE_THIRD_ROW);
         assertEquals(board.getVictoryPointsCards(), 0);
         assertEquals(board.getNumberResources(), 20);
         board.addLeaderCard(new LeaderCard(10, 2, null, null, null, new int[]{0, 0, 0, 3}));

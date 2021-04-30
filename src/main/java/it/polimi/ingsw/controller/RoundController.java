@@ -17,7 +17,6 @@ public class RoundController {
 
     private final GameBoard gameBoardInstance;
     private int turnCount;
-    private int firstPlayer;
     private HumanPlayer playerInTurn;
     private TurnState turnState;
     private final ActionController actionController;
@@ -29,32 +28,60 @@ public class RoundController {
 
 
     public RoundController(GameBoard gameBoardInstance) {
-        this.turnCount =0;
+        this.turnCount = 0;
         this.gameBoardInstance = gameBoardInstance;
-        this.players= gameBoardInstance.getPlayers();
-        this.turnState=TurnState.FIRST_TURN;
-        this.productions=new ArrayList<>(4);
+        this.players = gameBoardInstance.getPlayers();
+        this.turnState = TurnState.FIRST_TURN;
+        this.productions = new ArrayList<>(4);
         this.actionController = new ActionController();
-        this.Winner=false;
-        // FIXME: Example, should be the player with the inkwell
-        this.winnerPlayer=-2;
+
+        this.Winner = false;
+        this.winnerPlayer = -2;
     }
-    public void init(HumanPlayer playerInTurn){
-        if(players.size()==1)
-            gameState=GameState.SINGLEPLAYER;
+
+    public void init() {
+        if (players.size() == 1)
+            gameState = GameState.SINGLEPLAYER;
         else
-            gameState=GameState.MULTIPLAYER;
-        this.playerInTurn = playerInTurn;
-        this.firstPlayer=players.indexOf(playerInTurn);
-    }
-    public void setPlayerInTurn(HumanPlayer player){
-        this.playerInTurn=player;
+            gameState = GameState.MULTIPLAYER;
+        this.playerInTurn = gameBoardInstance.getPlayers().get(0);
     }
 
-    public void handle_getMarket(MarketRequestMessage message){
+    public void setPlayerInTurn(HumanPlayer player) {
+        this.playerInTurn = player;
+    }
+
+    public void handle_getMarket(MarketRequestMessage message) {
         if (isYourTurn(message.getPlayerName())) {
-            playerInTurn.setTemporaryResourceStorage(actionController.getMarket(gameBoardInstance, playerInTurn, message.getRowIndex(), message.getColIndex()));
+            ArrayList<Resources> list;
+            try {
+                list = actionController.getMarket(gameBoardInstance, message.getRowIndex(), message.getColIndex());
+            } catch (IllegalActionException e) {
+                playerInTurn.setPrivateCommunication("Indexes must be between 0 and 3", CommunicationMessage.ILLEGAL_ACTION);
+                return;
+            }
+            // remove faith element and add to the faith path
+            if (list.contains(Resources.FAITH)) {
+                handle_addFaithPoint(1, playerInTurn);
+                list.remove(Resources.FAITH);
+            }
 
+            if (list.contains(Resources.WHITE)) {
+                int flag = (int) playerInTurn.getPlayerBoard().getSubstitutes().stream().filter(n -> n).count();
+                //exchange white resource with another resource if there is only one exchangeable
+                if (flag == 1) {
+                    Resources resource = Resources.transform(playerInTurn.getPlayerBoard().getSubstitutes().indexOf(true));
+                    while (list.contains(Resources.WHITE))
+                        list.remove(Resources.WHITE);
+                }
+                //remove white resource cause with have no exchange
+                else if (flag == 0) {
+                    for (Resources resources : list)
+                        if (resources.equals(Resources.WHITE))
+                            list.remove(Resources.WHITE);
+                }
+            }
+            playerInTurn.setTemporaryResourceStorage(list);
             nextState(Action.STD_GETMARKET);
         }
     }
@@ -65,14 +92,12 @@ public class RoundController {
     }
     public void handle_sortingWarehouse(SetResourceMessage message) {
         if (isYourTurn(message.getPlayerName())) {
-            if (message.getResource() == null) {
-                // Messaggio che indica la fine delle risorse,
+            if (message.getResource().ordinal() >= 4) {
+                playerInTurn.setPrivateCommunication("The resource you sent is not SHIELD,STONE,SERVANT,COIN.", CommunicationMessage.ILLEGAL_ACTION);
+                return;
+            }
+            if (actionController.addResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getReceivedResourceIndex()))
                 nextState(Action.SORTING_WAREHOUSE);
-            }
-            if (message.getResource() == Resources.FAITH) {
-                handle_addFaithPoint(1, playerInTurn);
-            }
-            actionController.addResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getReceivedResourceIndex());
         }
     }
     public void handle_discardResource(DiscardResourceMessage message) {
@@ -236,8 +261,7 @@ public class RoundController {
     }
 
     public void handle_endTurn() {
-        int quantities = playerInTurn.getTemporaryResourceStorage().size();
-        movePlayersExceptSelected(quantities);
+
         nextTurn();
     }
 
@@ -254,11 +278,13 @@ public class RoundController {
         int playersNumber = players.size();
         turnCount++;
         productions.clear();
+        int quantities = playerInTurn.getTemporaryResourceStorage().size();
+        movePlayersExceptSelected(quantities);
         checkWinner(playersNumber);
         if (gameState.equals(GameState.SINGLEPLAYER))
             handle_Bot();
         nextState(Action.END_TURN);
-        playerInTurn = players.get((firstPlayer + turnCount) % players.size());
+        playerInTurn = players.get((turnCount) % players.size());
     }
     private void checkWinner(int playersNumber){
         switch (gameState){
@@ -344,29 +370,33 @@ public class RoundController {
                 }
                 turnState = TurnState.NORMAL_ACTION;
             }
-            case NORMAL_ACTION:
-            {
-                if(action.equals(Action.STD_USEPRODUCTION))
-                {
+            case NORMAL_ACTION: {
+                if (action.equals(Action.STD_USEPRODUCTION)) {
                     turnState = TurnState.PRODUCTION_ACTIONS;
-                }
-                else if(action.equals(Action.STD_GETMARKET)) {
+                } else if (action.equals(Action.STD_GETMARKET)) {
                     turnState = TurnState.WAREHOUSE_ACTION;
                     break;
+                } else {
+                    turnState = TurnState.LAST_LEADER_ACTION;
                 }
-                else {
-                        turnState = TurnState.LAST_LEADER_ACTION;
-                    }
-                }
-
-            case WAREHOUSE_ACTION:
-            case PRODUCTION_ACTIONS: {
-            if(action.equals(Action.STD_USEPRODUCTION)){
-
-                if(productions.size()==playerInTurn.getPlayerBoard().getProductionNumber())
-                    turnState=TurnState.LAST_LEADER_ACTION;
             }
-            else turnState=TurnState.LAST_LEADER_ACTION;
+
+            case WAREHOUSE_ACTION: {
+                if (action.equals(Action.STD_GETMARKET) || action.equals(Action.SORTING_WAREHOUSE)) {
+                    if (playerInTurn.getTemporaryResourceStorage().size() == 0)
+                        turnState = TurnState.LAST_LEADER_ACTION;
+                } else if (action.equals(Action.LD_ACTION))
+                    turnState = TurnState.LAST_LEADER_ACTION;
+                else break;
+            }
+            case PRODUCTION_ACTIONS: {
+                if (action.equals(Action.STD_USEPRODUCTION)) {
+
+                    if (productions.size() == playerInTurn.getPlayerBoard().getProductionNumber())
+                        turnState = TurnState.LAST_LEADER_ACTION;
+                } else if (action.equals(Action.LD_ACTION))
+                    turnState = TurnState.LAST_LEADER_ACTION;
+                else break;
             }
             case LAST_LEADER_ACTION:
             {

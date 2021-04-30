@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.model.tools.CardParser;
 import it.polimi.ingsw.model.tools.ExchangeResources;
@@ -31,8 +32,8 @@ public class ActionControllerTest {
 
         gameBoard.getDeck(Colors.BLUE, 1).addCard(new DevelopmentCard(4, 2, new int[]{0, 1, 2, 3}, null, null, Colors.BLUE, 1));
         player.getPlayerBoard().addStrongboxResource(Resources.COIN, 1);
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
         player.setPlayerBoard(new DecoratedWarehousePlayerBoard(player.getPlayerBoard()));
         LeaderCard leaderCard = new LeaderCard(1, 2, null, null, null, new int[]{0, 0, 0, 3});
         // Add the corresponding effect
@@ -86,7 +87,7 @@ public class ActionControllerTest {
 
         gameBoard.getDeck(Colors.BLUE, 1).addCard(new DevelopmentCard(4, 2, new int[]{0, 1, 2, 3}, null, null, Colors.BLUE, 1));
         player.getPlayerBoard().addStrongboxResource(Resources.COIN, 1);
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
         player.setPlayerBoard(new DecoratedWarehousePlayerBoard(player.getPlayerBoard()));
         LeaderCard leaderCard = new LeaderCard(1, 2, null, null, null, new int[]{0, 0, 0, 3});
         // Add the corresponding effect
@@ -101,7 +102,7 @@ public class ActionControllerTest {
         assertFalse(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3})));
         assertEquals(player.getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.INSUFFICIENT_RESOURCES);
         assertEquals(1, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
         assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3})));
         assertEquals(0, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
     }
@@ -122,8 +123,8 @@ public class ActionControllerTest {
 
         assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0})));
         player.getPlayerBoard().addStrongboxResource(Resources.COIN, 1);
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
         player.setPlayerBoard(new DecoratedWarehousePlayerBoard(player.getPlayerBoard()));
         LeaderCard leaderCard = new LeaderCard(1, 2, null, null, null, new int[]{0, 0, 0, 3});
         // Add the corresponding effect
@@ -160,8 +161,8 @@ public class ActionControllerTest {
         gameBoard.getDeck(Colors.BLUE, 1).addCard(new DevelopmentCard(4, 2, new int[]{0, 0, 2, 0}, null, null, Colors.BLUE, 3));
 
         player.getPlayerBoard().addStrongboxResource(Resources.SHIELD, 10);
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
 
         assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}, new int[]{0, 0, 0, 0})));
         assertEquals(6, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
@@ -203,8 +204,8 @@ public class ActionControllerTest {
             }
         }
 
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
         player.getPlayerBoard().addExtraResources(Resources.SHIELD, 3);
         //wrong number of resources given
 
@@ -239,8 +240,8 @@ public class ActionControllerTest {
             }
         }
         player.getPlayerBoard().addLeaderCard(new LeaderCard(1, 2, null, null, null, new int[]{0, 0, 0, 1}));
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
         player.getPlayerBoard().addExtraResources(Resources.SHIELD, 3);
 
         // card not active
@@ -290,7 +291,7 @@ public class ActionControllerTest {
         }
 
 
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
         player.getPlayerBoard().addExtraResources(Resources.COIN, 4);
         //wrong index given
 
@@ -306,7 +307,7 @@ public class ActionControllerTest {
         assertFalse(actionController.useNormalProduction(player, 0, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 1, 0, 0})));
         assertEquals(player.getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.INSUFFICIENT_RESOURCES);
 
-        player.getPlayerBoard().addWarehouseResource(Resources.STONE, 2);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
         //normal functioning
         assertTrue(actionController.useNormalProduction(player, 0, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 1, 0, 0})));
 
@@ -446,5 +447,6 @@ public class ActionControllerTest {
         assertNotEquals(c, gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(0));
 
     }
+
 
 }

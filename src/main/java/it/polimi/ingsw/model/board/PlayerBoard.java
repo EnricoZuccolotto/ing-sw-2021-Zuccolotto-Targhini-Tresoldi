@@ -4,6 +4,7 @@ import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.model.enums.WarehousePositions;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,6 @@ public interface PlayerBoard {
      * @return the state of the inkwell in this player board.
      */
     boolean getInkwell();
-
     /**
      * Adds a leader card to the player board
      *
@@ -35,19 +35,21 @@ public interface PlayerBoard {
 
     /**
      * Adds a resource to the warehouse
+     *
      * @param resource Resource type to add
-     * @param row Warehouse position [1,2,3]
+     * @param row      Warehouse position [1,2,3]
      * @return Success or failure of the addition.
      */
-    boolean addWarehouseResource(Resources resource, int row);
+    boolean addWarehouseResource(Resources resource, WarehousePositions row);
 
     /**
      * Moves rows in the warehouse
-     * @param startingRow Row to move [1,2,3]
+     *
+     * @param startingRow    Row to move [1,2,3]
      * @param newRowPosition Desired row position after shift.
      * @return Success or failure
      */
-    boolean shiftWarehouseRows(int startingRow, int newRowPosition);
+    boolean shiftWarehouseRows(WarehousePositions startingRow, WarehousePositions newRowPosition);
 
     /**
      * Adds production card in the only possible place

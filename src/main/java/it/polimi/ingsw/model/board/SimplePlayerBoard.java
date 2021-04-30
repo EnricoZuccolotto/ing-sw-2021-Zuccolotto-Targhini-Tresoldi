@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.SpaceProd;
 import it.polimi.ingsw.model.player.Strongbox;
 import it.polimi.ingsw.model.player.Warehouse;
@@ -155,12 +156,12 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     }
 
     @Override
-    public boolean addWarehouseResource(Resources r, int row){
-        return warehouse.AddResources(r,row);
+    public boolean addWarehouseResource(Resources r, WarehousePositions row) {
+        return warehouse.AddResources(r, row);
     }
 
     @Override
-    public boolean shiftWarehouseRows(int startingRow, int newRowPosition) {
+    public boolean shiftWarehouseRows(WarehousePositions startingRow, WarehousePositions newRowPosition) {
         return warehouse.MoveRow(startingRow, newRowPosition);
     }
 

@@ -1,33 +1,33 @@
 package it.polimi.ingsw.controller;
 
 
-import it.polimi.ingsw.model.player.HumanPlayer;
+import it.polimi.ingsw.exception.controller.LobbyAlreadyCreatedException;
 import it.polimi.ingsw.exception.controller.PlayerAlreadyExistsException;
+import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.network.messages.LobbyJoinMessage;
 import it.polimi.ingsw.network.messages.LobbySetMessage;
-import it.polimi.ingsw.exception.controller.LobbyAlreadyCreatedException;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class LobbyController {
-    private ArrayList<String> inLobbyPlayer;
-    private int Playernumber;
+    private final ArrayList<String> inLobbyPlayer;
+    private int playerNumber;
     private ArrayList<HumanPlayer> PlayerList;
 
     public LobbyController() {
         inLobbyPlayer = new ArrayList<>();
-        Playernumber = -1;
+        playerNumber = -1;
     }
 
     public void handle_setLobby(LobbySetMessage message) {
-        if (Playernumber == -1) {
-            Playernumber = message.getPlayernumber();
+        if (playerNumber == -1) {
+            playerNumber = message.getPlayernumber();
             inLobbyPlayer.add(message.getPlayerName());
         } else throw new LobbyAlreadyCreatedException();
     }
 
-    public void handle_addinLobby(LobbyJoinMessage message) {
+    public void handle_addInLobby(LobbyJoinMessage message) {
         if (checkUserData(message.getPlayerName())) {
             inLobbyPlayer.add(message.getPlayerName());
         } else throw new PlayerAlreadyExistsException();
@@ -43,9 +43,7 @@ public class LobbyController {
     }
 
     public boolean isFull() {
-        if (inLobbyPlayer.size() == Playernumber) {
-            return true;
-        } else return false;
+        return inLobbyPlayer.size() == playerNumber;
     }
 
 
@@ -60,7 +58,10 @@ public class LobbyController {
         }
     }
 
-    public ArrayList<String> getPlayer() {
+    public ArrayList<String> getPlayers() {
+        Collections.shuffle(inLobbyPlayer);
         return inLobbyPlayer;
     }
+
+
 }

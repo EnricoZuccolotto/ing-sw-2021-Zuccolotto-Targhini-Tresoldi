@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.board;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
-import it.polimi.ingsw.observer.Observable;
+import it.polimi.ingsw.model.enums.WarehousePositions;
 
 import java.util.ArrayList;
 
@@ -46,27 +46,49 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     @Override
     public LeaderCard getLeaderCard(int index ){return subBoard.getLeaderCard(index);}
     @Override
-    public int[] getProductionCost(int index){return subBoard.getProductionCost(index);}
+    public int[] getProductionCost(int index) {
+        return subBoard.getProductionCost(index);
+    }
+
     @Override
-    public int[] getProductionResult(int index){return subBoard.getProductionResult(index);}
+    public int[] getProductionResult(int index) {
+        return subBoard.getProductionResult(index);
+    }
+
     @Override
     public int getVictoryPointsCards() {
         return subBoard.getVictoryPointsCards();
     }
+
     @Override
-    public boolean addWarehouseResource(Resources r, int row){return subBoard.addWarehouseResource(r,row);}
+    public boolean addWarehouseResource(Resources r, WarehousePositions row) {
+        return subBoard.addWarehouseResource(r, row);
+    }
+
     @Override
-    public boolean checkResourcesSpecialWarehouse(int [] r){return subBoard.checkResourcesSpecialWarehouse(r);}
+    public boolean checkResourcesSpecialWarehouse(int[] r) {
+        return subBoard.checkResourcesSpecialWarehouse(r);
+    }
+
     @Override
-    public boolean payResourcesSpecialWarehouse(int [] r){ return subBoard.payResourcesSpecialWarehouse(r); }
+    public boolean payResourcesSpecialWarehouse(int[] r) {
+        return subBoard.payResourcesSpecialWarehouse(r);
+    }
+
     @Override
-    public void addStrongboxResource(Resources r, int quantities){subBoard.addStrongboxResource(r,quantities);}
+    public void addStrongboxResource(Resources r, int quantities) {
+        subBoard.addStrongboxResource(r, quantities);
+    }
+
     @Override
-    public boolean shiftWarehouseRows(int startingRow, int newRowPosition) {
+    public boolean shiftWarehouseRows(WarehousePositions startingRow, WarehousePositions newRowPosition) {
         return subBoard.shiftWarehouseRows(startingRow, newRowPosition);
     }
+
     @Override
-    public boolean addProductionCard(DevelopmentCard c,int index){return subBoard.addProductionCard(c,index);}
+    public boolean addProductionCard(DevelopmentCard c, int index) {
+        return subBoard.addProductionCard(c, index);
+    }
 
     @Override
     public boolean addProductionCard(DevelopmentCard c){return subBoard.addProductionCard(c);}

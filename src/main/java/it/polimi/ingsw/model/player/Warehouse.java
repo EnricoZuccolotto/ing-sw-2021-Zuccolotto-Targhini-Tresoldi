@@ -62,21 +62,21 @@ public class Warehouse implements Serializable {
      *
      * @return true if the resource was added, else false
      */
-    public boolean AddResources(Resources resource, int row) {
+    public boolean AddResources(Resources resource, WarehousePositions row) {
         for (int count = 0; count < 3; count++) {
-            if (resources[count] == resource && row != count + 1) {
+            if (resources[count] == resource && row.ordinal() != count + 1) {
                 return false;
             }
         }
         switch (row) {
-            case 1:
+            case WAREHOUSE_FIRST_ROW:
                 if (warehouse[0] == Resources.WHITE) {
                     warehouse[0] = resource;
                     resources[0] = resource;
                     ResourceNumber += 1;
                     return true;
                 } else return false;  //riga piena
-            case 2:
+            case WAREHOUSE_SECOND_ROW:
                 if (warehouse[1] == Resources.WHITE) {
                     warehouse[1] = resource;
                     resources[1] = resource;
@@ -87,7 +87,7 @@ public class Warehouse implements Serializable {
                     ResourceNumber += 1;
                     return true;
                 } else return false; // riga piena o altre risorse nella riga
-            case 3:
+            case WAREHOUSE_THIRD_ROW:
                 if (warehouse[3] == Resources.WHITE) {
                     warehouse[3] = resource;
                     resources[2] = resource;
@@ -116,11 +116,11 @@ public class Warehouse implements Serializable {
      *
      * @return true if the operation succeeded, else false.
      */
-    public boolean MoveRow(int start, int end) {
+    public boolean MoveRow(WarehousePositions start, WarehousePositions end) {
         Resources temp;
         switch (start) {
-            case 1:
-                if (end == 2) {
+            case WAREHOUSE_FIRST_ROW:
+                if (end.equals(WarehousePositions.WAREHOUSE_SECOND_ROW)) {
                     if (warehouse[2] == Resources.WHITE) {
                         temp = warehouse[1];
                         warehouse[1] = warehouse[0];
@@ -131,7 +131,7 @@ public class Warehouse implements Serializable {
                         return true;
                     } else return false;
                 }
-                if (end == 3) {
+                if (end.equals(WarehousePositions.WAREHOUSE_THIRD_ROW)) {
                     if (warehouse[4] == Resources.WHITE) {
                         temp = warehouse[3];
                         warehouse[3] = warehouse[0];
@@ -143,7 +143,7 @@ public class Warehouse implements Serializable {
                     } else return false;
                 }
                 break;
-            case 2:
+            case WAREHOUSE_SECOND_ROW:
                 if (warehouse[5] == Resources.WHITE) {
                     temp = warehouse[3];
                     warehouse[3] = warehouse[1];
