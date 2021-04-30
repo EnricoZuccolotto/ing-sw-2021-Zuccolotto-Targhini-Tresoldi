@@ -35,7 +35,6 @@ public enum MessageType {
     JOIN_GAME,
     SET_GAME,
     //Connection messages
-    LOGIN,
-
+    LOGIN
 
 }

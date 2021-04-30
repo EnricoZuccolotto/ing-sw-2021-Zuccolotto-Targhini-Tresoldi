@@ -1,8 +1,7 @@
 package it.polimi.ingsw.controller;
 
 
-import it.polimi.ingsw.exception.controller.LobbyAlreadyCreatedException;
-import it.polimi.ingsw.exception.controller.PlayerAlreadyExistsException;
+import it.polimi.ingsw.exception.controller.*;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.network.messages.LobbyJoinMessage;
 import it.polimi.ingsw.network.messages.LobbySetMessage;
@@ -22,13 +21,18 @@ public class LobbyController {
 
     public void handle_setLobby(LobbySetMessage message) {
         if (playerNumber == -1) {
-            playerNumber = message.getPlayernumber();
-            inLobbyPlayer.add(message.getPlayerName());
+            if(message.getPlayernumber()>0 && message.getPlayernumber()<5) {
+                playerNumber = message.getPlayernumber();
+                inLobbyPlayer.add(message.getPlayerName());
+            } else throw new IndexOutOfBoundsException();
         } else throw new LobbyAlreadyCreatedException();
     }
 
     public void handle_addInLobby(LobbyJoinMessage message) {
         if (checkUserData(message.getPlayerName())) {
+            if(isFull()){
+                throw new LobbyisFullException();
+            }
             inLobbyPlayer.add(message.getPlayerName());
         } else throw new PlayerAlreadyExistsException();
     }
@@ -46,17 +50,6 @@ public class LobbyController {
         return inLobbyPlayer.size() == playerNumber;
     }
 
-
-    public void TransformPlayer() {
-        Collections.shuffle(inLobbyPlayer);
-        for (String string : inLobbyPlayer) {
-            if (inLobbyPlayer.get(0).equals(string)) {
-                PlayerList.add(new HumanPlayer(string, true));
-            } else {
-                PlayerList.add(new HumanPlayer(string, false));
-            }
-        }
-    }
 
     public ArrayList<String> getPlayers() {
         Collections.shuffle(inLobbyPlayer);
