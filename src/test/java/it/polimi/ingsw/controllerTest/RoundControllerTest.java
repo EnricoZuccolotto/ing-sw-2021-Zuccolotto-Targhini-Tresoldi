@@ -371,7 +371,7 @@ public class RoundControllerTest {
         g.handle_endTurn();
         assertEquals(1, gb.getPlayerFaithPathPosition(1));
         // first turn second player
-        gb.getPlayer("Enry").setPlayerBoard(new DecoratedChangePlayerBoard(gb.getPlayer("Harry").getPlayerBoard()));
+        gb.getPlayer("Enry").setPlayerBoard(new DecoratedChangePlayerBoard(gb.getPlayer("Enry").getPlayerBoard()));
         gb.getPlayer("Enry").getPlayerBoard().addSubstitute(Resources.COIN);
         g.handle_getMarket(new MarketRequestMessage("Enry", 0, 0));
         assertEquals(TurnState.WAREHOUSE_ACTION, g.getTurnState());
