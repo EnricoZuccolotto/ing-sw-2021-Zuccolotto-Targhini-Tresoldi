@@ -28,7 +28,7 @@ public class ChangeTurnTest {
         gb.addPlayer(new HumanPlayer("Enry", false));
         gb.init(gb);
         RoundController g = new RoundController(gb);
-        g.init(gb.getPlayers().get(0));
+        g.init();
         g.handle_firstTurn();
         expected.add(gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(0));
         expected.add(gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(1));
@@ -68,7 +68,7 @@ public class ChangeTurnTest {
         gb.addPlayer(new HumanPlayer("Hermione", false));
         gb.init(gb);
         RoundController g = new RoundController(gb);
-        g.init(gb.getPlayers().get(0));
+        g.init();
         g.handle_firstTurn();
         g.handle_firstAction(new FirstActionMessage("Harry", 2, 3));
         g.handle_firstAction(new FirstActionMessage("Enry", 1, 0));
@@ -103,7 +103,7 @@ public class ChangeTurnTest {
         ArrayList<Resources> r = new ArrayList<>();
         r.add(Resources.STONE);
         RoundController g = new RoundController(gb);
-        g.init(gb.getPlayers().get(0));
+        g.init();
         g.handle_firstTurn();
 
         g.handle_firstAction(new FirstActionMessage("Harry", 2, 3));
@@ -142,7 +142,7 @@ public class ChangeTurnTest {
         ArrayList<Resources> r = new ArrayList<>();
         r.add(Resources.STONE);
         RoundController g = new RoundController(gb);
-        g.init(gb.getPlayers().get(0));
+        g.init();
         g.handle_firstTurn();
 
         g.handle_firstAction(new FirstActionMessage("Harry", 2, 3));
