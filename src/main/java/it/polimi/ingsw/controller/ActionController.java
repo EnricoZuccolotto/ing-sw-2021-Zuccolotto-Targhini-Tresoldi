@@ -198,7 +198,7 @@ public class ActionController {
                 return false;
             }
             payResources(player, exchangeResources);
-            gameBoard.getDeck(color, level).popFirstCard();
+            gameBoard.getDecks().popFirstCard(color, level);
 
             player.sendUpdateToPlayer();
 

@@ -10,7 +10,6 @@ public enum MessageType {
     // Market actions
     MARKET_REQUEST,
     MARKET_REPLY,
-    MARKET_CHANGED,
     SET_RESOURCE,
     DISCARD_RESOURCE,
     SHIFT_WAREHOUSE,
@@ -31,6 +30,7 @@ public enum MessageType {
     HUMAN_PLAYER_UPDATE,
     FAITH_PATH_UPDATE,
     DECKS_UPDATE,
+    MARKET_UPDATE,
     // Lobby messages
     JOIN_GAME,
     SET_GAME,

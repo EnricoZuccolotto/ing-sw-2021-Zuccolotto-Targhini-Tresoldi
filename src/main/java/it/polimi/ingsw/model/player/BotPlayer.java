@@ -83,7 +83,7 @@ public class BotPlayer extends Player {
         int sum = 0;
         while (cont < 2 && i < 4) {
             if (currentGameBoard.getDeck(c, i).DeckLength() > 0) {
-                currentGameBoard.getDeck(c, i).popLastCard();
+                currentGameBoard.getDecks().popLastCard(c,i);
                 cont++;
             } else
                 i++;

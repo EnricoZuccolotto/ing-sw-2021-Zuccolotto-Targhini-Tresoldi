@@ -31,7 +31,6 @@ public class GameController {
 
     public void addPlayer(String name, View view, boolean inkwell) {
         // TODO: Handle local single player
-        // TODO: Handle random first player with inkwell true
         gameBoardInstance.addPlayer(new HumanPlayer(name, inkwell));
         addView(name, (NetworkLayerView) view);
     }
@@ -41,8 +40,8 @@ public class GameController {
         gameBoardInstance.addObserver(view);
         gameBoardInstance.getMarket().addObserver(view);
         gameBoardInstance.getFaithPath().addObserver(view);
+        gameBoardInstance.getDecks().addObserver(view);
         gameBoardInstance.getPlayer(name).addObserver(view);
-
     }
 
     public void StartGame() {
@@ -104,6 +103,7 @@ public class GameController {
 
 
     public void endGame() {
+
         for (HumanPlayer player : gameBoardInstance.getPlayers()) {
             int VP = 0;
             VP += player.getPlayerBoard().getVictoryPointsCards();

@@ -14,7 +14,7 @@ public class MarketUpdateMessage extends Message {
      * @param market Pointer to the current market state.
      */
     public MarketUpdateMessage(String playerName, Market market) {
-        super(playerName, MessageType.MARKET_CHANGED);
+        super(playerName, MessageType.MARKET_UPDATE);
         this.market = market;
     }
 

@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.Communication.Communication;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.Decks;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.BotPlayer;
@@ -23,7 +24,7 @@ import java.util.Optional;
  */
 public class GameBoard extends Observable {
     private final Market market;
-    private final Deck[][] decks;
+    private final Decks decks;
     private final ArrayList<HumanPlayer> players;
     private final FaithPath faithPath;
     private Optional<BotPlayer> bot;
@@ -34,8 +35,8 @@ public class GameBoard extends Observable {
      * Build a new Game board.
      */
     public GameBoard() {
+        this.decks=new Decks();
         publicCommunication = new Communication();
-        this.decks = CardParser.parseDevCards();
         this.players = new ArrayList<>();
         this.market = new Market();
         this.faithPath = new FaithPath();
@@ -129,9 +130,17 @@ public class GameBoard extends Observable {
      * @return the deck of color and level specified.
      */
     public Deck getDeck(Colors color, int level) {
-        level--;
-        return decks[color.ordinal()][level];
+        return decks.getDeck(color,level);
     }
+    /**
+     * Gets the decks.
+     *
+     * @return the decks.
+     */
+    public Decks getDecks() {
+        return decks;
+    }
+
 
     /**
      * Adds a human player

@@ -24,16 +24,16 @@ public class SocketClient extends Observable {
     private static final int TIMEOUT = 10000;
     public static final Logger LOGGER = Logger.getLogger(SocketClient.class.getName());
     private final Socket socket;
-    private final ObjectOutputStream outputStm;
-    private final ObjectInputStream inputStm;
+    private final ObjectOutputStream objectOutputStream;
+    private final ObjectInputStream objectInputStream;
     private final ExecutorService readExecutionQueue;
     private final ScheduledExecutorService heartBeat;
 
     public SocketClient(String address, int port) throws IOException {
         this.socket = new Socket();
         this.socket.connect(new InetSocketAddress(address, port), TIMEOUT);
-        this.outputStm = new ObjectOutputStream(socket.getOutputStream());
-        this.inputStm = new ObjectInputStream(socket.getInputStream());
+        this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+        this.objectInputStream = new ObjectInputStream(socket.getInputStream());
         this.readExecutionQueue = Executors.newSingleThreadExecutor();
         this.heartBeat = Executors.newSingleThreadScheduledExecutor();
     }
@@ -48,7 +48,7 @@ public class SocketClient extends Observable {
             while (!readExecutionQueue.isShutdown()) {
                 Message message;
                 try {
-                    message = (Message) inputStm.readObject();
+                    message = (Message) objectInputStream.readObject();
                     LOGGER.info("Received: " + message.getMessageType() + "from" + message.getPlayerName());
                 } catch (IOException | ClassNotFoundException e) {
                     message = new ErrorMessage(null, "Connection lost with the server.");
@@ -68,8 +68,8 @@ public class SocketClient extends Observable {
 
     public void sendMessage(Message message) {
         try {
-            outputStm.writeObject(message);
-            outputStm.reset();
+            objectOutputStream.writeObject(message);
+            objectOutputStream.reset();
         } catch (IOException e) {
             disconnect();
             notifyObserver(new ErrorMessage("", "Message not sent"));

@@ -1,14 +1,14 @@
 package it.polimi.ingsw.network.messages;
 
 public class LobbySetMessage extends Message {
-    private int playernumber=0;
+    private int playerNumber;
 
     public LobbySetMessage(String playerName, int p) {
         super(playerName, MessageType.SET_GAME);
-        this.playernumber=p;
+        this.playerNumber =p;
     }
 
-    public int getPlayernumber() {
-        return playernumber;
+    public int getPlayerNumber() {
+        return playerNumber;
     }
 }

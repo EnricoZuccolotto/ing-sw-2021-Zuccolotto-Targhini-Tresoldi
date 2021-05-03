@@ -21,8 +21,8 @@ public class LobbyController {
 
     public void handle_setLobby(LobbySetMessage message) {
         if (playerNumber == -1) {
-            if(message.getPlayernumber()>0 && message.getPlayernumber()<5) {
-                playerNumber = message.getPlayernumber();
+            if(message.getPlayerNumber()>0 && message.getPlayerNumber()<5) {
+                playerNumber = message.getPlayerNumber();
                 inLobbyPlayer.add(message.getPlayerName());
             } else throw new IndexOutOfBoundsException();
         } else throw new LobbyAlreadyCreatedException();
