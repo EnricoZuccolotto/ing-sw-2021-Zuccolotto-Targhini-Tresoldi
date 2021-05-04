@@ -1,11 +1,13 @@
 package it.polimi.ingsw.network.messages;
+import it.polimi.ingsw.controller.Action;
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 
 /**
  * Message that the client sends when it decides to put a resource into a specific row.
  */
-public class SetResourceMessage extends Message{
+public class SetResourceMessage extends Message implements ExecutableMessage {
     private final WarehousePositions position;
     private final Resources resource;
     private final int receivedResourceIndex;
@@ -35,5 +37,12 @@ public class SetResourceMessage extends Message{
 
     public int getReceivedResourceIndex() {
         return receivedResourceIndex;
+    }
+
+    @Override
+    public void execute(GameController instance) {
+        if (instance.validateAction(Action.SORTING_WAREHOUSE))
+            instance.getRoundController().handle_sortingWarehouse(this);
+        else instance.buildInvalidResponse(playerName);
     }
 }

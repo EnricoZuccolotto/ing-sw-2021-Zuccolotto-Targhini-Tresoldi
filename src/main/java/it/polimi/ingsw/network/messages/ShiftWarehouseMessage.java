@@ -1,11 +1,13 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.controller.Action;
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 
 /**
  * Message that the client sends in order to shift rows in the {@code Warehouse}
  */
-public class ShiftWarehouseMessage extends Message {
+public class ShiftWarehouseMessage extends Message implements ExecutableMessage {
     private final WarehousePositions startingPos, newRowPos;
 
     /**
@@ -27,5 +29,12 @@ public class ShiftWarehouseMessage extends Message {
 
     public WarehousePositions getNewRowPos() {
         return newRowPos;
+    }
+
+    @Override
+    public void execute(GameController instance) {
+        if (instance.validateAction(Action.SHIFT_WAREHOUSE))
+            instance.getRoundController().handle_shiftWarehouse(this);
+        else instance.buildInvalidResponse(playerName);
     }
 }

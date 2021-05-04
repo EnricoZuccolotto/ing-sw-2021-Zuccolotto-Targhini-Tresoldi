@@ -1,9 +1,12 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.controller.Action;
+import it.polimi.ingsw.controller.GameController;
+
 /**
  * This message is sent in order to play or discard a {@code LeaderCard}
  */
-public class LeaderMessage extends Message{
+public class LeaderMessage extends Message implements ExecutableMessage {
     private final int index;
 
     /**
@@ -19,5 +22,15 @@ public class LeaderMessage extends Message{
 
     public int getIndex() {
         return index;
+    }
+
+    @Override
+    public void execute(GameController instance) {
+        if(instance.validateAction(Action.LD_ACTION)){
+            if(messageType == MessageType.FOLD_LEADER)
+                instance.getRoundController().handle_foldLeader(this);
+            else if(messageType == MessageType.ACTIVE_LEADER)
+                instance.getRoundController().handle_activeLeader(this);
+        } else instance.buildInvalidResponse(playerName);
     }
 }

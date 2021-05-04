@@ -1,12 +1,14 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.controller.Action;
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 
 /**
  * This class is sent by the client in order to activate Leader Card special production.
  */
-public class UseProductionSpecialMessage extends ProductionMessage {
+public class UseProductionSpecialMessage extends ProductionMessage implements ExecutableMessage {
     private final Resources output;
     private final int index;
 
@@ -29,5 +31,12 @@ public class UseProductionSpecialMessage extends ProductionMessage {
 
     public int getIndex() {
         return index;
+    }
+
+    @Override
+    public void execute(GameController instance) {
+        if (instance.validateAction(Action.STD_USEPRODUCTION))
+            instance.getRoundController().handle_useSpecialProduction(this);
+        else instance.buildInvalidResponse(playerName);
     }
 }

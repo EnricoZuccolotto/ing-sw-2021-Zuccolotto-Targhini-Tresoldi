@@ -1,9 +1,12 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.controller.Action;
+import it.polimi.ingsw.controller.GameController;
+
 /**
  * A client sends this message if it wants to discard a resource.
  */
-public class DiscardResourceMessage extends Message {
+public class DiscardResourceMessage extends Message implements ExecutableMessage {
     private final int receivedResourceIndex;
 
     /**
@@ -18,5 +21,12 @@ public class DiscardResourceMessage extends Message {
 
     public int getReceivedResourceIndex() {
         return receivedResourceIndex;
+    }
+
+    @Override
+    public void execute(GameController instance) {
+        if (instance.validateAction(Action.SORTING_WAREHOUSE))
+            instance.getRoundController().handle_discardResource(this);
+        else instance.buildInvalidResponse(playerName);
     }
 }

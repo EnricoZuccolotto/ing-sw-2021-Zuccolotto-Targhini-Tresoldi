@@ -1,9 +1,12 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.controller.Action;
+import it.polimi.ingsw.controller.GameController;
+
 /**
  * Message sent by the client in order to initiate a {@code Market} action.
  */
-public class MarketRequestMessage extends Message {
+public class MarketRequestMessage extends Message implements ExecutableMessage {
     private final int rowIndex, colIndex;
 
     /**
@@ -24,5 +27,12 @@ public class MarketRequestMessage extends Message {
 
     public int getColIndex() {
         return colIndex;
+    }
+
+    @Override
+    public void execute(GameController instance) {
+        if (instance.validateAction(Action.STD_GETMARKET))
+            instance.getRoundController().handle_getMarket(this);
+        else instance.buildInvalidResponse(playerName);
     }
 }

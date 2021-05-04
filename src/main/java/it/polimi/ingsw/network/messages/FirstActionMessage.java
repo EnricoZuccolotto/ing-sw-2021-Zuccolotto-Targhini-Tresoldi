@@ -1,9 +1,12 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.controller.Action;
+import it.polimi.ingsw.controller.GameController;
+
 /**
  * This message is sent during the setup turn in order to discard 2 leader cards.
  */
-public class FirstActionMessage extends Message {
+public class FirstActionMessage extends Message implements ExecutableMessage {
     int index1, index2;
 
     /**
@@ -25,5 +28,12 @@ public class FirstActionMessage extends Message {
 
     public int getIndex2() {
         return index2;
+    }
+
+    @Override
+    public void execute(GameController instance) {
+        if (instance.validateAction(Action.FIRST_ACTION))
+            instance.getRoundController().handle_firstAction(this);
+        else instance.buildInvalidResponse(playerName);
     }
 }

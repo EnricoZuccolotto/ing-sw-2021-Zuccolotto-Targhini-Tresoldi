@@ -1,13 +1,15 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.controller.GameController;
+
 import java.io.Serializable;
 
 /**
  * Generic message class. Every message class needs to extend this class.
  */
 public abstract class Message implements Serializable {
-    private final String playerName;
-    private final MessageType messageType;
+    protected final String playerName;
+    protected final MessageType messageType;
 
     /**
      * Default constructor
@@ -26,4 +28,5 @@ public abstract class Message implements Serializable {
     public MessageType getMessageType() {
         return messageType;
     }
+
 }

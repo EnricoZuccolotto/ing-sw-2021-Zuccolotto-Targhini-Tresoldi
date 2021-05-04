@@ -76,85 +76,13 @@ public class GameController {
 
             }
             case GAMESTARTED: {
-                switch (message.getMessageType()) {
-                    case MARKET_REQUEST: {
-                        if (validateAction(Action.STD_GETMARKET))
-                            roundController.handle_getMarket((MarketRequestMessage) message);
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
-                    case SHIFT_WAREHOUSE: {
-                        if (validateAction(Action.SHIFT_WAREHOUSE))
-                            roundController.handle_shiftWarehouse((ShiftWarehouseMessage) message);
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
-                    case SET_RESOURCE: {
-                        if (validateAction(Action.SORTING_WAREHOUSE))
-                            roundController.handle_sortingWarehouse((SetResourceMessage) message);
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
-                    case DISCARD_RESOURCE: {
-                        if (validateAction(Action.SORTING_WAREHOUSE))
-                            roundController.handle_discardResource((DiscardResourceMessage) message);
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
-                    case GET_PRODUCTIONCARD: {
-                        if (validateAction(Action.STD_GETPRODUCTION))
-                            roundController.handle_getProduction((GetProductionCardMessage) message);
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
-                    case USE_BASE_PRODUCTION: {
-                        if (validateAction(Action.STD_USEPRODUCTION))
-                            roundController.handle_useBaseProduction((UseProductionBaseMessage) message);
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
-                    case USE_NORMAL_PRODUCTION: {
-                        if (validateAction(Action.STD_USEPRODUCTION))
-                            roundController.handle_useNormalProduction((UseProductionNormalMessage) message);
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
-                    case USE_SPECIAL_PRODUCTION: {
-                        if (validateAction(Action.STD_USEPRODUCTION))
-                            roundController.handle_useSpecialProduction((UseProductionSpecialMessage) message);
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
-                    case END_TURN: {
-                        if (validateAction(Action.END_TURN))
-                            roundController.handle_endTurn();
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
-                    case FOLD_LEADER: {
-                        if (validateAction(Action.LD_ACTION))
-                            roundController.handle_foldLeader((LeaderMessage) message);
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
-                    case ACTIVE_LEADER: {
-                        if (validateAction(Action.LD_ACTION))
-                            roundController.handle_activeLeader((LeaderMessage) message);
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
-                    case FIRST_ACTION: {
-                        if (validateAction(Action.FIRST_ACTION))
-                            roundController.handle_firstAction((FirstActionMessage) message);
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
-                    case SECOND_ACTION: {
-                        if (validateAction(Action.SECOND_ACTION))
-                            roundController.handle_secondAction((SecondActionMessage) message);
-                        else buildInvalidResponse(message.getPlayerName());
-                        break;
-                    }
+                // Catching a ClassCastException should be redundant, added for extra safety.
+                // In theory messages received now should all be executable.
+                try {
+                    ExecutableMessage currentMessage = (ExecutableMessage) message;
+                    currentMessage.execute(this);
+                } catch (ClassCastException ex) {
+                    // TODO: error, invalid executable message.
                 }
                 if (roundController.isWinner())
                     endGame();
@@ -170,7 +98,7 @@ public class GameController {
         return gamestate;
     }
 
-    private boolean validateAction(Action action) {
+    public boolean validateAction(Action action) {
         return TurnState.isPossible(roundController.getTurnState(), action);
     }
 
@@ -186,6 +114,10 @@ public class GameController {
         gamestate = GameState.END;
         gameBoardInstance.setPublicCommunication("THE END", CommunicationMessage.PUBLIC);
 
+    }
+
+    public RoundController getRoundController(){
+        return roundController;
     }
 
 }

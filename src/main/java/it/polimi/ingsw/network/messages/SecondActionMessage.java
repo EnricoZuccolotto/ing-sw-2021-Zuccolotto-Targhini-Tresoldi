@@ -1,5 +1,7 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.controller.Action;
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.enums.Resources;
 
 import java.util.ArrayList;
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 /**
  * This message is sent in order to choose the starting resources for your game.
  */
-public class SecondActionMessage extends Message {
+public class SecondActionMessage extends Message implements ExecutableMessage {
     ArrayList<Resources> resources;
 
     /**
@@ -25,4 +27,10 @@ public class SecondActionMessage extends Message {
     }
 
 
+    @Override
+    public void execute(GameController instance) {
+        if (instance.validateAction(Action.SECOND_ACTION))
+            instance.getRoundController().handle_secondAction(this);
+        else instance.buildInvalidResponse(playerName);
+    }
 }

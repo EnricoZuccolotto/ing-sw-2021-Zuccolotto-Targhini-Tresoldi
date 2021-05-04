@@ -1,11 +1,13 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.controller.Action;
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 
 /**
  * This class is sent by the client in order to activate Development Card driven production.
  */
-public class UseProductionNormalMessage extends ProductionMessage {
+public class UseProductionNormalMessage extends ProductionMessage implements ExecutableMessage {
     private final int index;
 
     /**
@@ -21,5 +23,12 @@ public class UseProductionNormalMessage extends ProductionMessage {
 
     public int getIndex() {
         return index;
+    }
+
+    @Override
+    public void execute(GameController instance) {
+        if (instance.validateAction(Action.STD_USEPRODUCTION))
+            instance.getRoundController().handle_useNormalProduction(this);
+        else instance.buildInvalidResponse(playerName);
     }
 }

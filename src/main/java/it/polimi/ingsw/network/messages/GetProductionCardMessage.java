@@ -1,12 +1,14 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.controller.Action;
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 
 /**
  * Message sent in order to put a {@code DevelopmentCard} in the {@PlayerBoard} reserved space.
  */
-public class GetProductionCardMessage extends ProductionMessage {
+public class GetProductionCardMessage extends ProductionMessage implements ExecutableMessage {
     private final Colors color;
     private final int level;
     private final int index;
@@ -39,4 +41,10 @@ public class GetProductionCardMessage extends ProductionMessage {
     }
 
 
+    @Override
+    public void execute(GameController instance) {
+        if (instance.validateAction(Action.STD_GETPRODUCTION))
+            instance.getRoundController().handle_getProduction(this);
+        else instance.buildInvalidResponse(playerName);
+    }
 }
