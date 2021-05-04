@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.GameState;
 
 /**
  * Message sent by the client in order to initiate a {@code Market} action.
@@ -11,11 +12,12 @@ public class MarketRequestMessage extends Message implements ExecutableMessage {
 
     /**
      * Default constructor.
+     *
      * @param playerName Player name.
-     * @param rowIndex Requested row. {@value =3} if you want to select a column.
-     * @param colIndex Requested column. Value is not used if you want to select a row.
+     * @param rowIndex   Requested row. {@value =3} if you want to select a column.
+     * @param colIndex   Requested column. Value is not used if you want to select a row.
      */
-    public MarketRequestMessage(String playerName, int rowIndex, int colIndex){
+    public MarketRequestMessage(String playerName, int rowIndex, int colIndex) {
         super(playerName, MessageType.MARKET_REQUEST);
         this.rowIndex = rowIndex;
         this.colIndex = colIndex;
@@ -31,8 +33,8 @@ public class MarketRequestMessage extends Message implements ExecutableMessage {
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.STD_GETMARKET))
+        if (instance.validateAction(Action.STD_GETMARKET) && instance.getGameState().equals(GameState.GAMESTARTED)) {
             instance.getRoundController().handle_getMarket(this);
-        else instance.buildInvalidResponse(playerName);
+        } else instance.buildInvalidResponse(playerName);
     }
 }

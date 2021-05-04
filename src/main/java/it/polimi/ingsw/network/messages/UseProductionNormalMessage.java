@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.GameState;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 
 /**
@@ -12,9 +13,10 @@ public class UseProductionNormalMessage extends ProductionMessage implements Exe
 
     /**
      * Default constructor.
-     * @param playerName Player name.
+     *
+     * @param playerName        Player name.
      * @param exchangeResources Resources that are spent in order to activate production.
-     * @param index Index of the used {@code DevelopmentCard}.
+     * @param index             Index of the used {@code DevelopmentCard}.
      */
     public UseProductionNormalMessage(String playerName, ExchangeResources exchangeResources, int index) {
         super(playerName, MessageType.USE_NORMAL_PRODUCTION, exchangeResources);
@@ -27,8 +29,8 @@ public class UseProductionNormalMessage extends ProductionMessage implements Exe
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.STD_USEPRODUCTION))
+        if (instance.validateAction(Action.STD_USEPRODUCTION) && instance.getGameState().equals(GameState.GAMESTARTED)) {
             instance.getRoundController().handle_useNormalProduction(this);
-        else instance.buildInvalidResponse(playerName);
+        } else instance.buildInvalidResponse(playerName);
     }
 }

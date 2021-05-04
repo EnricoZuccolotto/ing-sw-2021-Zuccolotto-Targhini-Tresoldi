@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.GameState;
 import it.polimi.ingsw.model.enums.Resources;
 
 import java.util.ArrayList;
@@ -14,8 +15,9 @@ public class SecondActionMessage extends Message implements ExecutableMessage {
 
     /**
      * Default constructor.
+     *
      * @param playerName Player name.
-     * @param resources Resources to add.
+     * @param resources  Resources to add.
      */
     public SecondActionMessage(String playerName, ArrayList<Resources> resources) {
         super(playerName, MessageType.SECOND_ACTION);
@@ -29,8 +31,8 @@ public class SecondActionMessage extends Message implements ExecutableMessage {
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.SECOND_ACTION))
-            instance.getRoundController().handle_secondAction(this);
-        else instance.buildInvalidResponse(playerName);
+    if (instance.validateAction(Action.SECOND_ACTION) && instance.getGameState().equals(GameState.GAMESTARTED)) {
+        instance.getRoundController().handle_secondAction(this);
+    } else instance.buildInvalidResponse(playerName);
     }
 }

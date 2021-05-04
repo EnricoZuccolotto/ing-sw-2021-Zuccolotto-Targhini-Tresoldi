@@ -1,5 +1,7 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.controller.Action;
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.cards.Deck;
 
 /**
@@ -21,4 +23,5 @@ public class DeckUpdateMessage extends Message {
     public Deck getDecks() {
         return deck;
     }
+
 }
