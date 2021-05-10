@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.GameState;
 
 /**
  * This message is sent in order to play or discard a {@code LeaderCard}
@@ -11,9 +12,10 @@ public class LeaderMessage extends Message implements ExecutableMessage {
 
     /**
      * Default constructor.
-     * @param playerName Player name
+     *
+     * @param playerName  Player name
      * @param messageType Message type.
-     * @param index Index of the {@code LeaderCard} you want to activate.
+     * @param index       Index of the {@code LeaderCard} you want to activate.
      */
     public LeaderMessage(String playerName, MessageType messageType, int index) {
         super(playerName, messageType);
@@ -26,11 +28,12 @@ public class LeaderMessage extends Message implements ExecutableMessage {
 
     @Override
     public void execute(GameController instance) {
-        if(instance.validateAction(Action.LD_ACTION)){
-            if(messageType == MessageType.FOLD_LEADER)
+        if (instance.validateAction(Action.LD_ACTION) && instance.getGameState().equals(GameState.GAMESTARTED)) {
+            if (messageType == MessageType.FOLD_LEADER)
                 instance.getRoundController().handle_foldLeader(this);
-            else if(messageType == MessageType.ACTIVE_LEADER)
+            else if (messageType == MessageType.ACTIVE_LEADER)
                 instance.getRoundController().handle_activeLeader(this);
         } else instance.buildInvalidResponse(playerName);
+
     }
 }

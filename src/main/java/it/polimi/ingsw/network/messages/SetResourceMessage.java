@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.GameState;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 
@@ -41,8 +42,8 @@ public class SetResourceMessage extends Message implements ExecutableMessage {
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.SORTING_WAREHOUSE))
+        if (instance.validateAction(Action.SORTING_WAREHOUSE) && instance.getGameState().equals(GameState.GAMESTARTED)) {
             instance.getRoundController().handle_sortingWarehouse(this);
-        else instance.buildInvalidResponse(playerName);
+        } else instance.buildInvalidResponse(playerName);
     }
 }

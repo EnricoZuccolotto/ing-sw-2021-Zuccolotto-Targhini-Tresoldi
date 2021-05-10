@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.GameState;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 
 /**
@@ -33,8 +34,8 @@ public class ShiftWarehouseMessage extends Message implements ExecutableMessage 
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.SHIFT_WAREHOUSE))
+        if (instance.validateAction(Action.SHIFT_WAREHOUSE) && instance.getGameState().equals(GameState.GAMESTARTED)) {
             instance.getRoundController().handle_shiftWarehouse(this);
-        else instance.buildInvalidResponse(playerName);
+        } else instance.buildInvalidResponse(playerName);
     }
 }

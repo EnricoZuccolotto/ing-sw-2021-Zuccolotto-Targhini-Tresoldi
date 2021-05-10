@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.GameState;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 
@@ -14,10 +15,11 @@ public class UseProductionSpecialMessage extends ProductionMessage implements Ex
 
     /**
      * Default constructor.
-     * @param playerName Player name.
+     *
+     * @param playerName        Player name.
      * @param exchangeResources Resources that are spent in order to activate production.
-     * @param output Expected resources output.
-     * @param index Index of current leader card.
+     * @param output            Expected resources output.
+     * @param index             Index of current leader card.
      */
     public UseProductionSpecialMessage(String playerName, ExchangeResources exchangeResources, Resources output, int index) {
         super(playerName, MessageType.USE_SPECIAL_PRODUCTION, exchangeResources);
@@ -35,8 +37,8 @@ public class UseProductionSpecialMessage extends ProductionMessage implements Ex
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.STD_USEPRODUCTION))
+        if (instance.validateAction(Action.STD_USEPRODUCTION) && instance.getGameState().equals(GameState.GAMESTARTED)) {
             instance.getRoundController().handle_useSpecialProduction(this);
-        else instance.buildInvalidResponse(playerName);
+        } else instance.buildInvalidResponse(playerName);
     }
 }

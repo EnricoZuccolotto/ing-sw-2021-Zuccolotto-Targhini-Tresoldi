@@ -57,13 +57,11 @@ public class GameController {
     public synchronized void onMessage(Message message) {
         switch (gamestate) {
             case LOBBY: {
-                switch (message.getMessageType()) {
-                    case SET_GAME: {
-                        lobby.handle_setLobby((LobbySetMessage) message);
-                        break;
-                    }
-                    case JOIN_GAME: {
-                        lobby.handle_addInLobby((LobbyJoinMessage) message);
+                    try {
+                        ExecutableMessage currentMessage = (ExecutableMessage) message;
+                        currentMessage.execute(this);
+                    } catch (ClassCastException ex) {
+                        // TODO: error, invalid executable message.
                     }
                     if (lobby.isFull()) {
                         for (String string : lobby.getPlayers()) {
@@ -71,9 +69,8 @@ public class GameController {
                         }
                         break;
                     }
+                    break;
                 }
-
-            }
             case GAMESTARTED: {
                 // Catching a ClassCastException should be redundant, added for extra safety.
                 // In theory messages received now should all be executable.
@@ -90,7 +87,11 @@ public class GameController {
     }
 
     public void buildInvalidResponse(String name) {
-        gameBoardInstance.getPlayer(name).setPrivateCommunication("You cannot do this action in this state " + roundController.getTurnState(), CommunicationMessage.ILLEGAL_ACTION);
+        if (this.getGameState().equals(GameState.LOBBY)) {
+            gameBoardInstance.getPlayer(name).setPrivateCommunication("The game is not started yet.", CommunicationMessage.ILLEGAL_ACTION);
+        } else {
+            gameBoardInstance.getPlayer(name).setPrivateCommunication("You cannot do this action in this state " + roundController.getTurnState(), CommunicationMessage.ILLEGAL_ACTION);
+        }
     }
 
     public GameState getGameState() {
@@ -120,4 +121,7 @@ public class GameController {
         return roundController;
     }
 
+    public LobbyController getLobby() {
+        return lobby;
+    }
 }

@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.GameState;
 
 /**
  * Message that signals the end of a turn.
@@ -9,6 +10,7 @@ import it.polimi.ingsw.controller.GameController;
 public class EndTurnMessage extends Message implements ExecutableMessage {
     /**
      * Default constructor.
+     *
      * @param playerName Player name.
      */
     public EndTurnMessage(String playerName) {
@@ -17,8 +19,8 @@ public class EndTurnMessage extends Message implements ExecutableMessage {
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.END_TURN))
+        if (instance.validateAction(Action.END_TURN) && instance.getGameState().equals(GameState.GAMESTARTED)) {
             instance.getRoundController().handle_endTurn();
-        else instance.buildInvalidResponse(playerName);
+        } else instance.buildInvalidResponse(playerName);
     }
 }
