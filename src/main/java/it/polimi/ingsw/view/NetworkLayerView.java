@@ -14,19 +14,39 @@ public class NetworkLayerView implements View, Observer {
 
     /**
      * Default constructor
+     *
      * @param connection The socket connection for that particular view.
      */
-    public NetworkLayerView(SocketConnection connection){
+    public NetworkLayerView(SocketConnection connection) {
         this.connection = connection;
     }
 
+    @Override
+    public void askUsername() {
+    }
+
+    @Override
+    public void askPlayersNumber() {
+
+    }
+
+    @Override
+    public void showLoginResult(boolean nick, boolean accepted, String name) {
+
+    }
+
+    @Override
+    public void showError(String error) {
+
+    }
 
     /**
      * Receives a message from the model and sends it directly to the client.
+     *
      * @param message Message to be sent.
      */
     @Override
-    public void update(Message message){
+    public void update(Message message) {
         connection.sendMessage(message);
     }
 }

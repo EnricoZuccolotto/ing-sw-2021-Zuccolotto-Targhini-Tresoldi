@@ -51,9 +51,10 @@ public class SocketConnection implements Runnable {
             try {
                 synchronized (inputLock){
                     Message message = (Message) input.readObject();
-
                     if(message != null){
-                        if(message.getMessageType() != MessageType.PING) {
+
+                        System.out.println(message.getMessageType());
+                        if (message.getMessageType() != MessageType.PING) {
                             if (message.getMessageType() == MessageType.LOGIN)
                                 socketServer.onLogin(message.getPlayerName(), this);
                             else

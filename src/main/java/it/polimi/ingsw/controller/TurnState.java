@@ -36,9 +36,9 @@ public enum TurnState {
             case FIRST_LEADER_ACTION: {
                 possibleActions.add(Action.LD_ACTION);
                 possibleActions.add(Action.SHIFT_WAREHOUSE);
-                possibleActions.add(Action.STD_GETMARKET);
-                possibleActions.add(Action.STD_GETPRODUCTION);
-                possibleActions.add(Action.STD_USEPRODUCTION);
+                possibleActions.add(Action.STD_GET_MARKET);
+                possibleActions.add(Action.STD_GET_PRODUCTION);
+                possibleActions.add(Action.STD_USE_PRODUCTION);
                 break;
             }
 
@@ -56,12 +56,11 @@ public enum TurnState {
                possibleActions.add( Action.END_TURN);
                break;
            }
-           case PRODUCTION_ACTIONS:
-           {
-               possibleActions.add( Action.STD_USEPRODUCTION);
-               possibleActions.add( Action.LD_ACTION);
-               possibleActions.add( Action.SHIFT_WAREHOUSE);
-               possibleActions.add( Action.END_TURN);
+           case PRODUCTION_ACTIONS: {
+               possibleActions.add(Action.STD_USE_PRODUCTION);
+               possibleActions.add(Action.LD_ACTION);
+               possibleActions.add(Action.SHIFT_WAREHOUSE);
+               possibleActions.add(Action.END_TURN);
                break;
            }
            case END:

@@ -283,7 +283,7 @@ public class RoundControllerTest {
                 }
                 assertEquals(1, list.size());
                 gb.getPlayer(message.getPlayerName()).setTemporaryResourceStorage(list);
-                nextState(Action.STD_GETMARKET);
+                nextState(Action.STD_GET_MARKET);
             }
         };
         g.init();
@@ -345,7 +345,7 @@ public class RoundControllerTest {
 
 
                 gb.getPlayer(message.getPlayerName()).setTemporaryResourceStorage(list);
-                nextState(Action.STD_GETMARKET);
+                nextState(Action.STD_GET_MARKET);
             }
         };
         g.init();

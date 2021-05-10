@@ -54,34 +54,50 @@ public class ActionController {
         } else gameBoard.movePlayerFaithPath(1, number);
     }
 
-    public boolean addResourceToWarehouse(HumanPlayer player, Resources resource, WarehousePositions position, int receivedResourceIndex) {
+    /**
+     * Adds a resource to the warehouses of a player.
+     *
+     * @param resource              Resource to place in the warehouse.
+     * @param humanPlayer           Player sorting the warehouse.
+     * @param position              Position of the warehouse.
+     * @param receivedResourceIndex Index of the resource to move.
+     * @return if the operation is successful
+     */
+    public boolean addResourceToWarehouse(HumanPlayer humanPlayer, Resources resource, WarehousePositions position, int receivedResourceIndex) {
         Resources item;
         try {
-            item = player.getTemporaryResourceStorage().get(receivedResourceIndex);
+            item = humanPlayer.getTemporaryResourceStorage().get(receivedResourceIndex);
         } catch (IndexOutOfBoundsException exception) {
-            player.setPrivateCommunication(exception.getMessage(), CommunicationMessage.ILLEGAL_ACTION);
+            humanPlayer.setPrivateCommunication(exception.getMessage(), CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
-        if (item.equals(resource) || (item.equals(Resources.WHITE) && player.getPlayerBoard().isResourceSubstitutable(resource))) {
+        if (item.equals(resource) || (item.equals(Resources.WHITE) && humanPlayer.getPlayerBoard().isResourceSubstitutable(resource))) {
             if (position.equals(WarehousePositions.SPECIAL_WAREHOUSE)) {
-                if (!player.getPlayerBoard().addExtraResources(resource, 1)) {
-                    player.setPrivateCommunication("You can't insert this resource in this position", CommunicationMessage.ILLEGAL_ACTION);
+                if (!humanPlayer.getPlayerBoard().addExtraResources(resource, 1)) {
+                    humanPlayer.setPrivateCommunication("You can't insert this resource in this position", CommunicationMessage.ILLEGAL_ACTION);
                     return false;
                 }
-            } else if (!player.getPlayerBoard().addWarehouseResource(resource, position)) {
-                player.setPrivateCommunication("You can't insert this resource in this position", CommunicationMessage.ILLEGAL_ACTION);
+            } else if (!humanPlayer.getPlayerBoard().addWarehouseResource(resource, position)) {
+                humanPlayer.setPrivateCommunication("You can't insert this resource in this position", CommunicationMessage.ILLEGAL_ACTION);
                 return false;
             }
-            player.removeItemFromTemporaryList(receivedResourceIndex);
-            player.sendUpdateToPlayer();
+            humanPlayer.removeItemFromTemporaryList(receivedResourceIndex);
+            humanPlayer.sendUpdateToPlayer();
 
         } else {
-            player.setPrivateCommunication("Resource not found", CommunicationMessage.INSUFFICIENT_RESOURCES);
+            humanPlayer.setPrivateCommunication("Resource not found", CommunicationMessage.INSUFFICIENT_RESOURCES);
             return false;
         }
         return true;
     }
 
+    /**
+     * Switches warehouse's rows.
+     *
+     * @param player         Player moving the warehouse's rows.
+     * @param startingRow    Row tha need to be switched.
+     * @param newRowPosition Position that it wants to switch.
+     */
     public void shiftWarehouseRows(HumanPlayer player, WarehousePositions startingRow, WarehousePositions newRowPosition) {
         if (player.getPlayerBoard().shiftWarehouseRows(startingRow, newRowPosition)) {
             player.sendUpdateToPlayer();

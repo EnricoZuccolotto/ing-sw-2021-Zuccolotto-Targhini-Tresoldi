@@ -117,8 +117,8 @@ public class ChangeTurnTest {
         }
         HumanPlayer p = g.getPlayerInTurn();
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
-        if (TurnState.isPossible(g.getTurnState(), Action.STD_GETPRODUCTION))
-            g.nextState(Action.STD_GETPRODUCTION);
+        if (TurnState.isPossible(g.getTurnState(), Action.STD_GET_PRODUCTION))
+            g.nextState(Action.STD_GET_PRODUCTION);
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
         if (TurnState.isPossible(g.getTurnState(), Action.LD_ACTION)) {
             g.nextState(Action.LD_ACTION);
@@ -152,8 +152,8 @@ public class ChangeTurnTest {
 
         assertEquals("Harry", g.getPlayerInTurn().getName());
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
-        if (TurnState.isPossible(g.getTurnState(), Action.STD_GETMARKET))
-            g.nextState(Action.STD_GETMARKET);
+        if (TurnState.isPossible(g.getTurnState(), Action.STD_GET_MARKET))
+            g.nextState(Action.STD_GET_MARKET);
         HumanPlayer p = g.getPlayerInTurn();
         assertEquals(g.getTurnState(), TurnState.WAREHOUSE_ACTION);
         if (TurnState.isPossible(g.getTurnState(), Action.SORTING_WAREHOUSE))
@@ -161,7 +161,7 @@ public class ChangeTurnTest {
         if (TurnState.isPossible(g.getTurnState(), Action.SHIFT_WAREHOUSE))
             g.nextState(Action.SHIFT_WAREHOUSE);
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
-        if(TurnState.isPossible(g.getTurnState(),Action.LD_ACTION)) {
+        if (TurnState.isPossible(g.getTurnState(), Action.LD_ACTION)) {
             gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(0).flipCard();
             g.nextState(Action.LD_ACTION);
         }

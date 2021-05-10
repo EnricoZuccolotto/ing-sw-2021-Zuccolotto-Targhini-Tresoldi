@@ -3,7 +3,8 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.player.HumanPlayer;
-import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.network.messages.ExecutableMessage;
+import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.view.NetworkLayerView;
 import it.polimi.ingsw.view.View;
 
@@ -32,16 +33,16 @@ public class GameController {
     public void addPlayer(String name, View view, boolean inkwell) {
         // TODO: Handle local single player
         gameBoardInstance.addPlayer(new HumanPlayer(name, inkwell));
-        addView(name, (NetworkLayerView) view);
+        gameBoardInstance.addObserver((NetworkLayerView) view);
+        gameBoardInstance.getMarket().addObserver((NetworkLayerView) view);
+        gameBoardInstance.getFaithPath().addObserver((NetworkLayerView) view);
+        gameBoardInstance.getDecks().addObserver((NetworkLayerView) view);
+        gameBoardInstance.getPlayer(name).addObserver((NetworkLayerView) view);
     }
 
     public void addView(String name, NetworkLayerView view) {
         viewMap.put(name, view);
-        gameBoardInstance.addObserver(view);
-        gameBoardInstance.getMarket().addObserver(view);
-        gameBoardInstance.getFaithPath().addObserver(view);
-        gameBoardInstance.getDecks().addObserver(view);
-        gameBoardInstance.getPlayer(name).addObserver(view);
+
     }
 
     public void StartGame() {
@@ -50,7 +51,6 @@ public class GameController {
         gamestate = GameState.GAMESTARTED;
         gameBoardInstance.setPublicCommunication("The game is starting", CommunicationMessage.PUBLIC);
         roundController.handle_firstTurn();
-
     }
 
 
@@ -67,6 +67,7 @@ public class GameController {
                         for (String string : lobby.getPlayers()) {
                             addPlayer(string, viewMap.get(string), lobby.getPlayers().get(0).equals(string));
                         }
+                        StartGame();
                         break;
                     }
                     break;

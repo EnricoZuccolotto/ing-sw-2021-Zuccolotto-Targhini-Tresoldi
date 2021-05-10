@@ -6,9 +6,9 @@ package it.polimi.ingsw.controller;
 public enum Action {
     FIRST_ACTION,
     SECOND_ACTION,
-    STD_GETMARKET,
-    STD_USEPRODUCTION,
-    STD_GETPRODUCTION,
+    STD_GET_MARKET,
+    STD_USE_PRODUCTION,
+    STD_GET_PRODUCTION,
     SHIFT_WAREHOUSE,
     SORTING_WAREHOUSE,
     LD_ACTION,

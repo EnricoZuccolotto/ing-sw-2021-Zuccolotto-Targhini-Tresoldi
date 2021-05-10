@@ -82,7 +82,7 @@ public class RoundController {
                 }
             }
             playerInTurn.setTemporaryResourceStorage(list);
-            nextState(Action.STD_GETMARKET);
+            nextState(Action.STD_GET_MARKET);
         }
     }
     public void handle_shiftWarehouse(ShiftWarehouseMessage message) {
@@ -113,7 +113,7 @@ public class RoundController {
             else {
                 if (actionController.useBaseProduction(playerInTurn, 2, message.getOutput(), message.getExchangeResources())) {
                     productions.add(3);
-                    nextState(Action.STD_USEPRODUCTION);
+                    nextState(Action.STD_USE_PRODUCTION);
                 }
             }
         }
@@ -128,7 +128,7 @@ public class RoundController {
                     productions.add(message.getIndex());
                     int faith = playerInTurn.getPlayerBoard().getProductionResult(message.getIndex())[Resources.FAITH.ordinal()];
                     handle_addFaithPoint(faith, playerInTurn);
-                    nextState(Action.STD_USEPRODUCTION);
+                    nextState(Action.STD_USE_PRODUCTION);
                 }
             }
         }
@@ -143,7 +143,7 @@ public class RoundController {
                 if (actionController.useSpecialProduction(playerInTurn, message.getOutput(), message.getIndex(), message.getExchangeResources())) {
                     productions.add(message.getIndex() + 4);
                     handle_addFaithPoint(1, playerInTurn);
-                    nextState(Action.STD_USEPRODUCTION);
+                    nextState(Action.STD_USE_PRODUCTION);
                 }
             }
         }
@@ -153,7 +153,7 @@ public class RoundController {
         if (isYourTurn(message.getPlayerName())) {
             try {
                 if (actionController.getProduction(message.getColor(), message.getLevel(), gameBoardInstance, message.getIndex(), playerInTurn, message.getExchangeResources()))
-                    nextState(Action.STD_GETPRODUCTION);
+                    nextState(Action.STD_GET_PRODUCTION);
             } catch (WinnerException e) {
                 winnerPlayer = players.indexOf(playerInTurn);
                 if (gameState == GameState.SINGLEPLAYER) {
@@ -371,9 +371,9 @@ public class RoundController {
                 turnState = TurnState.NORMAL_ACTION;
             }
             case NORMAL_ACTION: {
-                if (action.equals(Action.STD_USEPRODUCTION)) {
+                if (action.equals(Action.STD_USE_PRODUCTION)) {
                     turnState = TurnState.PRODUCTION_ACTIONS;
-                } else if (action.equals(Action.STD_GETMARKET)) {
+                } else if (action.equals(Action.STD_GET_MARKET)) {
                     turnState = TurnState.WAREHOUSE_ACTION;
                     break;
                 } else {
@@ -382,7 +382,7 @@ public class RoundController {
             }
 
             case WAREHOUSE_ACTION: {
-                if (action.equals(Action.STD_GETMARKET) || action.equals(Action.SORTING_WAREHOUSE)) {
+                if (action.equals(Action.STD_GET_MARKET) || action.equals(Action.SORTING_WAREHOUSE)) {
                     if (playerInTurn.getTemporaryResourceStorage().size() == 0)
                         turnState = TurnState.LAST_LEADER_ACTION;
                 } else if (action.equals(Action.LD_ACTION))
@@ -390,7 +390,7 @@ public class RoundController {
                 else break;
             }
             case PRODUCTION_ACTIONS: {
-                if (action.equals(Action.STD_USEPRODUCTION)) {
+                if (action.equals(Action.STD_USE_PRODUCTION)) {
 
                     if (productions.size() == playerInTurn.getPlayerBoard().getProductionNumber())
                         turnState = TurnState.LAST_LEADER_ACTION;

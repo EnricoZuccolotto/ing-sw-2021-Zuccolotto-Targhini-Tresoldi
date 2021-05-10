@@ -2,6 +2,7 @@ package it.polimi.ingsw;
 
 
 import it.polimi.ingsw.network.Client.SocketClient;
+import it.polimi.ingsw.view.cli.Cli;
 
 import java.util.logging.Level;
 
@@ -21,8 +22,9 @@ public class ClientApp {
             }
         }
 
-        if (cli_gui) {
+        if (!cli_gui) {
             SocketClient.LOGGER.setLevel(Level.WARNING);
+            Cli cli = new Cli();
             //CLi
         } else {
             //Gui

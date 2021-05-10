@@ -29,7 +29,7 @@ public class UseProductionNormalMessage extends ProductionMessage implements Exe
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.STD_USEPRODUCTION) && instance.getGameState().equals(GameState.GAMESTARTED)) {
+        if (instance.validateAction(Action.STD_USE_PRODUCTION) && instance.getGameState().equals(GameState.GAMESTARTED)) {
             instance.getRoundController().handle_useNormalProduction(this);
         } else instance.buildInvalidResponse(playerName);
     }
