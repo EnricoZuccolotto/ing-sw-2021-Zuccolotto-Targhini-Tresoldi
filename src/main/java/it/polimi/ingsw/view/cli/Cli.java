@@ -1,10 +1,13 @@
 package it.polimi.ingsw.view.cli;
 
 import it.polimi.ingsw.controller.ClientManager;
+import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.observer.ViewObservable;
+import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -127,6 +130,87 @@ public class Cli extends ViewObservable implements View {
         }
     }
 
+    public void askJoinOrSet() {
+        clearCli();
+        String join = "JOIN";
+        String set = "SET";
+        out.println("Do you want to JOIN a game or to SET a game?(You can choose between JOIN or SET)");
+        try {
+            String s = readLine();
+            if (s.equals(join))
+                joinLobby();
+            else if (s.equals(set))
+                askPlayersNumber();
+            else {
+                clearCli();
+                askJoinOrSet();
+            }
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
+
+    }
+
+    @Override
+    public void joinLobby() {
+        notifyObserver(ViewObserver::addPlayerLobby);
+    }
+
+    @Override
+    public void askFirstAction() {
+
+    }
+
+    @Override
+    public void askSecondAction() {
+
+    }
+
+    @Override
+    public void askGetMarket() {
+
+    }
+
+    @Override
+    public void askSortingMarket() {
+
+    }
+
+    @Override
+    public void askSwitchRows() {
+
+    }
+
+    @Override
+    public void askGetProduction() {
+
+    }
+
+    @Override
+    public void askUseBaseProduction() {
+
+    }
+
+    @Override
+    public void askUseSpecialProduction() {
+
+    }
+
+    @Override
+    public void askUseNormalProduction() {
+
+    }
+
+    @Override
+    public void askFoldLeader() {
+
+    }
+
+    @Override
+    public void askActiveLeader() {
+
+    }
+
     @Override
     public void showLoginResult(boolean nick, boolean accepted, String name) {
         clearCli();
@@ -137,10 +221,29 @@ public class Cli extends ViewObservable implements View {
             System.exit(1);
         }
         if (!nick) {
-            out.println("Your username is already taken, try another one");
+            out.println("Your username is already taken, try another one or the lobby is full");
             askUsername();
-        } else out.println("your username is accepted, welcome " + name);
+        } else {
+            out.println("your username is accepted, welcome " + name);
+            askJoinOrSet();
+        }
 
+    }
+
+    @Override
+    public void showLobby(ArrayList<String> players) {
+        clearCli();
+        out.println("Players connected: " + players + "\nWaiting for other players...");
+
+    }
+
+    @Override
+    public void showCommunication(String communication, CommunicationMessage type) {
+        clearCli();
+        out.println(type);
+        out.println(communication);
+        if (type.equals(CommunicationMessage.ILLEGAL_LOBBY_ACTION))
+            askJoinOrSet();
     }
 
     @Override
@@ -148,6 +251,26 @@ public class Cli extends ViewObservable implements View {
         clearCli();
         out.println(error);
     }
+
+    @Override
+    public void showPlayerBoard() {
+
+    }
+
+    @Override
+    public void showFaithPath() {
+
+    }
+
+    @Override
+    public void showDecks() {
+    }
+
+    @Override
+    public void showMarket() {
+
+    }
+
 
     private int validateInput(int minValue, int maxValue, List<Integer> jumpList, String question) throws ExecutionException {
         int number = minValue - 1;
@@ -176,7 +299,6 @@ public class Cli extends ViewObservable implements View {
     }
 
     public void clearCli() {
-        out.print("\033[H\033[2J");
         out.flush();
     }
 }

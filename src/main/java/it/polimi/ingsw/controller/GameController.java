@@ -1,5 +1,7 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.exception.controller.LobbyError;
+import it.polimi.ingsw.exception.controller.LobbyException;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.player.HumanPlayer;
@@ -8,11 +10,14 @@ import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.view.NetworkLayerView;
 import it.polimi.ingsw.view.View;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class GameController {
+
     private GameState gamestate;
     private final GameBoard gameBoardInstance;
     private final LobbyController lobby;
@@ -42,7 +47,6 @@ public class GameController {
 
     public void addView(String name, NetworkLayerView view) {
         viewMap.put(name, view);
-
     }
 
     public void StartGame() {
@@ -57,33 +61,40 @@ public class GameController {
     public synchronized void onMessage(Message message) {
         switch (gamestate) {
             case LOBBY: {
-                    try {
-                        ExecutableMessage currentMessage = (ExecutableMessage) message;
-                        currentMessage.execute(this);
-                    } catch (ClassCastException ex) {
-                        // TODO: error, invalid executable message.
-                    }
-                    if (lobby.isFull()) {
-                        for (String string : lobby.getPlayers()) {
-                            addPlayer(string, viewMap.get(string), lobby.getPlayers().get(0).equals(string));
-                        }
-                        StartGame();
-                        break;
-                    }
+                try {
+                    executableMessages(message);
+                } catch (LobbyException e) {
+                    NetworkLayerView view = (NetworkLayerView) viewMap.get(message.getPlayerName());
+                    view.showCommunication(LobbyError.toString(e.getLobbyError()), CommunicationMessage.ILLEGAL_LOBBY_ACTION);
                     break;
                 }
+                if (lobby.isFull()) {
+                    ArrayList<String> lobbyPlayers = lobby.getPlayers();
+                    Collections.shuffle(lobbyPlayers);
+                    for (String string : lobbyPlayers) {
+                        addPlayer(string, viewMap.get(string), lobbyPlayers.get(0).equals(string));
+                    }
+                    StartGame();
+                    break;
+                } else sendLobby();
+                break;
+            }
             case GAMESTARTED: {
                 // Catching a ClassCastException should be redundant, added for extra safety.
                 // In theory messages received now should all be executable.
-                try {
-                    ExecutableMessage currentMessage = (ExecutableMessage) message;
-                    currentMessage.execute(this);
-                } catch (ClassCastException ex) {
-                    // TODO: error, invalid executable message.
-                }
+                executableMessages(message);
                 if (roundController.isWinner())
                     endGame();
             }
+        }
+    }
+
+    private void executableMessages(Message message) {
+        try {
+            ExecutableMessage currentMessage = (ExecutableMessage) message;
+            currentMessage.execute(this);
+        } catch (ClassCastException ex) {
+            // TODO: error, invalid executable message.
         }
     }
 
@@ -92,6 +103,13 @@ public class GameController {
             gameBoardInstance.getPlayer(name).setPrivateCommunication("The game is not started yet.", CommunicationMessage.ILLEGAL_ACTION);
         } else {
             gameBoardInstance.getPlayer(name).setPrivateCommunication("You cannot do this action in this state " + roundController.getTurnState(), CommunicationMessage.ILLEGAL_ACTION);
+        }
+    }
+
+    private void sendLobby() {
+        for (View view : viewMap.values()) {
+            NetworkLayerView view1 = (NetworkLayerView) view;
+            view1.showLobby(lobby.getPlayers());
         }
     }
 

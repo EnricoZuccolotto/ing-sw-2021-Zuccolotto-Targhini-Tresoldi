@@ -27,4 +27,6 @@ public interface ViewObserver {
      * @param playersNumber the number of players.
      */
     void PlayersNumber(int playersNumber);
+
+    void addPlayerLobby();
 }

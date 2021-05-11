@@ -1,8 +1,13 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.network.messages.CommunicationMex;
+import it.polimi.ingsw.network.messages.LobbyMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.server.SocketConnection;
 import it.polimi.ingsw.observer.Observer;
+
+import java.util.ArrayList;
 
 /**
  * This is the virtual view for the server. It receives updates from the model and sends them through the connection to its
@@ -26,7 +31,23 @@ public class NetworkLayerView implements View, Observer {
     }
 
     @Override
+    public void joinLobby() {
+
+    }
+
+    @Override
     public void askPlayersNumber() {
+
+    }
+
+    @Override
+    public void showLobby(ArrayList<String> players) {
+        connection.sendMessage(new LobbyMessage("", players));
+    }
+
+    @Override
+    public void showCommunication(String communication, CommunicationMessage type) {
+        connection.sendMessage(new CommunicationMex("", communication, type));
 
     }
 
@@ -39,6 +60,82 @@ public class NetworkLayerView implements View, Observer {
     public void showError(String error) {
 
     }
+
+    @Override
+    public void askFirstAction() {
+
+    }
+
+    @Override
+    public void askSecondAction() {
+
+    }
+
+    @Override
+    public void askGetMarket() {
+
+    }
+
+    @Override
+    public void askSortingMarket() {
+
+    }
+
+    @Override
+    public void askSwitchRows() {
+
+    }
+
+    @Override
+    public void askGetProduction() {
+
+    }
+
+    @Override
+    public void askUseBaseProduction() {
+
+    }
+
+    @Override
+    public void askUseSpecialProduction() {
+
+    }
+
+    @Override
+    public void askUseNormalProduction() {
+
+    }
+
+    @Override
+    public void askFoldLeader() {
+
+    }
+
+    @Override
+    public void askActiveLeader() {
+
+    }
+
+
+    @Override
+    public void showPlayerBoard() {
+
+    }
+
+    @Override
+    public void showFaithPath() {
+
+    }
+
+    @Override
+    public void showDecks() {
+    }
+
+    @Override
+    public void showMarket() {
+
+    }
+
 
     /**
      * Receives a message from the model and sends it directly to the client.

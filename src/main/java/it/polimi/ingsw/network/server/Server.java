@@ -30,10 +30,11 @@ public class Server {
         } else {
             gameController.addView(nickname, view);
             connection.sendMessage(new LoginMessage(nickname, true, true));
+            synchronized (lock) {
+                clients.put(nickname, connection);
+            }
         }
-        synchronized (lock) {
-            clients.put(nickname, connection);
-        }
+
 
     }
 

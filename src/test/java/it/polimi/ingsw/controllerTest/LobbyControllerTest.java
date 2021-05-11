@@ -1,12 +1,12 @@
 package it.polimi.ingsw.controllerTest;
 
 import it.polimi.ingsw.controller.LobbyController;
-import it.polimi.ingsw.exception.controller.LobbyisFullException;
+import it.polimi.ingsw.exception.controller.LobbyException;
 import it.polimi.ingsw.exception.controller.PlayerAlreadyExistsException;
 import it.polimi.ingsw.network.messages.LobbyJoinMessage;
 import it.polimi.ingsw.network.messages.LobbySetMessage;
-import it.polimi.ingsw.exception.controller.LobbyAlreadyCreatedException;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class LobbyControllerTest {
@@ -23,16 +23,16 @@ public class LobbyControllerTest {
         l.handle_setLobby(new LobbySetMessage(s, 1));
         assertTrue(l.isFull());
         String p="Paolo";
-        try{
+        try {
             l.handle_setLobby(new LobbySetMessage(p, 3));
             fail();
-        } catch (LobbyAlreadyCreatedException e){
+        } catch (LobbyException e) {
             assertTrue(true);
         }
         try {
             l.handle_addInLobby(new LobbyJoinMessage(p));
             fail();
-        } catch(LobbyisFullException e){
+        } catch (LobbyException e) {
             assertTrue(true);
         }
     }
@@ -52,7 +52,7 @@ public class LobbyControllerTest {
         try {
             l.handle_setLobby(new LobbySetMessage(p, 4));
             fail();
-        } catch (LobbyAlreadyCreatedException e){
+        } catch (LobbyException e) {
             assertTrue(true);
         }
         l.handle_addInLobby(new LobbyJoinMessage(p));
@@ -76,10 +76,10 @@ public class LobbyControllerTest {
             assertTrue(true);
         }
         String n="Nicola";
-        try{
+        try {
             l.handle_addInLobby(new LobbyJoinMessage(n));
             fail();
-        } catch (LobbyisFullException e){
+        } catch (LobbyException e) {
             assertTrue(true);
         }
         assertTrue(l.isFull());

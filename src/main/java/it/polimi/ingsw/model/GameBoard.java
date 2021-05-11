@@ -8,7 +8,7 @@ import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.BotPlayer;
 import it.polimi.ingsw.model.player.HumanPlayer;
-import it.polimi.ingsw.model.tools.CardParser;
+import it.polimi.ingsw.network.messages.CommunicationMex;
 import it.polimi.ingsw.observer.Observable;
 
 import java.util.ArrayList;
@@ -35,8 +35,8 @@ public class GameBoard extends Observable {
      * Build a new Game board.
      */
     public GameBoard() {
-        this.decks=new Decks();
-        publicCommunication = new Communication();
+        this.decks = new Decks();
+        this.publicCommunication = new Communication();
         this.players = new ArrayList<>();
         this.market = new Market();
         this.faithPath = new FaithPath();
@@ -175,6 +175,7 @@ public class GameBoard extends Observable {
     public void setPublicCommunication(String communication, CommunicationMessage communicationMessage) {
         this.publicCommunication.setCommunicationMessage(communicationMessage);
         this.publicCommunication.setMessage(communication);
+        notifyObserver(new CommunicationMex("", communication, communicationMessage));
     }
 
     public HumanPlayer getPlayer(String name) {

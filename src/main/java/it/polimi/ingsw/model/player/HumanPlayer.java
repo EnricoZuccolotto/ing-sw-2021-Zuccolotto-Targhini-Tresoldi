@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.board.SimplePlayerBoard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
+import it.polimi.ingsw.network.messages.CommunicationMex;
 import it.polimi.ingsw.network.messages.HumanPlayerUpdateMessage;
 import it.polimi.ingsw.network.messages.MarketReplyMessage;
 
@@ -30,7 +31,7 @@ public class HumanPlayer extends Player implements Serializable {
      */
     public HumanPlayer(String name, boolean inkwell) {
         super(name);
-        privateCommunication = new Communication();
+        this.privateCommunication = new Communication();
         this.playerBoard = new SimplePlayerBoard(inkwell);
         temporaryResourceStorage = new ArrayList<>();
     }
@@ -42,7 +43,7 @@ public class HumanPlayer extends Player implements Serializable {
     public void setPrivateCommunication(String communication, CommunicationMessage communicationMessage) {
         this.privateCommunication.setCommunicationMessage(communicationMessage);
         this.privateCommunication.setMessage(communication);
-        sendUpdateToPlayer();
+        notifyObserver(new CommunicationMex(this.name, communication, communicationMessage));
     }
 
     public void doAction() {

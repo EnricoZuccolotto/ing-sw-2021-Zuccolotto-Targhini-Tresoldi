@@ -1,10 +1,8 @@
 package it.polimi.ingsw.controller;
 
+
 import it.polimi.ingsw.network.Client.SocketClient;
-import it.polimi.ingsw.network.messages.ErrorMessage;
-import it.polimi.ingsw.network.messages.LobbySetMessage;
-import it.polimi.ingsw.network.messages.LoginMessage;
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
@@ -29,7 +27,6 @@ public class ClientManager implements ViewObserver, Observer {
     public ClientManager(View view) {
         this.view = view;
         taskQueue = Executors.newSingleThreadExecutor();
-
     }
 
     /**
@@ -77,7 +74,7 @@ public class ClientManager implements ViewObserver, Observer {
             client.enablePinger(true);
             taskQueue.execute(view::askUsername);
         } catch (IOException e) {
-            // taskQueue.execute(() -> view.showLoginResult());
+            taskQueue.execute(() -> view.showLoginResult(false, false, nickname));
         }
     }
 
@@ -90,6 +87,7 @@ public class ClientManager implements ViewObserver, Observer {
     @Override
     public void Nickname(String nickname) {
         this.nickname = nickname;
+        System.out.println(this.nickname);
         client.sendMessage(new LoginMessage(this.nickname));
     }
 
@@ -104,6 +102,11 @@ public class ClientManager implements ViewObserver, Observer {
     }
 
     @Override
+    public void addPlayerLobby() {
+        client.sendMessage(new LobbyJoinMessage(this.nickname));
+    }
+
+    @Override
     public void update(Message message) {
         switch (message.getMessageType()) {
             case LOGIN:
@@ -114,7 +117,14 @@ public class ClientManager implements ViewObserver, Observer {
                 ErrorMessage errorMessage = (ErrorMessage) message;
                 taskQueue.execute(() -> view.showError(errorMessage.getError()));
                 break;
-
+            case COMMUNICATION:
+                CommunicationMex communicationMex = (CommunicationMex) message;
+                taskQueue.execute(() -> view.showCommunication(communicationMex.getCommunication(), communicationMex.getCommunicationMessage()));
+                break;
+            case LOBBY:
+                LobbyMessage lobbyMessage = (LobbyMessage) message;
+                taskQueue.execute(() -> view.showLobby(lobbyMessage.getPlayers()));
+                break;
         }
     }
 

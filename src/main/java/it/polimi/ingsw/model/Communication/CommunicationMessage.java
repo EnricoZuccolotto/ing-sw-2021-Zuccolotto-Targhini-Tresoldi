@@ -4,5 +4,6 @@ public enum CommunicationMessage {
     INSUFFICIENT_RESOURCES,
     ILLEGAL_ACTION,
     CARD_ALREADY_USED,
-    PUBLIC
+    PUBLIC,
+    ILLEGAL_LOBBY_ACTION
 }

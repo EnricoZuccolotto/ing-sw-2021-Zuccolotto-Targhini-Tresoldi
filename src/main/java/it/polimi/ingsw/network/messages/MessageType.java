@@ -27,6 +27,7 @@ public enum MessageType {
     ERROR,
     PING,
     //Update
+    COMMUNICATION,
     HUMAN_PLAYER_UPDATE,
     FAITH_PATH_UPDATE,
     DECKS_UPDATE,
@@ -34,6 +35,7 @@ public enum MessageType {
     // Lobby messages
     JOIN_GAME,
     SET_GAME,
+    LOBBY,
     //Connection messages
     LOGIN
 
