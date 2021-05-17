@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
@@ -23,6 +24,11 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void joinLobby() {
+
+    }
+
+    @Override
+    public void askAction(TurnState state) {
 
     }
 

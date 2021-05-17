@@ -7,5 +7,6 @@ public enum CommunicationMessage {
     PUBLIC,
     STARTING_GAME,
     TURN_STATE,
+    PLAYER_NUMBER,
     ILLEGAL_LOBBY_ACTION
 }

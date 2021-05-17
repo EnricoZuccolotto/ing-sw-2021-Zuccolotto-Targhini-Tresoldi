@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 
+import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observer.Observer;
@@ -8,16 +9,17 @@ import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ClientManager implements ViewObserver, Observer {
 
-    public static final int UNDO_TIME = 5000;
     private final View view;
     private final ExecutorService taskQueue;
     private SocketClient client;
     private String nickname;
+
 
     /**
      * Constructs Client Controller.
@@ -87,7 +89,6 @@ public class ClientManager implements ViewObserver, Observer {
     @Override
     public void Nickname(String nickname) {
         this.nickname = nickname;
-        System.out.println(this.nickname);
         client.sendMessage(new LoginMessage(this.nickname));
     }
 
@@ -104,6 +105,11 @@ public class ClientManager implements ViewObserver, Observer {
     @Override
     public void firstAction(int index1, int index2) {
         client.sendMessage(new FirstActionMessage(this.nickname, index1, index2));
+    }
+
+    @Override
+    public void secondAction(ArrayList<Resources> resources) {
+        client.sendMessage(new SecondActionMessage(this.nickname, resources));
     }
 
     @Override
@@ -146,6 +152,9 @@ public class ClientManager implements ViewObserver, Observer {
                 FaithPathUpdateMessage faithPathUpdateMessage = (FaithPathUpdateMessage) message;
                 taskQueue.execute(() -> view.showFaithPath(faithPathUpdateMessage.getFaithPath()));
                 break;
+            case STATE:
+                StateMessage stateMessage = (StateMessage) message;
+                taskQueue.execute(() -> view.askAction(stateMessage.getState()));
 
         }
     }

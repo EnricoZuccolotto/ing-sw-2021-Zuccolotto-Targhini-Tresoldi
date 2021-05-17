@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
@@ -133,6 +134,11 @@ public class NetworkLayerView implements View, Observer {
 
     @Override
     public void showDecks(Decks decks) {
+    }
+
+    @Override
+    public void askAction(TurnState state) {
+
     }
 
     @Override

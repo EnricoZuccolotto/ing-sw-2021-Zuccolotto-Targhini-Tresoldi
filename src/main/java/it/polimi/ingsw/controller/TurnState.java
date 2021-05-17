@@ -12,6 +12,7 @@ public enum TurnState {
     WAREHOUSE_ACTION,
     LAST_LEADER_ACTION,
     PRODUCTION_ACTIONS,
+    NOT_IN_TURN,
     END;
 
     /**

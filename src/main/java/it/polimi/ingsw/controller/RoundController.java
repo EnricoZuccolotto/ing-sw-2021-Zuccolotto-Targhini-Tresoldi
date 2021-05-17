@@ -262,7 +262,8 @@ public class RoundController {
             }
         for (HumanPlayer player : players) {
             player.sendUpdateToPlayer();
-            player.setPrivateCommunication(Action.FIRST_ACTION.toString(), CommunicationMessage.TURN_STATE);
+            player.setState(TurnState.FIRST_TURN);
+            player.setPrivateCommunication("" + players.indexOf(player), CommunicationMessage.PLAYER_NUMBER);
         }
     }
 
@@ -289,7 +290,9 @@ public class RoundController {
         if (gameState.equals(GameState.SINGLEPLAYER))
             handle_Bot();
         nextState(Action.END_TURN);
+        playerInTurn.setState(TurnState.NOT_IN_TURN);
         playerInTurn = players.get((turnCount) % players.size());
+        playerInTurn.setState(turnState);
     }
 
     private void checkWinner(int playersNumber){
@@ -341,6 +344,12 @@ public class RoundController {
         }
     }
 
+    private void setStateToAll(TurnState state) {
+        for (HumanPlayer player : players) {
+            player.setState(state);
+        }
+    }
+
     public void nextState(Action action) {
 
         switch (turnState) {
@@ -350,9 +359,11 @@ public class RoundController {
                         turnState = TurnState.SECOND_TURN;
                         productions.clear();
                         productions.add(0);
+                        setStateToAll(TurnState.SECOND_TURN);
                     }
-                    else if(gameState.equals(GameState.SINGLEPLAYER)){
-                        turnState =TurnState.FIRST_LEADER_ACTION;
+                    else if(gameState.equals(GameState.SINGLEPLAYER)) {
+                        turnState = TurnState.FIRST_LEADER_ACTION;
+                        setStateToAll(TurnState.FIRST_LEADER_ACTION);
                     }
                 }
                 break;
@@ -362,6 +373,8 @@ public class RoundController {
                 if (players.size() == productions.size()) {
                     productions.clear();
                     turnState = TurnState.FIRST_LEADER_ACTION;
+                    setStateToAll(TurnState.NOT_IN_TURN);
+                    playerInTurn.setState(TurnState.FIRST_LEADER_ACTION);
                 }
                 break;
             }

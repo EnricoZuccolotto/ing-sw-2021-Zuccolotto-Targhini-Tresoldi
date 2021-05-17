@@ -26,6 +26,7 @@ public enum MessageType {
     // Generic messages,
     ERROR,
     PING,
+    STATE,
     //Update
     COMMUNICATION,
     HUMAN_PLAYER_UPDATE,

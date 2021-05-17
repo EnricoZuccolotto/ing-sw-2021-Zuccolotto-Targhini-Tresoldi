@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
@@ -21,6 +22,8 @@ public interface View {
     void askPlayersNumber();
 
     void joinLobby();
+
+    void askAction(TurnState state);
 
     void askFirstAction();
 

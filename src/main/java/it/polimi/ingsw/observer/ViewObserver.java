@@ -1,6 +1,10 @@
 
 package it.polimi.ingsw.observer;
 
+import it.polimi.ingsw.model.enums.Resources;
+
+import java.util.ArrayList;
+
 /**
  * Custom observer interface for views. It supports different types of notification.
  */
@@ -29,6 +33,8 @@ public interface ViewObserver {
     void PlayersNumber(int playersNumber);
 
     void firstAction(int index1, int index2);
+
+    void secondAction(ArrayList<Resources> resources);
 
     void addPlayerLobby();
 }

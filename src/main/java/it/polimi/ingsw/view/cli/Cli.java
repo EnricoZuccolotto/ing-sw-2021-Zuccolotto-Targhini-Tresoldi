@@ -1,11 +1,12 @@
 package it.polimi.ingsw.view.cli;
 
-import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.ClientManager;
+import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.cards.Decks;
+import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
@@ -20,7 +21,7 @@ import java.util.concurrent.FutureTask;
 public class Cli extends ViewObservable implements View {
 
     private final PrintStream out;
-
+    private int playerNumber;
 
     /**
      * Default constructor.
@@ -162,6 +163,19 @@ public class Cli extends ViewObservable implements View {
     }
 
     @Override
+    public void askAction(TurnState state) {
+        switch (state) {
+            case FIRST_TURN:
+                askFirstAction();
+                break;
+            case SECOND_TURN:
+                askSecondAction();
+                break;
+        }
+
+    }
+
+    @Override
     public void askFirstAction() {
         int firstCard, secondCard;
         String question = "Which cards do you want to discard? Select 1, between 0 and 3:";
@@ -179,8 +193,31 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askSecondAction() {
-        out.println("bananan");
+        ArrayList<Resources> jumpList = new ArrayList<>();
+        jumpList.add(Resources.FAITH);
+        jumpList.add(Resources.WHITE);
+        jumpList.add(Resources.WHATEVER);
+        Resources resources;
+        ArrayList<Resources> resourcesToSend = new ArrayList<>();
+        String question = "Choose 1 Resource between COIN,SHIELD,SERVANT,STONE:";
+
+        if (playerNumber == 0)
+            out.println("You are the first player.We are waiting other players to finish their setup...");
+        else
+            try {
+                out.println("You are the" + playerNumber + " player.\n");
+                resources = validateResources(question, jumpList);
+                resourcesToSend.add(resources);
+                if (playerNumber == 3) {
+                    resources = validateResources(question, jumpList);
+                    resourcesToSend.add(resources);
+                }
+                notifyObserver(obs -> obs.secondAction(resourcesToSend));
+            } catch (ExecutionException e) {
+                out.println("Error");
+            }
     }
+
 
     @Override
     public void askGetMarket() {
@@ -260,12 +297,8 @@ public class Cli extends ViewObservable implements View {
         out.println(communication);
         if (type.equals(CommunicationMessage.ILLEGAL_LOBBY_ACTION))
             askJoinOrSet();
-        if (type.equals(CommunicationMessage.TURN_STATE) && (communication.equals(Action.FIRST_ACTION.toString())))
-            askFirstAction();
-        if (type.equals(CommunicationMessage.TURN_STATE) && (communication.equals(Action.SECOND_ACTION.toString())))
-            askSecondAction();
-
-
+        if (type.equals(CommunicationMessage.PLAYER_NUMBER))
+            this.playerNumber = Integer.parseInt(communication);
     }
 
     @Override
@@ -295,7 +328,26 @@ public class Cli extends ViewObservable implements View {
         out.println(market);
     }
 
+    private Resources validateResources(String question, List<Resources> jumpList) throws ExecutionException {
+        Resources resources = Resources.WHATEVER;
+        if (jumpList == null) {
+            jumpList = List.of();
+        }
+        do {
+            try {
+                out.print(question);
+                resources = Resources.valueOf(readLine());
 
+                if (jumpList.contains(resources)) {
+                    out.println("This resource cannot be selected! Please try again." + jumpList + " cannot be selected \n");
+                }
+            } catch (NumberFormatException e) {
+                out.println("Invalid input! Please try again.\n");
+            }
+        } while (jumpList.contains(resources));
+
+        return resources;
+    }
     private int validateInput(int minValue, int maxValue, List<Integer> jumpList, String question) throws ExecutionException {
         int number = minValue - 1;
 

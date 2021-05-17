@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.Communication;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.board.PlayerBoard;
@@ -9,6 +10,7 @@ import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.network.messages.CommunicationMex;
 import it.polimi.ingsw.network.messages.HumanPlayerUpdateMessage;
 import it.polimi.ingsw.network.messages.MarketReplyMessage;
+import it.polimi.ingsw.network.messages.StateMessage;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class HumanPlayer extends Player implements Serializable {
     private PlayerBoard playerBoard;
     private ArrayList<Resources> temporaryResourceStorage;
     private final Communication privateCommunication;
+    private TurnState state;
 
     /**
      * Build a new human player with the name and the inkwell specified.
@@ -34,6 +37,12 @@ public class HumanPlayer extends Player implements Serializable {
         this.privateCommunication = new Communication();
         this.playerBoard = new SimplePlayerBoard(inkwell);
         temporaryResourceStorage = new ArrayList<>();
+        this.state = TurnState.NOT_IN_TURN;
+    }
+
+    public void setState(TurnState state) {
+        this.state = state;
+        notifyObserver(new StateMessage(this.name, state));
     }
 
     public Communication getPrivateCommunication() {
