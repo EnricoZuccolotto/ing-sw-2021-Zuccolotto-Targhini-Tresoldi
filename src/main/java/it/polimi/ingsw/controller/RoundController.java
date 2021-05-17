@@ -21,7 +21,7 @@ public class RoundController {
     private TurnState turnState;
     private final ActionController actionController;
     private final ArrayList<HumanPlayer> players;
-    private final ArrayList<Integer>  productions;
+    private final ArrayList<Integer> productions;
     private GameState gameState;
     private int winnerPlayer;
     private boolean Winner;
@@ -205,6 +205,7 @@ public class RoundController {
             }
             if (!flag)
                 gameBoardInstance.getPlayer(message.getPlayerName()).setPrivateCommunication("This is not your turn", CommunicationMessage.ILLEGAL_ACTION);
+
         }
     }
 
@@ -231,6 +232,7 @@ public class RoundController {
             }
             if (!flag)
                 gameBoardInstance.getPlayer(message.getPlayerName()).setPrivateCommunication("You cannot do this action", CommunicationMessage.ILLEGAL_ACTION);
+
         }
     }
 
@@ -247,21 +249,24 @@ public class RoundController {
     }
 
 
-    public void handle_firstTurn()  {
+    public void handle_firstTurn() {
         ArrayList<LeaderCard> leaderCards = CardParser.parseLeadCards();
-        if(leaderCards == null)
+        if (leaderCards == null)
             throw new IllegalActionException();
         else
-        for(HumanPlayer player:players) {
-            for (int i=0;i<4;i++) {
-                player.getPlayerBoard().addLeaderCard(leaderCards.get(0));
-                leaderCards.remove(0);
+            for (HumanPlayer player : players) {
+                for (int i = 0; i < 4; i++) {
+                    player.getPlayerBoard().addLeaderCard(leaderCards.get(0));
+                    leaderCards.remove(0);
+                }
             }
+        for (HumanPlayer player : players) {
+            player.sendUpdateToPlayer();
+            player.setPrivateCommunication(Action.FIRST_ACTION.toString(), CommunicationMessage.TURN_STATE);
         }
     }
 
     public void handle_endTurn() {
-
         nextTurn();
     }
 
@@ -286,6 +291,7 @@ public class RoundController {
         nextState(Action.END_TURN);
         playerInTurn = players.get((turnCount) % players.size());
     }
+
     private void checkWinner(int playersNumber){
         switch (gameState){
             case MULTIPLAYER:{
@@ -400,19 +406,20 @@ public class RoundController {
             }
             case LAST_LEADER_ACTION:
             {
-                if(action.equals(Action.END_TURN)) {
+                if (action.equals(Action.END_TURN)) {
                     turnState = TurnState.FIRST_LEADER_ACTION;
                     break;
                 }
-                if (0== playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
+                if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
                     nextTurn();
-                    turnState= TurnState.FIRST_LEADER_ACTION;
+                    turnState = TurnState.FIRST_LEADER_ACTION;
                 }
                 break;
-                }
+            }
 
-            }
-            }
+        }
+
+    }
 
     public GameState getGameState() {
         return gameState;

@@ -1,8 +1,7 @@
 package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.enums.Colors;
-
-import java.util.Arrays;
+import it.polimi.ingsw.model.enums.Resources;
 /**
  * This class represents a development card.
  * costCard represents the cost of the card, each position represents the quantities of Resources needed to buy this card.(Servant,Coin,Stone,Shield)
@@ -85,13 +84,18 @@ public class DevelopmentCard extends Card {
 
     @Override
     public String toString() {
-        return "DevelopmentCard{" +
-                super.toString() +
-                "costCard=" + Arrays.toString(costCard) +
-                ", costProduction=" + Arrays.toString(costProduction) +
-                ", productionResult=" + Arrays.toString(productionResult) +
-                ", color=" + color +
-                ", level=" + level +
-                '}';
+
+        return super.toString() +
+                " color: " +
+                color +
+                "| level: " +
+                level +
+                "| cost: " +
+                Resources.toString(costCard) +
+                "| production cost: " +
+                Resources.toString(costProduction) +
+                "| production result: " +
+                Resources.toString(productionResult);
+
     }
 }

@@ -28,5 +28,7 @@ public interface ViewObserver {
      */
     void PlayersNumber(int playersNumber);
 
+    void firstAction(int index1, int index2);
+
     void addPlayerLobby();
 }

@@ -52,7 +52,7 @@ public class SocketClient extends Observable {
                     LOGGER.info("Received: " + message.getMessageType() + " from " + message.getPlayerName());
                     System.out.println(message.getMessageType());
                 } catch (IOException | ClassNotFoundException e) {
-                    message = new ErrorMessage(null, "Connection lost with the server.");
+                    message = new ErrorMessage(null, "Connection lost with the server.\n" + e.getMessage());
                     disconnect();
                     readExecutionQueue.shutdownNow();
                 }

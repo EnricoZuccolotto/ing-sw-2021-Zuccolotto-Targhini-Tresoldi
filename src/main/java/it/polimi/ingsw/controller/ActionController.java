@@ -315,8 +315,16 @@ public class ActionController {
             index1 = index2;
             index2 = n;
         }
-        foldLeader(index2, player);
-        foldLeader(index1, player);
+        LeaderCard c1, c2;
+        try {
+            c1 = player.getPlayerBoard().getLeaderCard(index1);
+            c2 = player.getPlayerBoard().getLeaderCard(index2);
+        } catch (IndexOutOfBoundsException e) {
+            player.setPrivateCommunication(e.getMessage(), CommunicationMessage.ILLEGAL_ACTION);
+            return false;
+        }
+        player.getPlayerBoard().removeLeaderCard(c1);
+        player.getPlayerBoard().removeLeaderCard(c2);
 
         player.sendUpdateToPlayer();
         return true;

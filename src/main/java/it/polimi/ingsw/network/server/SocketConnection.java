@@ -52,6 +52,7 @@ public class SocketConnection implements Runnable {
                 synchronized (inputLock){
                     Message message = (Message) input.readObject();
                     if(message != null){
+
                         if (message.getMessageType() != MessageType.PING) {
                             System.out.println(message.getMessageType());
                             if (message.getMessageType() == MessageType.LOGIN)
@@ -74,13 +75,15 @@ public class SocketConnection implements Runnable {
     }
 
     public void sendMessage(Message message){
-        if(connected){
-            try{
-                synchronized (outputLock){
+        if(connected) {
+            try {
+                synchronized (outputLock) {
+                    if (message.getMessageType() != MessageType.PING)
+                        System.out.println("...sending... " + message.getMessageType());
                     output.writeObject(message);
                     output.reset();
                 }
-            } catch(IOException e){
+            } catch (IOException e) {
                 // TODO: error;
                 disconnect();
             }

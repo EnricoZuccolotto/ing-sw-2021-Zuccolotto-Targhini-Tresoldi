@@ -1,9 +1,10 @@
 package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.enums.Advantages;
+import it.polimi.ingsw.model.enums.Colors;
+import it.polimi.ingsw.model.enums.Resources;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 /**
  * This class represents a leader card.
  * costResources represents the number of resources needed to activate the card, each position represents the quantities of Resources needed to activate this card.(Servant,Coin,Stone,Shield)
@@ -84,13 +85,16 @@ public class LeaderCard extends Card {
 
     @Override
     public String toString() {
-        return "LeaderCard{" +
-                super.toString() +
-                "costResources=" + Arrays.toString(costResources) +
-                ", costColor=" + Arrays.toString(costColor) +
-                ", advantage=" + advantage +
-                ", effect1=" + Arrays.toString(effect) +
-                '}';
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(super.toString());
+        stringBuilder.append(" || Requirements: ");
+        if (Resources.toString(costResources).isEmpty())
+            stringBuilder.append(Colors.toString(costColor));
+        else stringBuilder.append(Resources.toString(costResources));
+        stringBuilder.append(" || Advantage:");
+        stringBuilder.append(Advantages.toString(advantage, effect));
+
+        return stringBuilder.toString();
     }
 
     // TODO: Implement equals()

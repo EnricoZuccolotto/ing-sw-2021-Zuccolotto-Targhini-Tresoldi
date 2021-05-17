@@ -12,6 +12,7 @@ public class Decks extends Observable implements Serializable {
     public  Decks(){
         this.decks = CardParser.parseDevCards();
     }
+
     public Deck getDeck(Colors color, int level) {
         level--;
         return decks[color.ordinal()][level];
@@ -33,7 +34,22 @@ public class Decks extends Observable implements Serializable {
      * @throws IndexOutOfBoundsException if the deck has 0 cards.
      */
     public void popLastCard(Colors color, int level) {
-       getDeck(color,level).popLastCard();
-       notifyObserver(new DecksUpdateMessage(this));
+        getDeck(color, level).popLastCard();
+        notifyObserver(new DecksUpdateMessage(this));
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Decks:\n");
+        for (int i = 1; i < 4; i++) {
+            for (Colors colors : Colors.values()) {
+                stringBuilder.append(this.getDeck(colors, i).getFirstCard());
+                stringBuilder.append("\n");
+            }
+            stringBuilder.append("\n");
+        }
+
+        return stringBuilder.toString();
     }
 }

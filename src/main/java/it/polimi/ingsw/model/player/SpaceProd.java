@@ -3,12 +3,14 @@ package it.polimi.ingsw.model.player;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.enums.Colors;
 
+import java.io.Serializable;
 import java.util.Stack;
+
 /**
  * This class represents a space of production on the player board.
  * spaceProd is a stack of the card stacked in a single space of production.
  */
-public class SpaceProd {
+public class SpaceProd implements Serializable {
     private final Stack<DevelopmentCard> spaceProd;
 
     /**

@@ -6,7 +6,6 @@ import it.polimi.ingsw.observer.Observable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * This class represents the market.
@@ -93,25 +92,20 @@ public class Market extends Observable implements Serializable {
 
     @Override
     public String toString() {
-        return
-                "market=" + Arrays.toString(market) +
-                        ", slide=" + slide
-                ;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Market:\n");
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 4; j++) {
+                stringBuilder.append(market[i][j]);
+                stringBuilder.append(" | ");
+            }
+            stringBuilder.append("\n");
+        }
+        stringBuilder.append("Slide is:");
+        stringBuilder.append(slide);
+        stringBuilder.append("\n");
+        return stringBuilder.toString();
     }
 
-    public void printMarket(){
-        System.out.println("slide is " +slide);
-        System.out.print(""+market[0][0]);
-        System.out.print("  "+market[0][1]);
-        System.out.print("  "+market[0][2]);
-        System.out.println("  "+market[0][3]);
-        System.out.print(""+market[1][0]);
-        System.out.print("  "+market[1][1]);
-        System.out.print("  "+market[1][2]);
-        System.out.println("  "+market[1][3]);
-        System.out.print(""+market[2][0]);
-        System.out.print("  "+market[2][1]);
-        System.out.print("  "+market[2][2]);
-        System.out.println("  "+market[2][3]);
-    }
+
 }

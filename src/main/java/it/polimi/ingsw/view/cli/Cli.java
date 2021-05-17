@@ -1,7 +1,12 @@
 package it.polimi.ingsw.view.cli;
 
+import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.ClientManager;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.model.FaithPath;
+import it.polimi.ingsw.model.Market;
+import it.polimi.ingsw.model.cards.Decks;
+import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
@@ -137,9 +142,9 @@ public class Cli extends ViewObservable implements View {
         out.println("Do you want to JOIN a game or to SET a game?(You can choose between JOIN or SET)");
         try {
             String s = readLine();
-            if (s.equals(join))
+            if (s.equals(join) || s.equals("join") || s.equals("j") || s.equals("J"))
                 joinLobby();
-            else if (s.equals(set))
+            else if (s.equals(set) || s.equals("set") || s.equals("s") || s.equals("S"))
                 askPlayersNumber();
             else {
                 clearCli();
@@ -158,12 +163,23 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askFirstAction() {
-
+        int firstCard, secondCard;
+        String question = "Which cards do you want to discard? Select 1, between 0 and 3:";
+        try {
+            firstCard = validateInput(0, 3, null, question);
+            ArrayList<Integer> card = new ArrayList<>(1);
+            card.add(firstCard);
+            question = "Which cards do you want to discard? Select 1, between 0 and 3(except " + firstCard + "):";
+            secondCard = validateInput(0, 3, card, question);
+            notifyObserver(obs -> obs.firstAction(firstCard, secondCard));
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
     }
 
     @Override
     public void askSecondAction() {
-
+        out.println("bananan");
     }
 
     @Override
@@ -233,7 +249,7 @@ public class Cli extends ViewObservable implements View {
     @Override
     public void showLobby(ArrayList<String> players) {
         clearCli();
-        out.println("Players connected: " + players + "\nWaiting for other players...");
+        out.println("Players connected: " + players + "\n Waiting for other players...");
 
     }
 
@@ -244,6 +260,12 @@ public class Cli extends ViewObservable implements View {
         out.println(communication);
         if (type.equals(CommunicationMessage.ILLEGAL_LOBBY_ACTION))
             askJoinOrSet();
+        if (type.equals(CommunicationMessage.TURN_STATE) && (communication.equals(Action.FIRST_ACTION.toString())))
+            askFirstAction();
+        if (type.equals(CommunicationMessage.TURN_STATE) && (communication.equals(Action.SECOND_ACTION.toString())))
+            askSecondAction();
+
+
     }
 
     @Override
@@ -253,22 +275,24 @@ public class Cli extends ViewObservable implements View {
     }
 
     @Override
-    public void showPlayerBoard() {
-
+    public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
+        clearCli();
+        out.println(playerBoard);
     }
 
     @Override
-    public void showFaithPath() {
-
+    public void showFaithPath(FaithPath faithPath) {
+        out.println(faithPath);
     }
 
     @Override
-    public void showDecks() {
+    public void showDecks(Decks decks) {
+        out.println(decks);
     }
 
     @Override
-    public void showMarket() {
-
+    public void showMarket(Market market) {
+        out.println(market);
     }
 
 

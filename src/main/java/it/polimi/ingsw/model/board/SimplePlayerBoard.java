@@ -332,12 +332,18 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
 
     @Override
     public String toString() {
-        return "SimplePlayerBoard{" +
-                "\n" + strongbox +
-                ", inkWell=" + inkWell +
-                ", leaderCards=" + leaderCards +
-                "\n" + productionSpaces +
-                "\n" + warehouse +
-                '}';
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Strongbox: ");
+        stringBuilder.append(strongbox);
+        stringBuilder.append("\n");
+        stringBuilder.append("Leader cards:\n");
+        for (LeaderCard card : leaderCards) {
+            stringBuilder.append(leaderCards.indexOf(card));
+            stringBuilder.append(". ");
+            stringBuilder.append(card);
+            stringBuilder.append("\n");
+        }
+        stringBuilder.append(warehouse);
+        return stringBuilder.toString();
     }
 }

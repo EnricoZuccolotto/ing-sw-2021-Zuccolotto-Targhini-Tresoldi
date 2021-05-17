@@ -1,6 +1,10 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.model.FaithPath;
+import it.polimi.ingsw.model.Market;
+import it.polimi.ingsw.model.cards.Decks;
+import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 
 import java.util.ArrayList;
 
@@ -41,13 +45,13 @@ public interface View {
     void askActiveLeader();
 
 
-    void showPlayerBoard();
+    void showPlayerBoard(CompressedPlayerBoard playerBoard);
 
-    void showFaithPath();
+    void showFaithPath(FaithPath faithPath);
 
-    void showDecks();
+    void showDecks(Decks decks);
 
-    void showMarket();
+    void showMarket(Market market);
 
 
     void showLoginResult(boolean nick, boolean accepted, String name);

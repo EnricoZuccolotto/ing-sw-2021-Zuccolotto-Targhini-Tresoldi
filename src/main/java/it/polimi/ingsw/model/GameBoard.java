@@ -9,6 +9,9 @@ import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.BotPlayer;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.network.messages.CommunicationMex;
+import it.polimi.ingsw.network.messages.DecksUpdateMessage;
+import it.polimi.ingsw.network.messages.FaithPathUpdateMessage;
+import it.polimi.ingsw.network.messages.MarketUpdateMessage;
 import it.polimi.ingsw.observer.Observable;
 
 import java.util.ArrayList;
@@ -52,6 +55,9 @@ public class GameBoard extends Observable {
             this.faithPath.init(2);
             bot = Optional.of(new BotPlayer(gameBoard));
         } else this.faithPath.init(players.size());
+        notifyObserver(new DecksUpdateMessage(decks));
+        notifyObserver(new MarketUpdateMessage("", market));
+        notifyObserver(new FaithPathUpdateMessage(faithPath));
     }
 
     /**

@@ -51,9 +51,9 @@ public class GameController {
 
     public void StartGame() {
         roundController.init();
+        gameBoardInstance.setPublicCommunication("The game is starting", CommunicationMessage.STARTING_GAME);
         gameBoardInstance.init(gameBoardInstance);
         gamestate = GameState.GAMESTARTED;
-        gameBoardInstance.setPublicCommunication("The game is starting", CommunicationMessage.PUBLIC);
         roundController.handle_firstTurn();
     }
 

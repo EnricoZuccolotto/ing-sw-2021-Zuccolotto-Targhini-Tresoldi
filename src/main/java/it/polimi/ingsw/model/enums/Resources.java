@@ -37,4 +37,32 @@ public enum Resources {
                 throw new IllegalStateException("Unexpected value: " + i);
         }
     }
+
+    public static String toString(int[] resources) {
+        StringBuilder string = new StringBuilder();
+        for (int i = 0; i < resources.length; i++)
+            if (resources[i] != 0) {
+                string.append(resources[i]);
+                string.append(" ");
+                string.append(Resources.transform(i));
+                string.append(",");
+            }
+        if (string.length() != 0)
+            string.deleteCharAt(string.lastIndexOf(","));
+        return string.toString();
+    }
+
+    public static String getResources(int[] effect) {
+        StringBuilder string = new StringBuilder();
+        for (int i = 0; i < 4; i++)
+            if (effect[i] != 0) {
+                if (effect[i] > 1) {
+                    string.append(effect[i]);
+                    string.append(" ");
+                }
+                string.append(Resources.transform(i));
+            }
+        return string.toString();
+    }
+
 }

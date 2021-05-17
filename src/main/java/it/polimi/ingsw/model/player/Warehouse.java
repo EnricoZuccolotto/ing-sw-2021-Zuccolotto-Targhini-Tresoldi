@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 
 import java.io.Serializable;
-import java.util.Arrays;
 /**
  * This class represents the warehouse.
  * warehouse is an array of 6 resource the represents the warehouse.
@@ -165,12 +164,16 @@ public class Warehouse implements Serializable {
 
     @Override
     public String toString() {
-        return "Warehouse{" +
-                "warehouse=" + Arrays.toString(warehouse) +
-                ", var=" + Arrays.toString(resources) +
-                ", Resnum=" + ResourceNumber +
-                ", ResRow=" + Arrays.toString(resources) +
-                '}';
+        return "Warehouse: " +
+                "\n" + "     " + t(warehouse[0]) +
+                "\n" + "  " + t(warehouse[1]) + " " + t(warehouse[2]) +
+                "\n" + t(warehouse[3]) + " " + t(warehouse[4]) + " " + t(warehouse[5]);
+    }
+
+    private String t(Resources r) {
+        if (r.equals(Resources.WHITE))
+            return "VOID";
+        else return r.toString();
     }
 
     /**

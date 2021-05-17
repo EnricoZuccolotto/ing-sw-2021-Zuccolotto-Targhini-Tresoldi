@@ -1,6 +1,10 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.model.FaithPath;
+import it.polimi.ingsw.model.Market;
+import it.polimi.ingsw.model.cards.Decks;
+import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.network.messages.CommunicationMex;
 import it.polimi.ingsw.network.messages.LobbyMessage;
 import it.polimi.ingsw.network.messages.Message;
@@ -118,21 +122,21 @@ public class NetworkLayerView implements View, Observer {
 
 
     @Override
-    public void showPlayerBoard() {
+    public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
 
     }
 
     @Override
-    public void showFaithPath() {
+    public void showFaithPath(FaithPath faithPath) {
 
     }
 
     @Override
-    public void showDecks() {
+    public void showDecks(Decks decks) {
     }
 
     @Override
-    public void showMarket() {
+    public void showMarket(Market market) {
 
     }
 

@@ -2,12 +2,13 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.enums.Resources;
 
-import java.util.Arrays;
+import java.io.Serializable;
+
 /**
  * This class represents the strongbox.
  * warehouse is an array of 4 integer each one represents the quantity of resource contained(Servant,Coin,Stone,Shield).
  */
-public class Strongbox {
+public class Strongbox implements Serializable {
     private final int[] strongBox;
 
     /**
@@ -62,9 +63,15 @@ public class Strongbox {
 
     @Override
     public String toString() {
-        return "Strongbox" +
-                Arrays.toString(strongBox)
-                ;
+        StringBuilder string = new StringBuilder();
+        for (int i = 0; i < 4; i++) {
+            string.append(strongBox[i]);
+            string.append(" ");
+            string.append(Resources.transform(i));
+            string.append(",");
+        }
+        string.deleteCharAt(string.lastIndexOf(","));
+        return string.toString();
     }
 
     /**

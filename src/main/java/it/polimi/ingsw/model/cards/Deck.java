@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.cards;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -7,7 +8,7 @@ import java.util.Collections;
 /**
  * This class represents a deck of Development card.
  */
-public class Deck  {
+public class Deck implements Serializable {
     private final ArrayList<DevelopmentCard> deck;
 
     /**

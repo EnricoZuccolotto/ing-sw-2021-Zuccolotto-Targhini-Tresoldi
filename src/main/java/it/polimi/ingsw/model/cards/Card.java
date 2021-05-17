@@ -1,11 +1,14 @@
 package it.polimi.ingsw.model.cards;
+
+import java.io.Serializable;
+
 /**
  * This class represents a card.
  * VP number of victory points of the card
  * ID identifier of the card
  * Uncovered define the state of the card (covered or uncovered).
  */
-public class Card {
+public class Card implements Serializable {
     private final int VP;
     private final int ID;
     private boolean uncovered;
@@ -58,10 +61,6 @@ public class Card {
 
     @Override
     public String toString() {
-        return "Card{" +
-                "VP=" + VP +
-                ", ID=" + ID +
-                ", uncovered=" + uncovered +
-                '}';
+        return "VP=" + VP;
     }
 }

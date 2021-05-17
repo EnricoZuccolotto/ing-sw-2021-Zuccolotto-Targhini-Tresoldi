@@ -1,6 +1,10 @@
 package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.model.FaithPath;
+import it.polimi.ingsw.model.Market;
+import it.polimi.ingsw.model.cards.Decks;
+import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.view.View;
 
@@ -78,22 +82,22 @@ public class Gui extends ViewObservable implements View {
     }
 
     @Override
-    public void showPlayerBoard() {
+    public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
 
     }
 
     @Override
-    public void showFaithPath() {
+    public void showFaithPath(FaithPath faithPath) {
 
     }
 
     @Override
-    public void showDecks() {
+    public void showDecks(Decks decks) {
 
     }
 
     @Override
-    public void showMarket() {
+    public void showMarket(Market market) {
 
     }
 

@@ -102,6 +102,11 @@ public class ClientManager implements ViewObserver, Observer {
     }
 
     @Override
+    public void firstAction(int index1, int index2) {
+        client.sendMessage(new FirstActionMessage(this.nickname, index1, index2));
+    }
+
+    @Override
     public void addPlayerLobby() {
         client.sendMessage(new LobbyJoinMessage(this.nickname));
     }
@@ -125,6 +130,23 @@ public class ClientManager implements ViewObserver, Observer {
                 LobbyMessage lobbyMessage = (LobbyMessage) message;
                 taskQueue.execute(() -> view.showLobby(lobbyMessage.getPlayers()));
                 break;
+            case HUMAN_PLAYER_UPDATE:
+                HumanPlayerUpdateMessage humanPlayerUpdateMessage = (HumanPlayerUpdateMessage) message;
+                taskQueue.execute(() -> view.showPlayerBoard(humanPlayerUpdateMessage.getHumanPlayer()));
+                break;
+            case MARKET_UPDATE:
+                MarketUpdateMessage marketUpdateMessage = (MarketUpdateMessage) message;
+                taskQueue.execute(() -> view.showMarket(marketUpdateMessage.getMarket()));
+                break;
+            case DECKS_UPDATE:
+                DecksUpdateMessage decksUpdateMessage = (DecksUpdateMessage) message;
+                taskQueue.execute(() -> view.showDecks(decksUpdateMessage.getDecks()));
+                break;
+            case FAITH_PATH_UPDATE:
+                FaithPathUpdateMessage faithPathUpdateMessage = (FaithPathUpdateMessage) message;
+                taskQueue.execute(() -> view.showFaithPath(faithPathUpdateMessage.getFaithPath()));
+                break;
+
         }
     }
 
