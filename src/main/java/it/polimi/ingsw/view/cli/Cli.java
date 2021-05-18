@@ -175,6 +175,9 @@ public class Cli extends ViewObservable implements View {
             case SECOND_TURN:
                 askSecondAction();
                 break;
+            case NOT_IN_TURN:
+                out.println("This is not your turn, wait other players....");
+                break;
             default:
                 askWhichAction();
         }

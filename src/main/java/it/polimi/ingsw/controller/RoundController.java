@@ -373,7 +373,8 @@ public class RoundController {
                 if (players.size() == productions.size()) {
                     productions.clear();
                     turnState = TurnState.FIRST_LEADER_ACTION;
-                    setStateToAll(TurnState.NOT_IN_TURN);
+                    for (int i = 1; i < players.size(); i++)
+                        playerInTurn.setState(TurnState.NOT_IN_TURN);
                     playerInTurn.setState(TurnState.FIRST_LEADER_ACTION);
                 }
                 break;

@@ -44,9 +44,9 @@ public interface ViewObserver {
 
     void activeLeader(int index);
 
-    void foldLeader(int index);
-
     void addPlayerLobby();
+
+    void foldLeader(int index);
 
     void endTurn();
 }
