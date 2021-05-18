@@ -136,6 +136,11 @@ public class ClientManager implements ViewObserver, Observer {
     }
 
     @Override
+    public void foldLeader(int index) {
+        client.sendMessage(new LeaderMessage(this.nickname, MessageType.FOLD_LEADER, index));
+    }
+
+    @Override
     public void addPlayerLobby() {
         client.sendMessage(new LobbyJoinMessage(this.nickname));
     }

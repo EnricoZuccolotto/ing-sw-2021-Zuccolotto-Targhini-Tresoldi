@@ -185,6 +185,10 @@ public class Cli extends ViewObservable implements View {
         int action;
         Action act;
         ArrayList<Action> possibilities = TurnState.possibleActions(turnState);
+        if (playerBoard.getPlayerBoard().getLeaderCardsNumber() == 0) {
+            possibilities.remove(Action.ACTIVE_LEADER);
+            possibilities.remove(Action.FOLD_LEADER);
+        }
         out.println("\nPossible actions:");
         for (Action action1 : possibilities) {
             out.println(possibilities.indexOf(action1) + ". " + action1);
@@ -336,7 +340,15 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askFoldLeader() {
-
+        int foldCard;
+        int numCards = playerBoard.getPlayerBoard().getLeaderCardsNumber() - 1;
+        String question = "Which cards do you want to discard? Select 1, between 0 and " + numCards + ":";
+        try {
+            foldCard = validateInput(0, numCards, null, question);
+            notifyObserver(obs -> obs.foldLeader(foldCard));
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
     }
 
     @Override
@@ -392,7 +404,7 @@ public class Cli extends ViewObservable implements View {
     @Override
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
         clearCli();
-        this.playerBoard=playerBoard;
+        this.playerBoard = playerBoard;
         out.println(playerBoard);
     }
 
