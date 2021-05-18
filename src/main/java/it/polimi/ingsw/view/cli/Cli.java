@@ -315,7 +315,7 @@ public class Cli extends ViewObservable implements View {
                 list.removeAll(playerBoard.getPlayerBoard().getSubstitutableResources());
                 choice=validateResources(question, list);
             }
-            question="What do you want to do with this resource? Select a row in the warehouse between 1 and 3, select 4 to discard it or select 0 for the special warehouse (with leader card only): ";
+            question="Select a row in the warehouse between 1 and 3, select 4 to discard it or select 0 for the special warehouse (with leader card only): ";
             row=validateInput(0, 4, null, question);
             Resources finalChoice = choice;
             notifyObserver(obs -> obs.sortingMarket(finalChoice, row, playerBoard.getTemporaryResourceStorage().indexOf(finalChoice)));
@@ -468,7 +468,7 @@ public class Cli extends ViewObservable implements View {
                 if (jumpList.contains(resources)) {
                     out.println("This resource cannot be selected! Please try again." + jumpList + " cannot be selected \n");
                 }
-            } catch (NumberFormatException e) {
+            } catch (IllegalArgumentException e) {
                 out.println("Invalid input! Please try again.\n");
             }
         } while (jumpList.contains(resources));
