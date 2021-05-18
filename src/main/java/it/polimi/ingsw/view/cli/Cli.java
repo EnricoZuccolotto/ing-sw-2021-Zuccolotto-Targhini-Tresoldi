@@ -24,6 +24,7 @@ public class Cli extends ViewObservable implements View {
     private final PrintStream out;
     private int playerNumber;
     private TurnState turnState;
+    private CompressedPlayerBoard playerBoard;
     /**
      * Default constructor.
      */
@@ -272,7 +273,22 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askGetMarket() {
-
+        int choice, index;
+        String question="What do you want from the market? Select 1 for a row or 2 for a column: ";
+        try {
+            choice=validateInput(1,2,null,question);
+            if(choice==1){
+                question="Please Select a row between 0 and 2: ";
+                index=validateInput(0,2,null,question);
+                notifyObserver(obs -> obs.getMarket(choice, index));
+            } else {
+                question="Please Select a column between 0 and 3: ";
+                index=validateInput(0,3,null,question);
+                notifyObserver(obs -> obs.getMarket(choice, index));
+            }
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
     }
 
     @Override
@@ -363,6 +379,7 @@ public class Cli extends ViewObservable implements View {
     @Override
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
         clearCli();
+        this.playerBoard=playerBoard;
         out.println(playerBoard);
     }
 

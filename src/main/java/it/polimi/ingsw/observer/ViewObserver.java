@@ -36,6 +36,8 @@ public interface ViewObserver {
 
     void secondAction(ArrayList<Resources> resources);
 
+    void getMarket(int choice, int index);
+
     void addPlayerLobby();
 
     void endTurn();

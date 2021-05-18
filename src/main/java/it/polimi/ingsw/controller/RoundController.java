@@ -71,14 +71,14 @@ public class RoundController {
                 //exchange white resource with another resource if there is only one exchangeable
                 if (flag == 1) {
                     Resources resource = Resources.transform(playerInTurn.getPlayerBoard().getSubstitutes().indexOf(true));
-                    while (list.contains(Resources.WHITE))
-                        list.remove(Resources.WHITE);
+                    for (Resources resources : list)
+                        if (resources.equals(Resources.WHITE))
+                            list.set(list.indexOf(Resources.WHITE), resource);
                 }
                 //remove white resource cause with have no exchange
                 else if (flag == 0) {
-                    for (Resources resources : list)
-                        if (resources.equals(Resources.WHITE))
-                            list.remove(Resources.WHITE);
+                    while (list.contains(Resources.WHITE))
+                        list.remove(Resources.WHITE);
                 }
             }
             playerInTurn.setTemporaryResourceStorage(list);

@@ -91,7 +91,7 @@ public class HumanPlayer extends Player implements Serializable {
      */
     public void setTemporaryResourceStorage(ArrayList<Resources> temporaryResourceStorage) {
         this.temporaryResourceStorage = temporaryResourceStorage;
-        notifyObserver(new MarketReplyMessage(super.name, temporaryResourceStorage));
+        sendUpdateToPlayer();
     }
 
     /**
@@ -102,7 +102,7 @@ public class HumanPlayer extends Player implements Serializable {
     public void removeItemFromTemporaryList(int index) {
         try {
             temporaryResourceStorage.remove(index);
-            notifyObserver(new MarketReplyMessage(super.name, temporaryResourceStorage));
+            sendUpdateToPlayer();
         } catch (IndexOutOfBoundsException e) {
             // TODO: Handle exception
         }

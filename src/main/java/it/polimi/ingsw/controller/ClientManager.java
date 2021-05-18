@@ -113,6 +113,15 @@ public class ClientManager implements ViewObserver, Observer {
     }
 
     @Override
+    public void getMarket(int choice, int index) {
+        if(choice==2) {
+            client.sendMessage(new MarketRequestMessage(this.nickname, 3, index));
+        } else {
+            client.sendMessage(new MarketRequestMessage(this.nickname, index, 4));
+        }
+    }
+
+    @Override
     public void endTurn() {
         client.sendMessage(new EndTurnMessage(this.nickname));
     }
