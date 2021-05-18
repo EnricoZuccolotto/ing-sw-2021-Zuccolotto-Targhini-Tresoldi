@@ -305,9 +305,17 @@ public class Cli extends ViewObservable implements View {
         String question="Which resource do you want to sort? Choose the resource: ";
         try {
             choice=validateResources(question, list);
+            if(choice.equals(Resources.WHITE)){
+                question="Choose which resource to transform the white resource into: ";
+                list.clear();
+                list.addAll(Arrays.asList(Resources.values()));
+                list.removeAll(playerBoard.getPlayerBoard().getSubstitutableResources());
+                choice=validateResources(question, list);
+            }
             question="What do you want to do with this resource? Select a row in the warehouse between 1 and 3, select 4 to discard it or select 0 for the special warehouse (with leader card only): ";
             row=validateInput(0, 4, null, question);
-            notifyObserver(obs -> obs.sortingMarket(choice, row, playerBoard.getTemporaryResourceStorage().indexOf(choice)));
+            Resources finalChoice = choice;
+            notifyObserver(obs -> obs.sortingMarket(finalChoice, row, playerBoard.getTemporaryResourceStorage().indexOf(finalChoice)));
         } catch (ExecutionException e) {
             out.println("Error");
         }
@@ -315,7 +323,18 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askSwitchRows() {
-
+        int row1, row2;
+        ArrayList<Integer> jumplist= new ArrayList<>();
+        String question="Select the first row between 1 and 3: ";
+        try {
+            row1=validateInput(1,3,null, question);
+            jumplist.add(row1);
+            question="Select second row (except "+ row1 +"): ";
+            row2=validateInput(1, 3, jumplist, question);
+            notifyObserver(obs -> obs.switchRows(row1, row2));
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
     }
 
     @Override
@@ -342,7 +361,7 @@ public class Cli extends ViewObservable implements View {
     public void askFoldLeader() {
         int foldCard;
         int numCards = playerBoard.getPlayerBoard().getLeaderCardsNumber() - 1;
-        String question = "Which cards do you want to discard? Select 1, between 0 and " + numCards + ":";
+        String question = "Which card do you want to discard? Select 1, between 0 and " + numCards + ":";
         try {
             foldCard = validateInput(0, numCards, null, question);
             notifyObserver(obs -> obs.foldLeader(foldCard));
@@ -353,6 +372,15 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askActiveLeader() {
+        int activeCard;
+        int numCards = playerBoard.getPlayerBoard().getLeaderCardsNumber() - 1;
+        String question = "Which card do you want to active? Select 1, between 0 and " + numCards + ":";
+        try {
+            activeCard = validateInput(0, numCards, null, question);
+            notifyObserver(obs -> obs.activeLeader(activeCard));
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
 
     }
 

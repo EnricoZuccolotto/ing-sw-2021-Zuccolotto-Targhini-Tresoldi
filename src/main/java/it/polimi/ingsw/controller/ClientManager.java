@@ -130,9 +130,20 @@ public class ClientManager implements ViewObserver, Observer {
             client.sendMessage(new DiscardResourceMessage(this.nickname, index));
         }
     }
+
+    @Override
+    public void switchRows(int row1, int row2) {
+        client.sendMessage(new ShiftWarehouseMessage(this.nickname, WarehousePositions.transform(row1), WarehousePositions.transform(row2)));
+    }
+
     @Override
     public void endTurn() {
         client.sendMessage(new EndTurnMessage(this.nickname));
+    }
+
+    @Override
+    public void activeLeader(int index) {
+        client.sendMessage(new LeaderMessage(this.nickname, MessageType.ACTIVE_LEADER, index));
     }
 
     @Override

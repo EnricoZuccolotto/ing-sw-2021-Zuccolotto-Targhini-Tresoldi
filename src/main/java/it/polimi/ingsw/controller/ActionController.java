@@ -99,6 +99,11 @@ public class ActionController {
      * @param newRowPosition Position that it wants to switch.
      */
     public void shiftWarehouseRows(HumanPlayer player, WarehousePositions startingRow, WarehousePositions newRowPosition) {
+        if(startingRow.ordinal()>newRowPosition.ordinal()){
+            WarehousePositions n=startingRow;
+            startingRow=newRowPosition;
+            newRowPosition=n;
+        }
         if (player.getPlayerBoard().shiftWarehouseRows(startingRow, newRowPosition)) {
             player.sendUpdateToPlayer();
         } else {

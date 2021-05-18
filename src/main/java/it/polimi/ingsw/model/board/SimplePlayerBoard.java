@@ -141,6 +141,9 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     }
 
     @Override
+    public ArrayList<Resources> getSubstitutableResources(){return null;}
+
+    @Override
     public boolean isResourceSubstitutable(Resources resource){
         return false;
     }

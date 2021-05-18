@@ -34,6 +34,17 @@ public class DecoratedChangePlayerBoard extends DecoratedPlayerBoard implements 
     }
 
     @Override
+    public ArrayList<Resources> getSubstitutableResources(){
+        ArrayList<Resources> res=new ArrayList<>();
+        for(int i=0; i<4; i++){
+            if(substitutes.get(i)){
+                res.add(Resources.transform(i));
+            }
+        }
+        return res;
+    }
+
+    @Override
     public boolean isResourceSubstitutable(Resources resource){
         try {
             return substitutes.get(resource.ordinal());

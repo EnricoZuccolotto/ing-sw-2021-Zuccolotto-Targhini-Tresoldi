@@ -269,6 +269,7 @@ public interface PlayerBoard {
      */
     ArrayList<Boolean> getSubstitutes();
 
+    ArrayList<Resources> getSubstitutableResources();
     /**
      * Gets if the resources is substitutable
      *

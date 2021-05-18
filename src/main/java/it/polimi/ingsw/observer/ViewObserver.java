@@ -40,6 +40,12 @@ public interface ViewObserver {
 
     void sortingMarket(Resources choice, int row, int index);
 
+    void switchRows(int row1, int row2);
+
+    void activeLeader(int index);
+
+    void foldLeader(int index);
+
     void addPlayerLobby();
 
     void endTurn();

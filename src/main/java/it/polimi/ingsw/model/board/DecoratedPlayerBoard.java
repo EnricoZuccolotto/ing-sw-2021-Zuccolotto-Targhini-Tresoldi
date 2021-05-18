@@ -139,6 +139,9 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     }
 
     @Override
+    public ArrayList<Resources> getSubstitutableResources(){return subBoard.getSubstitutableResources();}
+
+    @Override
     public boolean isResourceSubstitutable(Resources resource){
         return subBoard.isResourceSubstitutable(resource);
     }
