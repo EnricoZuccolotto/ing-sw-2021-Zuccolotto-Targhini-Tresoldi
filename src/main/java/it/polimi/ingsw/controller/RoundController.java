@@ -351,7 +351,7 @@ public class RoundController {
     }
 
     public void nextState(Action action) {
-
+        boolean flag = (!turnState.equals(TurnState.FIRST_TURN) && !turnState.equals(TurnState.SECOND_TURN));
         switch (turnState) {
             case FIRST_TURN: {
                 if (players.size() == productions.size()) {
@@ -430,6 +430,9 @@ public class RoundController {
             }
 
         }
+        System.out.println(turnState);
+        if (flag)
+            playerInTurn.setState(turnState);
 
     }
 
