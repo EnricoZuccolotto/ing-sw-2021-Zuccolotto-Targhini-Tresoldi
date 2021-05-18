@@ -82,7 +82,7 @@ public class RoundController {
                 }
             }
             playerInTurn.setTemporaryResourceStorage(list);
-            nextState(Action.STD_GET_MARKET);
+            nextState(Action.GET_RESOURCES_FROM_MARKET);
         }
     }
     public void handle_shiftWarehouse(ShiftWarehouseMessage message) {
@@ -109,11 +109,11 @@ public class RoundController {
     public void handle_useBaseProduction(UseProductionBaseMessage message) {
         if (isYourTurn(message.getPlayerName())) {
             if (productions.contains(3))
-                playerInTurn.setPrivateCommunication("You already used this production", CommunicationMessage.CARD_ALREADY_USED);
+                playerInTurn.setPrivateCommunication("You already used this production", CommunicationMessage.ILLEGAL_ACTION);
             else {
                 if (actionController.useBaseProduction(playerInTurn, 2, message.getOutput(), message.getExchangeResources())) {
                     productions.add(3);
-                    nextState(Action.STD_USE_PRODUCTION);
+                    nextState(Action.USE_PRODUCTIONS);
                 }
             }
         }
@@ -122,13 +122,13 @@ public class RoundController {
     public void handle_useNormalProduction(UseProductionNormalMessage message) {
         if (isYourTurn(message.getPlayerName())) {
             if (productions.contains(message.getIndex()))
-                playerInTurn.setPrivateCommunication("You already used this production", CommunicationMessage.CARD_ALREADY_USED);
+                playerInTurn.setPrivateCommunication("You already used this production", CommunicationMessage.ILLEGAL_ACTION);
             else {
                 if (actionController.useNormalProduction(playerInTurn, message.getIndex(), message.getExchangeResources())) {
                     productions.add(message.getIndex());
                     int faith = playerInTurn.getPlayerBoard().getProductionResult(message.getIndex())[Resources.FAITH.ordinal()];
                     handle_addFaithPoint(faith, playerInTurn);
-                    nextState(Action.STD_USE_PRODUCTION);
+                    nextState(Action.USE_PRODUCTIONS);
                 }
             }
         }
@@ -138,12 +138,12 @@ public class RoundController {
     public void handle_useSpecialProduction(UseProductionSpecialMessage message) {
         if (isYourTurn(message.getPlayerName())) {
             if (productions.contains(message.getIndex() + 4))
-                playerInTurn.setPrivateCommunication("You already used this production", CommunicationMessage.CARD_ALREADY_USED);
+                playerInTurn.setPrivateCommunication("You already used this production", CommunicationMessage.ILLEGAL_ACTION);
             else {
                 if (actionController.useSpecialProduction(playerInTurn, message.getOutput(), message.getIndex(), message.getExchangeResources())) {
                     productions.add(message.getIndex() + 4);
                     handle_addFaithPoint(1, playerInTurn);
-                    nextState(Action.STD_USE_PRODUCTION);
+                    nextState(Action.USE_PRODUCTIONS);
                 }
             }
         }
@@ -153,7 +153,7 @@ public class RoundController {
         if (isYourTurn(message.getPlayerName())) {
             try {
                 if (actionController.getProduction(message.getColor(), message.getLevel(), gameBoardInstance, message.getIndex(), playerInTurn, message.getExchangeResources()))
-                    nextState(Action.STD_GET_PRODUCTION);
+                    nextState(Action.BUY_DEVELOPMENT_CARD);
             } catch (WinnerException e) {
                 winnerPlayer = players.indexOf(playerInTurn);
                 if (gameState == GameState.SINGLEPLAYER) {
@@ -166,21 +166,21 @@ public class RoundController {
     public void handle_activeLeader(LeaderMessage message) {
         if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
             turnState = TurnState.NORMAL_ACTION;
-            playerInTurn.setPrivateCommunication("You cannot do leader action", CommunicationMessage.CARD_ALREADY_USED);
+            playerInTurn.setPrivateCommunication("You cannot do leader action", CommunicationMessage.ILLEGAL_ACTION);
         } else if (isYourTurn(message.getPlayerName())) {
             if (actionController.activateLeader(message.getIndex(), playerInTurn))
-                nextState(Action.LD_ACTION);
+                nextState(Action.ACTIVE_LEADER);
         }
     }
 
     public void handle_foldLeader(LeaderMessage message) {
         if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
             turnState = TurnState.NORMAL_ACTION;
-            playerInTurn.setPrivateCommunication("You cannot do leader action", CommunicationMessage.CARD_ALREADY_USED);
+            playerInTurn.setPrivateCommunication("You cannot do leader action", CommunicationMessage.ILLEGAL_ACTION);
         } else if (isYourTurn(message.getPlayerName())) {
             if (actionController.foldLeader(message.getIndex(), playerInTurn)) {
                 handle_addFaithPoint(1, playerInTurn);
-                nextState(Action.LD_ACTION);
+                nextState(Action.ACTIVE_LEADER);
             }
         }
     }
@@ -378,21 +378,20 @@ public class RoundController {
                 }
                 break;
             }
-            case FIRST_LEADER_ACTION:
-            {
-                if(action.equals(Action.LD_ACTION)){
-                if(0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
-                    turnState = TurnState.NORMAL_ACTION;
+            case FIRST_LEADER_ACTION: {
+                if (action.equals(Action.ACTIVE_LEADER)) {
+                    if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
+                        turnState = TurnState.NORMAL_ACTION;
+                        break;
+                    }
                     break;
-                }
-                break;
                 }
                 turnState = TurnState.NORMAL_ACTION;
             }
             case NORMAL_ACTION: {
-                if (action.equals(Action.STD_USE_PRODUCTION)) {
+                if (action.equals(Action.USE_PRODUCTIONS)) {
                     turnState = TurnState.PRODUCTION_ACTIONS;
-                } else if (action.equals(Action.STD_GET_MARKET)) {
+                } else if (action.equals(Action.GET_RESOURCES_FROM_MARKET)) {
                     turnState = TurnState.WAREHOUSE_ACTION;
                     break;
                 } else {
@@ -401,19 +400,19 @@ public class RoundController {
             }
 
             case WAREHOUSE_ACTION: {
-                if (action.equals(Action.STD_GET_MARKET) || action.equals(Action.SORTING_WAREHOUSE)) {
+                if (action.equals(Action.GET_RESOURCES_FROM_MARKET) || action.equals(Action.SORTING_WAREHOUSE)) {
                     if (playerInTurn.getTemporaryResourceStorage().size() == 0)
                         turnState = TurnState.LAST_LEADER_ACTION;
-                } else if (action.equals(Action.LD_ACTION))
+                } else if (action.equals(Action.ACTIVE_LEADER))
                     turnState = TurnState.LAST_LEADER_ACTION;
                 else break;
             }
             case PRODUCTION_ACTIONS: {
-                if (action.equals(Action.STD_USE_PRODUCTION)) {
+                if (action.equals(Action.USE_PRODUCTIONS)) {
 
                     if (productions.size() == playerInTurn.getPlayerBoard().getProductionNumber())
                         turnState = TurnState.LAST_LEADER_ACTION;
-                } else if (action.equals(Action.LD_ACTION))
+                } else if (action.equals(Action.ACTIVE_LEADER))
                     turnState = TurnState.LAST_LEADER_ACTION;
                 else break;
             }

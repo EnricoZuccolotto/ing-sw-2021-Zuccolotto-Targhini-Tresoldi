@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.cli;
 
+import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.ClientManager;
 import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
@@ -22,7 +23,7 @@ public class Cli extends ViewObservable implements View {
 
     private final PrintStream out;
     private int playerNumber;
-
+    private TurnState turnState;
     /**
      * Default constructor.
      */
@@ -164,14 +165,64 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askAction(TurnState state) {
-        switch (state) {
+        this.turnState = state;
+        switch (turnState) {
             case FIRST_TURN:
                 askFirstAction();
                 break;
             case SECOND_TURN:
                 askSecondAction();
                 break;
+            default:
+                askWhichAction();
         }
+
+    }
+
+    private void askWhichAction() {
+        int action;
+        Action act;
+        ArrayList<Action> possibilities = TurnState.possibleActions(turnState);
+        out.println("\nPossible actions:");
+        for (Action action1 : possibilities) {
+            out.println(possibilities.indexOf(action1) + ". " + action1);
+        }
+        String question = "Select the action you want to perform:(the number)";
+        try {
+            action = validateInput(0, possibilities.size() - 1, null, question);
+            act = possibilities.get(action);
+            switch (act) {
+                case ACTIVE_LEADER:
+                    askActiveLeader();
+                    break;
+                case FOLD_LEADER:
+                    askFoldLeader();
+                    break;
+                case END_TURN:
+                    notifyObserver(ViewObserver::endTurn);
+                    break;
+                case GET_RESOURCES_FROM_MARKET:
+                    askGetMarket();
+                    break;
+                case SORTING_WAREHOUSE:
+                    askSortingMarket();
+                    break;
+                case SHIFT_WAREHOUSE:
+                    askSwitchRows();
+                    break;
+                case BUY_DEVELOPMENT_CARD:
+                    askGetProduction();
+                    break;
+                case USE_PRODUCTIONS:
+                    askUseProduction();
+                    break;
+            }
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
+    }
+
+    private void askUseProduction() {
 
     }
 
@@ -299,6 +350,8 @@ public class Cli extends ViewObservable implements View {
             askJoinOrSet();
         if (type.equals(CommunicationMessage.PLAYER_NUMBER))
             this.playerNumber = Integer.parseInt(communication);
+        if (type.equals(CommunicationMessage.ILLEGAL_ACTION))
+            askWhichAction();
     }
 
     @Override
@@ -327,6 +380,7 @@ public class Cli extends ViewObservable implements View {
     public void showMarket(Market market) {
         out.println(market);
     }
+
 
     private Resources validateResources(String question, List<Resources> jumpList) throws ExecutionException {
         Resources resources = Resources.WHATEVER;

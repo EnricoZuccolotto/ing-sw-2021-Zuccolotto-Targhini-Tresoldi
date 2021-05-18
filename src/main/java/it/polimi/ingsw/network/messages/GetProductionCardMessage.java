@@ -45,7 +45,7 @@ public class GetProductionCardMessage extends ProductionMessage implements Execu
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.STD_GET_PRODUCTION) && instance.getGameState().equals(GameState.GAMESTARTED)) {
+        if (instance.validateAction(Action.BUY_DEVELOPMENT_CARD) && instance.getGameState().equals(GameState.GAMESTARTED)) {
             instance.getRoundController().handle_getProduction(this);
         } else instance.buildInvalidResponse(playerName);
     }

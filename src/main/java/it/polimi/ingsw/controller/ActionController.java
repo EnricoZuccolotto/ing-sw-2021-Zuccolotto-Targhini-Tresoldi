@@ -85,7 +85,7 @@ public class ActionController {
             humanPlayer.sendUpdateToPlayer();
 
         } else {
-            humanPlayer.setPrivateCommunication("Resource not found", CommunicationMessage.INSUFFICIENT_RESOURCES);
+            humanPlayer.setPrivateCommunication("Resource not found", CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
         return true;
@@ -150,7 +150,7 @@ public class ActionController {
 
         for (int i = 0; i < 4; i++)
             if (cost[i] != (resWar[i] + resSpeWar[i] + resStr[i])) {
-                player.setPrivateCommunication("That's not the cost of the card, you have sent the wrong number of resources", CommunicationMessage.INSUFFICIENT_RESOURCES);
+                player.setPrivateCommunication("That's not the cost of the card, you have sent the wrong number of resources", CommunicationMessage.ILLEGAL_ACTION);
                 return false;
             }
         if (isResourcesAvailable(player, exchangeResources, true)) {
@@ -170,7 +170,7 @@ public class ActionController {
         int[] resStr = exchangeResources.getStrongbox();
         int[] resSpeWar = exchangeResources.getSpecialWarehouse();
         if (!player.getPlayerBoard().getLeaderCard(index).getUncovered()) {
-            player.setPrivateCommunication("You need to activate this card to use it", CommunicationMessage.CARD_ALREADY_USED);
+            player.setPrivateCommunication("You need to activate this card to use it", CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
         ArrayList<Integer> cost = player.getPlayerBoard().getLeaderCard(index).getEffect();
@@ -231,15 +231,15 @@ public class ActionController {
         LeaderCard leaderCard = player.getPlayerBoard().getLeaderCard(index);
 
         if (!player.getPlayerBoard().checkColors(leaderCard.getCostColor())) {
-            player.setPrivateCommunication("You don't have enough colors to activate this card", CommunicationMessage.INSUFFICIENT_RESOURCES);
+            player.setPrivateCommunication("You don't have enough colors to activate this card", CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
         if (!player.getPlayerBoard().checkResources(leaderCard.getCostResources())) {
-            player.setPrivateCommunication("You don't have enough resources to activate this card", CommunicationMessage.INSUFFICIENT_RESOURCES);
+            player.setPrivateCommunication("You don't have enough resources to activate this card", CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
         if(leaderCard.getUncovered()) {
-            player.setPrivateCommunication("You already used this card", CommunicationMessage.CARD_ALREADY_USED);
+            player.setPrivateCommunication("You already used this card", CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
         leaderCard.flipCard();
@@ -305,7 +305,7 @@ public class ActionController {
     public boolean firstAction(int index1, int index2, HumanPlayer player) {
 
         if (index1 == index2 || index1 > 3 || index2 > 3 || index1 < 0 || index2 < 0) {
-            player.setPrivateCommunication("You don't have this card/s", CommunicationMessage.CARD_ALREADY_USED);
+            player.setPrivateCommunication("You don't have this card/s", CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
 
@@ -383,7 +383,7 @@ public class ActionController {
         if (!c.getUncovered()) {
             pb.removeLeaderCard(c);
         } else {
-            player.setPrivateCommunication("You cannot discard this card.", CommunicationMessage.CARD_ALREADY_USED);
+            player.setPrivateCommunication("You cannot discard this card.", CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
 
@@ -397,15 +397,15 @@ public class ActionController {
             s = "to buy this card";
         else s = "to use this card";
         if (!player.getPlayerBoard().checkResourcesWarehouse(exchangeResources.getWarehouse())) {
-            player.setPrivateCommunication("You don't have enough resources in the warehouse" + s, CommunicationMessage.INSUFFICIENT_RESOURCES);
+            player.setPrivateCommunication("You don't have enough resources in the warehouse" + s, CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
         if (!player.getPlayerBoard().checkResourcesStrongbox(exchangeResources.getStrongbox())) {
-            player.setPrivateCommunication("You don't have enough resources in the strongbox" + s, CommunicationMessage.INSUFFICIENT_RESOURCES);
+            player.setPrivateCommunication("You don't have enough resources in the strongbox" + s, CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
         if (!player.getPlayerBoard().checkResourcesSpecialWarehouse(exchangeResources.getSpecialWarehouse())) {
-            player.setPrivateCommunication("You don't have enough resources in the special warehouse" + s, CommunicationMessage.INSUFFICIENT_RESOURCES);
+            player.setPrivateCommunication("You don't have enough resources in the special warehouse" + s, CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
         return true;

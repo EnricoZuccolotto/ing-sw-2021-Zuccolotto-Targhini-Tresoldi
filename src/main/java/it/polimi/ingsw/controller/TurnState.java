@@ -23,6 +23,11 @@ public enum TurnState {
      * @return true if the action is possible in this turnState, else false.
      */
     public static boolean isPossible(TurnState turnState, Action action) {
+        ArrayList<Action> possibleActions = possibleActions(turnState);
+        return possibleActions.contains(action);
+    }
+
+    public static ArrayList<Action> possibleActions(TurnState turnState) {
         ArrayList<Action> possibleActions = new ArrayList<>();
         switch (turnState) {
             case FIRST_TURN: {
@@ -35,43 +40,41 @@ public enum TurnState {
             }
             case NORMAL_ACTION:
             case FIRST_LEADER_ACTION: {
-                possibleActions.add(Action.LD_ACTION);
+                possibleActions.add(Action.ACTIVE_LEADER);
                 possibleActions.add(Action.SHIFT_WAREHOUSE);
-                possibleActions.add(Action.STD_GET_MARKET);
-                possibleActions.add(Action.STD_GET_PRODUCTION);
-                possibleActions.add(Action.STD_USE_PRODUCTION);
+                possibleActions.add(Action.GET_RESOURCES_FROM_MARKET);
+                possibleActions.add(Action.BUY_DEVELOPMENT_CARD);
+                possibleActions.add(Action.USE_PRODUCTIONS);
                 break;
             }
 
             case WAREHOUSE_ACTION: {
-                possibleActions.add(Action.LD_ACTION);
+                possibleActions.add(Action.ACTIVE_LEADER);
                 possibleActions.add(Action.SORTING_WAREHOUSE);
                 possibleActions.add(Action.SHIFT_WAREHOUSE);
                 possibleActions.add(Action.END_TURN);
                 break;
-           }
-           case LAST_LEADER_ACTION:
-           {
-               possibleActions.add( Action.LD_ACTION);
-               possibleActions.add( Action.SHIFT_WAREHOUSE);
-               possibleActions.add( Action.END_TURN);
-               break;
-           }
-           case PRODUCTION_ACTIONS: {
-               possibleActions.add(Action.STD_USE_PRODUCTION);
-               possibleActions.add(Action.LD_ACTION);
-               possibleActions.add(Action.SHIFT_WAREHOUSE);
-               possibleActions.add(Action.END_TURN);
-               break;
-           }
-           case END:
-               break;
+            }
+            case LAST_LEADER_ACTION: {
+                possibleActions.add(Action.ACTIVE_LEADER);
+                possibleActions.add(Action.SHIFT_WAREHOUSE);
+                possibleActions.add(Action.END_TURN);
+                break;
+            }
+            case PRODUCTION_ACTIONS: {
+                possibleActions.add(Action.USE_PRODUCTIONS);
+                possibleActions.add(Action.ACTIVE_LEADER);
+                possibleActions.add(Action.SHIFT_WAREHOUSE);
+                possibleActions.add(Action.END_TURN);
+                break;
+            }
+            case END:
+                break;
 
-           default:
-               throw new IllegalStateException("Unexpected value: " + turnState);
-       }
-
-        return possibleActions.contains(action);
+            default:
+                throw new IllegalStateException("Unexpected value: " + turnState);
+        }
+        return possibleActions;
     }
 
 

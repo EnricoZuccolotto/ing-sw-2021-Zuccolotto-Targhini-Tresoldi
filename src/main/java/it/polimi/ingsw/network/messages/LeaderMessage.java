@@ -28,7 +28,7 @@ public class LeaderMessage extends Message implements ExecutableMessage {
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.LD_ACTION) && instance.getGameState().equals(GameState.GAMESTARTED)) {
+        if (instance.validateAction(Action.ACTIVE_LEADER) && instance.getGameState().equals(GameState.GAMESTARTED)) {
             if (messageType == MessageType.FOLD_LEADER)
                 instance.getRoundController().handle_foldLeader(this);
             else if (messageType == MessageType.ACTIVE_LEADER)

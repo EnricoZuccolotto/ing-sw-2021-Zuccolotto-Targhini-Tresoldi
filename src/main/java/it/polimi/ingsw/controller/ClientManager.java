@@ -113,6 +113,11 @@ public class ClientManager implements ViewObserver, Observer {
     }
 
     @Override
+    public void endTurn() {
+        client.sendMessage(new EndTurnMessage(this.nickname));
+    }
+
+    @Override
     public void addPlayerLobby() {
         client.sendMessage(new LobbyJoinMessage(this.nickname));
     }

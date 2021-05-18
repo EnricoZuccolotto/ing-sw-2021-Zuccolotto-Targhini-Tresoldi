@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.exceptions.playerboard.WinnerException;
+import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.enums.Colors;
@@ -47,6 +48,7 @@ public class BotPlayer extends Player {
      * Make the bot do the next action
      */
     public void doAction() {
+        currentGameBoard.setPublicCommunication(botActions.get(currentAction).toString(), CommunicationMessage.BOT_ACTION);
         switch (botActions.get(currentAction)) {
             case BlackCross2:
                 currentGameBoard.movePlayerFaithPath(1, 2);

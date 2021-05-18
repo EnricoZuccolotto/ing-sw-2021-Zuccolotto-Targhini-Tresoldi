@@ -194,7 +194,7 @@ public class RoundControllerTest {
         //redoing base production
 
         g.handle_useBaseProduction(new UseProductionBaseMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}), Resources.COIN));
-        assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.CARD_ALREADY_USED);
+        assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.ILLEGAL_ACTION);
 
 
         //normal  production 1 functioning
@@ -205,7 +205,7 @@ public class RoundControllerTest {
         assertTrue(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{7, 0, 0, 0}));
         //redoing normal  production 1
         g.handle_useNormalProduction(new UseProductionNormalMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}), 0));
-        assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.CARD_ALREADY_USED);
+        assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.ILLEGAL_ACTION);
         //normal  production 2 normal functioning
         assertFalse(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 6, 0, 0}));
         g.handle_useNormalProduction(new UseProductionNormalMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}), 1));
@@ -214,7 +214,7 @@ public class RoundControllerTest {
         assertTrue(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 6, 0, 0}));
         //redoing normal production 2
         g.handle_useNormalProduction(new UseProductionNormalMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 1, 0}, new int[]{0, 0, 0, 0}), 1));
-        assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.CARD_ALREADY_USED);
+        assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.ILLEGAL_ACTION);
         //normal  production 3 normal functioning
         assertFalse(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{14, 0, 0, 0}));
         g.handle_useNormalProduction(new UseProductionNormalMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}), 2));
@@ -223,7 +223,7 @@ public class RoundControllerTest {
         assertTrue(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{14, 0, 0, 0}));
         //redoing base production 3
         g.handle_useNormalProduction(new UseProductionNormalMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}), 2));
-        assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.CARD_ALREADY_USED);
+        assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.ILLEGAL_ACTION);
         //special production 2 normal functioning
         assertFalse(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 7, 0, 0}));
         g.handle_useSpecialProduction(new UseProductionSpecialMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 1, 0}, new int[]{0, 0, 0, 0}), Resources.COIN, 3));
@@ -232,7 +232,7 @@ public class RoundControllerTest {
         assertTrue(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 7, 0, 0}));
         //redoing special production 2
         g.handle_useSpecialProduction(new UseProductionSpecialMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 1, 0}, new int[]{0, 0, 0, 0}), Resources.COIN, 3));
-        assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.CARD_ALREADY_USED);
+        assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.ILLEGAL_ACTION);
         //special production 2 normal functioning
         assertFalse(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 8, 0, 0}));
         g.handle_useSpecialProduction(new UseProductionSpecialMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}, new int[]{0, 0, 0, 0}), Resources.COIN, 2));
@@ -241,7 +241,7 @@ public class RoundControllerTest {
         assertTrue(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 8, 0, 0}));
         //redoing special production 2
         g.handle_useSpecialProduction(new UseProductionSpecialMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}, new int[]{0, 0, 0, 0}), Resources.COIN, 2));
-        assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.CARD_ALREADY_USED);
+        assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.ILLEGAL_ACTION);
 
 
     }
@@ -283,7 +283,7 @@ public class RoundControllerTest {
                 }
                 assertEquals(1, list.size());
                 gb.getPlayer(message.getPlayerName()).setTemporaryResourceStorage(list);
-                nextState(Action.STD_GET_MARKET);
+                nextState(Action.GET_RESOURCES_FROM_MARKET);
             }
         };
         g.init();
@@ -345,7 +345,7 @@ public class RoundControllerTest {
 
 
                 gb.getPlayer(message.getPlayerName()).setTemporaryResourceStorage(list);
-                nextState(Action.STD_GET_MARKET);
+                nextState(Action.GET_RESOURCES_FROM_MARKET);
             }
         };
         g.init();

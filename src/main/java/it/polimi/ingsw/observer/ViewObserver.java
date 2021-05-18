@@ -37,4 +37,6 @@ public interface ViewObserver {
     void secondAction(ArrayList<Resources> resources);
 
     void addPlayerLobby();
+
+    void endTurn();
 }

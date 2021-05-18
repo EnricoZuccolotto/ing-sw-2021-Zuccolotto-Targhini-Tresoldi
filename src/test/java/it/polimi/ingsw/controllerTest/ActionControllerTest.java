@@ -100,7 +100,7 @@ public class ActionControllerTest {
         player.getPlayerBoard().addExtraResources(Resources.SHIELD, 3);
 
         assertFalse(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3})));
-        assertEquals(player.getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.INSUFFICIENT_RESOURCES);
+        assertEquals(player.getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.ILLEGAL_ACTION);
         assertEquals(1, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
         player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
         assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3})));
@@ -305,7 +305,7 @@ public class ActionControllerTest {
         //correct resources but not enough int the warehouse
 
         assertFalse(actionController.useNormalProduction(player, 0, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 1, 0, 0})));
-        assertEquals(player.getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.INSUFFICIENT_RESOURCES);
+        assertEquals(player.getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.ILLEGAL_ACTION);
 
         player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
         //normal functioning
