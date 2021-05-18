@@ -15,6 +15,7 @@ import it.polimi.ingsw.view.View;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -293,7 +294,19 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askSortingMarket() {
-
+        Resources choice;
+        int row;
+        ArrayList<Resources> list = new ArrayList<>(Arrays.asList(Resources.values()));
+        list.removeAll(playerBoard.getTemporaryResourceStorage());
+        String question="Which resource do you want to sort? Choose the resource: ";
+        try {
+            choice=validateResources(question, list);
+            question="What do you want to do with this resource? Select a row in the warehouse between 1 and 3, select 4 to discard it or select 0 for the special warehouse (with leader card only): ";
+            row=validateInput(0, 4, null, question);
+            notifyObserver(obs -> obs.sortingMarket(choice, row, playerBoard.getTemporaryResourceStorage().indexOf(choice)));
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
     }
 
     @Override

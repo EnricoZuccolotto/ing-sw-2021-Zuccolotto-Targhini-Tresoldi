@@ -38,6 +38,8 @@ public interface ViewObserver {
 
     void getMarket(int choice, int index);
 
+    void sortingMarket(Resources choice, int row, int index);
+
     void addPlayerLobby();
 
     void endTurn();

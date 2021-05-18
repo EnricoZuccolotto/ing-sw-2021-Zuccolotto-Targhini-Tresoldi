@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 
 import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observer.Observer;
@@ -121,6 +122,14 @@ public class ClientManager implements ViewObserver, Observer {
         }
     }
 
+    @Override
+    public void sortingMarket(Resources choice, int row, int index) {
+        if (row >= 0 && row <= 3) {
+            client.sendMessage(new SetResourceMessage(this.nickname, choice, WarehousePositions.transform(row), index));
+        } else {
+            client.sendMessage(new DiscardResourceMessage(this.nickname, index));
+        }
+    }
     @Override
     public void endTurn() {
         client.sendMessage(new EndTurnMessage(this.nickname));
