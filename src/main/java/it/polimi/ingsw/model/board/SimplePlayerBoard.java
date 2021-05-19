@@ -329,23 +329,27 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     }
 
     @Override
-    public void addStrongboxResource(Resources r, int quantities){
-         strongbox.addResources(r,quantities);
+    public void addStrongboxResource(Resources r, int quantities) {
+        strongbox.addResources(r, quantities);
     }
 
     @Override
-    public String toString() {
+    public String toString(boolean mine) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Strongbox: ");
         stringBuilder.append(strongbox);
         stringBuilder.append("\n");
-        stringBuilder.append("Leader cards:\n");
+        if (getLeaderCardsNumber() == 0 && !mine)
+            stringBuilder.append("Leader cards:\n");
         for (LeaderCard card : leaderCards) {
-            stringBuilder.append(leaderCards.indexOf(card));
-            stringBuilder.append(". ");
-            stringBuilder.append(card);
-            stringBuilder.append("\n");
+            if (mine && !card.getUncovered()) {
+                stringBuilder.append(leaderCards.indexOf(card));
+                stringBuilder.append(". ");
+                stringBuilder.append(card);
+                stringBuilder.append("\n");
+            }
         }
+
         stringBuilder.append(warehouse);
         return stringBuilder.toString();
     }

@@ -1,8 +1,11 @@
 package it.polimi.ingsw.network.messages;
 
-import java.util.ArrayList;
+import it.polimi.ingsw.view.View;
 
-public class LobbyMessage extends Message {
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+
+public class LobbyMessage extends Message implements ExecutableViewMessage {
     private final ArrayList<String> players;
 
     public LobbyMessage(String playerName, ArrayList<String> players) {
@@ -12,5 +15,10 @@ public class LobbyMessage extends Message {
 
     public ArrayList<String> getPlayers() {
         return players;
+    }
+
+    @Override
+    public void executeOnView(View view, ExecutorService taskQueue) {
+        taskQueue.execute(() -> view.showLobby(this.getPlayers()));
     }
 }

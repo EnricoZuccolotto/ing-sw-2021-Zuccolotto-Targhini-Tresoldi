@@ -40,35 +40,35 @@ public enum TurnState {
             }
             case NORMAL_ACTION:
             case FIRST_LEADER_ACTION: {
-                possibleActions.add(Action.ACTIVE_LEADER);
-                possibleActions.add(Action.FOLD_LEADER);
                 possibleActions.add(Action.SHIFT_WAREHOUSE);
                 possibleActions.add(Action.GET_RESOURCES_FROM_MARKET);
                 possibleActions.add(Action.BUY_DEVELOPMENT_CARD);
                 possibleActions.add(Action.USE_PRODUCTIONS);
+                possibleActions.add(Action.ACTIVE_LEADER);
+                possibleActions.add(Action.FOLD_LEADER);
                 break;
             }
 
             case WAREHOUSE_ACTION: {
+                possibleActions.add(Action.SHIFT_WAREHOUSE);
+                possibleActions.add(Action.SORTING_WAREHOUSE);
                 possibleActions.add(Action.ACTIVE_LEADER);
                 possibleActions.add(Action.FOLD_LEADER);
-                possibleActions.add(Action.SORTING_WAREHOUSE);
-                possibleActions.add(Action.SHIFT_WAREHOUSE);
                 possibleActions.add(Action.END_TURN);
                 break;
             }
             case LAST_LEADER_ACTION: {
+                possibleActions.add(Action.SHIFT_WAREHOUSE);
                 possibleActions.add(Action.ACTIVE_LEADER);
                 possibleActions.add(Action.FOLD_LEADER);
-                possibleActions.add(Action.SHIFT_WAREHOUSE);
                 possibleActions.add(Action.END_TURN);
                 break;
             }
             case PRODUCTION_ACTIONS: {
+                possibleActions.add(Action.SHIFT_WAREHOUSE);
                 possibleActions.add(Action.USE_PRODUCTIONS);
                 possibleActions.add(Action.FOLD_LEADER);
                 possibleActions.add(Action.ACTIVE_LEADER);
-                possibleActions.add(Action.SHIFT_WAREHOUSE);
                 possibleActions.add(Action.END_TURN);
                 break;
             }

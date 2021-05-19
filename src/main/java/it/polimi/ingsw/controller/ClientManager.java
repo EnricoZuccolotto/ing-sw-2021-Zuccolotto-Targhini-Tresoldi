@@ -158,43 +158,15 @@ public class ClientManager implements ViewObserver, Observer {
 
     @Override
     public void update(Message message) {
-        switch (message.getMessageType()) {
-            case LOGIN:
-                LoginMessage loginMessage = (LoginMessage) message;
-                taskQueue.execute(() -> view.showLoginResult(loginMessage.isName(), loginMessage.isConnection(), this.nickname));
-                break;
-            case ERROR:
-                ErrorMessage errorMessage = (ErrorMessage) message;
-                taskQueue.execute(() -> view.showError(errorMessage.getError()));
-                break;
-            case COMMUNICATION:
-                CommunicationMex communicationMex = (CommunicationMex) message;
-                taskQueue.execute(() -> view.showCommunication(communicationMex.getCommunication(), communicationMex.getCommunicationMessage()));
-                break;
-            case LOBBY:
-                LobbyMessage lobbyMessage = (LobbyMessage) message;
-                taskQueue.execute(() -> view.showLobby(lobbyMessage.getPlayers()));
-                break;
-            case HUMAN_PLAYER_UPDATE:
-                HumanPlayerUpdateMessage humanPlayerUpdateMessage = (HumanPlayerUpdateMessage) message;
-                taskQueue.execute(() -> view.showPlayerBoard(humanPlayerUpdateMessage.getHumanPlayer()));
-                break;
-            case MARKET_UPDATE:
-                MarketUpdateMessage marketUpdateMessage = (MarketUpdateMessage) message;
-                taskQueue.execute(() -> view.showMarket(marketUpdateMessage.getMarket()));
-                break;
-            case DECKS_UPDATE:
-                DecksUpdateMessage decksUpdateMessage = (DecksUpdateMessage) message;
-                taskQueue.execute(() -> view.showDecks(decksUpdateMessage.getDecks()));
-                break;
-            case FAITH_PATH_UPDATE:
-                FaithPathUpdateMessage faithPathUpdateMessage = (FaithPathUpdateMessage) message;
-                taskQueue.execute(() -> view.showFaithPath(faithPathUpdateMessage.getFaithPath()));
-                break;
-            case STATE:
-                StateMessage stateMessage = (StateMessage) message;
-                taskQueue.execute(() -> view.askAction(stateMessage.getState()));
 
+        try {
+            ExecutableViewMessage currentMessage = (ExecutableViewMessage) message;
+            if (message.getMessageType().equals(MessageType.COMMUNICATION) || message.getMessageType().equals(MessageType.STATE)) {
+                if (message.getPlayerName().equals(nickname))
+                    currentMessage.executeOnView(view, taskQueue);
+            } else currentMessage.executeOnView(view, taskQueue);
+        } catch (ClassCastException ex) {
+            // TODO: error, invalid executable message.
         }
     }
 
