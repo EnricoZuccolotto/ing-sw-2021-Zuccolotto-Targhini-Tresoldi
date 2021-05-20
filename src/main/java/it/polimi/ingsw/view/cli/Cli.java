@@ -13,6 +13,7 @@ import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
 
+import java.awt.geom.FlatteningPathIterator;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -354,23 +355,25 @@ public class Cli extends ViewObservable implements View {
         boolean flag=false, finish=false;
         Resources obt, res;
         ArrayList<Resources> list = new ArrayList<>();
-        ArrayList<Resources> jumplist = new ArrayList<>(Arrays.asList(Resources.values()));
+        ArrayList<Resources> jumplist= new ArrayList<>(Arrays.asList(Resources.values()));;
         ArrayList<Resources> pass = new ArrayList<>();
         ArrayList<Resources> obtain = new ArrayList<>();
         ArrayList<Integer> value= new ArrayList<>();
         obtain.add(Resources.FAITH);
         obtain.add(Resources.WHITE);
         obtain.add(Resources.WHATEVER);
-        String question = "You have to choose two resources from your strongbox or your warehouses. Choose 1 to select the resources from the strongbox, 2 for the warehouse or 3 for the special warehouse: ";
+        String question = "You have to choose two resources from your strongbox or your warehouses. Choose 1 to select the resources from the warehouse, 2 for the strongbox or 3 for the special warehouse: ";
         try {
             choice = validateInput(1, 3, null, question);
-            while (!finish) {
-                while (!flag) {
-                    list = (checkResources(choice, temp));
+            while (finish==false){
+                while (flag==false) {
+                    list.removeAll(Arrays.asList(Resources.values()));
+                    list = (playerBoard.getPlayerBoard().getResources(choice, temp));
                     if (list.size() != 0) {
                         flag = true;
                     } else {
                         out.println("You don't have any resource here, insert another value: ");
+                        choice = validateInput(1, 3, null, question);
                     }
                 }
                 question = "Choose which resource you want to use between" + list + ": ";
@@ -459,6 +462,7 @@ public class Cli extends ViewObservable implements View {
     public void showLobby(ArrayList<String> players) {
         clearCli();
         out.println("Players connected: " + players + "\n Waiting for other players...");
+
     }
 
     @Override
@@ -557,60 +561,6 @@ public class Cli extends ViewObservable implements View {
         } while (number < minValue || number > maxValue || jumpList.contains(number));
 
         return number;
-    }
-
-    private ArrayList<Resources> checkResources(int choice, int temp){
-        ArrayList<Resources> list= new ArrayList<>();
-        ArrayList<Resources> jumplist= new ArrayList<>();
-        if (choice == 1) {
-            for (int i = 0; i < 4; i++) {
-                int[] a = {0, 0, 0, 0};
-                a[i] = 1;
-                if(temp!=-1) {
-                    a[temp] = 1;
-                }
-                if (playerBoard.getPlayerBoard().checkResourcesStrongbox(a)) {
-                list.add(Resources.transform(i));
-                }
-                a[i] = 0;
-                if(temp!=-1) {
-                    a[temp] = 0;
-                }
-            }
-        } else if (choice == 2) {
-            for (int i = 0; i < 4; i++) {
-            int[] a = {0, 0, 0, 0};
-            a[i] = 1;
-            if(temp!=-1) {
-                a[temp] = 1;
-            }
-            if (playerBoard.getPlayerBoard().checkResourcesWarehouse(a)) {
-                list.add(Resources.transform(i));
-            }
-            a[i] = 0;
-                if(temp!=-1) {
-                    a[temp] = 0;
-                }
-            }
-        } else if (choice == 3) {
-            for (int i = 0; i < 4; i++) {
-                int[] a = {0, 0, 0, 0};
-                a[i] = 1;
-                if(temp!=-1) {
-                    a[temp] = 1;
-                }
-                if (playerBoard.getPlayerBoard().checkResourcesSpecialWarehouse(a)) {
-                    list.add(Resources.transform(i));
-                } else {
-                    jumplist.add(Resources.transform(i));
-                }
-                a[i] = 0;
-                if(temp!=-1) {
-                    a[temp] = 0;
-                }
-            }
-        }
-        return list;
     }
 
 public void clearCli() {
