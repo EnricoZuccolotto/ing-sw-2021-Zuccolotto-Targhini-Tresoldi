@@ -13,6 +13,7 @@ import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
 
+import java.awt.geom.FlatteningPathIterator;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -351,7 +352,45 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askUseBaseProduction() {
-
+        int choice=0;
+        boolean flag=false, finish=false;
+        Resources res=null, obt;
+        ArrayList<Resources> list = new ArrayList<>();
+        ArrayList<Resources> jumplist;
+        ArrayList<Resources> pass = new ArrayList<>();
+        ArrayList<Resources> obtain = new ArrayList<>();
+        ArrayList<Integer> value= new ArrayList<>();
+        obtain.add(Resources.FAITH);
+        obtain.add(Resources.WHITE);
+        obtain.add(Resources.WHATEVER);
+        String question = "You have to choose two resources from your strongbox or your warehouses. Choose 1 to select the resources from the strongbox, 2 for the warehouse or 3 for the special warehouse: ";
+        try {
+            while (!finish) {
+                while (!flag) {
+                    choice = validateInput(1, 3, null, question);
+                    list = (checkResources(choice, res));
+                    if (list.size() != 0) {
+                        flag = true;
+                    } else {
+                        out.println("You don't have any resource here, insert another value: ");
+                    }
+                }
+                question = "Choose which resource you want to use between" + list + ": ";
+                jumplist = (ArrayList<Resources>) Arrays.asList(Resources.values());
+                jumplist.removeAll(list);
+                res = validateResources(question, jumplist);
+                pass.add(res);
+                value.add(choice);
+                if(pass.size()==2){
+                    finish=true;
+                } else { question="Now, choose where you want to select the other resources";}
+            }
+            question="Which resource do you want to obtain? ";
+            obt=validateResources(question, obtain);
+            notifyObserver(obs -> obs.useBaseProduction(value, pass, obt));
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
     }
 
     @Override
@@ -490,6 +529,7 @@ public class Cli extends ViewObservable implements View {
 
         return resources;
     }
+
     private int validateInput(int minValue, int maxValue, List<Integer> jumpList, String question) throws ExecutionException {
         int number = minValue - 1;
 
@@ -516,7 +556,49 @@ public class Cli extends ViewObservable implements View {
         return number;
     }
 
-    public void clearCli() {
+    private ArrayList<Resources> checkResources(int choice, Resources temp){
+        ArrayList<Resources> list= new ArrayList<>();
+        ArrayList<Resources> jumplist= new ArrayList<>();
+        if (choice == 1) {
+            for (int i = 0; i < 4; i++) {
+                int[] a = {0, 0, 0, 0};
+                a[i] = 1;
+                a[temp.ordinal()]=1;
+                if (playerBoard.getPlayerBoard().checkResourcesStrongbox(a)) {
+                list.add(Resources.transform(i));
+                }
+                a[i] = 0;
+                a[temp.ordinal()]=0;
+            }
+        } else if (choice == 2) {
+            for (int i = 0; i < 4; i++) {
+            int[] a = {0, 0, 0, 0};
+            a[i] = 1;
+            a[temp.ordinal()]=1;
+            if (playerBoard.getPlayerBoard().checkResourcesWarehouse(a)) {
+                list.add(Resources.transform(i));
+            }
+            a[i] = 0;
+            a[temp.ordinal()]=0;
+            }
+        } else if (choice == 3) {
+            for (int i = 0; i < 4; i++) {
+                int[] a = {0, 0, 0, 0};
+                a[i] = 1;
+                a[temp.ordinal()]=1;
+                if (playerBoard.getPlayerBoard().checkResourcesSpecialWarehouse(a)) {
+                    list.add(Resources.transform(i));
+                } else {
+                    jumplist.add(Resources.transform(i));
+                }
+                a[i] = 0;
+                a[temp.ordinal()]=0;
+            }
+        }
+        return list;
+    }
+
+public void clearCli() {
         out.flush();
     }
 }

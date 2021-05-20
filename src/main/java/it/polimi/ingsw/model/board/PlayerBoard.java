@@ -100,6 +100,7 @@ public interface PlayerBoard {
      * @param r quantity of resources to check
      * @return Success or failure
      */
+
     boolean checkResourcesStrongbox(int[] r);
 
     /**

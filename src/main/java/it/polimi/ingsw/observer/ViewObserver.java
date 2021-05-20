@@ -42,6 +42,8 @@ public interface ViewObserver {
 
     void switchRows(int row1, int row2);
 
+    void useBaseProduction(ArrayList<Integer> value, ArrayList<Resources> pass, Resources obtain);
+
     void activeLeader(int index);
 
     void addPlayerLobby();

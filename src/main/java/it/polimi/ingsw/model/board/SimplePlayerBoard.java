@@ -333,6 +333,7 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         strongbox.addResources(r, quantities);
     }
 
+
     @Override
     public String toString(boolean mine) {
         StringBuilder stringBuilder = new StringBuilder();

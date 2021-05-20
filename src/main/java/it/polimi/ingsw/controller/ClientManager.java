@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
+import it.polimi.ingsw.model.tools.ExchangeResources;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observer.Observer;
@@ -134,6 +135,15 @@ public class ClientManager implements ViewObserver, Observer {
     @Override
     public void switchRows(int row1, int row2) {
         client.sendMessage(new ShiftWarehouseMessage(this.nickname, WarehousePositions.transform(row1), WarehousePositions.transform(row2)));
+    }
+
+    @Override
+    public void useBaseProduction(ArrayList<Integer> value, ArrayList<Resources> pass, Resources obtain) {
+        int[][] matr= new int[3][4];
+        matr[value.get(0)][pass.get(0).ordinal()]=1;
+        matr[value.get(1)][pass.get(1).ordinal()]=1;
+        ExchangeResources ex= new ExchangeResources(matr[0], matr[1], matr[2]);
+        client.sendMessage(new UseProductionBaseMessage(this.nickname, ex, obtain));
     }
 
     @Override
