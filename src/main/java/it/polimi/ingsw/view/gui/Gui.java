@@ -8,6 +8,9 @@ import it.polimi.ingsw.model.cards.Decks;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.view.View;
+import it.polimi.ingsw.view.gui.controllers.SceneController;
+import javafx.application.Platform;
+import javafx.scene.Scene;
 
 import java.util.ArrayList;
 
@@ -109,7 +112,12 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showLoginResult(boolean nick, boolean accepted, String name) {
-
+        if(!nick && !accepted){
+            Platform.runLater(() -> {
+                GuiSceneUtils.showAlertWindow("Error", "Could not find the server!");
+                GuiSceneUtils.changeActivePanel(observers, "menu.fxml");
+            });
+        }
     }
 
     @Override
