@@ -301,11 +301,12 @@ public class RoundController {
         checkWinner(playersNumber);
         if (gameState.equals(GameState.SINGLEPLAYER))
             handle_Bot();
+        else
+            playerInTurn.setState(TurnState.NOT_IN_TURN);
 
-        playerInTurn.setState(TurnState.NOT_IN_TURN);
         playerInTurn = players.get((turnCount) % players.size());
-        playerInTurn.setState(turnState);
         firstState();
+        playerInTurn.setState(turnState);
     }
 
     private void checkWinner(int playersNumber){
@@ -413,7 +414,11 @@ public class RoundController {
                         turnState = TurnState.PRODUCTION_ACTIONS;
                         break;
                     } else if (action.equals(Action.GET_RESOURCES_FROM_MARKET)) {
-                        turnState = TurnState.WAREHOUSE_ACTION;
+                        if (playerInTurn.getTemporaryResourceStorage().size() == 0) {
+                            turnState = TurnState.LAST_LEADER_ACTION;
+                        } else {
+                            turnState = TurnState.WAREHOUSE_ACTION;
+                        }
                         break;
                     } else {
                         turnState = TurnState.LAST_LEADER_ACTION;

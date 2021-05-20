@@ -153,21 +153,26 @@ public class ChangeTurnTest {
 
         assertEquals("Harry", g.getPlayerInTurn().getName());
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
-        if (TurnState.isPossible(g.getTurnState(), Action.GET_RESOURCES_FROM_MARKET))
+        if (TurnState.isPossible(g.getTurnState(), Action.GET_RESOURCES_FROM_MARKET)) {
+            ArrayList<Resources> a = new ArrayList<>();
+            a.add(Resources.WHATEVER);
+            g.getPlayerInTurn().setTemporaryResourceStorage(a);
             g.nextState(Action.GET_RESOURCES_FROM_MARKET);
+        }
         HumanPlayer p = g.getPlayerInTurn();
         assertEquals(g.getTurnState(), TurnState.WAREHOUSE_ACTION);
-        if (TurnState.isPossible(g.getTurnState(), Action.SORTING_WAREHOUSE))
+        if (TurnState.isPossible(g.getTurnState(), Action.SORTING_WAREHOUSE)) {
+            g.getPlayerInTurn().removeItemFromTemporaryList(0);
             g.nextState(Action.SORTING_WAREHOUSE);
-        if (TurnState.isPossible(g.getTurnState(), Action.SHIFT_WAREHOUSE))
-            g.nextState(Action.SHIFT_WAREHOUSE);
+        }
+
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
         if (TurnState.isPossible(g.getTurnState(), Action.ACTIVE_LEADER)) {
             gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(0).flipCard();
             g.nextState(Action.ACTIVE_LEADER);
         }
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
-        if(TurnState.isPossible(g.getTurnState(),Action.END_TURN)) {
+        if (TurnState.isPossible(g.getTurnState(), Action.END_TURN)) {
             g.handle_endTurn();
         }
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
