@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="loadingProgressBar" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.controllers.ConnectController">
+   <children>
+      <Label layoutX="153.0" layoutY="136.0" text="IP Address:" />
+      <Label layoutX="152.0" layoutY="171.0" text="Server port:" />
+      <Label fx:id="ipAddressErrorLabel" layoutX="377.0" layoutY="136.0" text="IP Address is invalid, try again!" visible="false" />
+      <Label fx:id="portErrorLabel" layoutX="377.0" layoutY="171.0" text="Server port is invalid, try again!" visible="false" />
+      <Label layoutX="246.0" layoutY="102.0" prefHeight="0.0" prefWidth="89.0" text="Insert server info" />
+      <TextField fx:id="ipAddressTextField" layoutX="216.0" layoutY="132.0" />
+      <TextField fx:id="portTextField" layoutX="216.0" layoutY="167.0" />
+      <Button fx:id="connectButton" layoutX="313.0" layoutY="229.0" mnemonicParsing="false" text="Connect..." />
+      <Button fx:id="backButton" layoutX="186.0" layoutY="229.0" mnemonicParsing="false" text="Back..." />
+   </children>
+</AnchorPane>

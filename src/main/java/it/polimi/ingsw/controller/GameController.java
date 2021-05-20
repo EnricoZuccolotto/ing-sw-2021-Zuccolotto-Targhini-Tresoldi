@@ -42,7 +42,6 @@ public class GameController {
         gameBoardInstance.getMarket().addObserver((NetworkLayerView) view);
         gameBoardInstance.getFaithPath().addObserver((NetworkLayerView) view);
         gameBoardInstance.getDecks().addObserver((NetworkLayerView) view);
-        gameBoardInstance.getPlayer(name).addObserver((NetworkLayerView) view);
     }
 
     public void addView(String name, NetworkLayerView view) {
@@ -51,6 +50,9 @@ public class GameController {
 
     public void StartGame() {
         roundController.init();
+        for (HumanPlayer player : gameBoardInstance.getPlayers())
+            for (HumanPlayer player1 : gameBoardInstance.getPlayers())
+                player.addObserver((NetworkLayerView) viewMap.get(player1.getName()));
         gameBoardInstance.setPublicCommunication("The game is starting", CommunicationMessage.STARTING_GAME);
         gameBoardInstance.init(gameBoardInstance);
         gamestate = GameState.GAMESTARTED;
@@ -143,4 +145,6 @@ public class GameController {
     public LobbyController getLobby() {
         return lobby;
     }
+
+
 }

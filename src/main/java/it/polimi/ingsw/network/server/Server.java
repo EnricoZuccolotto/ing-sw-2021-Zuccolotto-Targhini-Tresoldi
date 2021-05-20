@@ -25,9 +25,11 @@ public class Server {
 
     public void onLogin(String nickname, SocketConnection connection) {
         NetworkLayerView view = new NetworkLayerView(connection);
-        if ((clients.get(nickname) != null) || !gameController.getGameState().equals(GameState.LOBBY)) {
+        if ((clients.get(nickname) != null)) {
             connection.sendMessage(new LoginMessage(nickname, true, false));
-        } else {
+        } else if (!gameController.getGameState().equals(GameState.LOBBY))
+            connection.sendMessage(new LoginMessage(nickname, false, true));
+        else {
             gameController.addView(nickname, view);
             connection.sendMessage(new LoginMessage(nickname, true, true));
             synchronized (lock) {

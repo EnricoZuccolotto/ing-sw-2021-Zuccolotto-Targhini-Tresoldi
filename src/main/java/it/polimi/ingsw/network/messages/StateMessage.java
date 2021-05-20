@@ -1,8 +1,11 @@
 package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.controller.TurnState;
+import it.polimi.ingsw.view.View;
 
-public class StateMessage extends Message {
+import java.util.concurrent.ExecutorService;
+
+public class StateMessage extends Message implements ExecutableViewMessage {
     private final TurnState state;
 
 
@@ -14,5 +17,10 @@ public class StateMessage extends Message {
 
     public TurnState getState() {
         return state;
+    }
+
+    @Override
+    public void executeOnView(View view, ExecutorService taskQueue) {
+        taskQueue.execute(() -> view.askAction(this.getState()));
     }
 }

@@ -26,6 +26,9 @@ public class Cli extends ViewObservable implements View {
     private int playerNumber;
     private TurnState turnState;
     private CompressedPlayerBoard playerBoard;
+    private String nickname;
+    private Decks decks;
+
     /**
      * Default constructor.
      */
@@ -33,6 +36,7 @@ public class Cli extends ViewObservable implements View {
         out = System.out;
         ClientManager clientManager = new ClientManager(this);
         this.addObserver(clientManager);
+        turnState = TurnState.END;
         init();
     }
 
@@ -265,7 +269,7 @@ public class Cli extends ViewObservable implements View {
             out.println("You are the first player.We are waiting other players to finish their setup...");
         else
             try {
-                out.println("You are the" + playerNumber + " player.\n");
+                out.println("You are the " + playerNumber + " player.\n");
                 resources = validateResources(question, jumpList);
                 resourcesToSend.add(resources);
                 if (playerNumber == 3) {
@@ -390,20 +394,24 @@ public class Cli extends ViewObservable implements View {
     @Override
     public void showLoginResult(boolean nick, boolean accepted, String name) {
         clearCli();
-        if (accepted)
-            out.println("your connection is established, " + name);
-        else {
-            out.println("Could not find the server");
-            System.exit(1);
-        }
-        if (!nick) {
-            out.println("Your username is already taken, try another one or the lobby is full");
-            askUsername();
+        if (accepted) {
+            if (nick) {
+                out.println("your username is accepted, welcome " + name);
+                this.nickname = name;
+                askJoinOrSet();
+            } else {
+                out.println("Your username is already taken, try another one");
+                askUsername();
+            }
         } else {
-            out.println("your username is accepted, welcome " + name);
-            askJoinOrSet();
+            if (nick) {
+                out.println("The lobby is full");
+                System.exit(2);
+            } else {
+                out.println("Could not find the server");
+                System.exit(1);
+            }
         }
-
     }
 
     @Override
@@ -435,8 +443,14 @@ public class Cli extends ViewObservable implements View {
     @Override
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
         clearCli();
-        this.playerBoard = playerBoard;
-        out.println(playerBoard);
+        if (playerBoard.getName().equals(nickname)) {
+            out.println(nickname + " is playing...");
+            this.playerBoard = playerBoard;
+            out.println(playerBoard.getPlayerBoard().toString(true));
+        } else if (!turnState.equals(TurnState.FIRST_TURN)) {
+            out.println(playerBoard.getName());
+            out.println(playerBoard.getPlayerBoard().toString(false));
+        }
     }
 
     @Override
@@ -446,6 +460,7 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void showDecks(Decks decks) {
+        this.decks = decks;
         out.println(decks);
     }
 

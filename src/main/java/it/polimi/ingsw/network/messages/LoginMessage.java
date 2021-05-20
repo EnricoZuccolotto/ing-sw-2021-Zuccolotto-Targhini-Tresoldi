@@ -1,6 +1,10 @@
 package it.polimi.ingsw.network.messages;
 
-public class LoginMessage extends Message {
+import it.polimi.ingsw.view.View;
+
+import java.util.concurrent.ExecutorService;
+
+public class LoginMessage extends Message implements ExecutableViewMessage {
     boolean connection, name;
 
     public LoginMessage(String playerName) {
@@ -11,6 +15,11 @@ public class LoginMessage extends Message {
         super(playerName, MessageType.LOGIN);
         this.connection = connection;
         this.name = name;
+    }
+
+    @Override
+    public void executeOnView(View view, ExecutorService taskQueue) {
+        taskQueue.execute(() -> view.showLoginResult(this.isName(), this.isConnection(), this.getPlayerName()));
     }
 
     public boolean isConnection() {

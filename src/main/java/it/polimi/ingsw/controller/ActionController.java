@@ -82,8 +82,6 @@ public class ActionController {
                 return false;
             }
             humanPlayer.removeItemFromTemporaryList(receivedResourceIndex);
-            humanPlayer.sendUpdateToPlayer();
-
         } else {
             humanPlayer.setPrivateCommunication("Resource not found", CommunicationMessage.ILLEGAL_ACTION);
             return false;

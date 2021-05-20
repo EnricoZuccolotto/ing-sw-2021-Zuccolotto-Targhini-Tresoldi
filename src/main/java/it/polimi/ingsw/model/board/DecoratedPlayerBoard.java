@@ -155,4 +155,9 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     public ArrayList<Resources> getProductions(Resources resource) {
         return subBoard.getProductions(resource);
     }
+
+    @Override
+    public String toString(boolean mine) {
+        return subBoard.toString(mine);
+    }
 }

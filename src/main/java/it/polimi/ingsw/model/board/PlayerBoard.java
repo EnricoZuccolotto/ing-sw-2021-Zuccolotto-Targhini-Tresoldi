@@ -288,7 +288,10 @@ public interface PlayerBoard {
 
     /**
      * Gets the result of the special productions
+     *
      * @return Gets the result of the special productions
      */
     ArrayList<Resources> getProductions(Resources resource);
+
+    String toString(boolean mine);
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.playerboard.IllegalActionException;
+import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
 import it.polimi.ingsw.exceptions.playerboard.WinnerException;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
@@ -15,14 +16,17 @@ import java.util.ArrayList;
 
 public class RoundController {
 
-    private final GameBoard gameBoardInstance;
-    private int turnCount;
-    private HumanPlayer playerInTurn;
-    private TurnState turnState;
     private final ActionController actionController;
+    private final GameBoard gameBoardInstance;
+
+    private HumanPlayer playerInTurn;
     private final ArrayList<HumanPlayer> players;
     private final ArrayList<Integer> productions;
+
+    private int turnCount;
+    private TurnState turnState;
     private GameState gameState;
+
     private int winnerPlayer;
     private boolean Winner;
 
@@ -89,6 +93,7 @@ public class RoundController {
         if (isYourTurn(message.getPlayerName())) {
             actionController.shiftWarehouseRows(playerInTurn, message.getStartingPos(), message.getNewRowPos());
         }
+        nextState(Action.SHIFT_WAREHOUSE);
     }
     public void handle_sortingWarehouse(SetResourceMessage message) {
         if (isYourTurn(message.getPlayerName())) {
@@ -96,8 +101,13 @@ public class RoundController {
                 playerInTurn.setPrivateCommunication("The resource you sent is not SHIELD,STONE,SERVANT,COIN.", CommunicationMessage.ILLEGAL_ACTION);
                 return;
             }
-            if (actionController.addResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getReceivedResourceIndex()))
-                nextState(Action.SORTING_WAREHOUSE);
+            try {
+                if (actionController.addResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getReceivedResourceIndex()))
+                    nextState(Action.SORTING_WAREHOUSE);
+            } catch (IllegalDecoratorException e) {
+                playerInTurn.setPrivateCommunication("You don't have a special warehouse", CommunicationMessage.ILLEGAL_ACTION);
+
+            }
         }
     }
     public void handle_discardResource(DiscardResourceMessage message) {
@@ -281,18 +291,21 @@ public class RoundController {
     }
 
     void nextTurn() {
+        //clearing checks
         int playersNumber = players.size();
         turnCount++;
         productions.clear();
         int quantities = playerInTurn.getTemporaryResourceStorage().size();
         movePlayersExceptSelected(quantities);
+
         checkWinner(playersNumber);
         if (gameState.equals(GameState.SINGLEPLAYER))
             handle_Bot();
-        nextState(Action.END_TURN);
+
         playerInTurn.setState(TurnState.NOT_IN_TURN);
         playerInTurn = players.get((turnCount) % players.size());
         playerInTurn.setState(turnState);
+        firstState();
     }
 
     private void checkWinner(int playersNumber){
@@ -350,87 +363,94 @@ public class RoundController {
         }
     }
 
+    private void firstState() {
+        if (!turnState.equals(TurnState.END))
+            turnState = TurnState.FIRST_LEADER_ACTION;
+        if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber())
+            turnState = TurnState.NORMAL_ACTION;
+    }
+
     public void nextState(Action action) {
         boolean flag = (!turnState.equals(TurnState.FIRST_TURN) && !turnState.equals(TurnState.SECOND_TURN));
-        switch (turnState) {
-            case FIRST_TURN: {
-                if (players.size() == productions.size()) {
-                    if (gameState == GameState.MULTIPLAYER) {
-                        turnState = TurnState.SECOND_TURN;
+        if (!action.equals(Action.SHIFT_WAREHOUSE))
+            switch (turnState) {
+                case FIRST_TURN: {
+                    if (players.size() == productions.size()) {
+                        if (gameState == GameState.MULTIPLAYER) {
+                            turnState = TurnState.SECOND_TURN;
+                            productions.clear();
+                            productions.add(0);
+                            setStateToAll(TurnState.SECOND_TURN);
+                        } else if (gameState.equals(GameState.SINGLEPLAYER)) {
+                            turnState = TurnState.FIRST_LEADER_ACTION;
+                            setStateToAll(TurnState.FIRST_LEADER_ACTION);
+                        }
+                    }
+                    break;
+                }
+                case SECOND_TURN: {
+                    if (players.size() == productions.size()) {
                         productions.clear();
-                        productions.add(0);
-                        setStateToAll(TurnState.SECOND_TURN);
-                    }
-                    else if(gameState.equals(GameState.SINGLEPLAYER)) {
                         turnState = TurnState.FIRST_LEADER_ACTION;
-                        setStateToAll(TurnState.FIRST_LEADER_ACTION);
+                        for (int i = 1; i < players.size(); i++)
+                            players.get(i).setState(TurnState.NOT_IN_TURN);
+                        playerInTurn.setState(TurnState.FIRST_LEADER_ACTION);
                     }
+                    break;
                 }
-                break;
-            }
-            case SECOND_TURN:
-            {
-                if (players.size() == productions.size()) {
-                    productions.clear();
-                    turnState = TurnState.FIRST_LEADER_ACTION;
-                    for (int i = 1; i < players.size(); i++)
-                        players.get(i).setState(TurnState.NOT_IN_TURN);
-                    playerInTurn.setState(TurnState.FIRST_LEADER_ACTION);
-                }
-                break;
-            }
-            case FIRST_LEADER_ACTION: {
-                if (action.equals(Action.ACTIVE_LEADER)) {
-                    if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
-                        turnState = TurnState.NORMAL_ACTION;
+                case FIRST_LEADER_ACTION: {
+                    if (action.equals(Action.ACTIVE_LEADER)) {
+                        if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
+                            turnState = TurnState.NORMAL_ACTION;
+                            break;
+                        }
                         break;
                     }
-                    break;
+                    turnState = TurnState.NORMAL_ACTION;
                 }
-                turnState = TurnState.NORMAL_ACTION;
-            }
-            case NORMAL_ACTION: {
-                if (action.equals(Action.USE_PRODUCTIONS)) {
-                    turnState = TurnState.PRODUCTION_ACTIONS;
-                } else if (action.equals(Action.GET_RESOURCES_FROM_MARKET)) {
-                    turnState = TurnState.WAREHOUSE_ACTION;
-                    break;
-                } else {
-                    turnState = TurnState.LAST_LEADER_ACTION;
-                }
-            }
-
-            case WAREHOUSE_ACTION: {
-                if (action.equals(Action.GET_RESOURCES_FROM_MARKET) || action.equals(Action.SORTING_WAREHOUSE)) {
-                    if (playerInTurn.getTemporaryResourceStorage().size() == 0)
+                case NORMAL_ACTION: {
+                    if (action.equals(Action.USE_PRODUCTIONS)) {
+                        turnState = TurnState.PRODUCTION_ACTIONS;
+                        break;
+                    } else if (action.equals(Action.GET_RESOURCES_FROM_MARKET)) {
+                        turnState = TurnState.WAREHOUSE_ACTION;
+                        break;
+                    } else {
                         turnState = TurnState.LAST_LEADER_ACTION;
-                } else if (action.equals(Action.ACTIVE_LEADER))
-                    turnState = TurnState.LAST_LEADER_ACTION;
-                else break;
-            }
-            case PRODUCTION_ACTIONS: {
-                if (action.equals(Action.USE_PRODUCTIONS)) {
+                    }
+                }
+                case WAREHOUSE_ACTION: {
+                    if (action.equals(Action.SORTING_WAREHOUSE)) {
+                        if (playerInTurn.getTemporaryResourceStorage().size() == 0) {
+                            turnState = TurnState.LAST_LEADER_ACTION;
+                            break;
+                        }
+                    } else {
+                        if (action.equals(Action.ACTIVE_LEADER))
+                            turnState = TurnState.LAST_LEADER_ACTION;
+                        else break;
+                    }
+                }
+                case PRODUCTION_ACTIONS: {
 
-                    if (productions.size() == playerInTurn.getPlayerBoard().getProductionNumber())
+                    if (action.equals(Action.USE_PRODUCTIONS)) {
+                        if (productions.size() == playerInTurn.getPlayerBoard().getProductionNumber()) {
+                            turnState = TurnState.LAST_LEADER_ACTION;
+                            break;
+                        }
+                    } else if (action.equals(Action.ACTIVE_LEADER))
                         turnState = TurnState.LAST_LEADER_ACTION;
-                } else if (action.equals(Action.ACTIVE_LEADER))
-                    turnState = TurnState.LAST_LEADER_ACTION;
-                else break;
-            }
-            case LAST_LEADER_ACTION:
-            {
-                if (action.equals(Action.END_TURN)) {
-                    turnState = TurnState.FIRST_LEADER_ACTION;
+                    else break;
+                }
+                case LAST_LEADER_ACTION: {
+                    System.out.println(playerInTurn.getPlayerBoard().getLeaderCardsNumber());
+                    if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
+                        nextTurn();
+                    }
                     break;
                 }
-                if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
-                    nextTurn();
-                    turnState = TurnState.FIRST_LEADER_ACTION;
-                }
-                break;
-            }
 
-        }
+            }
         System.out.println(turnState);
         if (flag)
             playerInTurn.setState(turnState);

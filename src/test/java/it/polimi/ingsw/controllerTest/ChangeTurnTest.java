@@ -128,6 +128,7 @@ public class ChangeTurnTest {
         if (TurnState.isPossible(g.getTurnState(), Action.END_TURN)) {
             g.handle_endTurn();
         }
+        System.out.println(gb.getPlayers().get(0).getPlayerBoard().getLeaderCardsNumber());
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
         assertNotEquals(g.getPlayerInTurn(), p);
 
