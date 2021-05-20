@@ -237,7 +237,7 @@ public class Cli extends ViewObservable implements View {
     }
 
     private void askUseProduction() {
-
+        askUseBaseProduction();
     }
 
     @Override
@@ -352,11 +352,11 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askUseBaseProduction() {
-        int choice=0;
+        int choice=0, temp=-1;
         boolean flag=false, finish=false;
-        Resources res=null, obt;
+        Resources obt, res;
         ArrayList<Resources> list = new ArrayList<>();
-        ArrayList<Resources> jumplist;
+        ArrayList<Resources> jumplist= new ArrayList<>(Arrays.asList(Resources.values()));;
         ArrayList<Resources> pass = new ArrayList<>();
         ArrayList<Resources> obtain = new ArrayList<>();
         ArrayList<Integer> value= new ArrayList<>();
@@ -365,10 +365,10 @@ public class Cli extends ViewObservable implements View {
         obtain.add(Resources.WHATEVER);
         String question = "You have to choose two resources from your strongbox or your warehouses. Choose 1 to select the resources from the strongbox, 2 for the warehouse or 3 for the special warehouse: ";
         try {
-            while (!finish) {
-                while (!flag) {
-                    choice = validateInput(1, 3, null, question);
-                    list = (checkResources(choice, res));
+            choice = validateInput(1, 3, null, question);
+            while (finish==false){
+                while (flag==false) {
+                    list = (checkResources(choice, temp));
                     if (list.size() != 0) {
                         flag = true;
                     } else {
@@ -376,14 +376,18 @@ public class Cli extends ViewObservable implements View {
                     }
                 }
                 question = "Choose which resource you want to use between" + list + ": ";
-                jumplist = (ArrayList<Resources>) Arrays.asList(Resources.values());
                 jumplist.removeAll(list);
                 res = validateResources(question, jumplist);
+                temp=res.ordinal();
                 pass.add(res);
                 value.add(choice);
                 if(pass.size()==2){
                     finish=true;
-                } else { question="Now, choose where you want to select the other resources";}
+                } else
+                    { question="Now, choose where you want to select the other resources";
+                        choice = validateInput(1, 3, null, question);
+                        flag=false;
+                    }
             }
             question="Which resource do you want to obtain? ";
             obt=validateResources(question, obtain);
@@ -556,43 +560,55 @@ public class Cli extends ViewObservable implements View {
         return number;
     }
 
-    private ArrayList<Resources> checkResources(int choice, Resources temp){
+    private ArrayList<Resources> checkResources(int choice, int temp){
         ArrayList<Resources> list= new ArrayList<>();
         ArrayList<Resources> jumplist= new ArrayList<>();
         if (choice == 1) {
             for (int i = 0; i < 4; i++) {
                 int[] a = {0, 0, 0, 0};
                 a[i] = 1;
-                a[temp.ordinal()]=1;
+                if(temp!=-1) {
+                    a[temp] = 1;
+                }
                 if (playerBoard.getPlayerBoard().checkResourcesStrongbox(a)) {
                 list.add(Resources.transform(i));
                 }
                 a[i] = 0;
-                a[temp.ordinal()]=0;
+                if(temp!=-1) {
+                    a[temp] = 0;
+                }
             }
         } else if (choice == 2) {
             for (int i = 0; i < 4; i++) {
             int[] a = {0, 0, 0, 0};
             a[i] = 1;
-            a[temp.ordinal()]=1;
+            if(temp!=-1) {
+                a[temp] = 1;
+            }
             if (playerBoard.getPlayerBoard().checkResourcesWarehouse(a)) {
                 list.add(Resources.transform(i));
             }
             a[i] = 0;
-            a[temp.ordinal()]=0;
+                if(temp!=-1) {
+                    a[temp] = 0;
+                }
             }
         } else if (choice == 3) {
             for (int i = 0; i < 4; i++) {
                 int[] a = {0, 0, 0, 0};
                 a[i] = 1;
-                a[temp.ordinal()]=1;
+                if(temp!=-1) {
+                    a[temp] = 1;
+                }
                 if (playerBoard.getPlayerBoard().checkResourcesSpecialWarehouse(a)) {
                     list.add(Resources.transform(i));
                 } else {
                     jumplist.add(Resources.transform(i));
                 }
                 a[i] = 0;
-                a[temp.ordinal()]=0;
+                if(temp!=-1) {
+                    a[temp] = 0;
+                }
             }
         }
         return list;
