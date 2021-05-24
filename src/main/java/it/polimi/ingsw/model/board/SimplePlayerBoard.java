@@ -340,7 +340,7 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         stringBuilder.append("Strongbox: ");
         stringBuilder.append(strongbox);
         stringBuilder.append("\n");
-        if (getLeaderCardsNumber() == 0 && !mine)
+        if (getLeaderCardsNumber() != 0 && !mine)
             stringBuilder.append("Leader cards:\n");
         for (LeaderCard card : leaderCards) {
             if (mine && !card.getUncovered()) {
@@ -350,7 +350,14 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
                 stringBuilder.append("\n");
             }
         }
-
+        if (productionSpaces.size() != 0)
+            stringBuilder.append("Development cards:\n");
+        for (SpaceProd prod : productionSpaces) {
+            stringBuilder.append(productionSpaces.indexOf(prod));
+            stringBuilder.append(". ");
+            stringBuilder.append(prod.getTop());
+            stringBuilder.append("\n");
+        }
         stringBuilder.append(warehouse);
         return stringBuilder.toString();
     }

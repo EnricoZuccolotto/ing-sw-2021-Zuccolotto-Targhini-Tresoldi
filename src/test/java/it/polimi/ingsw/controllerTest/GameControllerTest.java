@@ -1,23 +1,43 @@
 package it.polimi.ingsw.controllerTest;
 
+import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.GameState;
+import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.model.GameBoard;
+import it.polimi.ingsw.model.enums.Colors;
+import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.model.player.HumanPlayer;
+import it.polimi.ingsw.network.messages.*;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameControllerTest {
  @Test
  public void OnMessageTest() {
-/*
-  GameController gameController = new GameController();
-  GameBoard gb = gameController.getInstance();
-  gb.addPlayer(new HumanPlayer("Harry", true));
-  gb.addPlayer(new HumanPlayer("Voldemort", true));
-  gb.addPlayer(new HumanPlayer("Ron", true));
-  gb.addPlayer(new HumanPlayer("Hermione", true));
-  gameController.onMessage(new FirstActionMessage("Hermione", 1, 0));
-  assertEquals(gb.getPlayer("Hermione").getPrivateCommunication().getMessage(), "The game is not started yet.");
-  gameController.onMessage(new FirstActionMessage("Harry", 1, 0));
-  assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getMessage(), "The game is not started yet.");
+
+     GameController gameController = new GameController() {
+         @Override
+         public void StartGame() {
+             getRoundController().init();
+             getInstance().setPublicCommunication("The game is starting", CommunicationMessage.STARTING_GAME);
+             setGameState(GameState.GAMESTARTED);
+             getRoundController().handle_firstTurn();
+         }
+     };
+     GameBoard gb = gameController.getInstance();
+     gb.addPlayer(new HumanPlayer("Harry", true));
+     gb.addPlayer(new HumanPlayer("Voldemort", true));
+     gb.addPlayer(new HumanPlayer("Ron", true));
+     gb.addPlayer(new HumanPlayer("Hermione", true));
+     gb.init(gb);
+     gameController.onMessage(new FirstActionMessage("Hermione", 1, 0));
+     assertEquals(gb.getPlayer("Hermione").getPrivateCommunication().getMessage(), "The game is not started yet.");
+     gameController.onMessage(new FirstActionMessage("Harry", 1, 0));
+     assertEquals(gb.getPlayer("Harry").getPrivateCommunication().getMessage(), "The game is not started yet.");
   gameController.onMessage(new FirstActionMessage("Ron", 1, 0));
   assertEquals(gb.getPlayer("Ron").getPrivateCommunication().getMessage(), "The game is not started yet.");
   gameController.onMessage(new FirstActionMessage("Voldemort", 1, 0));
@@ -63,7 +83,7 @@ public class GameControllerTest {
   for (int i = 1; i < 4; i++) {
    gameController.onMessage(new MarketRequestMessage(gb.getPlayers().get(i).getName(), 0, 0));
    assertEquals(gb.getPlayers().get(i).getPrivateCommunication().getMessage(), "This is not your turn");
-  }*/
+  }
   assertTrue(true);
  }
 

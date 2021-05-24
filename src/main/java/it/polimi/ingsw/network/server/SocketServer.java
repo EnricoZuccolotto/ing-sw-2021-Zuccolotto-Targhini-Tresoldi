@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.Message;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class SocketServer implements Runnable {
         try{
             serverSocket = new ServerSocket(port);
         } catch(IOException e){
-            // TODO: Notify failed server creation
+            SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
             return;
         }
 
@@ -34,7 +35,7 @@ public class SocketServer implements Runnable {
                 Socket client = serverSocket.accept();
                 new SocketConnection(this, client);
             } catch(IOException e){
-                // TODO: Notify failed server creation
+                SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
             }
         }
     }

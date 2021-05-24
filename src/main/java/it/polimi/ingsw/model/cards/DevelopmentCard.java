@@ -2,6 +2,9 @@ package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
+
+import java.util.Arrays;
+
 /**
  * This class represents a development card.
  * costCard represents the cost of the card, each position represents the quantities of Resources needed to buy this card.(Servant,Coin,Stone,Shield)
@@ -67,7 +70,7 @@ public class DevelopmentCard extends Card {
     /**
      * Gets the color of card.
      *
-     * @return the color of the card (type Colors).
+     * @return the color of the card (type ColorsCLI).
      */
     public Colors getColor() {
         return color;
@@ -97,5 +100,22 @@ public class DevelopmentCard extends Card {
                 "| production result: " +
                 Resources.toString(productionResult);
 
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        DevelopmentCard other = (DevelopmentCard) obj;
+        return super.equals(obj) &&
+                Arrays.equals(other.costCard, costCard) &&
+                Arrays.equals(other.costProduction, costProduction) &&
+                Arrays.equals(other.productionResult, productionResult) &&
+                other.color.equals(color) &&
+                other.level == level;
     }
 }

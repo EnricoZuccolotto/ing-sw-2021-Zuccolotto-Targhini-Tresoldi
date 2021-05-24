@@ -176,7 +176,7 @@ public class ClientManager implements ViewObserver, Observer {
                     currentMessage.executeOnView(view, taskQueue);
             } else currentMessage.executeOnView(view, taskQueue);
         } catch (ClassCastException ex) {
-            // TODO: error, invalid executable message.
+            SocketClient.LOGGER.warning("Invalid message: " + ex.getMessage());
         }
     }
 

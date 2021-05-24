@@ -9,7 +9,6 @@ import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.network.messages.CommunicationMex;
 import it.polimi.ingsw.network.messages.HumanPlayerUpdateMessage;
-import it.polimi.ingsw.network.messages.MarketReplyMessage;
 import it.polimi.ingsw.network.messages.StateMessage;
 
 import java.io.Serializable;
@@ -104,7 +103,7 @@ public class HumanPlayer extends Player implements Serializable {
             temporaryResourceStorage.remove(index);
             sendUpdateToPlayer();
         } catch (IndexOutOfBoundsException e) {
-            // TODO: Handle exception
+            setPrivateCommunication("You don't have enough resources", CommunicationMessage.ILLEGAL_ACTION);
         }
     }
 
