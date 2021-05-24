@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 public class GameControllerTest {
  @Test
  public void OnMessageTest() {
-/*
+  /*
   GameController gameController = new GameController();
   GameBoard gb = gameController.getInstance();
   gb.addPlayer(new HumanPlayer("Harry", true));

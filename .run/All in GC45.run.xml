@@ -1,6 +1,42 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="All in GC45" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
     <module name="GC45" />
+    <extension name="coverage" sample_coverage="false" track_test_folders="true">
+      <pattern>
+        <option name="PATTERN" value="it.polimi.ingsw.controllerTest.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="it.polimi.ingsw.modelTest.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="it.polimi.ingsw.networkTest.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="it.polimi.ingsw.network.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="it.polimi.ingsw.view.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="it.polimi.ingsw.observer.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="it.polimi.ingsw.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
     <option name="PACKAGE_NAME" value="" />
     <option name="MAIN_CLASS_NAME" value="" />
     <option name="METHOD_NAME" value="" />

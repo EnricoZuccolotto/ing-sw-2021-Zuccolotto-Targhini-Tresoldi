@@ -17,7 +17,8 @@ public class ServerApp {
                 try {
                     serverPort = Integer.parseInt(args[i + 1]);
                 } catch (NumberFormatException e) {
-                    //TODO error
+                    System.out.println("Invalid port number. Retry.");
+                    System.exit(1);
                 }
             }
         }
