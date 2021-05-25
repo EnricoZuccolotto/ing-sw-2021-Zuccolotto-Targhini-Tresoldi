@@ -8,16 +8,22 @@ import it.polimi.ingsw.model.cards.Decks;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.view.View;
-import it.polimi.ingsw.view.gui.controllers.SceneController;
+import it.polimi.ingsw.view.gui.controllers.MarketController;
 import javafx.application.Platform;
-import javafx.scene.Scene;
 
 import java.util.ArrayList;
 
 public class Gui extends ViewObservable implements View {
+    private MarketController marketController;
+    private int playerNumber;
+    private String name;
+
     @Override
     public void askUsername() {
-
+        System.out.println("wsdfghnm");
+        new Thread(() -> notifyObserver(obs -> obs.Nickname("enr")));
+        new Thread(() -> notifyObserver(obs -> obs.PlayersNumber(1)));
+        GuiSceneUtils.changeActivePanel(observers, "market.fxml");
     }
 
     @Override
@@ -107,7 +113,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showMarket(Market market) {
-
+        Platform.runLater(() -> marketController.updateMarket(market));
     }
 
     @Override
@@ -118,6 +124,7 @@ public class Gui extends ViewObservable implements View {
                 GuiSceneUtils.changeActivePanel(observers, "menu.fxml");
             });
         }
+
     }
 
     @Override
@@ -132,6 +139,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showCommunication(String communication, CommunicationMessage type) {
-
+        if (type.equals(CommunicationMessage.PLAYER_NUMBER))
+            this.playerNumber = Integer.parseInt(communication);
     }
 }

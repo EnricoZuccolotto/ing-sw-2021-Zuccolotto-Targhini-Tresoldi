@@ -59,20 +59,48 @@ public enum Resources {
         StringBuilder stringBuilder = new StringBuilder();
         switch (this) {
             case COIN:
-                return stringBuilder.append(ColorsCLI.YELLOW).append("COIN").append(ColorsCLI.RESET).toString();
+                stringBuilder.append(ColorsCLI.YELLOW).append("COIN");
+                break;
             case SHIELD:
-                return stringBuilder.append(ColorsCLI.BLUE).append("SHIELD").append(ColorsCLI.RESET).toString();
+                stringBuilder.append(ColorsCLI.BLUE).append("SHIELD");
+                break;
             case SERVANT:
-                return stringBuilder.append(ColorsCLI.PURPLE).append("SERVANT").append(ColorsCLI.RESET).toString();
+                stringBuilder.append(ColorsCLI.PURPLE).append("SERVANT");
+                break;
             case STONE:
-                return stringBuilder.append(ColorsCLI.GRAY).append("STONE").append(ColorsCLI.RESET).toString();
+                stringBuilder.append(ColorsCLI.GRAY).append("STONE");
+                break;
             case FAITH:
-                return stringBuilder.append(ColorsCLI.RED).append("FAITH").append(ColorsCLI.RESET).toString();
+                stringBuilder.append(ColorsCLI.RED).append("FAITH");
+                break;
             case WHITE:
-                return stringBuilder.append(ColorsCLI.WHITE).append("WHITE").append(ColorsCLI.RESET).toString();
+                stringBuilder.append(ColorsCLI.WHITE).append("WHITE");
+                break;
             case WHATEVER:
-                return stringBuilder.append(ColorsCLI.BLACK).append("WHATEVER").append(ColorsCLI.RESET).toString();
+                stringBuilder.append(ColorsCLI.BLACK).append("WHATEVER");
+                break;
         }
-        return "";
+
+        return "" + stringBuilder.append(ColorsCLI.RESET);
+    }
+
+    public String getBallImagePath() {
+
+        switch (this) {
+            case WHITE:
+                return "Image/WhiteBall.png";
+
+            case FAITH:
+                return "Image/FaithBall.png";
+            case STONE:
+                return "Image/StoneBall.png";
+            case SERVANT:
+                return "Image/ServantBall.png";
+            case SHIELD:
+                return "Image/ShieldBall.png";
+            case COIN:
+                return "Image/CoinBall.png";
+        }
+        return "Image/WhiteBall.png";
     }
 }
