@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.gui;
 
-import com.sun.glass.ui.PlatformFactory;
 import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
@@ -11,13 +10,12 @@ import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Gui extends ViewObservable implements View {
     private String nickname = "";
@@ -31,7 +29,28 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askPlayersNumber() {
+        Platform.runLater(() -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.initOwner(GuiSceneUtils.getActiveScene().getWindow());
+            dialog.setTitle("Lobby size");
+            dialog.setHeaderText("How many player do you want in your game?");
+            dialog.setContentText("Insert a number between 1 and 4:");
 
+            boolean exit = false;
+            int numberOfPlayers = 0;
+
+            do{
+                Optional<String> numberString = dialog.showAndWait();
+                if(numberString.isPresent()){
+                    numberOfPlayers = Integer.parseInt(numberString.get());
+                    if(numberOfPlayers >= 1 && numberOfPlayers <= 4) exit = true;
+                    else GuiSceneUtils.showAlertWindow(AlertType.WARNING, "Error", "Invalid number of players, try again!");
+                }
+            } while(!exit);
+
+            int finalNumberOfPlayers = numberOfPlayers;
+            notifyObserver(obs -> obs.PlayersNumber(finalNumberOfPlayers));
+        });
     }
 
     @Override
@@ -148,17 +167,22 @@ public class Gui extends ViewObservable implements View {
 
     private void askJoinOrSet(){
         Platform.runLater(() -> {
-            Alert joinOrSetAlert = new Alert(AlertType.INFORMATION, "Do you want to join a game or set up a new one?", ButtonType.OK, ButtonType.CANCEL);
+            Alert joinOrSetAlert = new Alert(AlertType.INFORMATION, "Do you want to join a game or set up a new one?", ButtonType.OK, ButtonType.YES);
             joinOrSetAlert.initOwner(GuiSceneUtils.getActiveScene().getWindow());
             joinOrSetAlert.setTitle("Connection successful!");
             joinOrSetAlert.setHeaderText("Welcome");
             Button joinButton = (Button)joinOrSetAlert.getDialogPane().lookupButton(ButtonType.OK);
-            Button setButton = (Button)joinOrSetAlert.getDialogPane().lookupButton(ButtonType.CANCEL);
+            Button setButton = (Button)joinOrSetAlert.getDialogPane().lookupButton(ButtonType.YES);
             joinButton.setText("Join a lobby");
             setButton.setText("Start up a new game");
-            joinButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> joinLobby());
-            setButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> askPlayersNumber());
-            joinOrSetAlert.showAndWait();
+            Optional<ButtonType> result = joinOrSetAlert.showAndWait();
+            if(result.isPresent()){
+                if(result.get() == ButtonType.OK){
+                    joinLobby();
+                } else if(result.get() == ButtonType.YES){
+                    askPlayersNumber();
+                }
+            }
         });
     }
 
