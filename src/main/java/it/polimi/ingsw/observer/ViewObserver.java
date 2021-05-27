@@ -51,4 +51,6 @@ public interface ViewObserver {
     void foldLeader(int index);
 
     void endTurn();
+
+    void onDisconnect();
 }

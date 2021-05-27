@@ -6,6 +6,8 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 public class MenuController extends ViewObservable implements SceneController {
@@ -18,6 +20,12 @@ public class MenuController extends ViewObservable implements SceneController {
     public void initialize(){
         exitButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> System.exit(0));
         connectButton.addEventHandler(MouseEvent.MOUSE_CLICKED, this::onConnectButtonClick);
+        exitButton.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if(GuiSceneUtils.isAnEnterKeyEvent(keyEvent)) System.exit(0);
+        });
+        connectButton.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if(GuiSceneUtils.isAnEnterKeyEvent(keyEvent)) onConnectButtonClick(keyEvent);
+        });
     }
 
     private void onConnectButtonClick(Event event){
