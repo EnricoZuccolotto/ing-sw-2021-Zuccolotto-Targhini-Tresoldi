@@ -164,6 +164,6 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     }
 
     @Override
-    public ArrayList<Resources> getResources(int choice, int temp){ return subBoard.getResources(choice, temp);};
+    public ArrayList<Resources> getResources(int choice, int temp){ return subBoard.getResources(choice, temp);}
 
 }

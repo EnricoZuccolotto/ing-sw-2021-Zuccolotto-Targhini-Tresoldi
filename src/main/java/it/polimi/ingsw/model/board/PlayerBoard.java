@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
+import it.polimi.ingsw.model.player.SpaceProd;
 import it.polimi.ingsw.model.player.Strongbox;
 import it.polimi.ingsw.model.player.Warehouse;
 
@@ -306,6 +307,13 @@ public interface PlayerBoard {
      * @return Gets a list with the type of resources contained
      */
     ArrayList<Resources> getResources(int choice, int temp);
+
+    /**
+     * Gets the production space
+     *
+     * @return The production space
+     */
+    ArrayList<SpaceProd> getProductionSpaces();
 
     String toString(boolean mine);
 }

@@ -7,6 +7,8 @@ import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.cards.Decks;
+import it.polimi.ingsw.model.cards.DevelopmentCard;
+import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.observer.ViewObservable;
@@ -347,33 +349,83 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askGetProduction() {
+        ArrayList<Colors> col= new ArrayList<>(Arrays.asList(Colors.values()));
+        ArrayList<Integer> jump= new ArrayList<>();
+        ArrayList<Integer> pos;
+        int[] a;
+        int color1=-1, level=-1, index;
+        boolean flag=false;
+        for (Colors color: col) {
+            if(decks.getDeck(color, 3).DeckLength()==0){
+                jump.add(col.indexOf(color));
+                col.remove(color);
+            }
+        }
+        out.println("\nThis are the possible card color to buy: ");
+        for (Colors color: col) {
+            out.println(col.indexOf(color) + ". " + color);
+        }
+        String question="Select the color of the card you want to buy: ";
+        try{
+            while (!flag) {
+                color1 = validateInput(0, 3, jump, question);
+                question = "Choose the level of the card you would like to buy: ";
+                level = validateInput(1, 3, null, question);
+                if (decks.getDeck(col.get(color1), level).DeckLength() != 0) {
+                    flag = true;
+                } else if(!(playerBoard.getPlayerBoard().checkResources(decks.getDeck(col.get(color1), level).getFirstCard().getCostCard()))){
+                    out.println("You cannot buy this card, choose another one: ");
+                }
+                else {
+                    out.println("The deck is empty, choose another one: ");
+                }
+            }
+            a=decks.getDeck(col.get(color1), level).getFirstCard().getCostCard();
+            pos=SelectResources(a);
+            question="Choose where to place your new card, select a number between 1 and 3 (select 0 to auto-place the card): ";
+            index=validateInput(0, 3, null, question);
+            int finalColor = color1;
+            int finalLevel = level;
+            int finalIndex = index;
+            notifyObserver(obs -> obs.getProduction(finalColor, finalLevel, pos, finalIndex, a));
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void askUseBaseProduction() {
-        int choice=0, temp=-1;
+        int choice, temp=-1;
         boolean flag=false, finish=false;
         Resources obt, res;
+        ArrayList<String> s= new ArrayList<>();
+        s.add("Warehouse");
+        s.add("Strongbox");
+        s.add("SpecialWarehouse");
         ArrayList<Resources> list = new ArrayList<>();
-        ArrayList<Resources> jumplist= new ArrayList<>(Arrays.asList(Resources.values()));;
+        ArrayList<Resources> jumplist= new ArrayList<>(Arrays.asList(Resources.values()));
         ArrayList<Resources> pass = new ArrayList<>();
         ArrayList<Resources> obtain = new ArrayList<>();
         ArrayList<Integer> value= new ArrayList<>();
         obtain.add(Resources.FAITH);
         obtain.add(Resources.WHITE);
         obtain.add(Resources.WHATEVER);
-        String question = "You have to choose two resources from your strongbox or your warehouses. Choose 1 to select the resources from the warehouse, 2 for the strongbox or 3 for the special warehouse: ";
+        out.println("\nPossible choices: ");
+        for (String st: s) {
+            out.println(s.indexOf(st) + ". " + st);
+        }
+        String question = "You have to choose two resources from your strongbox or your warehouses. Choose a number: ";
         try {
             choice = validateInput(1, 3, null, question);
-            while (finish==false){
-                while (flag==false) {
+            while (!finish){
+                while (!flag) {
                     list.removeAll(Arrays.asList(Resources.values()));
                     list = (playerBoard.getPlayerBoard().getResources(choice, temp));
                     if (list.size() != 0) {
                         flag = true;
                     } else {
                         out.println("You don't have any resource here, insert another value: ");
-                        choice = validateInput(1, 3, null, question);
+                        choice = validateInput(0, 2, null, question);
                     }
                 }
                 question = "Choose which resource you want to use between" + list + ": ";
@@ -385,7 +437,7 @@ public class Cli extends ViewObservable implements View {
                 if(pass.size()==2){
                     finish=true;
                 } else
-                    { question="Now, choose where you want to select the other resources";
+                    { question="Now, choose where you want to select the other resources, choose another number: ";
                         choice = validateInput(1, 3, null, question);
                         flag=false;
                     }
@@ -405,6 +457,26 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askUseNormalProduction() {
+        int index;
+        DevelopmentCard d;
+        ArrayList<Integer> jump= new ArrayList<>();
+        ArrayList<Integer> pos;
+        int[] a;
+        for(int i=0; i<3; i++){
+            if(playerBoard.getPlayerBoard().getProductionSpaces().get(i).getTop()==null){
+                jump.add(i);
+            }
+        }
+        String question="Choose the index of the card you want to activate production of(from 0 to 2): ";
+        try{
+            index=validateInput(0, 2, jump, question );
+            d=playerBoard.getPlayerBoard().getProductionSpaces().get(index).getTop();
+            a=d.getCostProduction();
+            pos=SelectResources(a);
+            notifyObserver(obs -> obs.useNormalProduction(index, pos, a));
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
 
     }
 
@@ -561,6 +633,40 @@ public class Cli extends ViewObservable implements View {
         } while (number < minValue || number > maxValue || jumpList.contains(number));
 
         return number;
+    }
+
+    private ArrayList<Integer> SelectResources(int[] a) throws ExecutionException {
+        ArrayList<String> s = new ArrayList<>();
+        ArrayList<Resources> resource;
+        ArrayList<Integer> pos = new ArrayList<>();
+        int count = 0, select;
+        String question;
+        s.add("Warehouse");
+        s.add("Strongbox");
+        s.add("SpecialWarehouse");
+        out.println("\nNow you have to choose where you want to take each resources from: ");
+        for (String st : s) {
+            out.println(s.indexOf(st) + ". " + st);
+        }
+        try {
+            for (int i = 0; i < 4; i++) {
+                while (count != a[i]) {
+                    question = "Pick a number for the resource" + Resources.transform(i) + ": ";
+                    select = validateInput(0, 2, null, question);
+                    resource = playerBoard.getPlayerBoard().getResources(select, count);
+                    if (resource.contains(Resources.transform(i))) {
+                        count++;
+                        pos.add(select);
+                    } else {
+                        out.println("You don't have this kind of resource here, choose another number");
+                    }
+                }
+                count = 0;
+            }
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
+        return pos;
     }
 
 public void clearCli() {

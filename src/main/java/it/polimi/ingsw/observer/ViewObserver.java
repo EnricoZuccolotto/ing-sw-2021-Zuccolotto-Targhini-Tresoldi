@@ -42,7 +42,11 @@ public interface ViewObserver {
 
     void switchRows(int row1, int row2);
 
+    void getProduction(int color, int level, ArrayList<Integer> pos, int index, int[] a);
+
     void useBaseProduction(ArrayList<Integer> value, ArrayList<Resources> pass, Resources obtain);
+
+    void useNormalProduction(int index, ArrayList<Integer> pos, int[] a);
 
     void activeLeader(int index);
 
