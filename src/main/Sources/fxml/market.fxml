@@ -6,8 +6,8 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="390.0" prefWidth="318.0"
-            xmlns="http://javafx.com/javafx/16">
-   fx:controller="it.polimi.ingsw.view.gui.controllers.MarketController">
+            xmlns="http://javafx.com/javafx/16" fx:controller="it.polimi.ingsw.view.gui.controllers.MarketController">>
+
    <children>
       <ImageView fitHeight="390.0" fitWidth="314.0" preserveRatio="true" AnchorPane.bottomAnchor="0.0"
                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-13.0" AnchorPane.topAnchor="0.0">
@@ -100,7 +100,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="pushColumn3" alignment="CENTER" blendMode="SRC_ATOP" contentDisplay="CENTER" layoutX="197.0"
+      <Button fx:id="pushColumn3Button" alignment="CENTER" blendMode="SRC_ATOP" contentDisplay="CENTER" layoutX="197.0"
               layoutY="231.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" pickOnBounds="false"
               prefHeight="49.0" prefWidth="25.0" styleClass="arrow" stylesheets="@../../../../../components.css"
               text="pushColumn3">
@@ -115,7 +115,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="pushColumn2" alignment="CENTER" blendMode="SRC_ATOP" contentDisplay="CENTER" layoutX="162.0"
+      <Button fx:id="pushColumn2Button" alignment="CENTER" blendMode="SRC_ATOP" contentDisplay="CENTER" layoutX="162.0"
               layoutY="231.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" pickOnBounds="false"
               prefHeight="49.0" prefWidth="25.0" styleClass="arrow" stylesheets="@../../../../../components.css"
               text="pushColumn2">
@@ -130,7 +130,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="pushColumn1" alignment="CENTER" blendMode="SRC_ATOP" contentDisplay="CENTER" layoutX="127.5"
+      <Button fx:id="pushColumn1Button" alignment="CENTER" blendMode="SRC_ATOP" contentDisplay="CENTER" layoutX="127.5"
               layoutY="231.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" pickOnBounds="false"
               prefHeight="49.0" prefWidth="25.0" styleClass="arrow" stylesheets="@../../../../../components.css"
               text="pushColumn1">
@@ -145,7 +145,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="pushColumn0" alignment="CENTER" blendMode="SRC_ATOP" contentDisplay="CENTER" layoutX="93.0"
+      <Button fx:id="pushColumn0Button" alignment="CENTER" blendMode="SRC_ATOP" contentDisplay="CENTER" layoutX="93.0"
               layoutY="231.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" pickOnBounds="false"
               prefHeight="49.0" prefWidth="25.0" styleClass="arrow" stylesheets="@../../../../../components.css"
               text="pushColumn0">

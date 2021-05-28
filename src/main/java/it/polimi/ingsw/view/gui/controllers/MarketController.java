@@ -28,9 +28,9 @@ public class MarketController extends ViewObservable implements SceneController 
     @FXML
     private Button pushRow2Button;
     @FXML
-    private GridPane Market;
+    private GridPane MarketGrid;
     @FXML
-    private ImageView slider;
+    private ImageView Slider;
 
     @FXML
     public void initialize() {
@@ -39,8 +39,8 @@ public class MarketController extends ViewObservable implements SceneController 
         pushColumn2Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onConnectButtonClick(event, 2, 2));
         pushColumn3Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onConnectButtonClick(event, 2, 3));
         pushRow0Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onConnectButtonClick(event, 1, 0));
-        pushRow0Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onConnectButtonClick(event, 1, 1));
-        pushRow0Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onConnectButtonClick(event, 1, 2));
+        pushRow1Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onConnectButtonClick(event, 1, 1));
+        pushRow2Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onConnectButtonClick(event, 1, 2));
 
     }
 
@@ -50,7 +50,7 @@ public class MarketController extends ViewObservable implements SceneController 
 
     public void updateMarket(it.polimi.ingsw.model.Market m) {
         Image image;
-        ObservableList<Node> marketChildren = Market.getChildren();
+        ObservableList<Node> marketChildren = MarketGrid.getChildren();
         for (int i = 0; i < 4; i++)
             for (int j = 0; j < 3; j++) {
                 ImageView imageView = (ImageView) marketChildren.get(i + j * 4);
@@ -58,6 +58,6 @@ public class MarketController extends ViewObservable implements SceneController 
                 imageView.setImage(image);
             }
         image = new Image(m.getSlide().getBallImagePath());
-        slider.setImage(image);
+        Slider.setImage(image);
     }
 }

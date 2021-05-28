@@ -89,18 +89,17 @@ public enum Resources {
         switch (this) {
             case WHITE:
                 return "Image/WhiteBall.png";
-
             case FAITH:
-                return "Image/FaithBall.png";
+                return "Image/Market/FaithBall.png";
             case STONE:
-                return "Image/StoneBall.png";
+                return "Image/Market/StoneBall.png";
             case SERVANT:
-                return "Image/ServantBall.png";
+                return "Image/Market/ServantBall.png";
             case SHIELD:
-                return "Image/ShieldBall.png";
+                return "Image/Market/ShieldBall.png";
             case COIN:
-                return "Image/CoinBall.png";
+                return "Image/Market/CoinBall.png";
         }
-        return "Image/WhiteBall.png";
+        return "Image/Market/WhiteBall.png";
     }
 }
