@@ -56,7 +56,7 @@ public class Gui extends ViewObservable implements View {
             boolean exit = false;
             int numberOfPlayers = 0;
 
-            do{
+            do {
                 Optional<String> numberString = dialog.showAndWait();
                 if(numberString.isPresent()){
                     numberOfPlayers = Integer.parseInt(numberString.get());

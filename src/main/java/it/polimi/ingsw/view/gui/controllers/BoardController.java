@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import it.polimi.ingsw.model.Market;
 
 
 public class BoardController extends ViewObservable implements SceneController {
@@ -50,7 +51,7 @@ public class BoardController extends ViewObservable implements SceneController {
         new Thread(() -> notifyObserver(obs -> obs.getMarket(choice, index))).start();
     }
 
-    public void updateMarket(it.polimi.ingsw.model.Market m) {
+    public void updateMarket(Market m) {
         Image image;
         image = new Image(m.getSlide().getBallImagePath());
 

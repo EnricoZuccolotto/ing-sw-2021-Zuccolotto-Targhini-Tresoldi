@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.controller.ClientManager;
+import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.view.gui.controllers.MenuController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -12,6 +13,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class GuiEntryPoint extends Application  {
+    public static void main(String[] args){
+        launch(args);
+    }
+
     @Override
     public void start(Stage stage){
         Gui view = Gui.getInstance();
@@ -25,7 +30,8 @@ public class GuiEntryPoint extends Application  {
         try {
             layout = loader.load();
         } catch(IOException e){
-            // TODO: error loading file
+            SocketClient.LOGGER.warning("Error loading from file!");
+            System.exit(1);
         }
         MenuController controller = loader.getController();
         controller.addObserver(clientManager);
