@@ -14,7 +14,7 @@ import java.io.IOException;
 public class GuiEntryPoint extends Application  {
     @Override
     public void start(Stage stage){
-        Gui view = new Gui();
+        Gui view = Gui.getInstance();
         ClientManager clientManager = new ClientManager(view);
         view.addObserver(clientManager);
 

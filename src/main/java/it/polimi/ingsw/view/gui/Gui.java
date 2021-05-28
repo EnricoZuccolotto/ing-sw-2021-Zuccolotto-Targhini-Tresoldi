@@ -9,20 +9,32 @@ import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
-import it.polimi.ingsw.view.gui.controllers.MarketController;
+import it.polimi.ingsw.view.gui.controllers.BoardController;
 import javafx.application.Platform;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Gui extends ViewObservable implements View {
     private String nickname = "";
-
-    private MarketController marketController;
     private int playerNumber;
+    private static Gui instance = null;
+    private BoardController boardController;
+
+    private Gui() {
+
+    }
+
+    public static Gui getInstance() {
+        if (instance == null)
+            instance = new Gui();
+        return instance;
+    }
 
 
     @Override
@@ -140,7 +152,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showMarket(Market market) {
-        Platform.runLater(() -> marketController.updateMarket(market));
+        Platform.runLater(() -> boardController.updateMarket(market));
     }
 
     @Override
@@ -205,5 +217,13 @@ public class Gui extends ViewObservable implements View {
     public void showCommunication(String communication, CommunicationMessage type) {
         if (type.equals(CommunicationMessage.PLAYER_NUMBER))
             this.playerNumber = Integer.parseInt(communication);
+        if (type.equals(CommunicationMessage.STARTING_GAME)) {
+            Platform.runLater(() -> GuiSceneUtils.changeActivePanel(observers, "board.fxml"));
+        }
+
+    }
+
+    public void setMarketController(BoardController boardController) {
+        this.boardController = boardController;
     }
 }

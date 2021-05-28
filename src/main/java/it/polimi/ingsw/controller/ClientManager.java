@@ -170,15 +170,10 @@ public class ClientManager implements ViewObserver, Observer {
     public void update(Message message) {
 
         try {
-            System.out.println(message.getMessageType());
-            if (message.getMessageType().equals(MessageType.ERROR)) {
-                ErrorMessage errorMessage = (ErrorMessage) message;
-                System.out.println(errorMessage.getError());
-            }
 
             ExecutableViewMessage currentMessage = (ExecutableViewMessage) message;
             if (message.getMessageType().equals(MessageType.COMMUNICATION) || message.getMessageType().equals(MessageType.STATE)) {
-                if (message.getPlayerName().equals(nickname))
+                if (message.getPlayerName().equals(nickname) || message.getPlayerName().equals(""))
                     currentMessage.executeOnView(view, taskQueue);
             } else currentMessage.executeOnView(view, taskQueue);
 
