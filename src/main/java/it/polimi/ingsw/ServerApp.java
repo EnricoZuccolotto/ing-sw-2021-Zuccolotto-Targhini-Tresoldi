@@ -19,6 +19,8 @@ public class ServerApp {
                     serverPort = Integer.parseInt(args[i + 1]);
                 } catch (NumberFormatException e) {
                     SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
+                    System.out.println("Invalid port number. Retry.");
+                    System.exit(1);
                 }
             }
         }

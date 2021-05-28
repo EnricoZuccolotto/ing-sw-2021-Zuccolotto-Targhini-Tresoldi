@@ -188,4 +188,9 @@ public class ClientManager implements ViewObserver, Observer {
         }
     }
 
+    @Override
+    public void onDisconnect(){
+        client.disconnect();
+    }
+
 }
