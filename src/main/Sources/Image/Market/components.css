@@ -7,7 +7,7 @@
 }
 
 .arrow:hover {
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 200, 0, 1), 20, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 200, 1), 20, 0, 0, 0);
 }
 
 .backgroundSecondaryScene {

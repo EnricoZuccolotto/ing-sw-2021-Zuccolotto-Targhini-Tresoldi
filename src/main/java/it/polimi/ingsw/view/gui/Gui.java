@@ -11,7 +11,6 @@ import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.gui.controllers.BoardController;
-import it.polimi.ingsw.view.gui.controllers.FirstActionController;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -27,7 +26,6 @@ public class Gui extends ViewObservable implements View {
     private int playerNumber;
     private static Gui instance = null;
     private BoardController boardController;
-    private FirstActionController firstActionController;
     private PlayerBoard playerBoard;
 
     private Gui() {
@@ -83,10 +81,8 @@ public class Gui extends ViewObservable implements View {
     public void askAction(TurnState state) {
         switch (state) {
             case FIRST_TURN: {
-                Platform.runLater(() -> {
-                    GuiSceneUtils.changeActivePanel(observers, "FirstAction.fxml");
-                    firstActionController.update(playerBoard);
-                });
+                Platform.runLater(() ->
+                        boardController.updateFirstAction(playerBoard));
                 break;
             }
             case PRODUCTION_ACTIONS:
@@ -94,9 +90,8 @@ public class Gui extends ViewObservable implements View {
             case WAREHOUSE_ACTION:
             case LAST_LEADER_ACTION:
             case FIRST_LEADER_ACTION: {
-                Platform.runLater(() -> {
-                    GuiSceneUtils.changeActivePanel(observers, "board.fxml");
-                });
+                Platform.runLater(() ->
+                        boardController.showBoard());
                 break;
             }
 
@@ -252,7 +247,5 @@ public class Gui extends ViewObservable implements View {
         this.boardController = boardController;
     }
 
-    public void setFirstActionController(FirstActionController firstActionController) {
-        this.firstActionController = firstActionController;
-    }
+
 }
