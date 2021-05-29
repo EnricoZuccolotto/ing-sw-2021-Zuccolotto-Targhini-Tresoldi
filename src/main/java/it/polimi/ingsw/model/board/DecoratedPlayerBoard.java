@@ -39,15 +39,30 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     public boolean checkResourcesWarehouse(int [] r){return subBoard.checkResourcesWarehouse(r);}
     @Override
     public boolean payResourcesStrongbox(int [] r){return subBoard.payResourcesStrongbox(r);}
+
     @Override
-    public boolean payResourcesWarehouse(int [] r){return subBoard.payResourcesWarehouse(r); }
+    public boolean payResourcesWarehouse(int[] r) {
+        return subBoard.payResourcesWarehouse(r);
+    }
+
     @Override
-    public void removeLeaderCard(LeaderCard c){ subBoard.removeLeaderCard(c); }
+    public void removeLeaderCard(LeaderCard c) {
+        subBoard.removeLeaderCard(c);
+    }
+
     @Override
-    public LeaderCard getLeaderCard(int index ){return subBoard.getLeaderCard(index);}
+    public LeaderCard getLeaderCard(int index) {
+        return subBoard.getLeaderCard(index);
+    }
+
     @Override
     public int[] getProductionCost(int index) {
         return subBoard.getProductionCost(index);
+    }
+
+    @Override
+    public boolean checkColorsAndLevel(int[] colors, int level) {
+        return subBoard.checkColorsAndLevel(colors, level);
     }
 
     @Override

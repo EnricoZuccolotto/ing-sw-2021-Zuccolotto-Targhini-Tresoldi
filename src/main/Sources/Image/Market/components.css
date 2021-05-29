@@ -1,12 +1,15 @@
-.button{
-    -fx-font-size: 16pt;
+
+.arrow {
     -fx-text-fill: white;
- 
+    -fx-shape: "M 510 360 L 405 190 L 300 360 L 360 360 L 360 600 Q 405 650 450 600 L 450 360 Z";
+    -fx-background-color: transparent;
+    -fx-border: none;
 }
 
-.arrow{
-    -fx-text-fill: white;
-    -fx-shape: "M 510 360 L 405 190 L 300 360 L 360 360 L 360 600 Q 405 650 450 600 L 450 360 Z";       
-	-fx-background-color: transparent;
-	-fx-border: none;
+.arrow:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 200, 0, 1), 20, 0, 0, 0);
+}
+
+.backgroundSecondaryScene {
+    -fx-background-color: transparent;
 }

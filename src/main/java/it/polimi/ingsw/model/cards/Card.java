@@ -61,6 +61,15 @@ public class Card implements Serializable {
         return ID;
     }
 
+    /**
+     * Gets the image path of the card
+     *
+     * @return the image path of the card
+     */
+    public String getImagePath() {
+        return "Image/Cards/";
+    }
+
     @Override
     public String toString() {
         return "VP=" + ColorsCLI.YELLOW_BOLD + VP + ColorsCLI.RESET;

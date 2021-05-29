@@ -4,12 +4,14 @@ import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
+import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.cards.Decks;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.gui.controllers.BoardController;
+import it.polimi.ingsw.view.gui.controllers.FirstActionController;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -25,6 +27,8 @@ public class Gui extends ViewObservable implements View {
     private int playerNumber;
     private static Gui instance = null;
     private BoardController boardController;
+    private FirstActionController firstActionController;
+    private PlayerBoard playerBoard;
 
     private Gui() {
 
@@ -77,7 +81,26 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askAction(TurnState state) {
+        switch (state) {
+            case FIRST_TURN: {
+                Platform.runLater(() -> {
+                    GuiSceneUtils.changeActivePanel(observers, "FirstAction.fxml");
+                    firstActionController.update(playerBoard);
+                });
+                break;
+            }
+            case PRODUCTION_ACTIONS:
+            case NORMAL_ACTION:
+            case WAREHOUSE_ACTION:
+            case LAST_LEADER_ACTION:
+            case FIRST_LEADER_ACTION: {
+                Platform.runLater(() -> {
+                    GuiSceneUtils.changeActivePanel(observers, "board.fxml");
+                });
+                break;
+            }
 
+        }
     }
 
     @Override
@@ -137,7 +160,9 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
-
+        if (playerBoard.getName().equals(nickname)) {
+            this.playerBoard = playerBoard.getPlayerBoard();
+        }
     }
 
     @Override
@@ -225,5 +250,9 @@ public class Gui extends ViewObservable implements View {
 
     public void setMarketController(BoardController boardController) {
         this.boardController = boardController;
+    }
+
+    public void setFirstActionController(FirstActionController firstActionController) {
+        this.firstActionController = firstActionController;
     }
 }

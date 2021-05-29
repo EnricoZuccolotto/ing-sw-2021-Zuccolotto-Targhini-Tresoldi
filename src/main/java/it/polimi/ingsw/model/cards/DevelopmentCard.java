@@ -102,6 +102,16 @@ public class DevelopmentCard extends Card {
 
     }
 
+    /**
+     * Gets the image path of the card
+     *
+     * @return the image path of the card
+     */
+    @Override
+    public String getImagePath() {
+        return "Image/Cards/Development/" + this.getID() + ".png";
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

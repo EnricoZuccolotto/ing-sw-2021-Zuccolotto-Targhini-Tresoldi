@@ -87,6 +87,15 @@ public interface PlayerBoard {
     boolean checkColors(int[] colors);
 
     /**
+     * Controls if the player has 1 card of the color and level chosen
+     *
+     * @param colors quantity of colors to check
+     * @param level  to check
+     * @return Success or failure
+     */
+    boolean checkColorsAndLevel(int[] colors, int level);
+
+    /**
      * Controls if the player has enough resources in total
      *
      * @param resources quantity of colors to check

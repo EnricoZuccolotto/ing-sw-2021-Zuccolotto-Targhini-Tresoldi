@@ -84,6 +84,15 @@ public class LeaderCard extends Card {
         return result;
     }
 
+    /**
+     * Gets the image path of the card
+     *
+     * @return the image path of the card
+     */
+    @Override
+    public String getImagePath() {
+        return "Image/Cards/Leader/" + this.getID() + ".png";
+    }
 
     @Override
     public String toString() {

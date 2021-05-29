@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/*
+/**
 * This class implements a thread that listens to client logins.
 * Once a client tries to sign in, it starts a new connection thread for client communications.
 * */

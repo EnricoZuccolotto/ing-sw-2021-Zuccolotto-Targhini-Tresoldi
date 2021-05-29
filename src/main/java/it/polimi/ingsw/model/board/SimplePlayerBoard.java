@@ -322,9 +322,9 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
                     tmp+=sp.checkColor(c);
                 if(colors[c.ordinal()]-tmp>0) {
                     return false;
-                 }
+                }
             }
-            }
+        }
         return true;
     }
 
@@ -333,6 +333,21 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         strongbox.addResources(r, quantities);
     }
 
+    @Override
+    public boolean checkColorsAndLevel(int[] colors, int level) {
+        int tmp;
+        for (Colors c : Colors.values()) {
+            tmp = 0;
+            if (colors[c.ordinal()] != 0) {
+                for (SpaceProd sp : productionSpaces)
+                    tmp += sp.checkColor(c, level);
+                if (colors[c.ordinal()] - tmp > 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     @Override
     public String toString(boolean mine) {
