@@ -48,6 +48,8 @@ public interface ViewObserver {
 
     void useNormalProduction(int index, ArrayList<Integer> pos, int[] a);
 
+    void useSpecialProduction(int index, int choice, Resources resource, Resources res);
+
     void activeLeader(int index);
 
     void addPlayerLobby();

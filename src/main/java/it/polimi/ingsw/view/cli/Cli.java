@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.cards.Decks;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
+import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
@@ -452,7 +453,39 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void askUseSpecialProduction() {
-
+        int choice, index=-1;
+        boolean flag=false;
+        Resources res=Resources.WHITE, resource;
+        ArrayList<Resources> obtain = new ArrayList<>();
+        obtain.add(Resources.FAITH);
+        obtain.add(Resources.WHITE);
+        obtain.add(Resources.WHATEVER);
+        String question="Choose the leader card you want to active its special production: ";
+        try {
+            while (!flag) {
+                index= validateInput(0, 1, null, question);
+                if(playerBoard.getPlayerBoard().getLeaderCard(index).getAdvantage().equals(Advantages.PROD)){
+                    flag=true;
+                } else {
+                    out.println("You cannot choose this card, try another one.");
+                }
+            }
+            for(int i=0;i<4;i++){
+                if (playerBoard.getPlayerBoard().getLeaderCard(index).getEffect().get(i) != 0) {
+                    res=Resources.transform(i);
+                }
+            }
+            out.println("For this production, you have to use a " +res +".");
+            question="Where do you want to take this resource? Select 0 for warehouse, 1 for strongbox or 2 for special warehouse: ";
+            choice= validateInput(0,2,null, question);
+            question="Which resource you want to obtain? ";
+            resource= validateResources(question, obtain);
+            int finalIndex = index;
+            Resources finalRes = res;
+            notifyObserver(obs -> obs.useSpecialProduction(finalIndex, choice, resource, finalRes));
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
     }
 
     @Override
@@ -463,7 +496,7 @@ public class Cli extends ViewObservable implements View {
         ArrayList<Integer> pos;
         int[] a;
         for(int i=0; i<3; i++){
-            if(playerBoard.getPlayerBoard().getProductionSpaces().get(i).getTop()==null){
+            if(playerBoard.getPlayerBoard().getProductionSpaces().get(i).getNumbCard()==0){
                 jump.add(i);
             }
         }

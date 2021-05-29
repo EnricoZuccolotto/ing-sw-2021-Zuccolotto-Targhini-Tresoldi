@@ -184,6 +184,14 @@ public class ClientManager implements ViewObserver, Observer {
     }
 
     @Override
+    public void useSpecialProduction(int index, int choice, Resources resource, Resources res){
+        int[][] matr= new int[3][4];
+        matr[choice][res.ordinal()]=1;
+        ExchangeResources ex= new ExchangeResources(matr[0], matr[1], matr[2]);
+        client.sendMessage(new UseProductionSpecialMessage(this.nickname, ex, resource, index));
+    }
+
+    @Override
     public void endTurn() {
         client.sendMessage(new EndTurnMessage(this.nickname));
     }
