@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.gui.controllers;
 
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.board.PlayerBoard;
+import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.view.gui.Gui;
 import javafx.collections.ObservableList;
@@ -14,6 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
@@ -22,11 +24,14 @@ public class BoardController extends ViewObservable implements SceneController {
     private final String effect = " -fx-effect: dropshadow(three-pass-box, rgba(0,0,200,1), 20, 0, 0, 0);";
     private ArrayList<Integer> choice;
     private ArrayList<ImageView> hover;
+    private ArrayList<Resources> resourcesToSend;
     private boolean view = true;
     @FXML
     private BorderPane Board;
     @FXML
     private VBox FirstAction;
+    @FXML
+    private VBox chooseResource;
 
     //Market components
     @FXML
@@ -70,6 +75,17 @@ public class BoardController extends ViewObservable implements SceneController {
     private ImageView HoverCard3;
     @FXML
     private ImageView HoverCard4;
+    //choose resource components
+    @FXML
+    private Button coinButton;
+    @FXML
+    private Button shieldButton;
+    @FXML
+    private Button servantButton;
+    @FXML
+    private Button stoneButton;
+    @FXML
+    private Text resourceText;
 
     @FXML
     public void initialize() {
@@ -113,10 +129,18 @@ public class BoardController extends ViewObservable implements SceneController {
         hover.add(HoverCard2);
         hover.add(HoverCard3);
         hover.add(HoverCard4);
+        //choose resource buttons
+        resourcesToSend = new ArrayList<>();
+        coinButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onResourceSelection(Resources.COIN));
+        shieldButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onResourceSelection(Resources.SHIELD));
+        servantButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onResourceSelection(Resources.SERVANT));
+        stoneButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onResourceSelection(Resources.STONE));
     }
 
+    //first Action
     private void onConfirm() {
         new Thread(() -> notifyObserver(obs -> obs.firstAction(choice.get(0), choice.get(1)))).start();
+        showBoard();
     }
 
     private void onCardSelection(int index) {
@@ -138,7 +162,7 @@ public class BoardController extends ViewObservable implements SceneController {
         Card4.setImage(new Image(playerBoard.getLeaderCard(3).getImagePath()));
     }
 
-
+    //market Action
     private void onMarketArrowButtonClick(int choice, int index) {
         new Thread(() -> notifyObserver(obs -> obs.getMarket(choice, index))).start();
     }
@@ -157,6 +181,27 @@ public class BoardController extends ViewObservable implements SceneController {
 
     }
 
+    //choose resource method
+    private void onResourceSelection(Resources resources) {
+        resourcesToSend.add(resources);
+        chooseResource.setDisable(true);
+        chooseResource.setVisible(false);
+    }
+
+    public void askResource() {
+        chooseResource.setVisible(true);
+        chooseResource.setDisable(false);
+    }
+
+    public ArrayList<Resources> getResourcesToSend() {
+        return resourcesToSend;
+    }
+
+    public void setChooseResourceText(String s) {
+        resourceText.setText(s);
+    }
+
+    //exchange views
     private void viewBoard() {
         FirstAction.setDisable(view);
         FirstAction.setVisible(!view);

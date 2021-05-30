@@ -20,6 +20,7 @@ import javafx.scene.control.TextInputDialog;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class Gui extends ViewObservable implements View {
     private String nickname = "";
@@ -81,8 +82,11 @@ public class Gui extends ViewObservable implements View {
     public void askAction(TurnState state) {
         switch (state) {
             case FIRST_TURN: {
-                Platform.runLater(() ->
-                        boardController.updateFirstAction(playerBoard));
+                askFirstAction();
+                break;
+            }
+            case SECOND_TURN: {
+                askSecondAction();
                 break;
             }
             case PRODUCTION_ACTIONS:
@@ -100,12 +104,35 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askFirstAction() {
-
+        Platform.runLater(() ->
+                boardController.updateFirstAction(playerBoard));
     }
 
     @Override
     public void askSecondAction() {
 
+        Platform.runLater(() ->
+                boardController.showBoard());
+        if (playerNumber == 0) { // show comunication
+        } else {
+            Platform.runLater(() ->
+                    boardController.askResource());
+            while (boardController.getResourcesToSend().size() != 1)
+                try {
+                    TimeUnit.MILLISECONDS.sleep(100);
+                } catch (InterruptedException E) {
+                    System.exit(3);
+                }
+            if (playerNumber == 3) {
+
+                Platform.runLater(() ->
+                {
+                    boardController.setChooseResourceText("CHOOSE THE 2ND RESOURCE");
+                    boardController.askResource();
+                });
+            }
+            notifyObserver(obs -> obs.secondAction(boardController.getResourcesToSend()));
+        }
     }
 
     @Override
