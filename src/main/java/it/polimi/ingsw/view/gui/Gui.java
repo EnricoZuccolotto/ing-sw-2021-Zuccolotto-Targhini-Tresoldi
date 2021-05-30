@@ -11,6 +11,7 @@ import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.gui.controllers.BoardController;
+import it.polimi.ingsw.view.gui.controllers.UsernameController;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -27,6 +28,7 @@ public class Gui extends ViewObservable implements View {
     private int playerNumber;
     private static Gui instance = null;
     private BoardController boardController;
+    private UsernameController usernameController;
     private PlayerBoard playerBoard;
 
     private Gui() {
@@ -61,15 +63,18 @@ public class Gui extends ViewObservable implements View {
 
             do {
                 Optional<String> numberString = dialog.showAndWait();
-                if(numberString.isPresent()){
+                if (numberString.isPresent()) {
                     numberOfPlayers = Integer.parseInt(numberString.get());
-                    if(numberOfPlayers >= 1 && numberOfPlayers <= 4) exit = true;
-                    else GuiSceneUtils.showAlertWindow(AlertType.WARNING, "Error", "Invalid number of players, try again!");
+                    if (numberOfPlayers >= 1 && numberOfPlayers <= 4) exit = true;
+                    else
+                        GuiSceneUtils.showAlertWindow(AlertType.WARNING, "Error", "Invalid number of players, try again!");
                 }
-            } while(!exit);
+            } while (!exit);
 
             int finalNumberOfPlayers = numberOfPlayers;
             notifyObserver(obs -> obs.PlayersNumber(finalNumberOfPlayers));
+            if (numberOfPlayers != 1)
+                Platform.runLater(() -> usernameController.changeToLobby());
         });
     }
 
@@ -113,10 +118,14 @@ public class Gui extends ViewObservable implements View {
 
         Platform.runLater(() ->
                 boardController.showBoard());
-        if (playerNumber == 0) { // show comunication
+        if (playerNumber == 0) {
+            // show comunication
         } else {
             Platform.runLater(() ->
-                    boardController.askResource());
+            {
+                boardController.setChooseResourceText("YOU ARE THE " + (playerNumber + 1) + " PLAYER.CHOOSE 1 RESOURCE");
+                boardController.askResource();
+            });
             while (boardController.getResourcesToSend().size() != 1)
                 try {
                     TimeUnit.MILLISECONDS.sleep(100);
@@ -243,6 +252,7 @@ public class Gui extends ViewObservable implements View {
             if(result.isPresent()){
                 if(result.get() == ButtonType.OK){
                     joinLobby();
+                    Platform.runLater(() -> usernameController.changeToLobby());
                 } else if(result.get() == ButtonType.YES){
                     askPlayersNumber();
                 }
@@ -252,7 +262,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showLobby(ArrayList<String> players) {
-
+        Platform.runLater(() -> usernameController.updateLobby(players));
     }
 
     @Override
@@ -270,9 +280,12 @@ public class Gui extends ViewObservable implements View {
 
     }
 
-    public void setMarketController(BoardController boardController) {
+    public void setBoardController(BoardController boardController) {
         this.boardController = boardController;
     }
 
+    public void setUsernameController(UsernameController usernameController) {
+        this.usernameController = usernameController;
+    }
 
 }

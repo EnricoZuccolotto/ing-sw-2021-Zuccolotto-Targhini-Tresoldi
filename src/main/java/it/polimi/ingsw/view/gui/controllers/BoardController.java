@@ -90,7 +90,7 @@ public class BoardController extends ViewObservable implements SceneController {
     @FXML
     public void initialize() {
         Gui gui = Gui.getInstance();
-        gui.setMarketController(this);
+        gui.setBoardController(this);
         //board buttons
         //market buttons
         pushColumn0Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onMarketArrowButtonClick(2, 0));
@@ -200,6 +200,7 @@ public class BoardController extends ViewObservable implements SceneController {
     public void setChooseResourceText(String s) {
         resourceText.setText(s);
     }
+
 
     //exchange views
     private void viewBoard() {

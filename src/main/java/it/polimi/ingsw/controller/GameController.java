@@ -70,6 +70,7 @@ public class GameController {
                     view.showCommunication((e.getLobbyError()).ordinal() + "", CommunicationMessage.ILLEGAL_LOBBY_ACTION);
                     break;
                 }
+                sendLobby();
                 if (lobby.isFull()) {
                     ArrayList<String> lobbyPlayers = lobby.getPlayers();
                     Collections.shuffle(lobbyPlayers);
@@ -78,7 +79,7 @@ public class GameController {
                     }
                     StartGame();
                     break;
-                } else sendLobby();
+                }
                 break;
             }
             case GAMESTARTED: {
