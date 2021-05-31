@@ -83,8 +83,6 @@ public class GameController {
                 break;
             }
             case GAMESTARTED: {
-                // Catching a ClassCastException should be redundant, added for extra safety.
-                // In theory messages received now should all be executable.
                 executableMessages(message);
                 if (roundController.isWinner())
                     endGame();

@@ -85,6 +85,8 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askAction(TurnState state) {
+        Platform.runLater(() ->
+                boardController.clearChoices());
         switch (state) {
             case FIRST_TURN: {
                 askFirstAction();
@@ -203,7 +205,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showDecks(Decks decks) {
-
+        Platform.runLater(() -> boardController.updateDecks(decks));
     }
 
     @Override

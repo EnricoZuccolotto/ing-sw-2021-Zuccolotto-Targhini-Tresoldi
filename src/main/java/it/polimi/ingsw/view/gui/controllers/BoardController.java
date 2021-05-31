@@ -2,6 +2,8 @@ package it.polimi.ingsw.view.gui.controllers;
 
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.board.PlayerBoard;
+import it.polimi.ingsw.model.cards.Decks;
+import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.view.gui.Gui;
@@ -21,18 +23,23 @@ import java.util.ArrayList;
 
 
 public class BoardController extends ViewObservable implements SceneController {
-    private final String effect = " -fx-effect: dropshadow(three-pass-box, rgba(0,0,200,1), 20, 0, 0, 0);";
-    private ArrayList<Integer> choice;
     private ArrayList<ImageView> hover;
-    private ArrayList<Resources> resourcesToSend;
     private boolean view = true;
+
+    private ArrayList<Integer> choice;
+    private ArrayList<Resources> resourcesToSend;
+    private Colors colors;
+
+
     @FXML
     private BorderPane Board;
     @FXML
     private VBox FirstAction;
     @FXML
     private VBox chooseResource;
-
+    //decks components
+    @FXML
+    private GridPane decks;
     //Market components
     @FXML
     private Button pushColumn0Button;
@@ -92,6 +99,7 @@ public class BoardController extends ViewObservable implements SceneController {
         Gui gui = Gui.getInstance();
         gui.setBoardController(this);
         //board buttons
+        viewBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> viewBoard());
         //market buttons
         pushColumn0Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onMarketArrowButtonClick(2, 0));
         pushColumn1Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onMarketArrowButtonClick(2, 1));
@@ -100,25 +108,19 @@ public class BoardController extends ViewObservable implements SceneController {
         pushRow0Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onMarketArrowButtonClick(1, 0));
         pushRow1Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onMarketArrowButtonClick(1, 1));
         pushRow2Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onMarketArrowButtonClick(1, 2));
-
+        //decks button
+        ObservableList<Node> decksChildren = decks.getChildren();
+        for (Colors colors : Colors.values())
+            for (int j = 0; j < 3; j++) {
+                int finalJ = j;
+                decksChildren.get(colors.ordinal() * 3 + (j)).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onDecksCardSelection(colors, finalJ + 1));
+            }
         //first action buttons
         choice = new ArrayList<>();
         hover = new ArrayList<>();
 
         Confirm.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onConfirm());
-        viewBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> viewBoard());
 
-        Card1.addEventHandler(MouseEvent.MOUSE_ENTERED, mouseEvent -> Card1.setStyle(effect));
-        Card1.addEventHandler(MouseEvent.MOUSE_EXITED, mouseEvent -> Card1.setStyle(""));
-
-        Card2.addEventHandler(MouseEvent.MOUSE_ENTERED, mouseEvent -> Card2.setStyle(effect));
-        Card2.addEventHandler(MouseEvent.MOUSE_EXITED, mouseEvent -> Card2.setStyle(""));
-
-        Card3.addEventHandler(MouseEvent.MOUSE_ENTERED, mouseEvent -> Card3.setStyle(effect));
-        Card3.addEventHandler(MouseEvent.MOUSE_EXITED, mouseEvent -> Card3.setStyle(""));
-
-        Card4.addEventHandler(MouseEvent.MOUSE_ENTERED, mouseEvent -> Card4.setStyle(effect));
-        Card4.addEventHandler(MouseEvent.MOUSE_EXITED, mouseEvent -> Card4.setStyle(""));
 
         Card1.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onCardSelection(0));
         Card2.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onCardSelection(1));
@@ -129,6 +131,7 @@ public class BoardController extends ViewObservable implements SceneController {
         hover.add(HoverCard2);
         hover.add(HoverCard3);
         hover.add(HoverCard4);
+
         //choose resource buttons
         resourcesToSend = new ArrayList<>();
         coinButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onResourceSelection(Resources.COIN));
@@ -137,7 +140,7 @@ public class BoardController extends ViewObservable implements SceneController {
         stoneButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onResourceSelection(Resources.STONE));
     }
 
-    //first Action
+    //first methods
     private void onConfirm() {
         new Thread(() -> notifyObserver(obs -> obs.firstAction(choice.get(0), choice.get(1)))).start();
         showBoard();
@@ -156,13 +159,14 @@ public class BoardController extends ViewObservable implements SceneController {
     }
 
     public void updateFirstAction(PlayerBoard playerBoard) {
+
         Card1.setImage(new Image(playerBoard.getLeaderCard(0).getImagePath()));
         Card2.setImage(new Image(playerBoard.getLeaderCard(1).getImagePath()));
         Card3.setImage(new Image(playerBoard.getLeaderCard(2).getImagePath()));
         Card4.setImage(new Image(playerBoard.getLeaderCard(3).getImagePath()));
     }
 
-    //market Action
+    //market methods
     private void onMarketArrowButtonClick(int choice, int index) {
         new Thread(() -> notifyObserver(obs -> obs.getMarket(choice, index))).start();
     }
@@ -181,7 +185,26 @@ public class BoardController extends ViewObservable implements SceneController {
 
     }
 
-    //choose resource method
+    //decks methods
+    public void updateDecks(Decks NewDecks) {
+        Image image;
+
+        ObservableList<Node> decksChildren = decks.getChildren();
+        for (Colors colors : Colors.values())
+            for (int j = 0; j < 3; j++) {
+                ImageView imageView = (ImageView) decksChildren.get(colors.ordinal() * 3 + (j));
+                image = new Image((NewDecks.getDeck(colors, j + 1).getFirstCard().getImagePath()));
+                imageView.setImage(image);
+            }
+    }
+
+    private void onDecksCardSelection(Colors colors, int level) {
+        this.colors = colors;
+        choice.add(level);
+        System.out.println(colors + "  " + level);
+    }
+
+    //choose resource methods
     private void onResourceSelection(Resources resources) {
         resourcesToSend.add(resources);
         chooseResource.setDisable(true);
@@ -221,6 +244,12 @@ public class BoardController extends ViewObservable implements SceneController {
         FirstAction.setDisable(true);
         viewBoard.setDisable(true);
         viewBoard.setVisible(false);
+
+    }
+
+    public void clearChoices() {
+        choice.clear();
+        resourcesToSend.clear();
     }
 
 

@@ -59,3 +59,30 @@
     -fx-border-color: black;
     -fx-border-width: 3;
 }
+
+.card {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-border: none;
+}
+
+.card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 200, 1), 20, 0, 0, 0);
+}
+
+.DevCard {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-border: none;
+    -fx-position: relative;
+    -fx-view-order: 0;
+}
+
+.DevCard:hover {
+    -fx-scale-y: 1.5;
+    -fx-scale-x: 1.5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 200, 1), 20, 0, 0, 0);
+    -fx-position: relative;
+    -fx-view-order: -1.0;
+}
+
