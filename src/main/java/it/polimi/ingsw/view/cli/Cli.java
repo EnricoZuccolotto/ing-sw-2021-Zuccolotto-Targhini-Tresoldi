@@ -16,7 +16,6 @@ import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
 
-import java.awt.geom.FlatteningPathIterator;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -246,6 +245,7 @@ public class Cli extends ViewObservable implements View {
     @Override
     public void askFirstAction() {
         int firstCard, secondCard;
+        clearCli();
         String question = "Which cards do you want to discard? Select 1, between 0 and 3:";
         try {
             firstCard = validateInput(0, 3, null, question);
@@ -593,20 +593,18 @@ public class Cli extends ViewObservable implements View {
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
         clearCli();
         if (playerBoard.getName().equals(nickname)) {
-            out.println(nickname + " is playing...");
             this.playerBoard = playerBoard;
-            out.println(playerBoard.getPlayerBoard().toString(true));
-            out.println(playerBoard);
+            out.println(playerBoard.toString(true));
         } else if (!turnState.equals(TurnState.FIRST_TURN)) {
-            out.println(playerBoard.getName());
-            out.println(playerBoard.getPlayerBoard().toString(false));
-            out.println(playerBoard);
+            out.println(" Another player is playing...");
+            out.println(playerBoard.toString(false));
         }
     }
 
+
     @Override
     public void showFaithPath(FaithPath faithPath) {
-        out.println(faithPath);
+        out.println(faithPath + "your score is in position:" + playerNumber);
     }
 
     @Override
@@ -663,6 +661,7 @@ public class Cli extends ViewObservable implements View {
             } catch (NumberFormatException e) {
                 out.println("Invalid input! Please try again.\n");
             }
+
         } while (number < minValue || number > maxValue || jumpList.contains(number));
 
         return number;
@@ -703,6 +702,7 @@ public class Cli extends ViewObservable implements View {
     }
 
 public void clearCli() {
-        out.flush();
+    out.println("\033[H\033[2J");
+    out.flush();
     }
 }

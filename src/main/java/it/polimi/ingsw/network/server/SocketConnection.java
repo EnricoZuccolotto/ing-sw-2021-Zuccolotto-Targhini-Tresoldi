@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
 
@@ -37,7 +38,7 @@ public class SocketConnection implements Runnable {
                 this.output = new ObjectOutputStream(client.getOutputStream());
             }
         } catch (IOException e) {
-            // TODO: Failed to start client
+            SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
         }
 
         socketConnectionThread = new Thread(this);
@@ -65,7 +66,7 @@ public class SocketConnection implements Runnable {
             } catch (IOException e) {
                 disconnect();
             } catch (ClassNotFoundException e) {
-                // TODO: error;
+                SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
             }
         }
     }
@@ -84,7 +85,7 @@ public class SocketConnection implements Runnable {
                     output.reset();
                 }
             } catch (IOException e) {
-                // TODO: error;
+                SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
                 disconnect();
             }
         }
@@ -97,7 +98,7 @@ public class SocketConnection implements Runnable {
                     clientSocket.close();
                 }
             } catch(IOException e){
-                // TODO: Error
+                SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
             }
 
             socketConnectionThread.interrupt();

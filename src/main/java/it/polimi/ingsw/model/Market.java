@@ -90,6 +90,10 @@ public class Market extends Observable implements Serializable {
         return slide;
     }
 
+    public Resources getResource(int i, int j) {
+        return market[i][j];
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();

@@ -325,9 +325,9 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
                     tmp+=sp.checkColor(c);
                 if(colors[c.ordinal()]-tmp>0) {
                     return false;
-                 }
+                }
             }
-            }
+        }
         return true;
     }
 
@@ -387,6 +387,21 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         }
         return list;
     }
+    @Override
+    public boolean checkColorsAndLevel(int[] colors, int level) {
+        int tmp;
+        for (Colors c : Colors.values()) {
+            tmp = 0;
+            if (colors[c.ordinal()] != 0) {
+                for (SpaceProd sp : productionSpaces)
+                    tmp += sp.checkColor(c, level);
+                if (colors[c.ordinal()] - tmp > 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     @Override
     public String toString(boolean mine) {
@@ -394,7 +409,7 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         stringBuilder.append("Strongbox: ");
         stringBuilder.append(strongbox);
         stringBuilder.append("\n");
-        if (getLeaderCardsNumber() == 0 && !mine)
+        if (getLeaderCardsNumber() != 0 && !mine)
             stringBuilder.append("Leader cards:\n");
         for (LeaderCard card : leaderCards) {
             if (mine && !card.getUncovered()) {
@@ -404,7 +419,14 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
                 stringBuilder.append("\n");
             }
         }
-
+        if (productionSpaces.size() != 0)
+            stringBuilder.append("Development cards:\n");
+        for (SpaceProd prod : productionSpaces) {
+            stringBuilder.append(productionSpaces.indexOf(prod));
+            stringBuilder.append(". ");
+            stringBuilder.append(prod.getTop());
+            stringBuilder.append("\n");
+        }
         stringBuilder.append(warehouse);
         return stringBuilder.toString();
     }

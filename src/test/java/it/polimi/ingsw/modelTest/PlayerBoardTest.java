@@ -161,6 +161,7 @@ public class PlayerBoardTest {
         assertEquals(a, s.getProductionCost(0));
         assertEquals(b, s.getProductionResult(0));
         assertTrue(s.checkColors(col1));
+        assertTrue(s.checkColorsAndLevel(col1, 1));
         assertTrue(s.checkColors(col2));
         DevelopmentCard h= new DevelopmentCard(1,2,a,a,a, Colors.PURPLE,3);
         try {

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.cards;
 
+import it.polimi.ingsw.view.cli.ColorsCLI;
+
 import java.io.Serializable;
 
 /**
@@ -59,8 +61,29 @@ public class Card implements Serializable {
         return ID;
     }
 
+    /**
+     * Gets the image path of the card
+     *
+     * @return the image path of the card
+     */
+    public String getImagePath() {
+        return "Image/Cards/";
+    }
+
     @Override
     public String toString() {
-        return "VP=" + VP;
+        return "VP=" + ColorsCLI.YELLOW_BOLD + VP + ColorsCLI.RESET;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Card other = (Card) obj;
+        return other.VP == VP && other.ID == ID;
     }
 }

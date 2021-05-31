@@ -31,9 +31,12 @@ public class CompressedPlayerBoard implements Serializable {
         return name;
     }
 
-    @Override
-    public String toString() {
+
+    public String toString(boolean mine) {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Name: ").append(this.getName());
+        stringBuilder.append("\n");
+        stringBuilder.append(this.getPlayerBoard().toString(mine));
         if (temporaryResourceStorage.size() > 0) {
             stringBuilder.append("\n temporaryResourceStorage=");
             stringBuilder.append(temporaryResourceStorage);

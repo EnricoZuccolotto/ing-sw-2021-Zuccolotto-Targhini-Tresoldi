@@ -46,10 +46,7 @@ public class CardParser {
             return null;
         }
 
-        JsonParser parser;
-        parser = new JsonParser();
-
-        JsonObject json = parser.parse(new InputStreamReader(is)).getAsJsonObject();
+        JsonObject json = JsonParser.parseReader(new InputStreamReader(is)).getAsJsonObject();
         JsonArray DevCards = json.getAsJsonArray("DevCards");
 
         for (JsonElement DevelCard : DevCards) {
@@ -93,10 +90,7 @@ public class CardParser {
             return null;
         }
 
-        JsonParser parser;
-        parser = new JsonParser();
-
-        JsonObject json = parser.parse(new InputStreamReader(is)).getAsJsonObject();
+        JsonObject json = JsonParser.parseReader(new InputStreamReader(is)).getAsJsonObject();
         JsonArray FaithCards = json.getAsJsonArray("FaithCards");
 
         for (JsonElement papalCard : FaithCards) {
@@ -128,10 +122,7 @@ public class CardParser {
             return null;
         }
 
-        JsonParser parser;
-        parser = new JsonParser();
-
-        JsonObject json = parser.parse(new InputStreamReader(is)).getAsJsonObject();
+        JsonObject json = JsonParser.parseReader(new InputStreamReader(is)).getAsJsonObject();
         JsonArray LeadCards = json.getAsJsonArray("LeaderCards");
 
         for (JsonElement LeadCard : LeadCards) {

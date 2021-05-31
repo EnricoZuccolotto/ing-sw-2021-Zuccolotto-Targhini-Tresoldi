@@ -1,10 +1,10 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.exception.controller.LobbyError;
 import it.polimi.ingsw.exception.controller.LobbyException;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.player.HumanPlayer;
+import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.ExecutableMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.view.NetworkLayerView;
@@ -67,9 +67,10 @@ public class GameController {
                     executableMessages(message);
                 } catch (LobbyException e) {
                     NetworkLayerView view = (NetworkLayerView) viewMap.get(message.getPlayerName());
-                    view.showCommunication(LobbyError.toString(e.getLobbyError()), CommunicationMessage.ILLEGAL_LOBBY_ACTION);
+                    view.showCommunication((e.getLobbyError()).ordinal() + "", CommunicationMessage.ILLEGAL_LOBBY_ACTION);
                     break;
                 }
+                sendLobby();
                 if (lobby.isFull()) {
                     ArrayList<String> lobbyPlayers = lobby.getPlayers();
                     Collections.shuffle(lobbyPlayers);
@@ -78,7 +79,7 @@ public class GameController {
                     }
                     StartGame();
                     break;
-                } else sendLobby();
+                }
                 break;
             }
             case GAMESTARTED: {
@@ -96,7 +97,7 @@ public class GameController {
             ExecutableMessage currentMessage = (ExecutableMessage) message;
             currentMessage.execute(this);
         } catch (ClassCastException ex) {
-            // TODO: error, invalid executable message.
+            SocketClient.LOGGER.warning("Invalid message: " + ex.getMessage());
         }
     }
 
@@ -119,6 +120,10 @@ public class GameController {
         return gamestate;
     }
 
+    public void setGameState(GameState gamestate) {
+        this.gamestate = gamestate;
+    }
+
     public boolean validateAction(Action action) {
         return TurnState.isPossible(roundController.getTurnState(), action);
     }
@@ -135,7 +140,6 @@ public class GameController {
         }
         gamestate = GameState.END;
         gameBoardInstance.setPublicCommunication("THE END", CommunicationMessage.PUBLIC);
-
     }
 
     public RoundController getRoundController(){

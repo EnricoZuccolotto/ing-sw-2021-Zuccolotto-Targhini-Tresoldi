@@ -14,7 +14,7 @@ public enum Advantages {
             case PROD: {
                 string.append(" You can use a special production: 1 ");
                 string.append(Resources.getResources(effect));
-                string.append("--> 1 WHATEVER + 1 FAITH");
+                string.append("--> 1 ").append(Resources.WHATEVER).append("+ 1 ").append(Resources.FAITH);
                 break;
             }
             case SALES: {

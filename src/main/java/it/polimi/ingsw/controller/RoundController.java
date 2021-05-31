@@ -448,7 +448,6 @@ public class RoundController {
                     else break;
                 }
                 case LAST_LEADER_ACTION: {
-                    System.out.println(playerInTurn.getPlayerBoard().getLeaderCardsNumber());
                     if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
                         nextTurn();
                     }
@@ -456,7 +455,6 @@ public class RoundController {
                 }
 
             }
-        System.out.println(turnState);
         if (flag)
             playerInTurn.setState(turnState);
 

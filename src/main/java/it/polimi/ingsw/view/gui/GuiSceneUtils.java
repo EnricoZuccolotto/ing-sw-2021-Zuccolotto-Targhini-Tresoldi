@@ -2,11 +2,14 @@ package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
-import it.polimi.ingsw.view.gui.controllers.AlertController;
 import it.polimi.ingsw.view.gui.controllers.SceneController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,22 +41,16 @@ public class GuiSceneUtils {
         return changeActivePanel(observerList, activeScene, fxmlSource);
     }
 
-    public static void showAlertWindow(String title, String message){
-        FXMLLoader loader = new FXMLLoader(SceneController.class.getResource("/fxml/alert.fxml"));
+    public static void showAlertWindow(AlertType severity, String title, String message){
+        Alert alertWindow = new Alert(severity, message);
+        alertWindow.setTitle(title);
+        alertWindow.setHeaderText(title);
+        alertWindow.setResizable(false);
+        alertWindow.initOwner(activeScene.getWindow());
+        alertWindow.showAndWait();
+    }
 
-        Parent parent;
-        try {
-            parent = loader.load();
-        } catch(IOException ex){
-            // ERROR
-            return;
-        }
-        AlertController alertController = loader.getController();
-        Scene alertScene = new Scene(parent);
-        alertController.setTitleLabelMessage(title);
-        alertController.setTextLabelMessage(message);
-        alertController.setScene(alertScene);
-        alertController.show();
-
+    public static boolean isAnEnterKeyEvent(KeyEvent keyEvent){
+        return keyEvent.getCode() == KeyCode.ENTER;
     }
 }

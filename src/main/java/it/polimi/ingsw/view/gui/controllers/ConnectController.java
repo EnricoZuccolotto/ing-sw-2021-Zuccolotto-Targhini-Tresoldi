@@ -7,10 +7,10 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 
 public class ConnectController extends ViewObservable implements SceneController {
     @FXML
@@ -25,11 +25,21 @@ public class ConnectController extends ViewObservable implements SceneController
     private Label ipAddressErrorLabel;
     @FXML
     private Label portErrorLabel;
+    @FXML
+    private AnchorPane anchorPane;
+    @FXML
+    private ProgressBar loadingProgressBar;
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         backButton.addEventHandler(MouseEvent.MOUSE_CLICKED, this::onBackButtonClick);
         connectButton.addEventHandler(MouseEvent.MOUSE_CLICKED, this::onConnectButtonClick);
+        anchorPane.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if(GuiSceneUtils.isAnEnterKeyEvent(keyEvent)) onConnectButtonClick(keyEvent);
+        });
+        backButton.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if(GuiSceneUtils.isAnEnterKeyEvent(keyEvent)) onBackButtonClick(keyEvent);
+        });
     }
 
     private void onBackButtonClick(Event event){
@@ -47,8 +57,11 @@ public class ConnectController extends ViewObservable implements SceneController
         portErrorLabel.setVisible(!isPortValid);
 
         if(isAddressValid && isPortValid){
+            loadingProgressBar.setVisible(true);
             backButton.setDisable(true);
             connectButton.setDisable(true);
+            ipAddressTextField.setDisable(true);
+            portTextField.setDisable(true);
 
             new Thread(() -> notifyObserver(obs -> obs.ServerInfo(address, port))).start();
         }

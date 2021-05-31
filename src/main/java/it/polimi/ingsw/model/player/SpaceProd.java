@@ -63,6 +63,21 @@ public class SpaceProd implements Serializable {
     }
 
     /**
+     * Gets the number of color c contained in this production space with level equals to level
+     *
+     * @param c color of interest
+     */
+    public int checkColor(Colors c, int level) {
+        int cont = 0;
+        for (DevelopmentCard card : spaceProd) {
+            if (card.getColor().equals(c) && card.getLevel() == level) {
+                cont += 1;
+            }
+        }
+        return cont;
+    }
+
+    /**
      * Gets the first card of the stack
      *
      * @return the usable development card.

@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
+import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
@@ -232,16 +233,24 @@ public class ActionController {
     public boolean activateLeader(int index, HumanPlayer player) {
 
         LeaderCard leaderCard = player.getPlayerBoard().getLeaderCard(index);
+        if (leaderCard.getAdvantage().equals(Advantages.PROD)) {
 
-        if (!player.getPlayerBoard().checkColors(leaderCard.getCostColor())) {
-            player.setPrivateCommunication("You don't have enough colors to activate this card", CommunicationMessage.ILLEGAL_ACTION);
-            return false;
+            if ((!player.getPlayerBoard().checkColorsAndLevel(leaderCard.getCostColor(), 2))) {
+                player.setPrivateCommunication("You don't have a card that respects the requirements", CommunicationMessage.ILLEGAL_ACTION);
+                return false;
+            }
+        } else {
+            if (!player.getPlayerBoard().checkColors(leaderCard.getCostColor())) {
+                player.setPrivateCommunication("You don't have enough colors to activate this card", CommunicationMessage.ILLEGAL_ACTION);
+                return false;
+            }
         }
+
         if (!player.getPlayerBoard().checkResources(leaderCard.getCostResources())) {
             player.setPrivateCommunication("You don't have enough resources to activate this card", CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
-        if(leaderCard.getUncovered()) {
+        if (leaderCard.getUncovered()) {
             player.setPrivateCommunication("You already used this card", CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
