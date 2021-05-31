@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.tools;
 
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * This class is used in the messages to exchange resources.
@@ -33,5 +34,14 @@ public class ExchangeResources implements Serializable {
 
     public int[] getStrongbox() {
         return Strongbox;
+    }
+
+    @Override
+    public String toString() {
+        return "ExchangeResources{" +
+                "Warehouse=" + Arrays.toString(Warehouse) +
+                ", SpecialWarehouse=" + Arrays.toString(SpecialWarehouse) +
+                ", Strongbox=" + Arrays.toString(Strongbox) +
+                '}';
     }
 }

@@ -5,8 +5,12 @@ import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
+import it.polimi.ingsw.model.player.SpaceProd;
+import it.polimi.ingsw.model.player.Strongbox;
+import it.polimi.ingsw.model.player.Warehouse;
 
 import java.util.ArrayList;
+import java.util.SplittableRandom;
 
 /**
  * This interface represents a player board.
@@ -302,6 +306,23 @@ public interface PlayerBoard {
      * @return Gets the result of the special productions
      */
     ArrayList<Resources> getProductions(Resources resource);
+
+    /**
+     * Gets a list with the type of resources contained in the strongbox, the warehouse or the special warehouse
+     *
+     * @param choice is to choose between warehouse, strongbox, or the special warehouse
+     * @param temp is for exclude a resource from the count
+     *
+     * @return Gets a list with the type of resources contained
+     */
+    ArrayList<Resources> getResources(int choice, int temp);
+
+    /**
+     * Gets the production space
+     *
+     * @return The production space
+     */
+    ArrayList<SpaceProd> getProductionSpaces();
 
     String toString(boolean mine);
 }

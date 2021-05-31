@@ -4,6 +4,9 @@ import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
+import it.polimi.ingsw.model.player.SpaceProd;
+import it.polimi.ingsw.model.player.Strongbox;
+import it.polimi.ingsw.model.player.Warehouse;
 
 import java.util.ArrayList;
 
@@ -175,4 +178,11 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     public String toString(boolean mine) {
         return subBoard.toString(mine);
     }
+
+    @Override
+    public ArrayList<Resources> getResources(int choice, int temp){ return subBoard.getResources(choice, temp);}
+
+    @Override
+    public ArrayList<SpaceProd> getProductionSpaces(){ return subBoard.getProductionSpaces(); }
+
 }

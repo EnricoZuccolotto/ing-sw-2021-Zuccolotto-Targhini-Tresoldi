@@ -43,6 +43,9 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     }
 
     @Override
+    public ArrayList<SpaceProd> getProductionSpaces(){ return productionSpaces; }
+
+    @Override
     public int getLeaderCardsNumber() {
         int cont=0;
         for(LeaderCard c:leaderCards)
@@ -333,6 +336,57 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         strongbox.addResources(r, quantities);
     }
 
+    @Override
+    public ArrayList<Resources> getResources(int choice, int temp){
+        ArrayList<Resources> list= new ArrayList<>();
+        if (choice == 0) {
+            for (int i = 0; i < 4; i++) {
+                int[] a = {0, 0, 0, 0};
+                a[i] = 1;
+                if(temp!=-1) {
+                    a[temp] += 1;
+                }
+                if (checkResourcesWarehouse(a)) {
+                    list.add(Resources.transform(i));
+                }
+                a[i] = 0;
+                if(temp!=-1) {
+                    a[temp] = 0;
+                }
+            }
+        } else if (choice == 1) {
+            for (int i = 0; i < 4; i++) {
+                int[] a = {0, 0, 0, 0};
+                a[i] = 1;
+                if(temp!=-1) {
+                    a[temp] += 1;
+                }
+                if (checkResourcesStrongbox(a)) {
+                    list.add(Resources.transform(i));
+                }
+                a[i] = 0;
+                if(temp!=-1) {
+                    a[temp] = 0;
+                }
+            }
+        } else if (choice == 2) {
+            for (int i = 0; i < 4; i++) {
+                int[] a = {0, 0, 0, 0};
+                a[i] = 1;
+                if(temp!=-1) {
+                    a[temp] += 1;
+                }
+                if (checkResourcesSpecialWarehouse(a)) {
+                    list.add(Resources.transform(i));
+                }
+                a[i] = 0;
+                if(temp!=-1) {
+                    a[temp] = 0;
+                }
+            }
+        }
+        return list;
+    }
     @Override
     public boolean checkColorsAndLevel(int[] colors, int level) {
         int tmp;
