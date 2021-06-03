@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.controller.ClientManager;
 import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
@@ -155,5 +156,10 @@ public class NetworkLayerView implements View, Observer {
     @Override
     public void update(Message message) {
         connection.sendMessage(message);
+    }
+
+    @Override
+    public ClientManager getClientManager(){
+        return null;
     }
 }

@@ -25,7 +25,7 @@ public class ServerApp {
             }
         }
 
-        GameController gameController = new GameController();
+        GameController gameController = new GameController(false);
         Server server = new Server(gameController);
 
         SocketServer socketServer = new SocketServer(server, serverPort);

@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.cli;
 
 import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.ClientManager;
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
@@ -12,6 +13,7 @@ import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
+import it.polimi.ingsw.network.Client.Client;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
@@ -31,16 +33,28 @@ public class Cli extends ViewObservable implements View {
     private CompressedPlayerBoard playerBoard;
     private String nickname;
     private Decks decks;
+    boolean local = false;
+    private ClientManager clientManager;
 
     /**
      * Default constructor.
      */
     public Cli() {
         out = System.out;
-        ClientManager clientManager = new ClientManager(this);
+        clientManager = new ClientManager(this);
         this.addObserver(clientManager);
         turnState = TurnState.END;
+        local = false;
         init();
+    }
+    public Cli(GameController gameController) {
+        gameController.setLocalView(this);
+        out = System.out;
+        clientManager = new ClientManager(this, gameController);
+        this.addObserver(clientManager);
+        turnState = TurnState.END;
+        local = true;
+        askUsername();
     }
 
     public String readLine() throws ExecutionException {
@@ -127,6 +141,7 @@ public class Cli extends ViewObservable implements View {
         out.print("Enter your nickname: ");
         try {
             String nickname = readLine();
+            if(local) this.nickname = nickname; // If local game nickname is always accepted.
             notifyObserver(obs -> obs.Nickname(nickname));
         } catch (ExecutionException e) {
             out.println("Error");
@@ -144,6 +159,9 @@ public class Cli extends ViewObservable implements View {
         } catch (ExecutionException e) {
             out.println("Error");
         }
+    }
+    public void askPlayersNumber(int number){
+        notifyObserver(obs -> obs.PlayersNumber(number));
     }
 
     public void askJoinOrSet() {
@@ -547,7 +565,11 @@ public class Cli extends ViewObservable implements View {
             if (nick) {
                 out.println("your username is accepted, welcome " + name);
                 this.nickname = name;
-                askJoinOrSet();
+                if(!local){
+                    askJoinOrSet();
+                } else {
+                    askPlayersNumber(1);
+                }
             } else {
                 out.println("Your username is already taken, try another one");
                 askUsername();
@@ -701,8 +723,13 @@ public class Cli extends ViewObservable implements View {
         return pos;
     }
 
-public void clearCli() {
-    out.println("\033[H\033[2J");
-    out.flush();
+    public void clearCli() {
+        out.println("\033[H\033[2J");
+        out.flush();
+    }
+
+    @Override
+    public ClientManager getClientManager(){
+        return clientManager;
     }
 }

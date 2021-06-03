@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 /**
  * This class represents a socket client implementation.
  */
-public class SocketClient extends Observable {
+public class SocketClient extends Observable implements Client {
 
     private static final int TIMEOUT = 10000;
     public static final Logger LOGGER = Logger.getLogger(SocketClient.class.getName());

@@ -6,7 +6,10 @@ import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.ExecutableMessage;
+import it.polimi.ingsw.network.messages.LoginMessage;
 import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.messages.MessageType;
+import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.view.NetworkLayerView;
 import it.polimi.ingsw.view.View;
 
@@ -22,26 +25,29 @@ public class GameController {
     private final GameBoard gameBoardInstance;
     private final LobbyController lobby;
     private final RoundController roundController;
-    private final Map<String, View> viewMap;
+    private final Map<String, Observer> viewMap;
+    private View localView;
+    private final boolean local;
 
-    public GameController() {
+    public GameController(boolean local) {
         this.gamestate = GameState.LOBBY;
         this.lobby = new LobbyController();
         this.gameBoardInstance = new GameBoard();
         this.roundController = new RoundController(gameBoardInstance);
         viewMap = Collections.synchronizedMap(new HashMap<>());
+        this.local = local;
     }
     public GameBoard getInstance(){
         return gameBoardInstance;
     }
 
-    public void addPlayer(String name, View view, boolean inkwell) {
+    public void addPlayer(String name, Observer view, boolean inkwell) {
         // TODO: Handle local single player
         gameBoardInstance.addPlayer(new HumanPlayer(name, inkwell));
-        gameBoardInstance.addObserver((NetworkLayerView) view);
-        gameBoardInstance.getMarket().addObserver((NetworkLayerView) view);
-        gameBoardInstance.getFaithPath().addObserver((NetworkLayerView) view);
-        gameBoardInstance.getDecks().addObserver((NetworkLayerView) view);
+        gameBoardInstance.addObserver(view);
+        gameBoardInstance.getMarket().addObserver(view);
+        gameBoardInstance.getFaithPath().addObserver(view);
+        gameBoardInstance.getDecks().addObserver(view);
     }
 
     public void addView(String name, NetworkLayerView view) {
@@ -52,7 +58,8 @@ public class GameController {
         roundController.init();
         for (HumanPlayer player : gameBoardInstance.getPlayers())
             for (HumanPlayer player1 : gameBoardInstance.getPlayers())
-                player.addObserver((NetworkLayerView) viewMap.get(player1.getName()));
+                player.addObserver(viewMap.get(player1.getName()));
+
         gameBoardInstance.setPublicCommunication("The game is starting", CommunicationMessage.STARTING_GAME);
         gameBoardInstance.init(gameBoardInstance);
         gamestate = GameState.GAMESTARTED;
@@ -61,6 +68,19 @@ public class GameController {
 
 
     public synchronized void onMessage(Message message) {
+        if(local && message.getMessageType().equals(MessageType.LOGIN)){
+            if(localView != null){
+                if(message.getMessageType().equals(MessageType.LOGIN)){
+                    viewMap.put(((LoginMessage) message).getPlayerName(), localView.getClientManager());
+                    addPlayer(((LoginMessage) message).getPlayerName(), localView.getClientManager(), true);
+                    StartGame();
+                }
+            } else {
+                System.out.println("Error");
+                System.exit(1);
+            }
+            return;
+        }
         switch (gamestate) {
             case LOBBY: {
                 try {
@@ -110,7 +130,7 @@ public class GameController {
     }
 
     private void sendLobby() {
-        for (View view : viewMap.values()) {
+        for (Observer view : viewMap.values()) {
             NetworkLayerView view1 = (NetworkLayerView) view;
             view1.showLobby(lobby.getPlayers());
         }
@@ -150,5 +170,8 @@ public class GameController {
         return lobby;
     }
 
+    public void setLocalView(View view){
+        this.localView = view;
+    }
 
 }

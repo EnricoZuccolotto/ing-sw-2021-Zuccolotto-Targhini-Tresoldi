@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.controller.ClientManager;
 import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
@@ -64,4 +65,6 @@ public interface View {
     void showError(String error);
 
     void showCommunication(String communication, CommunicationMessage type);
+
+    ClientManager getClientManager();
 }
