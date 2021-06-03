@@ -404,12 +404,10 @@ public class Cli extends ViewObservable implements View {
         ArrayList<Integer> jump= new ArrayList<>();
         ArrayList<Integer> pos;
         int[] a;
-        int color1=-1, level, index;
+        int color1=-1, level=-1, index;
         boolean flag=false;
         String question;
         try{
-            question = "Choose the level of the card you would like to buy: ";
-            level = validateInput(1, 3, null, question);
             while (!flag) {
                 out.println("\nThis are the possible card color to buy: ");
                 for (Colors color: col) {
@@ -417,6 +415,8 @@ public class Cli extends ViewObservable implements View {
                 }
                 question="Select the color of the card you want to buy: ";
                 color1 = validateInput(0, col.size(), jump, question);
+                question = "Choose the level of the card you would like to buy: ";
+                level = validateInput(1, 3, null, question);
                 if (decks.getDeck(col.get(color1), level).DeckLength() == 0) {
                     out.println("The deck is empty, choose another one: ");
                 } else if(!(playerBoard.getPlayerBoard().checkResources(decks.getDeck(col.get(color1), level).getFirstCard().getCostCard()))){
@@ -435,57 +435,57 @@ public class Cli extends ViewObservable implements View {
             int finalIndex = index-1;
             notifyObserver(obs -> obs.getProduction(finalColor, finalLevel, pos, finalIndex, a));
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            out.println("Error");
         }
     }
 
     @Override
     public void askUseBaseProduction() {
-        int choice, temp=-1;
+        int choice=0, temp=0, choice2=-1;
         boolean flag=false, finish=false;
-        Resources obt, res;
+        Resources obt, res = Resources.WHITE, val=Resources.WHITE;
         ArrayList<String> s= new ArrayList<>();
         s.add("Warehouse");
         s.add("Strongbox");
         s.add("SpecialWarehouse");
-        ArrayList<Resources> list = new ArrayList<>();
-        ArrayList<Resources> jumplist= new ArrayList<>(Arrays.asList(Resources.values()));
+        String question;
         ArrayList<Resources> pass = new ArrayList<>();
         ArrayList<Resources> obtain = new ArrayList<>();
         ArrayList<Integer> value= new ArrayList<>();
         obtain.add(Resources.FAITH);
         obtain.add(Resources.WHITE);
         obtain.add(Resources.WHATEVER);
-        out.println("\nPossible choices: ");
-        for (String st: s) {
-            out.println(s.indexOf(st) + ". " + st);
-        }
-        String question = "You have to choose two resources from your strongbox or your warehouses. Choose a number: ";
+        out.println("You have to choose two resources from your strongbox or your warehouses.");
         try {
-            choice = validateInput(1, 3, null, question);
             while (!finish){
                 while (!flag) {
-                    list.removeAll(Arrays.asList(Resources.values()));
-                    list = (playerBoard.getPlayerBoard().getResources(choice, temp));
-                    if (list.size() != 0) {
+                    out.println("\nPossible choices: ");
+                    for (String st: s) {
+                        out.println(s.indexOf(st) + ". " + st);
+                    }
+                    question= "Choose a number: ";
+                    choice = validateInput(0, 2, null, question);
+                    question = "Choose which resource you want to use?: ";
+                    res = validateResources(question, obtain);
+                    if(res.equals(val) && choice==choice2){
+                        temp++;
+                    }
+                    if (!(playerBoard.getPlayerBoard().getResources(choice, temp).contains(res))) {
                         flag = true;
+                        val=res;
                     } else {
-                        out.println("You don't have any resource here, insert another value: ");
-                        choice = validateInput(0, 2, null, question);
+                        out.println("You don't have this resource here. ");
+                        temp=0;
                     }
                 }
-                question = "Choose which resource you want to use between" + list + ": ";
-                jumplist.removeAll(list);
-                res = validateResources(question, jumplist);
-                temp=res.ordinal();
                 pass.add(res);
                 value.add(choice);
                 if(pass.size()==2){
                     finish=true;
                 } else
-                    { question="Now, choose where you want to select the other resources, choose another number: ";
-                        choice = validateInput(1, 3, null, question);
+                    { out.println("Now, choose where you want to select the other resources");
                         flag=false;
+                        choice2=value.get(0);
                     }
             }
             question="Which resource do you want to obtain? ";
