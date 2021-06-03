@@ -257,7 +257,39 @@ public class Cli extends ViewObservable implements View {
     }
 
     private void askUseProduction() {
-        askUseBaseProduction();
+        ArrayList<String> s= new ArrayList<>();
+        ArrayList<Integer> jump= new ArrayList<>();
+        int index;
+        s.add("Normal_Production");
+        s.add("Base_Production");
+        s.add("Special_Production");
+        for (String st : s) {
+            out.println(s.indexOf(st) + ". " + st);
+        }
+        String question="Which production would you like to active? ";
+        if(playerBoard.getPlayerBoard().getProductionSpaces().size()==0){
+            jump.add(0);
+        }
+        if(playerBoard.getPlayerBoard().getNumberResources()<2){
+            jump.add(1);
+        }
+        if(playerBoard.getPlayerBoard().getProductionNumber()==0){
+            jump.add(2);
+        }
+        try {
+            index= validateInput(0, 2, jump, question);
+            if(index==0){
+                askUseNormalProduction();
+            }
+            if (index==1){
+                askUseBaseProduction();
+            }
+            if (index==2){
+                askUseSpecialProduction();
+            }
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
     }
 
     @Override
@@ -372,31 +404,26 @@ public class Cli extends ViewObservable implements View {
         ArrayList<Integer> jump= new ArrayList<>();
         ArrayList<Integer> pos;
         int[] a;
-        int color1=-1, level=-1, index;
+        int color1=-1, level, index;
         boolean flag=false;
-        for (Colors color: col) {
-            if(decks.getDeck(color, 3).DeckLength()==0){
-                jump.add(col.indexOf(color));
-                col.remove(color);
-            }
-        }
-        out.println("\nThis are the possible card color to buy: ");
-        for (Colors color: col) {
-            out.println(col.indexOf(color) + ". " + color);
-        }
-        String question="Select the color of the card you want to buy: ";
+        String question;
         try{
+            question = "Choose the level of the card you would like to buy: ";
+            level = validateInput(1, 3, null, question);
             while (!flag) {
-                color1 = validateInput(0, 3, jump, question);
-                question = "Choose the level of the card you would like to buy: ";
-                level = validateInput(1, 3, null, question);
-                if (decks.getDeck(col.get(color1), level).DeckLength() != 0) {
-                    flag = true;
+                out.println("\nThis are the possible card color to buy: ");
+                for (Colors color: col) {
+                    out.println(col.indexOf(color) + ". " + color);
+                }
+                question="Select the color of the card you want to buy: ";
+                color1 = validateInput(0, col.size(), jump, question);
+                if (decks.getDeck(col.get(color1), level).DeckLength() == 0) {
+                    out.println("The deck is empty, choose another one: ");
                 } else if(!(playerBoard.getPlayerBoard().checkResources(decks.getDeck(col.get(color1), level).getFirstCard().getCostCard()))){
                     out.println("You cannot buy this card, choose another one: ");
                 }
                 else {
-                    out.println("The deck is empty, choose another one: ");
+                    flag=true;
                 }
             }
             a=decks.getDeck(col.get(color1), level).getFirstCard().getCostCard();
@@ -405,7 +432,7 @@ public class Cli extends ViewObservable implements View {
             index=validateInput(0, 3, null, question);
             int finalColor = color1;
             int finalLevel = level;
-            int finalIndex = index;
+            int finalIndex = index-1;
             notifyObserver(obs -> obs.getProduction(finalColor, finalLevel, pos, finalIndex, a));
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -705,7 +732,7 @@ public class Cli extends ViewObservable implements View {
         try {
             for (int i = 0; i < 4; i++) {
                 while (count != a[i]) {
-                    question = "Pick a number for the resource" + Resources.transform(i) + ": ";
+                    question = "Pick a number for the resource " + Resources.transform(i) + ": ";
                     select = validateInput(0, 2, null, question);
                     resource = playerBoard.getPlayerBoard().getResources(select, count);
                     if (resource.contains(Resources.transform(i))) {
