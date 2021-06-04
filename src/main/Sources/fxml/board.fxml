@@ -407,9 +407,10 @@
                 </Pane>
             </center>
         </BorderPane>
-        <AnchorPane fx:id="playerBoard" disable="true" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity"
-                    maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="996.0"
-                    scaleShape="false" stylesheets="@../Image/Market/components.css" translateX="150.0">
+        <AnchorPane fx:id="playerBoard" disable="true" focusTraversable="true" layoutX="10.0" layoutY="10.0"
+                    maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                    prefHeight="720.0" prefWidth="996.0" scaleShape="false"
+                    stylesheets="@../Image/Market/components.css" translateX="150.0">
             <children>
                 <ImageView fitHeight="994.0" fitWidth="714.0" layoutX="138.0" layoutY="-138.0" pickOnBounds="true"
                            preserveRatio="true" rotate="-90.0" AnchorPane.bottomAnchor="-136.0"
