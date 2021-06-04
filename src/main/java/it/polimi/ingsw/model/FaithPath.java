@@ -130,6 +130,16 @@ public class FaithPath extends Observable implements Serializable {
     }
 
     /**
+     * Gets the faith card in position pos.
+     *
+     * @param pos position of the card
+     * @return the faith card in position pos.
+     */
+    public Card getCard(int pos) {
+        return cards.get(pos);
+    }
+
+    /**
      * Gets the position of the player in the faith path.
      *
      * @param player player

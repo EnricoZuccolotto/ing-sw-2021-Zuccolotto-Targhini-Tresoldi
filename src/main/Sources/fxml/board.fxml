@@ -7,9 +7,8 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<StackPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-           minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16"
-           fx:controller="it.polimi.ingsw.view.gui.controllers.BoardController">
+<Pane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/16"
+      fx:controller="it.polimi.ingsw.view.gui.controllers.BoardController">
     <children>
         <VBox fx:id="FirstAction" alignment="CENTER" prefHeight="720.0" prefWidth="1280.0"
               stylesheets="@../Image/Market/components.css">
@@ -408,107 +407,229 @@
                 </Pane>
             </center>
         </BorderPane>
-        <Button fx:id="viewBoard" mnemonicParsing="false" prefHeight="75.0" prefWidth="173.0" text="View Board"
-                translateX="-500.0" translateY="280.0"/>
-        <VBox fx:id="chooseResource" alignment="CENTER" disable="true" maxHeight="-Infinity" maxWidth="-Infinity"
-              minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="550.0" styleClass="background"
-              stylesheets="@../Image/Market/components.css" visible="false">
+        <AnchorPane fx:id="playerBoard" centerShape="false" disable="true" layoutX="10.0" layoutY="10.0"
+                    maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                    prefHeight="720.0" prefWidth="996.0" scaleShape="false"
+                    stylesheets="@../Image/Market/components.css" visible="false">
             <children>
-                <Text fx:id="resourceText" strokeType="OUTSIDE" strokeWidth="0.0" text="CHOOSE 1 RESOURCE"
-                      textAlignment="CENTER" wrappingWidth="541.13671875">
+                <ImageView fitHeight="994.0" fitWidth="714.0" layoutX="136.0" layoutY="-138.0" pickOnBounds="true"
+                           preserveRatio="true" rotate="-90.0" AnchorPane.bottomAnchor="-136.0"
+                           AnchorPane.leftAnchor="136.0" AnchorPane.rightAnchor="149.40869140625"
+                           AnchorPane.topAnchor="-138.0">
+                    <image>
+                        <Image url="@../Image/playerBoard.png"/>
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="13.0" layoutY="514.0" pickOnBounds="true"
+                           preserveRatio="true">
+                    <image>
+                        <Image url="@../Image/strongbox.png"/>
+                    </image>
+                </ImageView>
+                <Text fx:id="servantCount" layoutX="80.0" layoutY="570.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="0" wrappingWidth="34.13671112060547" AnchorPane.bottomAnchor="143.9765625"
+                      AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="881.8632888793945"
+                      AnchorPane.topAnchor="544.1015625">
                     <font>
-                        <Font size="30.0"/>
+                        <Font name="System Bold" size="24.0"/>
                     </font>
-                    <VBox.margin>
-                        <Insets top="10.0"/>
-                    </VBox.margin>
                 </Text>
-                <HBox alignment="CENTER" prefHeight="133.0" prefWidth="511.0">
+                <Text fx:id="coinCount" layoutX="154.0" layoutY="569.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0"
+                      wrappingWidth="34.13671112060547" AnchorPane.bottomAnchor="143.9765625"
+                      AnchorPane.leftAnchor="154.0" AnchorPane.rightAnchor="881.8632888793945">
+                    <font>
+                        <Font name="System Bold" size="24.0"/>
+                    </font>
+                </Text>
+                <Text fx:id="stoneCount" layoutX="80.0" layoutY="610.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0"
+                      wrappingWidth="34.13671112060547">
+                    <font>
+                        <Font name="System Bold" size="24.0"/>
+                    </font>
+                </Text>
+                <Text fx:id="shieldCount" layoutX="154.0" layoutY="610.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="0" wrappingWidth="34.13671112060547">
+                    <font>
+                        <Font name="System Bold" size="24.0"/>
+                    </font>
+                </Text>
+                <ImageView fx:id="firstRow" fitHeight="55.0" fitWidth="60.0" layoutX="96.0" layoutY="302.0"
+                           pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../Image/Resources/stone.png"/>
+                    </image>
+                </ImageView>
+                <HBox fx:id="secondRow" layoutX="64.0" layoutY="367.0" prefHeight="55.0" prefWidth="119.0"
+                      spacing="5.0">
                     <children>
-                        <Button fx:id="coinButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" maxHeight="82.0"
-                                maxWidth="92.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false"
-                                pickOnBounds="false" prefHeight="100.0" prefWidth="100.0" styleClass="coin"
-                                stylesheets="@../Image/Market/components.css" text="Button">
-                            <HBox.margin>
-                                <Insets right="30.0"/>
-                            </HBox.margin>
-                            <cursor>
-                                <Cursor fx:constant="HAND"/>
-                            </cursor>
-                            <graphic>
-                                <ImageView fitHeight="100.0" fitWidth="100.0" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../Image/Resources/coin.png"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Button fx:id="servantButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" maxHeight="85.0"
-                                maxWidth="95.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false"
-                                pickOnBounds="false" prefHeight="100.0" prefWidth="100.0" styleClass="servant"
-                                stylesheets="@../Image/Market/components.css" text="Button">
-                            <HBox.margin>
-                                <Insets right="30.0"/>
-                            </HBox.margin>
-                            <graphic>
-                                <ImageView fitHeight="100.0" fitWidth="100.0" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../Image/Resources/servant.png"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                            <cursor>
-                                <Cursor fx:constant="HAND"/>
-                            </cursor>
-                        </Button>
-                        <Button fx:id="stoneButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" maxHeight="85.0"
-                                maxWidth="95.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false"
-                                pickOnBounds="false" prefHeight="100.0" prefWidth="100.0" styleClass="stone"
-                                stylesheets="@../Image/Market/components.css" text="Button">
-                            <HBox.margin>
-                                <Insets right="30.0"/>
-                            </HBox.margin>
-                            <graphic>
-                                <ImageView fitHeight="100.0" fitWidth="100.0" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../Image/Resources/stone.png"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                            <cursor>
-                                <Cursor fx:constant="HAND"/>
-                            </cursor>
-                        </Button>
-                        <Button fx:id="shieldButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" maxHeight="90.0"
-                                maxWidth="92.0" minHeight="0.0" minWidth="0.0" mnemonicParsing="false"
-                                pickOnBounds="false" prefHeight="90.0" prefWidth="92.0" styleClass="shield"
-                                stylesheets="@../Image/Market/components.css" text="Button">
-                            <HBox.margin>
-                                <Insets right="30.0"/>
-                            </HBox.margin>
-                            <graphic>
-                                <ImageView fitHeight="100.0" fitWidth="100.0" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../Image/Resources/shield.png"/>
-                                    </image>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Image/Resources/coin.png"/>
+                            </image>
+                        </ImageView>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Image/Resources/coin.png"/>
+                            </image>
+                        </ImageView>
+                    </children>
+                </HBox>
+                <HBox fx:id="thirdRow" layoutX="37.0" layoutY="426.0" prefHeight="55.0" prefWidth="160.0" spacing="5.0">
+                    <children>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Image/Resources/coin.png"/>
+                            </image>
+                        </ImageView>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Image/Resources/coin.png"/>
+                            </image>
+                        </ImageView>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../Image/Resources/coin.png"/>
+                            </image>
+                        </ImageView>
+                    </children>
+                </HBox>
+                <ImageView fx:id="faith1" fitHeight="70.0" fitWidth="70.0" layoutX="239.0" layoutY="103.0"
+                           pickOnBounds="true" preserveRatio="true" styleClass="faithCard">
+                    <image>
+                        <Image url="@../Image/Cards/Faith/quadrato_giallo.png"/>
+                    </image>
+                    <effect>
+                        <DropShadow/>
+                    </effect>
+                </ImageView>
+                <ImageView fx:id="faith2" fitHeight="70.0" fitWidth="70.0" layoutX="483.0" layoutY="58.0"
+                           preserveRatio="true" styleClass="faithCard">
+                    <image>
+                        <Image url="@../Image/Cards/Faith/quadrato_arancione.png"/>
+                    </image>
+                    <effect>
+                        <DropShadow/>
+                    </effect>
+                </ImageView>
+                <ImageView fx:id="faith3" fitHeight="70.0" fitWidth="70.0" layoutX="775.0" layoutY="107.0"
+                           preserveRatio="true" styleClass="faithCard">
+                    <image>
+                        <Image url="@../Image/Cards/Faith/quadrato_rosso.png"/>
+                    </image>
+                    <effect>
+                        <DropShadow/>
+                    </effect>
+                </ImageView>
+            </children>
+        </AnchorPane>
+        <Button fx:id="viewBoard" layoutX="554.0" layoutY="338.0" mnemonicParsing="false" prefHeight="45.0"
+                prefWidth="173.0" text="View Board" translateX="-500.0" translateY="280.0"/>
+        <Pane fx:id="chooseResource" disable="true" layoutX="356.0" layoutY="251.0" visible="false">
+            <children>
+                <VBox alignment="CENTER" focusTraversable="true" layoutX="9.0" layoutY="9.0" maxHeight="-Infinity"
+                      maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0"
+                      prefWidth="550.0" styleClass="background" stylesheets="@../Image/Market/components.css">
+                    <children>
+                        <Text fx:id="resourceText" strokeType="OUTSIDE" strokeWidth="0.0" text="CHOOSE 1 RESOURCE"
+                              textAlignment="CENTER" wrappingWidth="541.13671875">
+                            <font>
+                                <Font size="30.0"/>
+                            </font>
+                            <VBox.margin>
+                                <Insets top="10.0"/>
+                            </VBox.margin>
+                        </Text>
+                        <HBox alignment="CENTER" prefHeight="133.0" prefWidth="511.0">
+                            <children>
+                                <Button fx:id="coinButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY"
+                                        maxHeight="82.0" maxWidth="92.0" minHeight="0.0" minWidth="0.0"
+                                        mnemonicParsing="false" pickOnBounds="false" prefHeight="100.0"
+                                        prefWidth="100.0" styleClass="coin"
+                                        stylesheets="@../Image/Market/components.css" text="Button">
+                                    <HBox.margin>
+                                        <Insets right="30.0"/>
+                                    </HBox.margin>
                                     <cursor>
                                         <Cursor fx:constant="HAND"/>
                                     </cursor>
-                                </ImageView>
-                            </graphic>
-                            <cursor>
-                                <Cursor fx:constant="HAND"/>
-                            </cursor>
-                        </Button>
+                                    <graphic>
+                                        <ImageView fitHeight="100.0" fitWidth="100.0" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Image/Resources/coin.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="servantButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY"
+                                        maxHeight="85.0" maxWidth="95.0" minHeight="0.0" minWidth="0.0"
+                                        mnemonicParsing="false" pickOnBounds="false" prefHeight="100.0"
+                                        prefWidth="100.0" styleClass="servant"
+                                        stylesheets="@../Image/Market/components.css" text="Button">
+                                    <HBox.margin>
+                                        <Insets right="30.0"/>
+                                    </HBox.margin>
+                                    <graphic>
+                                        <ImageView fitHeight="100.0" fitWidth="100.0" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Image/Resources/servant.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <cursor>
+                                        <Cursor fx:constant="HAND"/>
+                                    </cursor>
+                                </Button>
+                                <Button fx:id="stoneButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY"
+                                        maxHeight="85.0" maxWidth="95.0" minHeight="0.0" minWidth="0.0"
+                                        mnemonicParsing="false" pickOnBounds="false" prefHeight="100.0"
+                                        prefWidth="100.0" styleClass="stone"
+                                        stylesheets="@../Image/Market/components.css" text="Button">
+                                    <HBox.margin>
+                                        <Insets right="30.0"/>
+                                    </HBox.margin>
+                                    <graphic>
+                                        <ImageView fitHeight="100.0" fitWidth="100.0" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Image/Resources/stone.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                    <cursor>
+                                        <Cursor fx:constant="HAND"/>
+                                    </cursor>
+                                </Button>
+                                <Button fx:id="shieldButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY"
+                                        maxHeight="90.0" maxWidth="92.0" minHeight="0.0" minWidth="0.0"
+                                        mnemonicParsing="false" pickOnBounds="false" prefHeight="90.0" prefWidth="92.0"
+                                        styleClass="shield" stylesheets="@../Image/Market/components.css" text="Button">
+                                    <HBox.margin>
+                                        <Insets right="30.0"/>
+                                    </HBox.margin>
+                                    <graphic>
+                                        <ImageView fitHeight="100.0" fitWidth="100.0" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../Image/Resources/shield.png"/>
+                                            </image>
+                                            <cursor>
+                                                <Cursor fx:constant="HAND"/>
+                                            </cursor>
+                                        </ImageView>
+                                    </graphic>
+                                    <cursor>
+                                        <Cursor fx:constant="HAND"/>
+                                    </cursor>
+                                </Button>
+                            </children>
+                            <opaqueInsets>
+                                <Insets/>
+                            </opaqueInsets>
+                        </HBox>
                     </children>
-                    <opaqueInsets>
-                        <Insets/>
-                    </opaqueInsets>
-                </HBox>
+                    <effect>
+                        <DropShadow/>
+                    </effect>
+                </VBox>
             </children>
-            <effect>
-                <DropShadow/>
-            </effect>
-        </VBox>
+        </Pane>
     </children>
-</StackPane>
+</Pane>

@@ -319,11 +319,11 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     public boolean checkColors(int [] colors){
         int tmp;
         for(Colors c: Colors.values()){
-            tmp=0;
-            if(colors[c.ordinal()]!=0){
-                for(SpaceProd sp:productionSpaces)
-                    tmp+=sp.checkColor(c);
-                if(colors[c.ordinal()]-tmp>0) {
+            tmp = 0;
+            if (colors[c.ordinal()] != 0) {
+                for (SpaceProd sp : productionSpaces)
+                    tmp += sp.checkColor(c);
+                if (colors[c.ordinal()] - tmp > 0) {
                     return false;
                 }
             }
@@ -332,18 +332,28 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     }
 
     @Override
+    public int getNumberResourceStrongbox(Resources resources) {
+        return strongbox.getResources(resources);
+    }
+
+    @Override
+    public Resources getResourceWarehouse(int position) {
+        return warehouse.getR(position);
+    }
+
+    @Override
     public void addStrongboxResource(Resources r, int quantities) {
         strongbox.addResources(r, quantities);
     }
 
     @Override
-    public ArrayList<Resources> getResources(int choice, int temp){
-        ArrayList<Resources> list= new ArrayList<>();
+    public ArrayList<Resources> getResources(int choice, int temp) {
+        ArrayList<Resources> list = new ArrayList<>();
         if (choice == 0) {
             for (int i = 0; i < 4; i++) {
                 int[] a = {0, 0, 0, 0};
                 a[i] = 1;
-                if(temp!=-1) {
+                if (temp != -1) {
                     a[temp] += 1;
                 }
                 if (checkResourcesWarehouse(a)) {

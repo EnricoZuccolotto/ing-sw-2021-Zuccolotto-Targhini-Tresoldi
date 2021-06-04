@@ -13,7 +13,6 @@ import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
-import it.polimi.ingsw.network.Client.Client;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
@@ -34,7 +33,7 @@ public class Cli extends ViewObservable implements View {
     private String nickname;
     private Decks decks;
     boolean local = false;
-    private ClientManager clientManager;
+    private final ClientManager clientManager;
 
     /**
      * Default constructor.
@@ -212,7 +211,7 @@ public class Cli extends ViewObservable implements View {
     private void askWhichAction() {
         int action;
         Action act;
-        ArrayList<Action> possibilities = TurnState.possibleActions(turnState);
+        ArrayList<Action> possibilities = turnState.possibleActions();
         if (playerBoard.getPlayerBoard().getLeaderCardsNumber() == 0) {
             possibilities.remove(Action.ACTIVE_LEADER);
             possibilities.remove(Action.FOLD_LEADER);

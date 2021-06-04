@@ -11,7 +11,7 @@ import it.polimi.ingsw.network.server.SocketServer;
 public class ServerApp {
 
     public static void main(String[] args) {
-        int serverPort = 12223; // default value
+        int serverPort = 12222; // default value
 
         for (int i = 0; i < args.length; i++) {
             if (args.length >= 2 && (args[i].equals("-port") || args[i].equals("-p"))) {

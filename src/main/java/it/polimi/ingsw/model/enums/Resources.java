@@ -102,4 +102,19 @@ public enum Resources {
         }
         return "Image/Market/WhiteBall.png";
     }
+
+    public String getImagePath() {
+
+        switch (this) {
+            case STONE:
+                return "Image/Resources/stone.png";
+            case SERVANT:
+                return "Image/Resources/servant.png";
+            case SHIELD:
+                return "Image/Resources/shield.png";
+            case COIN:
+                return "Image/Resources/coin.png";
+        }
+        return "Image/Resources/white.png";
+    }
 }

@@ -5,8 +5,6 @@ import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.SpaceProd;
-import it.polimi.ingsw.model.player.Strongbox;
-import it.polimi.ingsw.model.player.Warehouse;
 
 import java.util.ArrayList;
 
@@ -29,19 +27,44 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     @Override
     public void setVP(int VP){subBoard.setVP(VP);}
     @Override
-    public boolean checkColors(int [] colors){return subBoard.checkColors(colors);}
+    public boolean checkColors(int[] colors) {
+        return subBoard.checkColors(colors);
+    }
+
     @Override
-    public boolean checkResources(int [] resources){return subBoard.checkResources(resources);}
+    public boolean checkResources(int[] resources) {
+        return subBoard.checkResources(resources);
+    }
+
     @Override
     public void addLeaderCard(LeaderCard leaderCard) {
         subBoard.addLeaderCard(leaderCard);
     }
+
     @Override
-    public boolean checkResourcesStrongbox(int [] r){return subBoard.checkResourcesStrongbox(r);}
+    public boolean checkResourcesStrongbox(int[] r) {
+        return subBoard.checkResourcesStrongbox(r);
+    }
+
     @Override
-    public boolean checkResourcesWarehouse(int [] r){return subBoard.checkResourcesWarehouse(r);}
+    public boolean checkResourcesWarehouse(int[] r) {
+        return subBoard.checkResourcesWarehouse(r);
+    }
+
     @Override
-    public boolean payResourcesStrongbox(int [] r){return subBoard.payResourcesStrongbox(r);}
+    public boolean payResourcesStrongbox(int[] r) {
+        return subBoard.payResourcesStrongbox(r);
+    }
+
+    @Override
+    public int getNumberResourceStrongbox(Resources resources) {
+        return subBoard.getNumberResourceStrongbox(resources);
+    }
+
+    @Override
+    public Resources getResourceWarehouse(int position) {
+        return subBoard.getResourceWarehouse(position);
+    }
 
     @Override
     public boolean payResourcesWarehouse(int[] r) {

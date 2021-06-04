@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui.controllers;
 
+import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.cards.Decks;
@@ -14,17 +15,16 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
 
 public class BoardController extends ViewObservable implements SceneController {
+
     private ArrayList<ImageView> hover;
-    private boolean view = true;
+    private boolean view = true, flag = true;
 
     private ArrayList<Integer> choice;
     private ArrayList<Resources> resourcesToSend;
@@ -36,7 +36,31 @@ public class BoardController extends ViewObservable implements SceneController {
     @FXML
     private VBox FirstAction;
     @FXML
-    private VBox chooseResource;
+    private Pane chooseResource;
+    @FXML
+    private AnchorPane playerBoard;
+    //playerboard components
+    @FXML
+    private HBox secondRow;
+    @FXML
+    private HBox thirdRow;
+    @FXML
+    private ImageView firstRow;
+    @FXML
+    private Text coinCount;
+    @FXML
+    private Text shieldCount;
+    @FXML
+    private Text servantCount;
+    @FXML
+    private Text stoneCount;
+    //faith path components
+    @FXML
+    private ImageView faith1;
+    @FXML
+    private ImageView faith2;
+    @FXML
+    private ImageView faith3;
     //decks components
     @FXML
     private GridPane decks;
@@ -99,7 +123,7 @@ public class BoardController extends ViewObservable implements SceneController {
         Gui gui = Gui.getInstance();
         gui.setBoardController(this);
         //board buttons
-        viewBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> viewBoard());
+        viewBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> viewBoard(flag));
         //market buttons
         pushColumn0Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onMarketArrowButtonClick(2, 0));
         pushColumn1Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onMarketArrowButtonClick(2, 1));
@@ -133,6 +157,7 @@ public class BoardController extends ViewObservable implements SceneController {
         hover.add(HoverCard4);
 
         //choose resource buttons
+        DragController dragController = new DragController(chooseResource, true);
         resourcesToSend = new ArrayList<>();
         coinButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onResourceSelection(Resources.COIN));
         shieldButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onResourceSelection(Resources.SHIELD));
@@ -204,16 +229,49 @@ public class BoardController extends ViewObservable implements SceneController {
         System.out.println(colors + "  " + level);
     }
 
+    //playerBoard method
+    public void updatePlayerBoard(PlayerBoard board) {
+        //strongbox
+        coinCount.setText(board.getNumberResourceStrongbox(Resources.COIN) + "");
+        shieldCount.setText(board.getNumberResourceStrongbox(Resources.SHIELD) + "");
+        servantCount.setText(board.getNumberResourceStrongbox(Resources.SERVANT) + "");
+        stoneCount.setText(board.getNumberResourceStrongbox(Resources.STONE) + "");
+        //warehouse
+        firstRow.setImage(new Image(board.getResourceWarehouse(0).getImagePath()));
+        ((ImageView) secondRow.getChildren().get(0)).setImage(new Image(board.getResourceWarehouse(1).getImagePath()));
+        ((ImageView) secondRow.getChildren().get(1)).setImage(new Image(board.getResourceWarehouse(2).getImagePath()));
+        for (int i = 0; i < 3; i++)
+            ((ImageView) thirdRow.getChildren().get(i)).setImage(new Image(board.getResourceWarehouse(i + 3).getImagePath()));
+
+    }
+
+    //faith path methods
+    public void updateFaithPath(FaithPath faithPath, int playerNumber) {
+        ImageView[] faith = new ImageView[]{faith1, faith2, faith3};
+        for (int i = 0; i < 3; i++) {
+            if (faithPath.getCard(i).getUncovered()) {
+                if (faithPath.getCardsState(i, playerNumber))
+                    faith[i].setImage(new Image(faithPath.getCard(i).getImagePath()));
+                else
+                    faith[i].setImage(new Image("Image/Resources/white.png"));
+            }
+        }
+    }
+
     //choose resource methods
     private void onResourceSelection(Resources resources) {
         resourcesToSend.add(resources);
         chooseResource.setDisable(true);
         chooseResource.setVisible(false);
+        playerBoard.setDisable(false);
+        Board.setDisable(false);
     }
 
     public void askResource() {
         chooseResource.setVisible(true);
         chooseResource.setDisable(false);
+        playerBoard.setDisable(true);
+        Board.setDisable(true);
     }
 
     public ArrayList<Resources> getResourcesToSend() {
@@ -226,14 +284,23 @@ public class BoardController extends ViewObservable implements SceneController {
 
 
     //exchange views
-    private void viewBoard() {
-        FirstAction.setDisable(view);
-        FirstAction.setVisible(!view);
-        Board.setVisible(view);
-        Board.setDisable(true);
-        if (view)
-            viewBoard.setText("Return");
-        else viewBoard.setText("View Board");
+    private void viewBoard(boolean flag) {
+        if (flag) {
+            FirstAction.setDisable(view);
+            FirstAction.setVisible(!view);
+            Board.setVisible(view);
+            Board.setDisable(true);
+            if (view)
+                viewBoard.setText("Return");
+            else viewBoard.setText("View Board");
+        } else {
+            Board.setVisible(!view);
+            Board.setDisable(view);
+            playerBoard.setVisible(view);
+            if (view)
+                viewBoard.setText("Game board");
+            else viewBoard.setText("Player Board");
+        }
         view = !view;
     }
 
@@ -242,9 +309,9 @@ public class BoardController extends ViewObservable implements SceneController {
         Board.setDisable(false);
         FirstAction.setVisible(false);
         FirstAction.setDisable(true);
-        viewBoard.setDisable(true);
-        viewBoard.setVisible(false);
-
+        flag = false;
+        view = true;
+        viewBoard.setText("Player Board");
     }
 
     public void clearChoices() {

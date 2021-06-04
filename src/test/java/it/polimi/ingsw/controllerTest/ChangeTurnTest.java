@@ -112,20 +112,20 @@ public class ChangeTurnTest {
         g.handle_secondAction(new SecondActionMessage("Enry", r));
 
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
-        if (TurnState.isPossible(g.getTurnState(), Action.ACTIVE_LEADER)) {
+        if (g.getTurnState().isPossible(Action.ACTIVE_LEADER)) {
             g.handle_foldLeader(new LeaderMessage("Harry", MessageType.FOLD_LEADER, 0));
         }
         HumanPlayer p = g.getPlayerInTurn();
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
-        if (TurnState.isPossible(g.getTurnState(), Action.BUY_DEVELOPMENT_CARD))
+        if (g.getTurnState().isPossible(Action.BUY_DEVELOPMENT_CARD))
             g.nextState(Action.BUY_DEVELOPMENT_CARD);
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
-        if (TurnState.isPossible(g.getTurnState(), Action.ACTIVE_LEADER)) {
+        if (g.getTurnState().isPossible(Action.ACTIVE_LEADER)) {
             g.nextState(Action.ACTIVE_LEADER);
             gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(0).flipCard();
         }
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
-        if (TurnState.isPossible(g.getTurnState(), Action.END_TURN)) {
+        if (g.getTurnState().isPossible(Action.END_TURN)) {
             g.handle_endTurn();
         }
         System.out.println(gb.getPlayers().get(0).getPlayerBoard().getLeaderCardsNumber());
@@ -153,7 +153,7 @@ public class ChangeTurnTest {
 
         assertEquals("Harry", g.getPlayerInTurn().getName());
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);
-        if (TurnState.isPossible(g.getTurnState(), Action.GET_RESOURCES_FROM_MARKET)) {
+        if (g.getTurnState().isPossible(Action.GET_RESOURCES_FROM_MARKET)) {
             ArrayList<Resources> a = new ArrayList<>();
             a.add(Resources.WHATEVER);
             g.getPlayerInTurn().setTemporaryResourceStorage(a);
@@ -161,18 +161,18 @@ public class ChangeTurnTest {
         }
         HumanPlayer p = g.getPlayerInTurn();
         assertEquals(g.getTurnState(), TurnState.WAREHOUSE_ACTION);
-        if (TurnState.isPossible(g.getTurnState(), Action.SORTING_WAREHOUSE)) {
+        if (g.getTurnState().isPossible(Action.SORTING_WAREHOUSE)) {
             g.getPlayerInTurn().removeItemFromTemporaryList(0);
             g.nextState(Action.SORTING_WAREHOUSE);
         }
 
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
-        if (TurnState.isPossible(g.getTurnState(), Action.ACTIVE_LEADER)) {
+        if (g.getTurnState().isPossible(Action.ACTIVE_LEADER)) {
             gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(0).flipCard();
             g.nextState(Action.ACTIVE_LEADER);
         }
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
-        if (TurnState.isPossible(g.getTurnState(), Action.END_TURN)) {
+        if (g.getTurnState().isPossible(Action.END_TURN)) {
             g.handle_endTurn();
         }
         assertEquals(g.getTurnState(), TurnState.FIRST_LEADER_ACTION);

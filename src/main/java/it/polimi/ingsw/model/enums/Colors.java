@@ -12,18 +12,10 @@ public enum Colors {
     GREEN;
 
     public static Colors transform(int i) {
-        switch (i) {
-            case 0:
-                return BLUE;
-            case 1:
-                return YELLOW;
-            case 2:
-                return PURPLE;
-            case 3:
-                return GREEN;
-            default:
-                throw new IllegalStateException("Unexpected value: " + i);
-        }
+        for (Colors colors : Colors.values())
+            if (colors.ordinal() == i)
+                return colors;
+        return Colors.BLUE;
     }
 
     public static String toString(int[] colors) {

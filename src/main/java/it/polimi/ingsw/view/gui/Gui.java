@@ -196,12 +196,13 @@ public class Gui extends ViewObservable implements View {
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
         if (playerBoard.getName().equals(nickname)) {
             this.playerBoard = playerBoard.getPlayerBoard();
+            Platform.runLater(() -> boardController.updatePlayerBoard(this.playerBoard));
         }
     }
 
     @Override
     public void showFaithPath(FaithPath faithPath) {
-
+        Platform.runLater(() -> boardController.updateFaithPath(faithPath, playerNumber));
     }
 
     @Override

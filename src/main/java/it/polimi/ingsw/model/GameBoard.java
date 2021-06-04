@@ -15,7 +15,6 @@ import it.polimi.ingsw.network.messages.MarketUpdateMessage;
 import it.polimi.ingsw.observer.Observable;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 /**
  * This class represents the game board.
@@ -30,7 +29,7 @@ public class GameBoard extends Observable {
     private final Decks decks;
     private final ArrayList<HumanPlayer> players;
     private final FaithPath faithPath;
-    private Optional<BotPlayer> bot;
+    private BotPlayer bot;
     private final Communication publicCommunication;
 
 
@@ -53,7 +52,7 @@ public class GameBoard extends Observable {
     public void init(GameBoard gameBoard) {
         if (players.size() == 1) {
             this.faithPath.init(2);
-            bot = Optional.of(new BotPlayer(gameBoard));
+            bot = new BotPlayer(gameBoard);
         } else this.faithPath.init(players.size());
         notifyObserver(new DecksUpdateMessage(decks));
         notifyObserver(new MarketUpdateMessage("", market));
@@ -66,7 +65,7 @@ public class GameBoard extends Observable {
      * @return the bot player
      */
     public BotPlayer getBot() {
-        return bot.orElse(null);
+        return bot;
     }
 
     /**
