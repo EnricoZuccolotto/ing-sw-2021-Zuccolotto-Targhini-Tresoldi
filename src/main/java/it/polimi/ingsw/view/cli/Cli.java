@@ -262,21 +262,24 @@ public class Cli extends ViewObservable implements View {
         s.add("Normal_Production");
         s.add("Base_Production");
         s.add("Special_Production");
-        for (String st : s) {
-            out.println(s.indexOf(st) + ". " + st);
-        }
         String question="Which production would you like to active? ";
         if(playerBoard.getPlayerBoard().getProductionSpaces().size()==0){
             jump.add(0);
+            s.remove(0);
         }
         if(playerBoard.getPlayerBoard().getNumberResources()<2){
             jump.add(1);
+            s.remove(1);
         }
-        if(playerBoard.getPlayerBoard().getProductionNumber()==0){
+        if(playerBoard.getPlayerBoard().getProductionNumber()==playerBoard.getPlayerBoard().getProductionSpaces().size()+1){
             jump.add(2);
+            s.remove(2);
+        }
+        for (String st : s) {
+            out.println(s.indexOf(st) + ". " + st);
         }
         try {
-            index= validateInput(0, 2, jump, question);
+            index= validateInput(0, s.size()-1, jump, question);
             if(index==0){
                 askUseNormalProduction();
             }
@@ -508,7 +511,7 @@ public class Cli extends ViewObservable implements View {
         try {
             while (!flag) {
                 index= validateInput(0, 1, null, question);
-                if(playerBoard.getPlayerBoard().getLeaderCard(index).getAdvantage().equals(Advantages.PROD)){
+                if(playerBoard.getPlayerBoard().getLeaderCard(index).getAdvantage().equals(Advantages.PROD) && playerBoard.getPlayerBoard().getLeaderCard(index).getUncovered()){
                     flag=true;
                 } else {
                     out.println("You cannot choose this card, try another one.");
