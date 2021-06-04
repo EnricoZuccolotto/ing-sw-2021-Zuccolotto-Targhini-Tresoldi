@@ -407,14 +407,13 @@
                 </Pane>
             </center>
         </BorderPane>
-        <AnchorPane fx:id="playerBoard" centerShape="false" disable="true" layoutX="10.0" layoutY="10.0"
-                    maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                    prefHeight="720.0" prefWidth="996.0" scaleShape="false"
-                    stylesheets="@../Image/Market/components.css" visible="false">
+        <AnchorPane fx:id="playerBoard" disable="true" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity"
+                    maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="996.0"
+                    scaleShape="false" stylesheets="@../Image/Market/components.css" translateX="150.0">
             <children>
-                <ImageView fitHeight="994.0" fitWidth="714.0" layoutX="136.0" layoutY="-138.0" pickOnBounds="true"
+                <ImageView fitHeight="994.0" fitWidth="714.0" layoutX="138.0" layoutY="-138.0" pickOnBounds="true"
                            preserveRatio="true" rotate="-90.0" AnchorPane.bottomAnchor="-136.0"
-                           AnchorPane.leftAnchor="136.0" AnchorPane.rightAnchor="149.40869140625"
+                           AnchorPane.leftAnchor="138.0" AnchorPane.rightAnchor="147.40869140625"
                            AnchorPane.topAnchor="-138.0">
                     <image>
                         <Image url="@../Image/playerBoard.png"/>
