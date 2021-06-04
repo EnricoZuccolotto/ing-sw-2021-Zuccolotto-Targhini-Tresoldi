@@ -103,7 +103,7 @@ public class LeaderCard extends Card {
             stringBuilder.append(Colors.toString(costColor));
         else stringBuilder.append(Resources.toString(costResources));
         stringBuilder.append(" || Advantage:");
-        stringBuilder.append(Advantages.toString(advantage, effect));
+        stringBuilder.append(advantage.toString(effect));
 
         return stringBuilder.toString();
     }

@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.ExecutableMessage;
-import it.polimi.ingsw.network.messages.LoginMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
 import it.polimi.ingsw.observer.Observer;
@@ -71,8 +70,8 @@ public class GameController {
         if(local && message.getMessageType().equals(MessageType.LOGIN)){
             if(localView != null){
                 if(message.getMessageType().equals(MessageType.LOGIN)){
-                    viewMap.put(((LoginMessage) message).getPlayerName(), localView.getClientManager());
-                    addPlayer(((LoginMessage) message).getPlayerName(), localView.getClientManager(), true);
+                    viewMap.put(message.getPlayerName(), localView.getClientManager());
+                    addPlayer(message.getPlayerName(), localView.getClientManager(), true);
                     StartGame();
                 }
             } else {
@@ -103,8 +102,6 @@ public class GameController {
                 break;
             }
             case GAMESTARTED: {
-                // Catching a ClassCastException should be redundant, added for extra safety.
-                // In theory messages received now should all be executable.
                 executableMessages(message);
                 if (roundController.isWinner())
                     endGame();
@@ -145,7 +142,7 @@ public class GameController {
     }
 
     public boolean validateAction(Action action) {
-        return TurnState.isPossible(roundController.getTurnState(), action);
+        return roundController.getTurnState().isPossible(action);
     }
 
 

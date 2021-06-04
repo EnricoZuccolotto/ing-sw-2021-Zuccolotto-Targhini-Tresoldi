@@ -112,8 +112,12 @@ public class RoundController {
     }
     public void handle_discardResource(DiscardResourceMessage message) {
         if (isYourTurn(message.getPlayerName())) {
-            movePlayersExceptSelected(1);
+            if (actionController.discardResource(playerInTurn, message.getReceivedResourceIndex())) {
+                movePlayersExceptSelected(1);
+                nextState(Action.SORTING_WAREHOUSE);
+            }
         }
+
     }
 
     public void handle_useBaseProduction(UseProductionBaseMessage message) {

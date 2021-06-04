@@ -16,20 +16,24 @@ public enum TurnState {
     END;
 
     /**
-     * This function answer to the question 'is the Action action possible in the TurnState turnState?'
+     * This function answer to the question 'is the Action action possible in the this turnState?'
      *
-     * @param action    Action
-     * @param turnState current TurnState
+     * @param action Action
      * @return true if the action is possible in this turnState, else false.
      */
-    public static boolean isPossible(TurnState turnState, Action action) {
-        ArrayList<Action> possibleActions = possibleActions(turnState);
+    public boolean isPossible(Action action) {
+        ArrayList<Action> possibleActions = this.possibleActions();
         return possibleActions.contains(action);
     }
 
-    public static ArrayList<Action> possibleActions(TurnState turnState) {
+    /**
+     * This function answer to the question 'Which Action are possible in the this turnState?'
+     *
+     * @return a list of the possible action that you can make in this turn state.
+     */
+    public ArrayList<Action> possibleActions() {
         ArrayList<Action> possibleActions = new ArrayList<>();
-        switch (turnState) {
+        switch (this) {
             case FIRST_TURN: {
                 possibleActions.add(Action.FIRST_ACTION);
                 break;
@@ -76,7 +80,7 @@ public enum TurnState {
                 break;
 
             default:
-                throw new IllegalStateException("Unexpected value: " + turnState);
+                throw new IllegalStateException("Unexpected value: " + this);
         }
         return possibleActions;
     }

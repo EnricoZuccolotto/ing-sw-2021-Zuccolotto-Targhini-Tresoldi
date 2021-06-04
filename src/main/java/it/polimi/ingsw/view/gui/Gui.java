@@ -86,6 +86,8 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askAction(TurnState state) {
+        Platform.runLater(() ->
+                boardController.clearChoices());
         switch (state) {
             case FIRST_TURN: {
                 askFirstAction();
@@ -194,17 +196,18 @@ public class Gui extends ViewObservable implements View {
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
         if (playerBoard.getName().equals(nickname)) {
             this.playerBoard = playerBoard.getPlayerBoard();
+            Platform.runLater(() -> boardController.updatePlayerBoard(this.playerBoard));
         }
     }
 
     @Override
     public void showFaithPath(FaithPath faithPath) {
-
+        Platform.runLater(() -> boardController.updateFaithPath(faithPath, playerNumber));
     }
 
     @Override
     public void showDecks(Decks decks) {
-
+        Platform.runLater(() -> boardController.updateDecks(decks));
     }
 
     @Override

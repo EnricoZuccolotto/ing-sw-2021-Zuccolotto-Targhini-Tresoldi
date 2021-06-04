@@ -319,16 +319,26 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     public boolean checkColors(int [] colors){
         int tmp;
         for(Colors c: Colors.values()){
-            tmp=0;
-            if(colors[c.ordinal()]!=0){
-                for(SpaceProd sp:productionSpaces)
-                    tmp+=sp.checkColor(c);
-                if(colors[c.ordinal()]-tmp>0) {
+            tmp = 0;
+            if (colors[c.ordinal()] != 0) {
+                for (SpaceProd sp : productionSpaces)
+                    tmp += sp.checkColor(c);
+                if (colors[c.ordinal()] - tmp > 0) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    @Override
+    public int getNumberResourceStrongbox(Resources resources) {
+        return strongbox.getResources(resources);
+    }
+
+    @Override
+    public Resources getResourceWarehouse(int position) {
+        return warehouse.getR(position);
     }
 
     @Override

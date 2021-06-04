@@ -91,6 +91,23 @@ public class ActionController {
     }
 
     /**
+     * Discard a resource from the temporary storage of a player.
+     *
+     * @param humanPlayer           Player sorting the warehouse.
+     * @param receivedResourceIndex Index of the resource to discard.
+     * @return if the operation is successful
+     */
+    public boolean discardResource(HumanPlayer humanPlayer, int receivedResourceIndex) {
+        try {
+            humanPlayer.removeItemFromTemporaryList(receivedResourceIndex);
+        } catch (IndexOutOfBoundsException exception) {
+            humanPlayer.setPrivateCommunication(exception.getMessage(), CommunicationMessage.ILLEGAL_ACTION);
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Switches warehouse's rows.
      *
      * @param player         Player moving the warehouse's rows.

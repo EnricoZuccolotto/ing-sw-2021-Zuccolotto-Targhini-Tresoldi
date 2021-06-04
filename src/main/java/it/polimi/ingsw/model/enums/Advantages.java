@@ -8,9 +8,9 @@ public enum Advantages {
     WAREHOUSE,
     CHANGE;
 
-    public static String toString(Advantages advantages, int[] effect) {
+    public String toString(int[] effect) {
         StringBuilder string = new StringBuilder();
-        switch (advantages) {
+        switch (this) {
             case PROD: {
                 string.append(" You can use a special production: 1 ");
                 string.append(Resources.getResources(effect));

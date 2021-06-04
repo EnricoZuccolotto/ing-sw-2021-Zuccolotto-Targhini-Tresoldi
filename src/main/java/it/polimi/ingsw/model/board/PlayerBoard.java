@@ -6,11 +6,8 @@ import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.SpaceProd;
-import it.polimi.ingsw.model.player.Strongbox;
-import it.polimi.ingsw.model.player.Warehouse;
 
 import java.util.ArrayList;
-import java.util.SplittableRandom;
 
 /**
  * This interface represents a player board.
@@ -323,6 +320,10 @@ public interface PlayerBoard {
      * @return The production space
      */
     ArrayList<SpaceProd> getProductionSpaces();
+
+    int getNumberResourceStrongbox(Resources resources);
+
+    Resources getResourceWarehouse(int position);
 
     String toString(boolean mine);
 }
