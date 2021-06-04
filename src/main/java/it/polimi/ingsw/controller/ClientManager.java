@@ -5,6 +5,8 @@ import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.tools.ExchangeResources;
+import it.polimi.ingsw.network.Client.Client;
+import it.polimi.ingsw.network.Client.LocalClient;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observer.Observer;
@@ -21,7 +23,10 @@ public class ClientManager implements ViewObserver, Observer {
     private final View view;
     private final ExecutorService taskQueue;
     private SocketClient client;
+    private LocalClient localClient;
     private String nickname;
+    private final boolean local;
+    private GameController gameController;
 
 
     /**
@@ -32,8 +37,16 @@ public class ClientManager implements ViewObserver, Observer {
     public ClientManager(View view) {
         this.view = view;
         taskQueue = Executors.newSingleThreadExecutor();
+        local = false;
     }
 
+    public ClientManager(View view, GameController gameController){
+        this.view = view;
+        taskQueue = Executors.newSingleThreadExecutor();
+        local = true;
+        this.gameController = gameController;
+        localClient = new LocalClient(gameController);
+    }
     /**
      * Validates the given IPv4 address by using a regex.
      *
@@ -92,7 +105,7 @@ public class ClientManager implements ViewObserver, Observer {
     @Override
     public void Nickname(String nickname) {
         this.nickname = nickname;
-        client.sendMessage(new LoginMessage(this.nickname));
+        getActiveClient().sendMessage(new LoginMessage(this.nickname));
     }
 
     /**
@@ -102,40 +115,40 @@ public class ClientManager implements ViewObserver, Observer {
      */
     @Override
     public void PlayersNumber(int playersNumber) {
-        client.sendMessage(new LobbySetMessage(this.nickname, playersNumber));
+        getActiveClient().sendMessage(new LobbySetMessage(this.nickname, playersNumber));
     }
 
     @Override
     public void firstAction(int index1, int index2) {
-        client.sendMessage(new FirstActionMessage(this.nickname, index1, index2));
+        getActiveClient().sendMessage(new FirstActionMessage(this.nickname, index1, index2));
     }
 
     @Override
     public void secondAction(ArrayList<Resources> resources) {
-        client.sendMessage(new SecondActionMessage(this.nickname, resources));
+        getActiveClient().sendMessage(new SecondActionMessage(this.nickname, resources));
     }
 
     @Override
     public void getMarket(int choice, int index) {
         if(choice==2) {
-            client.sendMessage(new MarketRequestMessage(this.nickname, 3, index));
+            getActiveClient().sendMessage(new MarketRequestMessage(this.nickname, 3, index));
         } else {
-            client.sendMessage(new MarketRequestMessage(this.nickname, index, 4));
+            getActiveClient().sendMessage(new MarketRequestMessage(this.nickname, index, 4));
         }
     }
 
     @Override
     public void sortingMarket(Resources choice, int row, int index) {
         if (row >= 0 && row <= 3) {
-            client.sendMessage(new SetResourceMessage(this.nickname, choice, WarehousePositions.transform(row), index));
+            getActiveClient().sendMessage(new SetResourceMessage(this.nickname, choice, WarehousePositions.transform(row), index));
         } else {
-            client.sendMessage(new DiscardResourceMessage(this.nickname, index));
+            getActiveClient().sendMessage(new DiscardResourceMessage(this.nickname, index));
         }
     }
 
     @Override
     public void switchRows(int row1, int row2) {
-        client.sendMessage(new ShiftWarehouseMessage(this.nickname, WarehousePositions.transform(row1), WarehousePositions.transform(row2)));
+        getActiveClient().sendMessage(new ShiftWarehouseMessage(this.nickname, WarehousePositions.transform(row1), WarehousePositions.transform(row2)));
     }
 
     @Override
@@ -152,7 +165,7 @@ public class ClientManager implements ViewObserver, Observer {
             count=0;
         }
         ex= new ExchangeResources(matr[0], matr[1], matr[2]);
-        client.sendMessage(new GetProductionCardMessage(this.nickname, ex, Colors.transform(color), level, index));
+        getActiveClient().sendMessage(new GetProductionCardMessage(this.nickname, ex, Colors.transform(color), level, index));
     }
 
     @Override
@@ -169,7 +182,7 @@ public class ClientManager implements ViewObserver, Observer {
             count=0;
         }
         ex= new ExchangeResources(matr[0], matr[1], matr[2]);
-        client.sendMessage(new UseProductionNormalMessage(this.nickname, ex, index));
+        getActiveClient().sendMessage(new UseProductionNormalMessage(this.nickname, ex, index));
     }
 
     @Override
@@ -180,7 +193,7 @@ public class ClientManager implements ViewObserver, Observer {
         ExchangeResources ex= new ExchangeResources(matr[0], matr[1], matr[2]);
         System.out.println(ex);
         System.out.println("value" +value);
-        client.sendMessage(new UseProductionBaseMessage(this.nickname, ex, obtain));
+        getActiveClient().sendMessage(new UseProductionBaseMessage(this.nickname, ex, obtain));
     }
 
     @Override
@@ -188,27 +201,27 @@ public class ClientManager implements ViewObserver, Observer {
         int[][] matr= new int[3][4];
         matr[choice][res.ordinal()]=1;
         ExchangeResources ex= new ExchangeResources(matr[0], matr[1], matr[2]);
-        client.sendMessage(new UseProductionSpecialMessage(this.nickname, ex, resource, index));
+        getActiveClient().sendMessage(new UseProductionSpecialMessage(this.nickname, ex, resource, index));
     }
 
     @Override
     public void endTurn() {
-        client.sendMessage(new EndTurnMessage(this.nickname));
+        getActiveClient().sendMessage(new EndTurnMessage(this.nickname));
     }
 
     @Override
     public void activeLeader(int index) {
-        client.sendMessage(new LeaderMessage(this.nickname, MessageType.ACTIVE_LEADER, index));
+        getActiveClient().sendMessage(new LeaderMessage(this.nickname, MessageType.ACTIVE_LEADER, index));
     }
 
     @Override
     public void foldLeader(int index) {
-        client.sendMessage(new LeaderMessage(this.nickname, MessageType.FOLD_LEADER, index));
+        getActiveClient().sendMessage(new LeaderMessage(this.nickname, MessageType.FOLD_LEADER, index));
     }
 
     @Override
     public void addPlayerLobby() {
-        client.sendMessage(new LobbyJoinMessage(this.nickname));
+        getActiveClient().sendMessage(new LobbyJoinMessage(this.nickname));
     }
 
     @Override
@@ -231,6 +244,12 @@ public class ClientManager implements ViewObserver, Observer {
     @Override
     public void onDisconnect(){
         client.disconnect();
+    }
+
+    // TODO: Clean this up, make this more beautiful
+    private Client getActiveClient(){
+        if(local) return localClient;
+        else return client;
     }
 
 }

@@ -20,6 +20,8 @@ Il progetto prevede lo sviluppo e l'implementazione del gioco da tavolo Maestri 
 - Interfaccia grafica:
   - CLI;
   - GUI con JavaFX (WIP);
+- Funzionalità avanzate:
+  - Partita in locale (per ora solo CLI)
 
 ## Report coverage classi di test
 

@@ -19,7 +19,7 @@ public class GameControllerTest {
  @Test
  public void OnMessageTest() {
 
-     GameController gameController = new GameController() {
+     GameController gameController = new GameController(false) {
          @Override
          public void StartGame() {
              getRoundController().init();

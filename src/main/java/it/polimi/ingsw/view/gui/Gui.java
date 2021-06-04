@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.controller.ClientManager;
 import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
@@ -269,7 +270,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showError(String error) {
-
+        Platform.runLater(() -> GuiSceneUtils.showAlertWindow(AlertType.ERROR, "Error", error));
     }
 
     @Override
@@ -279,7 +280,12 @@ public class Gui extends ViewObservable implements View {
         if (type.equals(CommunicationMessage.STARTING_GAME)) {
             Platform.runLater(() -> GuiSceneUtils.changeActivePanel(observers, "board.fxml"));
         }
-
+        if(type.equals(CommunicationMessage.ILLEGAL_LOBBY_ACTION)){
+            Platform.runLater(() -> {
+                GuiSceneUtils.showAlertWindow(AlertType.WARNING, "Warning", "There aren't any active games in the server, try again or join an existing lobby!");
+                askJoinOrSet();
+            });
+        }
     }
 
     public void setBoardController(BoardController boardController) {
@@ -290,4 +296,9 @@ public class Gui extends ViewObservable implements View {
         this.usernameController = usernameController;
     }
 
+    @Override
+    public ClientManager getClientManager(){
+        // TODO: add when implementing local games
+        return null;
+    }
 }

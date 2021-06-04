@@ -2,9 +2,8 @@
   <configuration default="false" name="ClientApp as GUI" type="Application" factoryName="Application" singleton="false">
     <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.ClientApp" />
     <module name="GC45" />
-    <option name="PROGRAM_PARAMETERS" value="-c" />
-    <projectPathOnTarget name="projectPathOnTarget"
-                         value="/mnt/c/Program Files/JetBrains/IntelliJ IDEA 2020.3.2/jbr/bin /ing-sw-2021-Zuccolotto-Targhini-Tresoldi"/>
+    <option name="PROGRAM_PARAMETERS" value="-g" />
+    <projectPathOnTarget name="projectPathOnTarget" value="/mnt/c/Program Files/JetBrains/IntelliJ IDEA 2020.3.2/jbr/bin /ing-sw-2021-Zuccolotto-Targhini-Tresoldi" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
