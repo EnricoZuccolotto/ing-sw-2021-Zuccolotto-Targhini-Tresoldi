@@ -30,23 +30,23 @@ public interface View {
 
     void askSecondAction();
 
-    void askGetMarket();
+    boolean askGetMarket();
 
-    void askSortingMarket();
+    boolean askSortingMarket();
 
     void askSwitchRows();
 
-    void askGetProduction();
+    boolean askGetProduction();
 
-    void askUseBaseProduction();
+    boolean askUseBaseProduction();
 
-    void askUseSpecialProduction();
+    boolean askUseSpecialProduction();
 
-    void askUseNormalProduction();
+    boolean askUseNormalProduction();
 
-    void askFoldLeader();
+    boolean askFoldLeader();
 
-    void askActiveLeader();
+    boolean askActiveLeader();
 
 
     void showPlayerBoard(CompressedPlayerBoard playerBoard);

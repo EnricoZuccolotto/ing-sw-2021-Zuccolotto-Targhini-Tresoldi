@@ -34,6 +34,7 @@ public class Cli extends ViewObservable implements View {
     private Decks decks;
     boolean local = false;
     private final ClientManager clientManager;
+    private final boolean[] productionDone= {false, false, false};
 
     /**
      * Default constructor.
@@ -211,87 +212,96 @@ public class Cli extends ViewObservable implements View {
     private void askWhichAction() {
         int action;
         Action act;
+        boolean exit=true;
         ArrayList<Action> possibilities = turnState.possibleActions();
         if (playerBoard.getPlayerBoard().getLeaderCardsNumber() == 0) {
             possibilities.remove(Action.ACTIVE_LEADER);
             possibilities.remove(Action.FOLD_LEADER);
         }
-        out.println("\nPossible actions:");
-        for (Action action1 : possibilities) {
-            out.println(possibilities.indexOf(action1) + ". " + action1);
-        }
-        String question = "Select the action you want to perform:(the number)";
-        try {
-            action = validateInput(0, possibilities.size() - 1, null, question);
-            act = possibilities.get(action);
-            switch (act) {
-                case ACTIVE_LEADER:
-                    askActiveLeader();
-                    break;
-                case FOLD_LEADER:
-                    askFoldLeader();
-                    break;
-                case END_TURN:
-                    notifyObserver(ViewObserver::endTurn);
-                    break;
-                case GET_RESOURCES_FROM_MARKET:
-                    askGetMarket();
-                    break;
-                case SORTING_WAREHOUSE:
-                    askSortingMarket();
-                    break;
-                case SHIFT_WAREHOUSE:
-                    askSwitchRows();
-                    break;
-                case BUY_DEVELOPMENT_CARD:
-                    askGetProduction();
-                    break;
-                case USE_PRODUCTIONS:
-                    askUseProduction();
-                    break;
+        do {
+            out.println("\nPossible actions:");
+            for (Action action1 : possibilities) {
+                out.println(possibilities.indexOf(action1) + ". " + action1);
             }
-        } catch (ExecutionException e) {
-            out.println("Error");
-        }
+            String question = "Select the action you want to perform:(the number)";
+                try {
+                    action = validateInput(0, possibilities.size() - 1, null, question);
+                    act = possibilities.get(action);
+                    switch (act) {
+                        case ACTIVE_LEADER:
+                            exit=askActiveLeader();
+                            break;
+                        case FOLD_LEADER:
+                            exit=askFoldLeader();
+                            break;
+                        case END_TURN:
+                            for (int i=0; i<3; i++){
+                                setProductionDone(i, false);
+                            }
+                            notifyObserver(ViewObserver::endTurn);
+                            break;
+                        case GET_RESOURCES_FROM_MARKET:
+                            exit=askGetMarket();
+                            break;
+                        case SORTING_WAREHOUSE:
+                            exit=askSortingMarket();
+                            break;
+                        case SHIFT_WAREHOUSE:
+                            askSwitchRows();
+                            break;
+                        case BUY_DEVELOPMENT_CARD:
+                            exit=askGetProduction();
+                            break;
+                        case USE_PRODUCTIONS:
+                            exit=askUseProduction();
+                            break;
+                    }
+                } catch (ExecutionException e) {
+                    out.println("Error");
+                }
+            } while(!exit);
     }
 
-    private void askUseProduction() {
+    private boolean askUseProduction() {
         ArrayList<String> s= new ArrayList<>();
         ArrayList<Integer> jump= new ArrayList<>();
         int index;
+        boolean exit=true;
         s.add("Normal_Production");
         s.add("Base_Production");
         s.add("Special_Production");
+        s.add("Exit");
         String question="Which production would you like to active? ";
-        if(playerBoard.getPlayerBoard().getProductionSpaces().size()==0){
+        if(playerBoard.getPlayerBoard().getProductionSpaces().size()==0 || productionDone[0]){
             jump.add(0);
-            s.remove(0);
         }
-        if(playerBoard.getPlayerBoard().getNumberResources()<2){
+        if(playerBoard.getPlayerBoard().getNumberResources()<2 || productionDone[1]){
             jump.add(1);
-            s.remove(1);
         }
-        if(playerBoard.getPlayerBoard().getProductionNumber()==playerBoard.getPlayerBoard().getProductionSpaces().size()+1){
+        if(playerBoard.getPlayerBoard().getProductionNumber()==playerBoard.getPlayerBoard().getProductionSpaces().size()+1 || productionDone[2]){
             jump.add(2);
-            s.remove(2);
         }
         for (String st : s) {
             out.println(s.indexOf(st) + ". " + st);
         }
         try {
-            index= validateInput(0, s.size()-1, jump, question);
-            if(index==0){
-                askUseNormalProduction();
-            }
-            if (index==1){
-                askUseBaseProduction();
-            }
-            if (index==2){
-                askUseSpecialProduction();
+            index= validateInput(0, 3, jump, question);
+            switch (index){
+                case 0: exit=askUseNormalProduction();
+                        setProductionDone(0, true);
+                        break;
+                case 1: exit=askUseBaseProduction();
+                        setProductionDone(1, true);
+                        break;
+                case 2: exit=askUseSpecialProduction();
+                        setProductionDone(2, true);
+                        break;
+                case 3: return false;
             }
         } catch (ExecutionException e) {
             out.println("Error");
         }
+        return exit;
     }
 
     @Override
@@ -340,27 +350,28 @@ public class Cli extends ViewObservable implements View {
 
 
     @Override
-    public void askGetMarket() {
+    public boolean askGetMarket() {
         int choice, index;
-        String question="What do you want from the market? Select 1 for a row or 2 for a column: ";
+        String question="What do you want from the market? Select 1 for a row or 2 for a column (3 to exit): ";
         try {
-            choice=validateInput(1,2,null,question);
+            choice=validateInput(1,3,null,question);
             if(choice==1){
                 question="Please Select a row between 0 and 2: ";
                 index=validateInput(0,2,null,question);
                 notifyObserver(obs -> obs.getMarket(choice, index));
-            } else {
+            } else if(choice==2) {
                 question="Please Select a column between 0 and 3: ";
                 index=validateInput(0,3,null,question);
                 notifyObserver(obs -> obs.getMarket(choice, index));
-            }
+            } else { return false; }
         } catch (ExecutionException e) {
             out.println("Error");
         }
+        return true;
     }
 
     @Override
-    public void askSortingMarket() {
+    public boolean askSortingMarket() {
         Resources choice;
         int row;
         ArrayList<Resources> list = new ArrayList<>(Arrays.asList(Resources.values()));
@@ -375,13 +386,15 @@ public class Cli extends ViewObservable implements View {
                 list.removeAll(playerBoard.getPlayerBoard().getSubstitutableResources());
                 choice=validateResources(question, list);
             }
-            question="Select a row in the warehouse between 1 and 3, select 4 to discard it or select 0 for the special warehouse (with leader card only): ";
-            row=validateInput(0, 4, null, question);
+            question="Select a row in the warehouse between 1 and 3, select 4 to discard it or select 0 for the special warehouse (with leader card only) and 5 to exit: ";
+            row=validateInput(0, 5, null, question);
+            if (row==5){ return false; }
             Resources finalChoice = choice;
             notifyObserver(obs -> obs.sortingMarket(finalChoice, row, playerBoard.getTemporaryResourceStorage().indexOf(finalChoice)));
         } catch (ExecutionException e) {
             out.println("Error");
         }
+        return true;
     }
 
     @Override
@@ -401,7 +414,7 @@ public class Cli extends ViewObservable implements View {
     }
 
     @Override
-    public void askGetProduction() {
+    public boolean askGetProduction() {
         ArrayList<Colors> col= new ArrayList<>(Arrays.asList(Colors.values()));
         ArrayList<Integer> jump= new ArrayList<>();
         ArrayList<Integer> pos;
@@ -411,14 +424,15 @@ public class Cli extends ViewObservable implements View {
         String question;
         try{
             while (!flag) {
+                question = "Choose the level of the card you would like to buy (0 to exit): ";
+                level = validateInput(0, 3, null, question);
                 out.println("\nThis are the possible card color to buy: ");
                 for (Colors color: col) {
                     out.println(col.indexOf(color) + ". " + color);
                 }
+                if (level==0) { return false; }
                 question="Select the color of the card you want to buy: ";
                 color1 = validateInput(0, col.size(), jump, question);
-                question = "Choose the level of the card you would like to buy: ";
-                level = validateInput(1, 3, null, question);
                 if (decks.getDeck(col.get(color1), level).DeckLength() == 0) {
                     out.println("The deck is empty, choose another one: ");
                 } else if(!(playerBoard.getPlayerBoard().checkResources(decks.getDeck(col.get(color1), level).getFirstCard().getCostCard()))){
@@ -430,6 +444,7 @@ public class Cli extends ViewObservable implements View {
             }
             a=decks.getDeck(col.get(color1), level).getFirstCard().getCostCard();
             pos=SelectResources(a);
+            if(pos==null) { return false; }
             question="Choose where to place your new card, select a number between 1 and 3 (select 0 to auto-place the card): ";
             index=validateInput(0, 3, null, question);
             int finalColor = color1;
@@ -439,10 +454,11 @@ public class Cli extends ViewObservable implements View {
         } catch (ExecutionException e) {
             out.println("Error");
         }
+        return true;
     }
 
     @Override
-    public void askUseBaseProduction() {
+    public boolean askUseBaseProduction() {
         int choice=0, temp=0, choice2=-1;
         boolean flag=false, finish=false;
         Resources obt, res = Resources.WHITE, val=Resources.WHITE;
@@ -450,6 +466,7 @@ public class Cli extends ViewObservable implements View {
         s.add("Warehouse");
         s.add("Strongbox");
         s.add("SpecialWarehouse");
+        s.add("Exit");
         String question;
         ArrayList<Resources> pass = new ArrayList<>();
         ArrayList<Resources> obtain = new ArrayList<>();
@@ -466,7 +483,8 @@ public class Cli extends ViewObservable implements View {
                         out.println(s.indexOf(st) + ". " + st);
                     }
                     question= "Choose a number: ";
-                    choice = validateInput(0, 2, null, question);
+                    choice = validateInput(0, 3, null, question);
+                    if(choice==3) { return false; }
                     question = "Choose which resource you want to use?: ";
                     res = validateResources(question, obtain);
                     if(res.equals(val) && choice==choice2){
@@ -496,10 +514,11 @@ public class Cli extends ViewObservable implements View {
         } catch (ExecutionException e) {
             out.println("Error");
         }
+        return true;
     }
 
     @Override
-    public void askUseSpecialProduction() {
+    public boolean askUseSpecialProduction() {
         int choice, index=-1;
         boolean flag=false;
         Resources res=Resources.WHITE, resource;
@@ -507,11 +526,12 @@ public class Cli extends ViewObservable implements View {
         obtain.add(Resources.FAITH);
         obtain.add(Resources.WHITE);
         obtain.add(Resources.WHATEVER);
-        String question="Choose the leader card you want to active its special production: ";
+        String question="Choose the leader card you want to active its special production (2 to exit): ";
         try {
             while (!flag) {
-                index= validateInput(0, 1, null, question);
-                if(playerBoard.getPlayerBoard().getLeaderCard(index).getAdvantage().equals(Advantages.PROD) && playerBoard.getPlayerBoard().getLeaderCard(index).getUncovered()){
+                index= validateInput(0, 2, null, question);
+                if(index==2) { return false; }
+                else if(playerBoard.getPlayerBoard().getLeaderCard(index).getAdvantage().equals(Advantages.PROD) && playerBoard.getPlayerBoard().getLeaderCard(index).getUncovered()){
                     flag=true;
                 } else {
                     out.println("You cannot choose this card, try another one.");
@@ -533,10 +553,11 @@ public class Cli extends ViewObservable implements View {
         } catch (ExecutionException e) {
             out.println("Error");
         }
+        return true;
     }
 
     @Override
-    public void askUseNormalProduction() {
+    public boolean askUseNormalProduction() {
         int index;
         DevelopmentCard d;
         ArrayList<Integer> jump= new ArrayList<>();
@@ -547,43 +568,49 @@ public class Cli extends ViewObservable implements View {
                 jump.add(i);
             }
         }
-        String question="Choose the index of the card you want to activate production of(from 0 to 2): ";
+        String question="Choose the index of the card you want to activate production of(from 0 to 2, 3 to exit) : ";
         try{
-            index=validateInput(0, 2, jump, question );
+            index=validateInput(0, 3, jump, question );
+            if(index==3) { return false; }
             d=playerBoard.getPlayerBoard().getProductionSpaces().get(index).getTop();
             a=d.getCostProduction();
             pos=SelectResources(a);
+            if(pos==null) { return false; }
             notifyObserver(obs -> obs.useNormalProduction(index, pos, a));
         } catch (ExecutionException e) {
             out.println("Error");
         }
-
+        return true;
     }
 
     @Override
-    public void askFoldLeader() {
+    public boolean askFoldLeader() {
         int foldCard;
         int numCards = playerBoard.getPlayerBoard().getLeaderCardsNumber() - 1;
-        String question = "Which card do you want to discard? Select 1, between 0 and " + numCards + ":";
+        String question = "Which card do you want to discard? Select 1, between 0 and " + numCards + " (" + numCards+1 + " to exit:";
         try {
-            foldCard = validateInput(0, numCards, null, question);
+            foldCard = validateInput(0, numCards+1, null, question);
+            if(foldCard==numCards+1) { return false; }
             notifyObserver(obs -> obs.foldLeader(foldCard));
         } catch (ExecutionException e) {
             out.println("Error");
         }
+        return true;
     }
 
     @Override
-    public void askActiveLeader() {
+    public boolean askActiveLeader() {
         int activeCard;
         int numCards = playerBoard.getPlayerBoard().getLeaderCardsNumber() - 1;
-        String question = "Which card do you want to active? Select 1, between 0 and " + numCards + ":";
+        String question = "Which card do you want to active? Select 1, between 0 and " + numCards + " (" + numCards+1 + " to exit:";
         try {
-            activeCard = validateInput(0, numCards, null, question);
+            activeCard = validateInput(0, numCards+1, null, question);
+            if(activeCard==numCards+1) { return false; }
             notifyObserver(obs -> obs.activeLeader(activeCard));
         } catch (ExecutionException e) {
             out.println("Error");
         }
+        return true;
 
     }
 
@@ -727,6 +754,7 @@ public class Cli extends ViewObservable implements View {
         s.add("Warehouse");
         s.add("Strongbox");
         s.add("SpecialWarehouse");
+        s.add("Exit");
         out.println("\nNow you have to choose where you want to take each resources from: ");
         for (String st : s) {
             out.println(s.indexOf(st) + ". " + st);
@@ -734,8 +762,9 @@ public class Cli extends ViewObservable implements View {
         try {
             for (int i = 0; i < 4; i++) {
                 while (count != a[i]) {
-                    question = "Pick a number for the resource " + Resources.transform(i) + ": ";
+                    question = "Pick a number for the resource  " + Resources.transform(i) + " (3 to exit): ";
                     select = validateInput(0, 2, null, question);
+                    if(select==3) {return null;}
                     resource = playerBoard.getPlayerBoard().getResources(select, count);
                     if (resource.contains(Resources.transform(i))) {
                         count++;
@@ -755,6 +784,10 @@ public class Cli extends ViewObservable implements View {
     public void clearCli() {
         out.println("\033[H\033[2J");
         out.flush();
+    }
+
+    private void setProductionDone(int index, boolean bool){
+        productionDone[index]=bool;
     }
 
     @Override

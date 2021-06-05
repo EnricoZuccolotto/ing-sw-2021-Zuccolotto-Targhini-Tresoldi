@@ -148,13 +148,13 @@ public class Gui extends ViewObservable implements View {
     }
 
     @Override
-    public void askGetMarket() {
-
+    public boolean askGetMarket() {
+        return true;
     }
 
     @Override
-    public void askSortingMarket() {
-
+    public boolean askSortingMarket() {
+        return true;
     }
 
     @Override
@@ -163,33 +163,33 @@ public class Gui extends ViewObservable implements View {
     }
 
     @Override
-    public void askGetProduction() {
-
+    public boolean askGetProduction() {
+        return true;
     }
 
     @Override
-    public void askUseBaseProduction() {
-
+    public boolean askUseBaseProduction() {
+        return true;
     }
 
     @Override
-    public void askUseSpecialProduction() {
-
+    public boolean askUseSpecialProduction() {
+        return true;
     }
 
     @Override
-    public void askUseNormalProduction() {
-
+    public boolean askUseNormalProduction() {
+        return true;
     }
 
     @Override
-    public void askFoldLeader() {
-
+    public boolean askFoldLeader() {
+        return true;
     }
 
     @Override
-    public void askActiveLeader() {
-
+    public boolean askActiveLeader() {
+        return true;
     }
 
     @Override
