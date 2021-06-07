@@ -7,9 +7,10 @@ import it.polimi.ingsw.exception.controller.PlayerAlreadyExistsException;
 import it.polimi.ingsw.network.messages.LobbyJoinMessage;
 import it.polimi.ingsw.network.messages.LobbySetMessage;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class LobbyController {
+public class LobbyController implements Serializable {
     private final ArrayList<String> inLobbyPlayer;
     private int playerNumber;
 

@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.enums.Colors;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 /**
@@ -14,7 +15,7 @@ import java.util.Collections;
  * botActions represents the stack of solo action token(DiscardPurple,DiscardGreen,DiscardYellow,DiscardBlue,Blackcross1Shuffle,BlackCross2, BlackCross2);
  * currentAction is an index used to scroll the array list of botAction, represents the next bot action that the bot must do.
  */
-public class BotPlayer extends Player {
+public class BotPlayer extends Player implements Serializable {
     private final GameBoard currentGameBoard;
     private final ArrayList<BotActions> botActions;
     private int currentAction;

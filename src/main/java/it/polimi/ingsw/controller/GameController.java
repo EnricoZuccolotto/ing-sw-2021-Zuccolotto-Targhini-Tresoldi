@@ -9,16 +9,18 @@ import it.polimi.ingsw.network.messages.ExecutableMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
 import it.polimi.ingsw.observer.Observer;
+import it.polimi.ingsw.utils.GameSaver;
 import it.polimi.ingsw.view.NetworkLayerView;
 import it.polimi.ingsw.view.View;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class GameController {
+public class GameController implements Serializable {
 
     private GameState gamestate;
     private final GameBoard gameBoardInstance;
@@ -32,7 +34,7 @@ public class GameController {
         this.gamestate = GameState.LOBBY;
         this.lobby = new LobbyController();
         this.gameBoardInstance = new GameBoard();
-        this.roundController = new RoundController(gameBoardInstance);
+        this.roundController = new RoundController(gameBoardInstance, this);
         viewMap = Collections.synchronizedMap(new HashMap<>());
         this.local = local;
     }
@@ -157,6 +159,9 @@ public class GameController {
         }
         gamestate = GameState.END;
         gameBoardInstance.setPublicCommunication("THE END", CommunicationMessage.PUBLIC);
+
+        // Now that the game has ended, we delete the saved game file since an ended game cannot be restarted.
+        GameSaver.deleteSavedGame();
     }
 
     public RoundController getRoundController(){

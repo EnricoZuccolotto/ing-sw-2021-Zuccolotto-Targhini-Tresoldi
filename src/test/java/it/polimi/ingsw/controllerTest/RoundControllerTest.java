@@ -29,7 +29,7 @@ public class RoundControllerTest {
         gb.addPlayer(new HumanPlayer("Harry", false));
         gb.addPlayer(new HumanPlayer("Enry", false));
         gb.init(gb);
-        RoundController g = new RoundController(gb);
+        RoundController g = new RoundController(gb, null);
         g.init();
         g.handle_firstTurn();
         assertEquals(g.getGameState(), GameState.MULTIPLAYER);
@@ -63,7 +63,7 @@ public class RoundControllerTest {
         gb.addPlayer(new HumanPlayer("Harry", false));
         gb.addPlayer(new HumanPlayer("Enry", false));
         gb.init(gb);
-        RoundController g = new RoundController(gb);
+        RoundController g = new RoundController(gb, null);
         g.init();
         assertEquals(g.getGameState(), GameState.MULTIPLAYER);
 
@@ -93,7 +93,7 @@ public class RoundControllerTest {
         gb.addPlayer(new HumanPlayer("Ron", false));
         gb.addPlayer(new HumanPlayer("Hermione", false));
         gb.init(gb);
-        RoundController g = new RoundController(gb);
+        RoundController g = new RoundController(gb, null);
         g.init();
         assertEquals(g.getGameState(), GameState.MULTIPLAYER);
         //first Turn
@@ -132,7 +132,7 @@ public class RoundControllerTest {
         GameBoard gb=new GameBoard();
         gb.addPlayer(new HumanPlayer("Harry",true));
         gb.init(gb);
-        RoundController g=new RoundController(gb);
+        RoundController g=new RoundController(gb, null);
         g.init();
         assertEquals(g.getGameState(), GameState.SINGLEPLAYER);
         //first Turn
@@ -157,7 +157,7 @@ public class RoundControllerTest {
         gb.addPlayer(new HumanPlayer("Harry", false));
         gb.addPlayer(new HumanPlayer("Enry", false));
         gb.init(gb);
-        RoundController g = new RoundController(gb);
+        RoundController g = new RoundController(gb, null);
         g.init();
         assertEquals(g.getGameState(), GameState.MULTIPLAYER);
         //first Turn
@@ -252,7 +252,7 @@ public class RoundControllerTest {
         gb.addPlayer(new HumanPlayer("Harry", false));
         gb.addPlayer(new HumanPlayer("Enry", true));
         gb.init(gb);
-        RoundController g = new RoundController(gb) {
+        RoundController g = new RoundController(gb, null) {
 
             public void handle_getMarket(MarketRequestMessage message) {
 
@@ -311,7 +311,7 @@ public class RoundControllerTest {
         gb.addPlayer(new HumanPlayer("Harry", false));
         gb.addPlayer(new HumanPlayer("Enry", true));
         gb.init(gb);
-        RoundController g = new RoundController(gb) {
+        RoundController g = new RoundController(gb, null) {
 
             public void handle_getMarket(MarketRequestMessage message) {
 

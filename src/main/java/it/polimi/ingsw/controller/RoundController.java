@@ -10,11 +10,13 @@ import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.model.tools.CardParser;
 import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.utils.GameSaver;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class RoundController {
+public class RoundController implements Serializable {
 
     private final ActionController actionController;
     private final GameBoard gameBoardInstance;
@@ -30,14 +32,17 @@ public class RoundController {
     private int winnerPlayer;
     private boolean Winner;
 
+    private GameController gameController;
 
-    public RoundController(GameBoard gameBoardInstance) {
+
+    public RoundController(GameBoard gameBoardInstance, GameController gameController) {
         this.turnCount = 0;
         this.gameBoardInstance = gameBoardInstance;
         this.players = gameBoardInstance.getPlayers();
         this.turnState = TurnState.FIRST_TURN;
         this.productions = new ArrayList<>(4);
         this.actionController = new ActionController();
+        this.gameController = gameController;
 
         this.Winner = false;
         this.winnerPlayer = -2;
@@ -311,6 +316,7 @@ public class RoundController {
         playerInTurn = players.get((turnCount) % players.size());
         firstState();
         playerInTurn.setState(turnState);
+        GameSaver.saveGame(gameController);
     }
 
     private void checkWinner(int playersNumber){

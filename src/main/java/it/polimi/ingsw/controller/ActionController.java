@@ -15,13 +15,14 @@ import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
 /**
  * This class handles all possible game actions.
  */
-public class ActionController {
+public class ActionController implements Serializable {
 
     /**
      * Starts a market action by specifying the row or column the user wants to get.

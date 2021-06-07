@@ -14,6 +14,7 @@ import it.polimi.ingsw.network.messages.FaithPathUpdateMessage;
 import it.polimi.ingsw.network.messages.MarketUpdateMessage;
 import it.polimi.ingsw.observer.Observable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  * faithPath represents the faith path.
  * bot represents the bot player, if there is one.
  */
-public class GameBoard extends Observable {
+public class GameBoard extends Observable implements Serializable {
     private final Market market;
     private final Decks decks;
     private final ArrayList<HumanPlayer> players;

@@ -27,7 +27,7 @@ public class LeaderTest {
         gb.init(gb);
         ArrayList<Resources> r = new ArrayList<>();
         r.add(Resources.STONE);
-        RoundController g = new RoundController(gb);
+        RoundController g = new RoundController(gb, null);
         g.init();
         g.handle_firstTurn();
         g.handle_firstAction(new FirstActionMessage("Harry", 2, 3));
@@ -75,7 +75,7 @@ public class LeaderTest {
         gb.init(gb);
         ArrayList<Resources> r = new ArrayList<>();
         r.add(Resources.STONE);
-        RoundController g = new RoundController(gb);
+        RoundController g = new RoundController(gb, null);
         g.init();
         g.handle_firstTurn();
         g.handle_firstAction(new FirstActionMessage("Harry", 2, 3));
@@ -129,7 +129,7 @@ public class LeaderTest {
         gb.init(gb);
         ArrayList<Resources> r = new ArrayList<>();
         r.add(Resources.STONE);
-        RoundController g = new RoundController(gb);
+        RoundController g = new RoundController(gb, null);
         g.init();
         g.handle_firstTurn();
         g.handle_firstAction(new FirstActionMessage("Harry", 2, 3));

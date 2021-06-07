@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.Communication;
 
-public class Communication {
+import java.io.Serializable;
+
+public class Communication implements Serializable {
     private CommunicationMessage communicationMessage;
     private String message;
 

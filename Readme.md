@@ -22,6 +22,7 @@ Il progetto prevede lo sviluppo e l'implementazione del gioco da tavolo Maestri 
   - GUI con JavaFX (WIP);
 - Funzionalità avanzate:
   - Partita in locale (per ora solo CLI)
+  - Persistenza (WIP)
 
 ## Report coverage classi di test
 
