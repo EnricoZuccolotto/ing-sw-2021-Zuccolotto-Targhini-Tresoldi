@@ -1,6 +1,8 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.ClientApp;
 import it.polimi.ingsw.controller.ClientManager;
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.view.gui.controllers.MenuController;
 import javafx.application.Application;
@@ -20,7 +22,12 @@ public class GuiEntryPoint extends Application  {
     @Override
     public void start(Stage stage){
         Gui view = Gui.getInstance();
-        ClientManager clientManager = new ClientManager(view);
+        GameController gameController = ClientApp.gameControllerToSend;
+        if(gameController != null){
+            // Local game
+            gameController.setLocalView(view);
+        }
+        ClientManager clientManager = view.createClientManager(gameController);
         view.addObserver(clientManager);
 
         // Load menu layout

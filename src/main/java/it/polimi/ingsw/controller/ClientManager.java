@@ -26,8 +26,6 @@ public class ClientManager implements ViewObserver, Observer {
     private LocalClient localClient;
     private String nickname;
     private final boolean local;
-    private GameController gameController;
-
 
     /**
      * Constructs Client Controller.
@@ -44,7 +42,6 @@ public class ClientManager implements ViewObserver, Observer {
         this.view = view;
         taskQueue = Executors.newSingleThreadExecutor();
         local = true;
-        this.gameController = gameController;
         localClient = new LocalClient(gameController);
     }
     /**
@@ -105,6 +102,7 @@ public class ClientManager implements ViewObserver, Observer {
     @Override
     public void Nickname(String nickname) {
         this.nickname = nickname;
+        view.setNickname(nickname); // On a local game the Nickname is always valid.
         getActiveClient().sendMessage(new LoginMessage(this.nickname));
     }
 

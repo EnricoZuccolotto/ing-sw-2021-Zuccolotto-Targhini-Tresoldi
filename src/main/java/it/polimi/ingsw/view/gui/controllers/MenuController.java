@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.gui.controllers;
 
 import it.polimi.ingsw.observer.ViewObservable;
+import it.polimi.ingsw.view.gui.Gui;
 import it.polimi.ingsw.view.gui.GuiSceneUtils;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -17,6 +18,7 @@ public class MenuController extends ViewObservable implements SceneController {
 
     @FXML
     public void initialize(){
+        Gui gui = Gui.getInstance();
         exitButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> System.exit(0));
         connectButton.addEventHandler(MouseEvent.MOUSE_CLICKED, this::onConnectButtonClick);
         exitButton.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
@@ -25,9 +27,16 @@ public class MenuController extends ViewObservable implements SceneController {
         connectButton.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
             if(GuiSceneUtils.isAnEnterKeyEvent(keyEvent)) onConnectButtonClick(keyEvent);
         });
+
+        if(gui.isLocal()) connectButton.setText("Start...");
     }
 
     private void onConnectButtonClick(Event event){
-        GuiSceneUtils.changeActivePanel(observers, ((Node) event.getSource()).getScene(), "connect.fxml");
+        Gui gui = Gui.getInstance();
+        if(gui.isLocal()){
+            GuiSceneUtils.changeActivePanel(observers, ((Node) event.getSource()).getScene(), "username.fxml");
+        } else {
+            GuiSceneUtils.changeActivePanel(observers, ((Node) event.getSource()).getScene(), "connect.fxml");
+        }
     }
 }

@@ -13,6 +13,8 @@ import java.util.logging.Level;
  */
 public class ClientApp {
 
+    public static GameController gameControllerToSend = null;
+
     public static void main(String[] args) {
 
         boolean cli_gui = false; // default value
@@ -43,8 +45,8 @@ public class ClientApp {
                 GameController gameController = new GameController(true);
                 new Cli(gameController);
             } else {
-                System.out.println("Error, not supported");
-                System.exit(1);
+                gameControllerToSend = new GameController(true);
+                GuiEntryPoint.main(args);
             }
         }
     }

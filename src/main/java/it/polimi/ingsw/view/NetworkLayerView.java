@@ -147,6 +147,12 @@ public class NetworkLayerView implements View, Observer {
 
     }
 
+    @Override
+    public void setNickname(String string){
+        // Does nothing, this method is used only on a local game.
+        return;
+    }
+
 
     /**
      * Receives a message from the model and sends it directly to the client.

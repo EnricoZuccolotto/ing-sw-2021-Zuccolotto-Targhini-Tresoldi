@@ -32,7 +32,7 @@ public class RoundController implements Serializable {
     private int winnerPlayer;
     private boolean Winner;
 
-    private GameController gameController;
+    private final GameController gameController;
 
 
     public RoundController(GameBoard gameBoardInstance, GameController gameController) {

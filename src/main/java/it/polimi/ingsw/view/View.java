@@ -20,6 +20,8 @@ public interface View {
      */
     void askUsername();
 
+    void setNickname(String nickname);
+
     void askPlayersNumber();
 
     void joinLobby();

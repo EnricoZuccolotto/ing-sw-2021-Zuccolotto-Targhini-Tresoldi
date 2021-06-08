@@ -57,6 +57,11 @@ public class Cli extends ViewObservable implements View {
         askUsername();
     }
 
+    @Override
+    public void setNickname(String nickname){
+        this.nickname = nickname;
+    }
+
     public String readLine() throws ExecutionException {
         FutureTask<String> futureTask = new FutureTask<>(new ReadingThread());
         Thread inputThread = new Thread(futureTask);

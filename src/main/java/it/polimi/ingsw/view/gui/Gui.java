@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.gui;
 
 import it.polimi.ingsw.controller.ClientManager;
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
@@ -31,10 +32,8 @@ public class Gui extends ViewObservable implements View {
     private BoardController boardController;
     private UsernameController usernameController;
     private PlayerBoard playerBoard;
-
-    private Gui() {
-
-    }
+    private ClientManager clientManager;
+    private boolean local = false;
 
     public static Gui getInstance() {
         if (instance == null)
@@ -42,6 +41,29 @@ public class Gui extends ViewObservable implements View {
         return instance;
     }
 
+    public boolean isLocal() {
+        return local;
+    }
+
+    @Override
+    public void setNickname(String nickname){
+        this.nickname = nickname;
+    }
+
+    /**
+     * Creates the client manager
+     * @param gameController GameController for local game. If network game this should be null.
+     */
+    public ClientManager createClientManager(GameController gameController){
+        if(gameController != null){
+            clientManager = new ClientManager(this, gameController);
+            local = true;
+        } else {
+            clientManager = new ClientManager(this);
+        }
+
+        return clientManager;
+    }
 
     @Override
     public void askUsername() {
@@ -77,6 +99,10 @@ public class Gui extends ViewObservable implements View {
             if (numberOfPlayers != 1)
                 Platform.runLater(() -> usernameController.changeToLobby());
         });
+    }
+
+    public void askPlayersNumber(int number){
+        notifyObserver(obs -> obs.PlayersNumber(number));
     }
 
     @Override
@@ -220,7 +246,11 @@ public class Gui extends ViewObservable implements View {
         if(accepted){
             if(nick){
                 this.nickname = name;
-                askJoinOrSet();
+                if(!local){
+                    askJoinOrSet();
+                } else {
+                    askPlayersNumber(1);
+                }
             } else {
                 Platform.runLater(() -> {
                     GuiSceneUtils.showAlertWindow(AlertType.ERROR, "Error", "Username is already taken! Try again.");
@@ -299,7 +329,6 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public ClientManager getClientManager(){
-        // TODO: add when implementing local games
-        return null;
+        return clientManager;
     }
 }
