@@ -6,7 +6,6 @@ import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
-import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.cards.Decks;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.observer.ViewObservable;
@@ -31,7 +30,7 @@ public class Gui extends ViewObservable implements View {
     private static Gui instance = null;
     private BoardController boardController;
     private UsernameController usernameController;
-    private PlayerBoard playerBoard;
+    private CompressedPlayerBoard CompressedPlayerBoard;
     private ClientManager clientManager;
     private boolean local = false;
 
@@ -87,7 +86,11 @@ public class Gui extends ViewObservable implements View {
             do {
                 Optional<String> numberString = dialog.showAndWait();
                 if (numberString.isPresent()) {
-                    numberOfPlayers = Integer.parseInt(numberString.get());
+                    try {
+                        numberOfPlayers = Integer.parseInt(numberString.get());
+                    } catch (NumberFormatException e) {
+                        numberOfPlayers = 0;
+                    }
                     if (numberOfPlayers >= 1 && numberOfPlayers <= 4) exit = true;
                     else
                         GuiSceneUtils.showAlertWindow(AlertType.WARNING, "Error", "Invalid number of players, try again!");
@@ -125,7 +128,10 @@ public class Gui extends ViewObservable implements View {
             }
             case PRODUCTION_ACTIONS:
             case NORMAL_ACTION:
-            case WAREHOUSE_ACTION:
+            case WAREHOUSE_ACTION: {
+                Platform.runLater(() ->
+                        boardController.activeWarehouse());
+            }
             case LAST_LEADER_ACTION:
             case FIRST_LEADER_ACTION: {
                 Platform.runLater(() ->
@@ -139,7 +145,7 @@ public class Gui extends ViewObservable implements View {
     @Override
     public void askFirstAction() {
         Platform.runLater(() ->
-                boardController.updateFirstAction(playerBoard));
+                boardController.updateFirstAction(CompressedPlayerBoard.getPlayerBoard()));
     }
 
     @Override
@@ -180,6 +186,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public boolean askSortingMarket() {
+
         return true;
     }
 
@@ -221,8 +228,8 @@ public class Gui extends ViewObservable implements View {
     @Override
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
         if (playerBoard.getName().equals(nickname)) {
-            this.playerBoard = playerBoard.getPlayerBoard();
-            Platform.runLater(() -> boardController.updatePlayerBoard(this.playerBoard));
+            this.CompressedPlayerBoard = playerBoard;
+            Platform.runLater(() -> boardController.updatePlayerBoard(playerBoard));
         }
     }
 
@@ -317,6 +324,7 @@ public class Gui extends ViewObservable implements View {
                 askJoinOrSet();
             });
         }
+        System.out.println(communication);
     }
 
     public void setBoardController(BoardController boardController) {

@@ -10,7 +10,7 @@ public class FaithPathTest {
     @Test
         public void FaithTest(){
         FaithPath f = new FaithPath();
-        f.init(3);
+        f.init(3, false);
         f.movePlayer(0, 3);
         f.movePlayer(1, 5);
         f.movePlayer(2, 8);
@@ -49,7 +49,7 @@ public class FaithPathTest {
     @Test
     public void InstaWin() {
         FaithPath f = new FaithPath();
-        f.init(4);
+        f.init(4, false);
         try {
             f.movePlayer(0, 25);
             fail();
@@ -73,7 +73,7 @@ public class FaithPathTest {
     @Test
     public void MultipleReportSpaces() {
         FaithPath f = new FaithPath();
-        f.init(4);
+        f.init(4, false);
         f.movePlayer(0, 5);
         assertFalse(f.getCardsState(0, 0));
         assertFalse(f.getCardsState(0, 1));

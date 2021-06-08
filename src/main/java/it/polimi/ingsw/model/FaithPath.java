@@ -24,6 +24,7 @@ public class FaithPath extends Observable implements Serializable {
     private int[] playerPV;
     private boolean[][] cardState;
     private int report;
+    private boolean singlePlayer;
 
     /**
      * Build a new faith path with n players.
@@ -36,12 +37,14 @@ public class FaithPath extends Observable implements Serializable {
     /**
      * Initialize the faith path with n players.
      *
-     * @param n number of players
+     * @param n    number of players
+     * @param flag true if the game is single player.
      */
-    public void init(int n) {
+    public void init(int n, boolean flag) {
         playerPositions = new int[n];
         playerPV = new int[n];
         cardState = new boolean[n][3];
+        singlePlayer = flag;
     }
 
     /**
@@ -147,6 +150,15 @@ public class FaithPath extends Observable implements Serializable {
      */
     public int getPosition(int player) {
         return playerPositions[player];
+    }
+
+    /**
+     * Gets if the game is single player.
+     *
+     * @return true if the game is single player.
+     */
+    public boolean isSinglePlayer() {
+        return singlePlayer;
     }
 
     @Override

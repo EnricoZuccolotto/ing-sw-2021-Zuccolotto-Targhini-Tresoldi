@@ -52,9 +52,9 @@ public class GameBoard extends Observable implements Serializable {
      */
     public void init(GameBoard gameBoard) {
         if (players.size() == 1) {
-            this.faithPath.init(2);
+            this.faithPath.init(2, true);
             bot = new BotPlayer(gameBoard);
-        } else this.faithPath.init(players.size());
+        } else this.faithPath.init(players.size(), false);
         notifyObserver(new DecksUpdateMessage(decks));
         notifyObserver(new MarketUpdateMessage("", market));
         notifyObserver(new FaithPathUpdateMessage(faithPath));

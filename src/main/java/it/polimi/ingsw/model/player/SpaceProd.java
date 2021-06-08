@@ -87,6 +87,15 @@ public class SpaceProd implements Serializable {
     }
 
     /**
+     * Gets the cards of the stack
+     *
+     * @return all of the cards in the stack.
+     */
+    public Stack<DevelopmentCard> getCards() {
+        return spaceProd;
+    }
+
+    /**
      * Gets the number of cards contained in the production space
      *
      * @return the number of cards contained in the production space

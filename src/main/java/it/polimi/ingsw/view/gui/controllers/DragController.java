@@ -8,8 +8,6 @@ import javafx.scene.input.MouseEvent;
 
 public class DragController {
     private final Node target;
-    private final int ACTIVE = 1;
-    private final int INACTIVE = 0;
     private double anchorX;
     private double anchorY;
     private double mouseOffsetFromNodeZeroX;
@@ -17,7 +15,7 @@ public class DragController {
     private EventHandler<MouseEvent> setAnchor;
     private EventHandler<MouseEvent> updatePositionOnDrag;
     private EventHandler<MouseEvent> commitPositionOnRelease;
-    private int cycleStatus = INACTIVE;
+    private boolean cycleStatus = false;
     private BooleanProperty isDraggable;
 
     public DragController(Node target, boolean isDraggable) {
@@ -30,26 +28,27 @@ public class DragController {
     private void createHandlers() {
         setAnchor = event -> {
             if (event.isPrimaryButtonDown()) {
-                cycleStatus = ACTIVE;
+                cycleStatus = true;
                 anchorX = event.getSceneX();
                 anchorY = event.getSceneY();
                 mouseOffsetFromNodeZeroX = event.getX();
                 mouseOffsetFromNodeZeroY = event.getY();
             }
             if (event.isSecondaryButtonDown()) {
-                cycleStatus = INACTIVE;
+                cycleStatus = false;
                 target.setTranslateX(0);
                 target.setTranslateY(0);
             }
         };
         updatePositionOnDrag = event -> {
-            if (cycleStatus != INACTIVE) {
+            if (cycleStatus) {
                 target.setTranslateX(event.getSceneX() - anchorX);
                 target.setTranslateY(event.getSceneY() - anchorY);
             }
         };
+
         commitPositionOnRelease = event -> {
-            if (cycleStatus != INACTIVE) {
+            if (cycleStatus) {
                 //commit changes to LayoutX and LayoutY
                 target.setLayoutX(event.getSceneX() - mouseOffsetFromNodeZeroX);
                 target.setLayoutY(event.getSceneY() - mouseOffsetFromNodeZeroY);
@@ -58,6 +57,8 @@ public class DragController {
                 target.setTranslateY(0);
             }
         };
+
+
     }
 
     public void createDraggableProperty() {

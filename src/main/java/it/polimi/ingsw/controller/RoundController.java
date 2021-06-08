@@ -382,6 +382,7 @@ public class RoundController implements Serializable {
     }
 
     public void nextState(Action action) {
+
         boolean flag = (!turnState.equals(TurnState.FIRST_TURN) && !turnState.equals(TurnState.SECOND_TURN));
         if (!action.equals(Action.SHIFT_WAREHOUSE))
             switch (turnState) {

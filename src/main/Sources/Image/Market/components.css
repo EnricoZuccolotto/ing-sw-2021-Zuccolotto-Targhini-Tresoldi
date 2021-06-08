@@ -10,6 +10,10 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 200, 1), 20, 0, 0, 0);
 }
 
+.arrow2:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 1), 20, 0, 0, 0);
+}
+
 .coin {
     -fx-text-fill: white;
     -fx-background-color: transparent;
@@ -71,6 +75,27 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 200, 1), 20, 0, 0, 0);
 }
 
+.handCard {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-border: none;
+}
+
+.handCard:hover {
+    -fx-translate-y: -160;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 200, 1), 20, 0, 0, 0);
+}
+
+.arrow2 {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-border: none;
+}
+
+.arrow2:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 1), 20, 0, 0, 0);
+}
+
 .DevCard {
     -fx-text-fill: white;
     -fx-background-color: transparent;
@@ -87,3 +112,11 @@
     -fx-view-order: -1.0;
 }
 
+.first {
+    -fx-view-order: -10.0;
+
+}
+
+.second {
+    -fx-view-order: -5.0;
+}

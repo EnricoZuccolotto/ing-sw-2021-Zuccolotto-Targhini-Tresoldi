@@ -84,7 +84,6 @@ public class Cli extends ViewObservable implements View {
     public void init() {
 
         out.println("Welcome master of the Renaissance");
-
         try {
             askServerInfo();
         } catch (ExecutionException e) {

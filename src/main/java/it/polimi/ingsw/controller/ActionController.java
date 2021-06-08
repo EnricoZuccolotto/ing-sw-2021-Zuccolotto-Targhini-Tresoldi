@@ -80,7 +80,7 @@ public class ActionController implements Serializable {
                     return false;
                 }
             } else if (!humanPlayer.getPlayerBoard().addWarehouseResource(resource, position)) {
-                humanPlayer.setPrivateCommunication("You can't insert this resource in this position", CommunicationMessage.ILLEGAL_ACTION);
+                humanPlayer.setPrivateCommunication("You can't insert this resource " + resource + " in this position " + position, CommunicationMessage.ILLEGAL_ACTION);
                 return false;
             }
             humanPlayer.removeItemFromTemporaryList(receivedResourceIndex);
