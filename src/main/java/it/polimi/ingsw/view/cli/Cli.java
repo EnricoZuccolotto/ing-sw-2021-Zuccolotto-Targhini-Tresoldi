@@ -34,7 +34,6 @@ public class Cli extends ViewObservable implements View {
     private Decks decks;
     boolean local = false;
     private final ClientManager clientManager;
-    private final boolean[] productionDone= {false, false, false};
 
     /**
      * Default constructor.
@@ -239,9 +238,6 @@ public class Cli extends ViewObservable implements View {
                             exit=askFoldLeader();
                             break;
                         case END_TURN:
-                            for (int i=0; i<3; i++){
-                                setProductionDone(i, false);
-                            }
                             notifyObserver(ViewObserver::endTurn);
                             break;
                         case GET_RESOURCES_FROM_MARKET:
@@ -276,13 +272,13 @@ public class Cli extends ViewObservable implements View {
         s.add("Special_Production");
         s.add("Exit");
         String question="Which production would you like to active? ";
-        if(playerBoard.getPlayerBoard().getProductionSpaces().size()==0 || productionDone[0]){
+        if(playerBoard.getPlayerBoard().getProductionSpaces().size()==0 ){
             jump.add(0);
         }
-        if(playerBoard.getPlayerBoard().getNumberResources()<2 || productionDone[1]){
+        if(playerBoard.getPlayerBoard().getNumberResources()<2 ) {
             jump.add(1);
         }
-        if(playerBoard.getPlayerBoard().getProductionNumber()==playerBoard.getPlayerBoard().getProductionSpaces().size()+1 || productionDone[2]){
+        if(playerBoard.getPlayerBoard().getProductionNumber()==playerBoard.getPlayerBoard().getProductionSpaces().size()+1) {
             jump.add(2);
         }
         for (String st : s) {
@@ -292,13 +288,10 @@ public class Cli extends ViewObservable implements View {
             index= validateInput(0, 3, jump, question);
             switch (index){
                 case 0: exit=askUseNormalProduction();
-                        setProductionDone(0, true);
                         break;
                 case 1: exit=askUseBaseProduction();
-                        setProductionDone(1, true);
                         break;
                 case 2: exit=askUseSpecialProduction();
-                        setProductionDone(2, true);
                         break;
                 case 3: return false;
             }
@@ -788,10 +781,6 @@ public class Cli extends ViewObservable implements View {
     public void clearCli() {
         out.println("\033[H\033[2J");
         out.flush();
-    }
-
-    private void setProductionDone(int index, boolean bool){
-        productionDone[index]=bool;
     }
 
     @Override
