@@ -20,27 +20,34 @@ import it.polimi.ingsw.view.View;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+import java.util.stream.Collectors;
 
 public class Cli extends ViewObservable implements View {
 
     private final PrintStream out;
     private int playerNumber;
+    private final ArrayList<CompressedPlayerBoard> boards;
+    boolean local;
+
     private TurnState turnState;
-    private CompressedPlayerBoard playerBoard;
     private String nickname;
+    private boolean winner;
     private Decks decks;
-    boolean local = false;
+    private Market market;
+    private FaithPath faithPath;
     private final ClientManager clientManager;
-    private final boolean[] productionDone= {false, false, false};
+    private final boolean[] productionDone = {false, false, false};
 
     /**
      * Default constructor.
      */
     public Cli() {
         out = System.out;
+        boards = new ArrayList<>(4);
         clientManager = new ClientManager(this);
         this.addObserver(clientManager);
         turnState = TurnState.END;
@@ -50,6 +57,7 @@ public class Cli extends ViewObservable implements View {
     public Cli(GameController gameController) {
         gameController.setLocalView(this);
         out = System.out;
+        boards = new ArrayList<>(4);
         clientManager = new ClientManager(this, gameController);
         this.addObserver(clientManager);
         turnState = TurnState.END;
@@ -217,8 +225,9 @@ public class Cli extends ViewObservable implements View {
         int action;
         Action act;
         boolean exit=true;
+        showPlayerBoard(boards.get(playerNumber));
         ArrayList<Action> possibilities = turnState.possibleActions();
-        if (playerBoard.getPlayerBoard().getLeaderCardsNumber() == 0) {
+        if (boards.get(playerNumber).getPlayerBoard().getLeaderCardsNumber() == 0) {
             possibilities.remove(Action.ACTIVE_LEADER);
             possibilities.remove(Action.FOLD_LEADER);
         }
@@ -276,13 +285,13 @@ public class Cli extends ViewObservable implements View {
         s.add("Special_Production");
         s.add("Exit");
         String question="Which production would you like to active? ";
-        if(playerBoard.getPlayerBoard().getProductionSpaces().size()==0 || productionDone[0]){
+        if (boards.get(playerNumber).getPlayerBoard().getProductionSpaces().size() == 0 || productionDone[0]) {
             jump.add(0);
         }
-        if(playerBoard.getPlayerBoard().getNumberResources()<2 || productionDone[1]){
+        if (boards.get(playerNumber).getPlayerBoard().getNumberResources() < 2 || productionDone[1]) {
             jump.add(1);
         }
-        if(playerBoard.getPlayerBoard().getProductionNumber()==playerBoard.getPlayerBoard().getProductionSpaces().size()+1 || productionDone[2]){
+        if (boards.get(playerNumber).getPlayerBoard().getProductionNumber() == boards.get(playerNumber).getPlayerBoard().getProductionSpaces().size() + 1 || productionDone[2]) {
             jump.add(2);
         }
         for (String st : s) {
@@ -339,7 +348,6 @@ public class Cli extends ViewObservable implements View {
             out.println("You are the first player.We are waiting other players to finish their setup...");
         else
             try {
-                out.println("You are the " + playerNumber + " player.\n");
                 resources = validateResources(question, jumpList);
                 resourcesToSend.add(resources);
                 if (playerNumber == 3) {
@@ -379,7 +387,7 @@ public class Cli extends ViewObservable implements View {
         Resources choice;
         int row;
         ArrayList<Resources> list = new ArrayList<>(Arrays.asList(Resources.values()));
-        list.removeAll(playerBoard.getTemporaryResourceStorage());
+        list.removeAll(boards.get(playerNumber).getTemporaryResourceStorage());
         String question="Which resource do you want to sort? Choose the resource: ";
         try {
             choice=validateResources(question, list);
@@ -387,14 +395,14 @@ public class Cli extends ViewObservable implements View {
                 question="Choose which resource to transform the white resource into: ";
                 list.clear();
                 list.addAll(Arrays.asList(Resources.values()));
-                list.removeAll(playerBoard.getPlayerBoard().getSubstitutableResources());
-                choice=validateResources(question, list);
+                list.removeAll(boards.get(playerNumber).getPlayerBoard().getSubstitutableResources());
+                choice = validateResources(question, list);
             }
             question="Select a row in the warehouse between 1 and 3, select 4 to discard it or select 0 for the special warehouse (with leader card only) and 5 to exit: ";
             row=validateInput(0, 5, null, question);
             if (row==5){ return false; }
             Resources finalChoice = choice;
-            notifyObserver(obs -> obs.sortingMarket(finalChoice, row, playerBoard.getTemporaryResourceStorage().indexOf(finalChoice)));
+            notifyObserver(obs -> obs.sortingMarket(finalChoice, row, boards.get(playerNumber).getTemporaryResourceStorage().indexOf(finalChoice)));
         } catch (ExecutionException e) {
             out.println("Error");
         }
@@ -404,13 +412,13 @@ public class Cli extends ViewObservable implements View {
     @Override
     public void askSwitchRows() {
         int row1, row2;
-        ArrayList<Integer> jumplist= new ArrayList<>();
-        String question="Select the first row between 1 and 3: ";
+        ArrayList<Integer> jumpList = new ArrayList<>();
+        String question = "Select the first row between 1 and 3: ";
         try {
-            row1=validateInput(1,3,null, question);
-            jumplist.add(row1);
-            question="Select second row (except "+ row1 +"): ";
-            row2=validateInput(1, 3, jumplist, question);
+            row1 = validateInput(1, 3, null, question);
+            jumpList.add(row1);
+            question = "Select second row (except " + row1 + "): ";
+            row2 = validateInput(1, 3, jumpList, question);
             notifyObserver(obs -> obs.switchRows(row1, row2));
         } catch (ExecutionException e) {
             out.println("Error");
@@ -439,11 +447,10 @@ public class Cli extends ViewObservable implements View {
                 color1 = validateInput(0, col.size(), jump, question);
                 if (decks.getDeck(col.get(color1), level).DeckLength() == 0) {
                     out.println("The deck is empty, choose another one: ");
-                } else if(!(playerBoard.getPlayerBoard().checkResources(decks.getDeck(col.get(color1), level).getFirstCard().getCostCard()))){
+                } else if (!(boards.get(playerNumber).getPlayerBoard().checkResources(decks.getDeck(col.get(color1), level).getFirstCard().getCostCard()))) {
                     out.println("You cannot buy this card, choose another one: ");
-                }
-                else {
-                    flag=true;
+                } else {
+                    flag = true;
                 }
             }
             a=decks.getDeck(col.get(color1), level).getFirstCard().getCostCard();
@@ -491,15 +498,15 @@ public class Cli extends ViewObservable implements View {
                     if(choice==3) { return false; }
                     question = "Choose which resource you want to use?: ";
                     res = validateResources(question, obtain);
-                    if(res.equals(val) && choice==choice2){
+                    if (res.equals(val) && choice == choice2) {
                         temp++;
                     }
-                    if (!(playerBoard.getPlayerBoard().getResources(choice, temp).contains(res))) {
+                    if (!(boards.get(playerNumber).getPlayerBoard().getResources(choice, temp).contains(res))) {
                         flag = true;
-                        val=res;
+                        val = res;
                     } else {
                         out.println("You don't have this resource here. ");
-                        temp=0;
+                        temp = 0;
                     }
                 }
                 pass.add(res);
@@ -534,16 +541,17 @@ public class Cli extends ViewObservable implements View {
         try {
             while (!flag) {
                 index= validateInput(0, 2, null, question);
-                if(index==2) { return false; }
-                else if(playerBoard.getPlayerBoard().getLeaderCard(index).getAdvantage().equals(Advantages.PROD) && playerBoard.getPlayerBoard().getLeaderCard(index).getUncovered()){
-                    flag=true;
+                if (index == 2) {
+                    return false;
+                } else if (boards.get(playerNumber).getPlayerBoard().getLeaderCard(index).getAdvantage().equals(Advantages.PROD) && boards.get(playerNumber).getPlayerBoard().getLeaderCard(index).getUncovered()) {
+                    flag = true;
                 } else {
                     out.println("You cannot choose this card, try another one.");
                 }
             }
             for(int i=0;i<4;i++){
-                if (playerBoard.getPlayerBoard().getLeaderCard(index).getEffect().get(i) != 0) {
-                    res=Resources.transform(i);
+                if (boards.get(playerNumber).getPlayerBoard().getLeaderCard(index).getEffect().get(i) != 0) {
+                    res = Resources.transform(i);
                 }
             }
             out.println("For this production, you have to use a " +res +".");
@@ -568,7 +576,7 @@ public class Cli extends ViewObservable implements View {
         ArrayList<Integer> pos;
         int[] a;
         for(int i=0; i<3; i++){
-            if(playerBoard.getPlayerBoard().getProductionSpaces().get(i).getNumbCard()==0){
+            if (boards.get(playerNumber).getPlayerBoard().getProductionSpaces().get(i).getNumbCard() == 0) {
                 jump.add(i);
             }
         }
@@ -576,8 +584,8 @@ public class Cli extends ViewObservable implements View {
         try{
             index=validateInput(0, 3, jump, question );
             if(index==3) { return false; }
-            d=playerBoard.getPlayerBoard().getProductionSpaces().get(index).getTop();
-            a=d.getCostProduction();
+            d = boards.get(playerNumber).getPlayerBoard().getProductionSpaces().get(index).getTop();
+            a = d.getCostProduction();
             pos=SelectResources(a);
             if(pos==null) { return false; }
             notifyObserver(obs -> obs.useNormalProduction(index, pos, a));
@@ -590,8 +598,8 @@ public class Cli extends ViewObservable implements View {
     @Override
     public boolean askFoldLeader() {
         int foldCard;
-        int numCards = playerBoard.getPlayerBoard().getLeaderCardsNumber() - 1;
-        String question = "Which card do you want to discard? Select 1, between 0 and " + numCards + " (" + numCards+1 + " to exit:";
+        int numCards = boards.get(playerNumber).getPlayerBoard().getLeaderCardsNumber() - 1;
+        String question = "Which card do you want to discard? Select 1, between 0 and " + numCards + " (" + numCards + 1 + " to exit:";
         try {
             foldCard = validateInput(0, numCards+1, null, question);
             if(foldCard==numCards+1) { return false; }
@@ -605,8 +613,8 @@ public class Cli extends ViewObservable implements View {
     @Override
     public boolean askActiveLeader() {
         int activeCard;
-        int numCards = playerBoard.getPlayerBoard().getLeaderCardsNumber() - 1;
-        String question = "Which card do you want to active? Select 1, between 0 and " + numCards + " (" + numCards+1 + " to exit:";
+        int numCards = boards.get(playerNumber).getPlayerBoard().getLeaderCardsNumber() - 1;
+        String question = "Which card do you want to active? Select 1, between 0 and " + numCards + " (" + numCards + 1 + " to exit:";
         try {
             activeCard = validateInput(0, numCards+1, null, question);
             if(activeCard==numCards+1) { return false; }
@@ -649,36 +657,47 @@ public class Cli extends ViewObservable implements View {
     public void showLobby(ArrayList<String> players) {
         clearCli();
         out.println("Players connected: " + players + "\n Waiting for other players...");
-
     }
 
     @Override
     public void showCommunication(String communication, CommunicationMessage type) {
-        clearCli();
-        out.println(type);
         out.println(communication);
-        if (type.equals(CommunicationMessage.ILLEGAL_LOBBY_ACTION))
-            askJoinOrSet();
-        if (type.equals(CommunicationMessage.PLAYER_NUMBER))
-            this.playerNumber = Integer.parseInt(communication);
-        if (type.equals(CommunicationMessage.ILLEGAL_ACTION))
-            askWhichAction();
+        switch (type) {
+            case ILLEGAL_ACTION:
+                askWhichAction();
+                break;
+            case ILLEGAL_LOBBY_ACTION:
+                askJoinOrSet();
+                break;
+            case END_GAME:
+                winner = Integer.parseInt(communication) == 0;
+                showEndGame();
+                break;
+        }
+
+
     }
 
     @Override
     public void showError(String error) {
-        clearCli();
         out.println(error);
     }
 
     @Override
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
         clearCli();
+        out.println(decks);
+        out.println(market);
+        out.println(faithPath);
+
         if (playerBoard.getName().equals(nickname)) {
-            this.playerBoard = playerBoard;
+            this.playerNumber = playerBoard.getPlayerNumber();
+            this.boards.add(playerNumber, playerBoard);
             out.println(playerBoard.toString(true));
         } else if (!turnState.equals(TurnState.FIRST_TURN)) {
-            out.println(" Another player is playing...");
+            out.println("\n");
+            this.boards.add(playerBoard.getPlayerNumber(), playerBoard);
+            out.println("Another player is playing...");
             out.println(playerBoard.toString(false));
         }
     }
@@ -686,18 +705,35 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void showFaithPath(FaithPath faithPath) {
-        out.println(faithPath + "your score is in position:" + playerNumber);
+        this.faithPath = faithPath;
     }
 
     @Override
     public void showDecks(Decks decks) {
         this.decks = decks;
-        out.println(decks);
+
     }
 
     @Override
     public void showMarket(Market market) {
-        out.println(market);
+        this.market = market;
+    }
+
+    private void showEndGame() {
+        clearCli();
+        if (boards.size() > 1) {
+            ArrayList<CompressedPlayerBoard> sorted = (ArrayList<CompressedPlayerBoard>) boards.stream().sorted(Comparator.comparingInt(CompressedPlayerBoard::getPlayerNumber).reversed()).collect(Collectors.toList());
+            for (int i = 0; i < sorted.size(); i++)
+                out.println((i + 1) + ". " + sorted.get(i).getName() + "  score:" + sorted.get(i).getPlayerBoard().getVP());
+        } else {
+            if (winner)
+                out.println("Winner");
+            else
+                out.println("Loser");
+            out.println(boards.get(0).getName() + "  score:" + boards.get(0).getPlayerBoard().getVP());
+        }
+
+
     }
 
 
@@ -769,7 +805,7 @@ public class Cli extends ViewObservable implements View {
                     question = "Pick a number for the resource  " + Resources.transform(i) + " (3 to exit): ";
                     select = validateInput(0, 2, null, question);
                     if(select==3) {return null;}
-                    resource = playerBoard.getPlayerBoard().getResources(select, count);
+                    resource = boards.get(playerNumber).getPlayerBoard().getResources(select, count);
                     if (resource.contains(Resources.transform(i))) {
                         count++;
                         pos.add(select);

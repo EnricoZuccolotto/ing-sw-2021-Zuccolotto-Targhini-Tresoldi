@@ -159,7 +159,7 @@ public class Gui extends ViewObservable implements View {
             Platform.runLater(() ->
             {
                 boardController.setChooseResourceText("YOU ARE THE " + (playerNumber + 1) + " PLAYER.CHOOSE 1 RESOURCE");
-                boardController.askResource();
+                boardController.askResource(true);
             });
             while (boardController.getResourcesToSend().size() != 1)
                 try {
@@ -172,7 +172,7 @@ public class Gui extends ViewObservable implements View {
                 Platform.runLater(() ->
                 {
                     boardController.setChooseResourceText("CHOOSE THE 2ND RESOURCE");
-                    boardController.askResource();
+                    boardController.askResource(true);
                 });
             }
             notifyObserver(obs -> obs.secondAction(boardController.getResourcesToSend()));
@@ -229,6 +229,7 @@ public class Gui extends ViewObservable implements View {
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
         if (playerBoard.getName().equals(nickname)) {
             this.CompressedPlayerBoard = playerBoard;
+            this.playerNumber = playerBoard.getPlayerNumber();
             Platform.runLater(() -> boardController.updatePlayerBoard(playerBoard));
         }
     }
@@ -313,8 +314,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showCommunication(String communication, CommunicationMessage type) {
-        if (type.equals(CommunicationMessage.PLAYER_NUMBER))
-            this.playerNumber = Integer.parseInt(communication);
+
         if (type.equals(CommunicationMessage.STARTING_GAME)) {
             Platform.runLater(() -> GuiSceneUtils.changeActivePanel(observers, "board.fxml"));
         }

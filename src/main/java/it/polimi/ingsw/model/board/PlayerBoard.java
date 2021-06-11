@@ -325,5 +325,7 @@ public interface PlayerBoard {
 
     Resources getResourceWarehouse(int position);
 
+    int getVP();
+
     String toString(boolean mine);
 }

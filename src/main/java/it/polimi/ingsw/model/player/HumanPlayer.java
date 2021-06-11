@@ -24,6 +24,7 @@ public class HumanPlayer extends Player implements Serializable {
     private ArrayList<Resources> temporaryResourceStorage;
     private final Communication privateCommunication;
     private TurnState state;
+    private int playerNumber;
 
     /**
      * Build a new human player with the name and the inkwell specified.
@@ -37,6 +38,14 @@ public class HumanPlayer extends Player implements Serializable {
         this.playerBoard = new SimplePlayerBoard(inkwell);
         temporaryResourceStorage = new ArrayList<>();
         this.state = TurnState.NOT_IN_TURN;
+    }
+
+    public int getPlayerNumber() {
+        return playerNumber;
+    }
+
+    public void setPlayerNumber(int playerNumber) {
+        this.playerNumber = playerNumber;
     }
 
     public void setState(TurnState state) {

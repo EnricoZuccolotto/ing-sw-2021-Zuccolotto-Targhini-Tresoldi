@@ -11,13 +11,18 @@ public class CompressedPlayerBoard implements Serializable {
     private final PlayerBoard playerBoard;
     private final ArrayList<Resources> temporaryResourceStorage;
     private final String name;
+    private final int playerNumber;
 
     public CompressedPlayerBoard(HumanPlayer player) {
         this.playerBoard = player.getPlayerBoard();
         this.temporaryResourceStorage = player.getTemporaryResourceStorage();
         this.name = player.getName();
+        this.playerNumber = player.getPlayerNumber();
     }
 
+    public int getPlayerNumber() {
+        return playerNumber;
+    }
 
     public PlayerBoard getPlayerBoard() {
         return playerBoard;
@@ -35,6 +40,8 @@ public class CompressedPlayerBoard implements Serializable {
     public String toString(boolean mine) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Name: ").append(this.getName());
+        stringBuilder.append("\n");
+        stringBuilder.append("PlayerNumber: ").append(this.getPlayerNumber());
         stringBuilder.append("\n");
         stringBuilder.append(this.getPlayerBoard().toString(mine));
         if (temporaryResourceStorage.size() > 0) {

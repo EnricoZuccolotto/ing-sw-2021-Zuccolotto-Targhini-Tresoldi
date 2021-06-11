@@ -217,6 +217,7 @@ public class BoardController extends ViewObservable implements SceneController {
                 event.consume();
             });
 
+
         }
 
         //warehouse
@@ -457,17 +458,14 @@ public class BoardController extends ViewObservable implements SceneController {
     //choose resource methods
     private void onResourceSelection(Resources resources) {
         resourcesToSend.add(resources);
-        chooseResource.setDisable(true);
-        chooseResource.setVisible(false);
-        playerBoard.setDisable(false);
-        Board.setDisable(false);
+        askResource(false);
     }
 
-    public void askResource() {
-        chooseResource.setVisible(true);
-        chooseResource.setDisable(false);
-        playerBoard.setDisable(true);
-        Board.setDisable(true);
+    public void askResource(boolean visible) {
+        chooseResource.setVisible(visible);
+        chooseResource.setDisable(!visible);
+        playerBoard.setDisable(visible);
+        Board.setDisable(visible);
     }
 
     public ArrayList<Resources> getResourcesToSend() {
