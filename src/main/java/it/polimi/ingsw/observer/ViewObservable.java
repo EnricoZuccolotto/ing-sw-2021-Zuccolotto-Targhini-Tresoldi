@@ -39,12 +39,10 @@ public abstract class ViewObservable {
     }
 
     /**
-     * Removes a list of observers.
-     *
-     * @param observerList the list of observers to be removed.
+     * Removes all observers.
      */
-    public void removeAllObservers(List<ViewObserver> observerList) {
-        observers.removeAll(observerList);
+    public void removeAllObservers() {
+        observers.clear();
     }
 
     /**

@@ -58,7 +58,7 @@ public class BotPlayerTest {
         BotPlayer b = g.getBot();
         int i=0;
         while (!(BotActions.BlackCross2.equals(b.getCurrentAction()))) {
-            if (BotActions.Blackcross1Shuffle.equals(b.getCurrentAction())) {
+            if (BotActions.BlackCross1Shuffle.equals(b.getCurrentAction())) {
                 i++;
             }
                 b.doAction();
@@ -77,16 +77,16 @@ public class BotPlayerTest {
         g.init(g);
         BotPlayer b = g.getBot();
         int i=0;
-        while (!(BotActions.Blackcross1Shuffle.equals(b.getCurrentAction()))) {
+        while (!(BotActions.BlackCross1Shuffle.equals(b.getCurrentAction()))) {
             if (BotActions.BlackCross2.equals(b.getCurrentAction())) {
-                i=i+2;
+                i = i + 2;
             }
             b.doAction();
         }
-        if (BotActions.Blackcross1Shuffle.equals(b.getCurrentAction())) {
+        if (BotActions.BlackCross1Shuffle.equals(b.getCurrentAction())) {
             assertEquals(i, g.getPlayerFaithPathPosition(1));
             b.doAction();
-            assertEquals(i+1, g.getPlayerFaithPathPosition(1));
+            assertEquals(i + 1, g.getPlayerFaithPathPosition(1));
         }
     }
 }

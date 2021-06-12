@@ -282,7 +282,7 @@ public class RoundController implements Serializable {
         for (HumanPlayer player : players) {
             player.sendUpdateToPlayer();
             player.setState(TurnState.FIRST_TURN);
-            player.setPrivateCommunication("" + players.indexOf(player), CommunicationMessage.PLAYER_NUMBER);
+            player.setPlayerNumber(players.indexOf(player));
         }
     }
 

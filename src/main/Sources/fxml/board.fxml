@@ -671,7 +671,7 @@
                     </children>
                 </GridPane>
                 <ImageView fx:id="leaderCard1" fitHeight="300.0" fitWidth="300.0" layoutX="465.0" layoutY="560.0"
-                           pickOnBounds="true" preserveRatio="true" styleClass="handCard">
+                           preserveRatio="true" styleClass="handCard">
                     <image>
                         <Image url="@../Image/Cards/Leader/49.png"/>
                     </image>
@@ -683,7 +683,7 @@
                     </effect>
                 </ImageView>
                 <ImageView fx:id="leaderCard2" fitHeight="300.0" fitWidth="300.0" layoutX="675.0" layoutY="560.0"
-                           pickOnBounds="true" preserveRatio="true" styleClass="handCard">
+                           preserveRatio="true" styleClass="handCard">
                     <image>
                         <Image url="@../Image/Cards/Leader/49.png"/>
                     </image>
@@ -718,6 +718,16 @@
                         <DropShadow/>
                     </effect>
                 </ImageView>
+                <HBox fx:id="bin" alignment="CENTER" disable="true" visible="false" layoutX="90.0" layoutY="460.0"
+                      prefHeight="55.0" prefWidth="60.0" spacing="5.0">
+                    <children>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true">
+                            <image>
+                                <Image url="@../Image/playerBoard/bin.png"/>
+                            </image>
+                        </ImageView>
+                    </children>
+                </HBox>
             </children>
         </AnchorPane>
         <Button fx:id="viewBoard" layoutX="25.0" layoutY="630.0" mnemonicParsing="false" prefHeight="45.0"

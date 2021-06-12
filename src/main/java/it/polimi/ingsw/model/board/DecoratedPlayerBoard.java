@@ -67,6 +67,11 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard {
     }
 
     @Override
+    public int getVP() {
+        return subBoard.getVP();
+    }
+
+    @Override
     public boolean payResourcesWarehouse(int[] r) {
         return subBoard.payResourcesWarehouse(r);
     }

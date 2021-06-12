@@ -158,7 +158,7 @@ public class GameController implements Serializable {
             player.getPlayerBoard().setVP(VP);
         }
         gamestate = GameState.END;
-        gameBoardInstance.setPublicCommunication("THE END", CommunicationMessage.PUBLIC);
+        gameBoardInstance.setPublicCommunication(roundController.getWinnerPlayer() + "", CommunicationMessage.END_GAME);
 
         // Now that the game has ended, we delete the saved game file since an ended game cannot be restarted.
         GameSaver.deleteSavedGame();

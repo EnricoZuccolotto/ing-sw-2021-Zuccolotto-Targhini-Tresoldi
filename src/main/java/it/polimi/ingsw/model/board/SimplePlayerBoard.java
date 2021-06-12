@@ -38,12 +38,19 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     }
 
     @Override
-    public int getProductionNumber() {
-        return productionSpaces.size()+1;
+    public int getVP() {
+        return VP;
     }
 
     @Override
-    public ArrayList<SpaceProd> getProductionSpaces(){ return productionSpaces; }
+    public int getProductionNumber() {
+        return productionSpaces.size() + 1;
+    }
+
+    @Override
+    public ArrayList<SpaceProd> getProductionSpaces() {
+        return productionSpaces;
+    }
 
     @Override
     public int getLeaderCardsNumber() {
@@ -397,7 +404,7 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         stringBuilder.append("Strongbox: ");
         stringBuilder.append(strongbox);
         stringBuilder.append("\n");
-        if (getLeaderCardsNumber() != 0 && !mine)
+        if (getLeaderCardsNumber() != 0)
             stringBuilder.append("Leader cards:\n");
         for (LeaderCard card : leaderCards) {
             if (mine && !card.getUncovered()) {

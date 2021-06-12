@@ -4,7 +4,7 @@ public enum CommunicationMessage {
     ILLEGAL_ACTION,
     PUBLIC,
     STARTING_GAME,
-    PLAYER_NUMBER,
+    END_GAME,
     BOT_ACTION,
     ILLEGAL_LOBBY_ACTION
 }

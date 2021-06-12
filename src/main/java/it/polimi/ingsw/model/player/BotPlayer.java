@@ -39,7 +39,7 @@ public class BotPlayer extends Player implements Serializable {
         botActions.add(BotActions.DiscardGreen);
         botActions.add(BotActions.DiscardYellow);
         botActions.add(BotActions.DiscardBlue);
-        botActions.add(BotActions.Blackcross1Shuffle);
+        botActions.add(BotActions.BlackCross1Shuffle);
         botActions.add(BotActions.BlackCross2);
         botActions.add(BotActions.BlackCross2);
         Collections.shuffle(botActions);
@@ -54,7 +54,7 @@ public class BotPlayer extends Player implements Serializable {
             case BlackCross2:
                 currentGameBoard.movePlayerFaithPath(1, 2);
                 break;
-            case Blackcross1Shuffle:
+            case BlackCross1Shuffle:
                 currentGameBoard.movePlayerFaithPath(1, 1);
                 Collections.shuffle(botActions);
                 currentAction = -1;

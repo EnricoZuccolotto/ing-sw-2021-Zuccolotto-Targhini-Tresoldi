@@ -22,8 +22,7 @@ public class ClientManager implements ViewObserver, Observer {
 
     private final View view;
     private final ExecutorService taskQueue;
-    private SocketClient client;
-    private LocalClient localClient;
+    private Client client;
     private String nickname;
     private final boolean local;
 
@@ -42,7 +41,7 @@ public class ClientManager implements ViewObserver, Observer {
         this.view = view;
         taskQueue = Executors.newSingleThreadExecutor();
         local = true;
-        localClient = new LocalClient(gameController);
+        client = new LocalClient(gameController);
     }
     /**
      * Validates the given IPv4 address by using a regex.
@@ -84,9 +83,10 @@ public class ClientManager implements ViewObserver, Observer {
     public void ServerInfo(String address, String port) {
         try {
             client = new SocketClient(address, Integer.parseInt(port));
-            client.addObserver(this);
-            client.readMessage(); // Starts an asynchronous reading from the server.
-            client.enablePinger(true);
+            SocketClient clientPointer = (SocketClient) client;
+            clientPointer.addObserver(this);
+            clientPointer.readMessage(); // Starts an asynchronous reading from the server.
+            clientPointer.enablePinger(true);
             taskQueue.execute(view::askUsername);
         } catch (IOException e) {
             taskQueue.execute(() -> view.showLoginResult(false, false, nickname));
@@ -103,7 +103,7 @@ public class ClientManager implements ViewObserver, Observer {
     public void Nickname(String nickname) {
         this.nickname = nickname;
         view.setNickname(nickname); // On a local game the Nickname is always valid.
-        getActiveClient().sendMessage(new LoginMessage(this.nickname));
+        client.sendMessage(new LoginMessage(this.nickname));
     }
 
     /**
@@ -113,40 +113,40 @@ public class ClientManager implements ViewObserver, Observer {
      */
     @Override
     public void PlayersNumber(int playersNumber) {
-        getActiveClient().sendMessage(new LobbySetMessage(this.nickname, playersNumber));
+        client.sendMessage(new LobbySetMessage(this.nickname, playersNumber));
     }
 
     @Override
     public void firstAction(int index1, int index2) {
-        getActiveClient().sendMessage(new FirstActionMessage(this.nickname, index1, index2));
+        client.sendMessage(new FirstActionMessage(this.nickname, index1, index2));
     }
 
     @Override
     public void secondAction(ArrayList<Resources> resources) {
-        getActiveClient().sendMessage(new SecondActionMessage(this.nickname, resources));
+        client.sendMessage(new SecondActionMessage(this.nickname, resources));
     }
 
     @Override
     public void getMarket(int choice, int index) {
         if(choice==2) {
-            getActiveClient().sendMessage(new MarketRequestMessage(this.nickname, 3, index));
+            client.sendMessage(new MarketRequestMessage(this.nickname, 3, index));
         } else {
-            getActiveClient().sendMessage(new MarketRequestMessage(this.nickname, index, 4));
+            client.sendMessage(new MarketRequestMessage(this.nickname, index, 4));
         }
     }
 
     @Override
     public void sortingMarket(Resources choice, int row, int index) {
         if (row >= 0 && row <= 3) {
-            getActiveClient().sendMessage(new SetResourceMessage(this.nickname, choice, WarehousePositions.transform(row), index));
+            client.sendMessage(new SetResourceMessage(this.nickname, choice, WarehousePositions.transform(row), index));
         } else {
-            getActiveClient().sendMessage(new DiscardResourceMessage(this.nickname, index));
+            client.sendMessage(new DiscardResourceMessage(this.nickname, index));
         }
     }
 
     @Override
     public void switchRows(int row1, int row2) {
-        getActiveClient().sendMessage(new ShiftWarehouseMessage(this.nickname, WarehousePositions.transform(row1), WarehousePositions.transform(row2)));
+        client.sendMessage(new ShiftWarehouseMessage(this.nickname, WarehousePositions.transform(row1), WarehousePositions.transform(row2)));
     }
 
     @Override
@@ -163,7 +163,7 @@ public class ClientManager implements ViewObserver, Observer {
             count=0;
         }
         ex= new ExchangeResources(matr[0], matr[1], matr[2]);
-        getActiveClient().sendMessage(new GetProductionCardMessage(this.nickname, ex, Colors.transform(color), level, index));
+        client.sendMessage(new GetProductionCardMessage(this.nickname, ex, Colors.transform(color), level, index));
     }
 
     @Override
@@ -180,7 +180,7 @@ public class ClientManager implements ViewObserver, Observer {
             count=0;
         }
         ex= new ExchangeResources(matr[0], matr[1], matr[2]);
-        getActiveClient().sendMessage(new UseProductionNormalMessage(this.nickname, ex, index));
+        client.sendMessage(new UseProductionNormalMessage(this.nickname, ex, index));
     }
 
     @Override
@@ -191,7 +191,7 @@ public class ClientManager implements ViewObserver, Observer {
         ExchangeResources ex= new ExchangeResources(matr[0], matr[1], matr[2]);
         System.out.println(ex);
         System.out.println("value" +value);
-        getActiveClient().sendMessage(new UseProductionBaseMessage(this.nickname, ex, obtain));
+        client.sendMessage(new UseProductionBaseMessage(this.nickname, ex, obtain));
     }
 
     @Override
@@ -199,27 +199,27 @@ public class ClientManager implements ViewObserver, Observer {
         int[][] matr= new int[3][4];
         matr[choice][res.ordinal()]=1;
         ExchangeResources ex= new ExchangeResources(matr[0], matr[1], matr[2]);
-        getActiveClient().sendMessage(new UseProductionSpecialMessage(this.nickname, ex, resource, index));
+        client.sendMessage(new UseProductionSpecialMessage(this.nickname, ex, resource, index));
     }
 
     @Override
     public void endTurn() {
-        getActiveClient().sendMessage(new EndTurnMessage(this.nickname));
+        client.sendMessage(new EndTurnMessage(this.nickname));
     }
 
     @Override
     public void activeLeader(int index) {
-        getActiveClient().sendMessage(new LeaderMessage(this.nickname, MessageType.ACTIVE_LEADER, index));
+        client.sendMessage(new LeaderMessage(this.nickname, MessageType.ACTIVE_LEADER, index));
     }
 
     @Override
     public void foldLeader(int index) {
-        getActiveClient().sendMessage(new LeaderMessage(this.nickname, MessageType.FOLD_LEADER, index));
+        client.sendMessage(new LeaderMessage(this.nickname, MessageType.FOLD_LEADER, index));
     }
 
     @Override
     public void addPlayerLobby() {
-        getActiveClient().sendMessage(new LobbyJoinMessage(this.nickname));
+        client.sendMessage(new LobbyJoinMessage(this.nickname));
     }
 
     @Override
@@ -241,13 +241,10 @@ public class ClientManager implements ViewObserver, Observer {
 
     @Override
     public void onDisconnect(){
-        client.disconnect();
+        if(!local){
+            ((SocketClient) client).disconnect();
+        } else {
+            System.exit(0);
+        }
     }
-
-    // TODO: Clean this up, make this more beautiful
-    private Client getActiveClient(){
-        if(local) return localClient;
-        else return client;
-    }
-
 }
