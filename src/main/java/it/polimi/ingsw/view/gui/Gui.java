@@ -59,6 +59,7 @@ public class Gui extends ViewObservable implements View {
             local = true;
         } else {
             clientManager = new ClientManager(this);
+            local = false;
         }
 
         return clientManager;
@@ -66,9 +67,11 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askUsername() {
+
         Platform.runLater(() -> {
             GuiSceneUtils.changeActivePanel(observers, "username.fxml");
         });
+
     }
 
     @Override
@@ -128,10 +131,7 @@ public class Gui extends ViewObservable implements View {
             }
             case PRODUCTION_ACTIONS:
             case NORMAL_ACTION:
-            case WAREHOUSE_ACTION: {
-                Platform.runLater(() ->
-                        boardController.activeWarehouse());
-            }
+            case WAREHOUSE_ACTION:
             case LAST_LEADER_ACTION:
             case FIRST_LEADER_ACTION: {
                 Platform.runLater(() ->
@@ -334,7 +334,6 @@ public class Gui extends ViewObservable implements View {
     public void setUsernameController(UsernameController usernameController) {
         this.usernameController = usernameController;
     }
-
     @Override
     public ClientManager getClientManager(){
         return clientManager;

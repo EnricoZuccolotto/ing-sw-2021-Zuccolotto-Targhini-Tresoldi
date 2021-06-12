@@ -32,6 +32,9 @@ public class BoardController extends ViewObservable implements SceneController {
     private final String effect = "-fx-border-color: green;" +
             "-fx-border-radius: 3px;" +
             "-fx-border-width: 3px;";
+    private final String effect2 = "-fx-border-color: red;" +
+            "-fx-border-radius: 3px;" +
+            "-fx-border-width: 3px;";
 
     private ArrayList<ImageView> hover;
     private boolean view = true, flag = true;
@@ -56,6 +59,8 @@ public class BoardController extends ViewObservable implements SceneController {
     private HBox thirdRow;
     @FXML
     private HBox firstRow;
+    @FXML
+    private HBox bin;
     @FXML
     private Text coinCount;
     @FXML
@@ -212,6 +217,7 @@ public class BoardController extends ViewObservable implements SceneController {
                 /* put the image on dragBoard */
                 ClipboardContent content = new ClipboardContent();
                 choice.add(0, finalI1);
+                activeWarehouse(false);
                 content.putImage(imageView.getImage());
                 db.setContent(content);
                 event.consume();
@@ -354,13 +360,16 @@ public class BoardController extends ViewObservable implements SceneController {
     private void onDropOnWarehouse(int index, int row) {
 
         new Thread(() -> notifyObserver(obs -> obs.sortingMarket(resourcesToSend.get(index), row, index))).start();
+        activeWarehouse(true);
         choice.clear();
     }
 
-    public void activeWarehouse() {
-        firstRow.setDisable(false);
-        secondRow.setDisable(false);
-        thirdRow.setDisable(false);
+    public void activeWarehouse(boolean active) {
+        firstRow.setDisable(active);
+        secondRow.setDisable(active);
+        thirdRow.setDisable(active);
+        bin.setDisable(active);
+        bin.setVisible(!active);
     }
 
     private void onClickShiftRows(int row1, int row2) {
@@ -369,15 +378,17 @@ public class BoardController extends ViewObservable implements SceneController {
     }
 
     private void initializeWarehouse() {
-        Node[] warehouseRows = new Node[]{firstRow, secondRow, thirdRow};
-        for (int i = 0; i < 3; i++) {
+        Node[] warehouseRows = new Node[]{firstRow, secondRow, thirdRow, bin};
+        for (int i = 0; i < 4; i++) {
             int finalI = i;
             warehouseRows[i].setOnDragEntered(event -> {
                 /* the drag-and-drop gesture entered the target */
                 /* show to the user that it is an actual gesture target */
                 if (event.getGestureSource() != firstRow &&
                         event.getDragboard().hasImage()) {
-                    warehouseRows[finalI].setStyle(effect);
+                    if (finalI < 3)
+                        warehouseRows[finalI].setStyle(effect);
+                    else warehouseRows[finalI].setStyle(effect2);
                 }
                 event.consume();
             });
@@ -398,13 +409,26 @@ public class BoardController extends ViewObservable implements SceneController {
                 }
                 event.consume();
             });
-            warehouseRows[i].setOnDragDropped(event -> {
+            if (i < 3)
+                warehouseRows[i].setOnDragDropped(event -> {
+                    /* data dropped */
+                    /* if there is a string data on dragBoard, read it and use it */
+                    Dragboard db = event.getDragboard();
+                    boolean success = false;
+                    if (db.hasImage()) {
+                        onDropOnWarehouse(choice.get(0), finalI + 1);
+                        success = true;
+                    }
+                    event.setDropCompleted(success);
+                    event.consume();
+                });
+            else warehouseRows[i].setOnDragDropped(event -> {
                 /* data dropped */
                 /* if there is a string data on dragBoard, read it and use it */
                 Dragboard db = event.getDragboard();
                 boolean success = false;
                 if (db.hasImage()) {
-                    onDropOnWarehouse(choice.get(0), finalI + 1);
+                    onDropOnWarehouse(choice.get(0), 4);
                     success = true;
                 }
                 event.setDropCompleted(success);

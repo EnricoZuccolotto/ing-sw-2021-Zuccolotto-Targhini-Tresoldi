@@ -39,7 +39,7 @@ public class Cli extends ViewObservable implements View {
     private Decks decks;
     private Market market;
     private FaithPath faithPath;
-    private final ClientManager clientManager;
+    private ClientManager clientManager;
     private final boolean[] productionDone = {false, false, false};
 
     /**
@@ -48,22 +48,10 @@ public class Cli extends ViewObservable implements View {
     public Cli() {
         out = System.out;
         boards = new ArrayList<>(4);
-        clientManager = new ClientManager(this);
-        this.addObserver(clientManager);
         turnState = TurnState.END;
-        local = false;
         init();
     }
-    public Cli(GameController gameController) {
-        gameController.setLocalView(this);
-        out = System.out;
-        boards = new ArrayList<>(4);
-        clientManager = new ClientManager(this, gameController);
-        this.addObserver(clientManager);
-        turnState = TurnState.END;
-        local = true;
-        askUsername();
-    }
+
 
     @Override
     public void setNickname(String nickname){
@@ -92,14 +80,32 @@ public class Cli extends ViewObservable implements View {
     public void init() {
 
         out.println("Welcome master of the Renaissance");
+
+        String string = "0 for local" + "\n" +
+                "1 for online: ";
         try {
-            askServerInfo();
+            int choice = validateInput(0, 1, null, string);
+            if (choice == 0)
+                initLocal();
+            else askServerInfo();
         } catch (ExecutionException e) {
             out.println("Error");
         }
     }
 
+    public void initLocal() {
+        GameController gameController = new GameController(true);
+        gameController.setLocalView(this);
+        clientManager = new ClientManager(this, gameController);
+        this.addObserver(clientManager);
+        local = true;
+        askUsername();
+    }
+
     public void askServerInfo() throws ExecutionException {
+        clientManager = new ClientManager(this);
+        this.addObserver(clientManager);
+        local = false;
         String address, port;
         String defaultAddress = "127.0.0.1";
         String defaultPort = "12222";

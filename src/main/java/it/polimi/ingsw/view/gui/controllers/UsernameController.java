@@ -44,13 +44,15 @@ public class UsernameController extends ViewObservable implements SceneControlle
         username.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
             if (GuiSceneUtils.isAnEnterKeyEvent(keyEvent)) onConnectButtonClick(keyEvent);
         });
+        if (Gui.getInstance().isLocal())
+            connectButton.setText("Start...");
     }
 
-    private void onBackButtonClick(Event event){
+    private void onBackButtonClick(Event event) {
         connectButton.setDisable(true);
         backButton.setDisable(true);
-
-        new Thread(() -> notifyObserver(ViewObserver::onDisconnect)).start();
+        if (!Gui.getInstance().isLocal())
+            new Thread(() -> notifyObserver(ViewObserver::onDisconnect)).start();
         GuiSceneUtils.changeActivePanel(observers, ((Node) event.getSource()).getScene(), "menu.fxml");
     }
 
