@@ -1,11 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ClientApp as CLI" type="Application" factoryName="Application" singleton="false">
-    <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.ClientApp"/>
-    <module name="GC45"/>
-    <projectPathOnTarget name="projectPathOnTarget"
-                         value="/mnt/c/Program Files/JetBrains/IntelliJ IDEA 2020.3.2/jbr/bin /ing-sw-2021-Zuccolotto-Targhini-Tresoldi"/>
+  <configuration default="false" name="Game as CLI" type="Application" factoryName="Application" singleton="false">
+    <option name="MAIN_CLASS_NAME" value="it.polimi.ingsw.ClientApp" />
+    <module name="GC45" />
+    <projectPathOnTarget name="projectPathOnTarget" value="/mnt/c/Program Files/JetBrains/IntelliJ IDEA 2020.3.2/jbr/bin /ing-sw-2021-Zuccolotto-Targhini-Tresoldi" />
     <method v="2">
-      <option name="Make" enabled="true"/>
+      <option name="Make" enabled="true" />
     </method>
   </configuration>
 </component>

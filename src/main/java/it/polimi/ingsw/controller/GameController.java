@@ -8,25 +8,23 @@ import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.ExecutableMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
+import it.polimi.ingsw.observer.Observable;
 import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.utils.GameSaver;
 import it.polimi.ingsw.view.NetworkLayerView;
 import it.polimi.ingsw.view.View;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 public class GameController implements Serializable {
 
     private GameState gamestate;
-    private final GameBoard gameBoardInstance;
+    private GameBoard gameBoardInstance;
     private final LobbyController lobby;
     private final RoundController roundController;
-    private final Map<String, Observer> viewMap;
+    private final transient Map<String, Observer> viewMap; // Avoid to serialize this.
     private View localView;
     private final boolean local;
 
@@ -43,8 +41,11 @@ public class GameController implements Serializable {
     }
 
     public void addPlayer(String name, Observer view, boolean inkwell) {
-        // TODO: Handle local single player
         gameBoardInstance.addPlayer(new HumanPlayer(name, inkwell));
+        setViewObservers(view);
+    }
+
+    private void setViewObservers(Observer view){
         gameBoardInstance.addObserver(view);
         gameBoardInstance.getMarket().addObserver(view);
         gameBoardInstance.getFaithPath().addObserver(view);
@@ -94,11 +95,24 @@ public class GameController implements Serializable {
                 sendLobby();
                 if (lobby.isFull()) {
                     ArrayList<String> lobbyPlayers = lobby.getPlayers();
-                    Collections.shuffle(lobbyPlayers);
-                    for (String string : lobbyPlayers) {
-                        addPlayer(string, viewMap.get(string), lobbyPlayers.get(0).equals(string));
+                    // Now check that a saved game exists.
+                    GameController restoredGameController = GameSaver.loadGame();
+                    if(restoredGameController != null && restoredGameController.gameBoardInstance.getPlayersNicknames().containsAll(lobbyPlayers)){
+                        // A game with the same players exists, restore the game.
+                        restoreGame(restoredGameController);
+                        gameBoardInstance.setPublicCommunication("The game is starting", CommunicationMessage.STARTING_GAME);
+                        gameBoardInstance.sendGameUpdateToAllPlayers();
+                        // Start a new turn
+                        roundController.goToNextTurn();
+                    } else {
+                        // Create a new game.
+                        Collections.shuffle(lobbyPlayers);
+                        for (String string : lobbyPlayers) {
+                            addPlayer(string, viewMap.get(string), lobbyPlayers.get(0).equals(string));
+                        }
+                        StartGame();
                     }
-                    StartGame();
+
                     break;
                 }
                 break;
@@ -176,4 +190,19 @@ public class GameController implements Serializable {
         this.localView = view;
     }
 
+    private void restoreGame(GameController savedGameController){
+        gamestate = savedGameController.gamestate;
+        gameBoardInstance = savedGameController.gameBoardInstance;
+
+        roundController.restoreRoundController(savedGameController.getRoundController(), gameBoardInstance, this);
+
+        // Add observers
+        for(HumanPlayer player : gameBoardInstance.getPlayers()){
+            Observer playerView = viewMap.get(player.getName());
+            setViewObservers(playerView);
+        }
+        for (HumanPlayer player : gameBoardInstance.getPlayers())
+            for (HumanPlayer player1 : gameBoardInstance.getPlayers())
+                player.addObserver(viewMap.get(player1.getName()));
+    }
 }
