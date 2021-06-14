@@ -40,12 +40,9 @@ public class SocketServer implements Runnable {
         }
     }
 
-    public void onMessage(Message message){
-        server.onMessage(message);
-    }
 
-    public void onLogin(String nickname, SocketConnection connection){
-        server.onLogin(nickname, connection);
+    public void onMessage(Message message, SocketConnection connection){
+        server.onMessage(message, connection);
     }
 
     public void onDisconnect(SocketConnection connection){

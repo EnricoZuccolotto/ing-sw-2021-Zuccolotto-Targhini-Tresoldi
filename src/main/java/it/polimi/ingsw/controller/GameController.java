@@ -8,7 +8,6 @@ import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.ExecutableMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
-import it.polimi.ingsw.observer.Observable;
 import it.polimi.ingsw.observer.Observer;
 import it.polimi.ingsw.utils.GameSaver;
 import it.polimi.ingsw.view.NetworkLayerView;
@@ -54,6 +53,10 @@ public class GameController implements Serializable {
 
     public void addView(String name, NetworkLayerView view) {
         viewMap.put(name, view);
+    }
+
+    public void removeView(String name){
+        viewMap.remove(name);
     }
 
     public void StartGame() {
@@ -117,6 +120,7 @@ public class GameController implements Serializable {
                 }
                 break;
             }
+            case GAMESETUP:
             case GAMESTARTED: {
                 executableMessages(message);
                 if (roundController.isWinner())
@@ -142,7 +146,7 @@ public class GameController implements Serializable {
         }
     }
 
-    private void sendLobby() {
+    public void sendLobby() {
         for (Observer view : viewMap.values()) {
             NetworkLayerView view1 = (NetworkLayerView) view;
             view1.showLobby(lobby.getPlayers());
