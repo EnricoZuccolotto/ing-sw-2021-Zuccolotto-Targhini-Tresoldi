@@ -14,7 +14,6 @@ import it.polimi.ingsw.observer.Observable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This class represents the game board.

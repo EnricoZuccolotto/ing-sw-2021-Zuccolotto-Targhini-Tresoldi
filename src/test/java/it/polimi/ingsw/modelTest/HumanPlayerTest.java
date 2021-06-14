@@ -1,6 +1,5 @@
 package it.polimi.ingsw.modelTest;
 
-import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.board.SimplePlayerBoard;
 
 import it.polimi.ingsw.model.player.HumanPlayer;

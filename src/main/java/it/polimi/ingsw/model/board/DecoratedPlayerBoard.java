@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public abstract class DecoratedPlayerBoard implements PlayerBoard, Serializable {
-    protected PlayerBoard subBoard;
+    protected final PlayerBoard subBoard;
 
     public DecoratedPlayerBoard(PlayerBoard subBoard){
         this.subBoard = subBoard;

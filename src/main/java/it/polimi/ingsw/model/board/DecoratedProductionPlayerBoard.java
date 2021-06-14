@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DecoratedProductionPlayerBoard extends DecoratedPlayerBoard implements Serializable {
-    private ArrayList<Boolean> productionInputs;
+    private final ArrayList<Boolean> productionInputs;
 
     public DecoratedProductionPlayerBoard(PlayerBoard subBoard){
         super(subBoard);

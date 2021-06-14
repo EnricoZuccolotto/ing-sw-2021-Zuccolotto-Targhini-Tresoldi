@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model.player;
 
-import it.polimi.ingsw.model.board.PlayerBoard;
-import it.polimi.ingsw.model.board.SimplePlayerBoard;
 import it.polimi.ingsw.observer.Observable;
 
 import java.io.Serializable;

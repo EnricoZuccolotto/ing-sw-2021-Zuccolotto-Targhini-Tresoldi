@@ -1,7 +1,5 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.controller.GameController;
-
 import java.io.Serializable;
 
 /**

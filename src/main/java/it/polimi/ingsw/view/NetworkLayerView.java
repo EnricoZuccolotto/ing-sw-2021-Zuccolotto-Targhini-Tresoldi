@@ -13,7 +13,6 @@ import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.server.SocketConnection;
 import it.polimi.ingsw.observer.Observer;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**

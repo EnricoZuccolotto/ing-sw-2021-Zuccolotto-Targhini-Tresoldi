@@ -9,7 +9,7 @@ import java.util.List;
  * Class that implements the Observer pattern for model elements.
  */
 public class Observable {
-    private List<Observer> observerList = new ArrayList<>();
+    private final List<Observer> observerList = new ArrayList<>();
 
     /**
      * Adds an observer to the list. In this particular case every part of the model that needs to be sent to the interface

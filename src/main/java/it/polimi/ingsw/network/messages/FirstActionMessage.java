@@ -8,7 +8,7 @@ import it.polimi.ingsw.controller.GameState;
  * This message is sent during the setup turn in order to discard 2 leader cards.
  */
 public class FirstActionMessage extends Message implements ExecutableMessage {
-    int index1, index2;
+    private final int index1, index2;
 
     /**
      * Default constructor
