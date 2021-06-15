@@ -29,6 +29,12 @@ public class SocketClient extends Observable implements Client {
     private final ExecutorService readExecutionQueue;
     private final ScheduledExecutorService heartBeat;
 
+    /**
+     * Default constructor
+     * @param address IP address of the server. The method assumes the string is already correctly formatted.
+     * @param port Server port.
+     * @throws IOException Thrown if I/O streams cannot be opened.
+     */
     public SocketClient(String address, int port) throws IOException {
         this.socket = new Socket();
         this.socket.connect(new InetSocketAddress(address, port), TIMEOUT);
@@ -63,10 +69,9 @@ public class SocketClient extends Observable implements Client {
 
     /**
      * Sends a message to the server via socket.
-     *
-     * @param message to send.
+     * @param message The message to send
      */
-
+    @Override
     public void sendMessage(Message message) {
         try {
             objectOutputStream.writeObject(message);

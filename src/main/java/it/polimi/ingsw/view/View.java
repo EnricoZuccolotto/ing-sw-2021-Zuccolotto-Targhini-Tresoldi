@@ -20,8 +20,15 @@ public interface View {
      */
     void askUsername();
 
+    /**
+     * Sets the local nickname parameter
+     * @param nickname The nickname you want to set.
+     */
     void setNickname(String nickname);
 
+    /**
+     * Asks how many players you want in a game.
+     */
     void askPlayersNumber();
 
     void joinLobby();

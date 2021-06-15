@@ -39,3 +39,6 @@ I diagrammi UML sono disponibili a questi link:
 - [Controller](UML/uml_Controller.png);
 - [Model](UML/uml_Model.png)
 - [View](UML/View.png)
+
+### JavaDOC
+La documentazione JavaDOC relativa al progetto può essere consultata [qui](JavaDoc/index.html)

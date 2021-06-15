@@ -9,6 +9,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+/**
+ * This class represents the server-side socket that exchanges messages to/from the client.
+ * It starts a listener thread to read messages.
+ */
 public class SocketConnection implements Runnable {
     private final Socket clientSocket;
     private final SocketServer socketServer;
@@ -23,6 +27,11 @@ public class SocketConnection implements Runnable {
 
     private final Thread socketConnectionThread;
 
+    /**
+     * Default constructor
+     * @param socketServer The connection listener server.
+     * @param client The Java Socket created by the server where you want to listen and send messages.
+     */
     public SocketConnection(SocketServer socketServer, Socket client){
         this.socketServer = socketServer;
         this.clientSocket = client;
@@ -41,6 +50,7 @@ public class SocketConnection implements Runnable {
             SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
         }
 
+        // Start the listener thread.
         socketConnectionThread = new Thread(this);
         socketConnectionThread.start();
     }
@@ -70,6 +80,10 @@ public class SocketConnection implements Runnable {
        return connected;
     }
 
+    /**
+     * Sends a message to the client
+     * @param message The message you want to send.
+     */
     public void sendMessage(Message message){
         if(connected) {
             try {
@@ -86,6 +100,9 @@ public class SocketConnection implements Runnable {
         }
     }
 
+    /**
+     * Handle client disconnection by closing the socket and stopping the thread.
+     */
     public void disconnect(){
         if(connected){
             try{

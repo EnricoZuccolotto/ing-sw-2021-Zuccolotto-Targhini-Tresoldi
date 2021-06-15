@@ -10,11 +10,19 @@ import it.polimi.ingsw.view.NetworkLayerView;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This is the base class for server communication. It receives data from all connections and the connection listener
+ * and passes messages to the {@code GameController}
+ */
 public class Server {
     private final GameController gameController;
     private final Object lock;
     private final Map<String, SocketConnection> clients;
 
+    /**
+     * Default constructor
+     * @param gameController The {@code GameController} destination for messages.
+     */
     public Server(GameController gameController){
         this.gameController = gameController;
         this.lock = new Object();
@@ -24,6 +32,11 @@ public class Server {
 
     }
 
+    /**
+     * Handles a login to the system, both to enter a lobby and to reconnect.
+     * @param nickname The client's nickname.
+     * @param connection The connection class associated to the logging in client.
+     */
     public void onLogin(String nickname, SocketConnection connection) {
         NetworkLayerView view = new NetworkLayerView(connection);
         if ((clients.get(nickname) != null)) {
@@ -44,16 +57,22 @@ public class Server {
     /**
      * This handles all received messages, including the login.
      * @param message Received message
-     * @param connection {@code SocketConnection} object where the message originates. Useful only for login messages.
+     * @param connection {@code SocketConnection} object where the message originates. Only used for login messages.
      */
     public synchronized void onMessage(Message message, SocketConnection connection){
+        // Log the message to the console.
         System.out.println(message.getMessageType());
+
         if (message.getMessageType() == MessageType.LOGIN)
             onLogin(message.getPlayerName(), connection);
         else
             gameController.onMessage(message);
     }
 
+    /**
+     * Handles disconnections from the server.
+     * @param connection The connection which is terminated.
+     */
     public void onDisconnect(SocketConnection connection){
         String nickname = fromConnectionToNickname(connection);
 
@@ -72,6 +91,11 @@ public class Server {
         }
     }
 
+    /**
+     * Utility method to reverse access the {@code clients} map by connections.
+     * @param connection The connection you want to get the nickname from.
+     * @return The returned nickname.
+     */
     public String fromConnectionToNickname(SocketConnection connection){
         for(String nickname : clients.keySet()){
             if(clients.get(nickname).equals(connection))
