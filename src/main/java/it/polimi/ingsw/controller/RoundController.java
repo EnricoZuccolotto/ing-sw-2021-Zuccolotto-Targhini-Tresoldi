@@ -314,7 +314,7 @@ public class RoundController implements Serializable {
             handle_addFaithPoint(quantities, null);
     }
 
-    void nextTurn() {
+    public void nextTurn() {
         //clearing checks
         int playersNumber = players.size();
         turnCount++;
@@ -328,12 +328,16 @@ public class RoundController implements Serializable {
         else
             playerInTurn.setState(TurnState.NOT_IN_TURN);
 
-        goToNextTurn();
+        if(gameController.getInstance().getActivePlayersCount() != 0)
+            goToNextTurn();
         GameSaver.saveGame(gameController);
     }
 
     public void goToNextTurn(){
-        playerInTurn = players.get((turnCount) % players.size());
+        do {
+            // FIXME: handle TurnCount differently
+            playerInTurn = players.get((turnCount) % players.size());
+        } while(!playerInTurn.isActive());
         firstState();
         playerInTurn.setState(turnState);
     }

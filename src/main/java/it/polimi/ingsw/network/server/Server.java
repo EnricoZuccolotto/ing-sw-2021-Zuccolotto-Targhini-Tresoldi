@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.GameState;
+import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.network.messages.LoginMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
@@ -81,13 +82,23 @@ public class Server {
             clients.remove(nickname);
         }
         gameController.removeView(nickname);
-        if(gameController.getGameState().equals(GameState.LOBBY)){
-            // In lobby, remove the client from the lobby and send updates.
+
+        GameState currentGameState = gameController.getGameState();
+        TurnState currentTurnState = gameController.getRoundController().getTurnState();
+        if(currentGameState.equals(GameState.LOBBY) || currentTurnState.equals(TurnState.FIRST_TURN) || currentTurnState.equals(TurnState.SECOND_TURN)){
+            // In lobby or during setup turns, remove the client from the lobby and send updates.
             gameController.getLobby().removeUser(nickname);
             gameController.sendLobby();
         } else {
             // Game started, remember the client in case it reconnects.
             gameController.getInstance().getPlayer(nickname).setActive(false);
+            gameController.removeView(nickname);
+
+            // If player was in turn go to a different turn
+            if(gameController.getRoundController().getPlayerInTurn().getName().equals(nickname))
+                gameController.getRoundController().nextTurn();
+
+            gameController.getInstance().sendPlayerUpdateToAllPlayers();
         }
     }
 

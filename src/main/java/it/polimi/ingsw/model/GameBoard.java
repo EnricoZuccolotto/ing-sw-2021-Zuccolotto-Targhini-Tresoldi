@@ -65,6 +65,13 @@ public class GameBoard extends Observable implements Serializable {
         notifyObserver(new DecksUpdateMessage(decks));
         notifyObserver(new MarketUpdateMessage("", market));
         notifyObserver(new FaithPathUpdateMessage(faithPath));
+        sendPlayerUpdateToAllPlayers();
+    }
+
+    /**
+     * Send player information to all players.
+     */
+    public void sendPlayerUpdateToAllPlayers(){
         for(HumanPlayer player : players){
             player.sendUpdateToPlayer();
         }
@@ -207,5 +214,9 @@ public class GameBoard extends Observable implements Serializable {
             playersList.add(player.getName());
         }
         return playersList;
+    }
+
+    public int getActivePlayersCount(){
+        return (int) players.stream().filter(HumanPlayer::isActive).count();
     }
 }

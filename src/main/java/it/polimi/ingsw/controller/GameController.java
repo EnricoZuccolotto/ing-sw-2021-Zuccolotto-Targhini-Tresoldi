@@ -56,6 +56,15 @@ public class GameController implements Serializable {
     }
 
     public void removeView(String name){
+        Observer viewToRemove = viewMap.get(name);
+
+        gameBoardInstance.removeObserver(viewToRemove);
+        gameBoardInstance.getMarket().removeObserver(viewToRemove);
+        gameBoardInstance.getFaithPath().removeObserver(viewToRemove);
+        gameBoardInstance.getDecks().addObserver(viewToRemove);
+        for(HumanPlayer player : gameBoardInstance.getPlayers())
+            player.removeObserver(viewToRemove);
+
         viewMap.remove(name);
     }
 
