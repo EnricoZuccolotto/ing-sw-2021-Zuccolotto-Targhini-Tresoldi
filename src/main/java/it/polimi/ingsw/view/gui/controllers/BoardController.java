@@ -40,7 +40,7 @@ public class BoardController extends ViewObservable implements SceneController {
             "-fx-border-width: 3px;";
 
 
-    private boolean view = true, flag = true;
+    private boolean view = true, flag = true, notInTurn = true;
 
     private CompressedPlayerBoard activePlayerBoard;
 
@@ -553,9 +553,11 @@ public class BoardController extends ViewObservable implements SceneController {
             else viewBoard.setText("View Board");
         } else {
             Board.setVisible(!view);
-            Board.setDisable(view);
+            if (!notInTurn) {
+                Board.setDisable(view);
+                playerBoard.setDisable(false);
+            }
             playerBoard.setVisible(view);
-            playerBoard.setDisable(false);
             if (view)
                 viewBoard.setText("Game board");
             else viewBoard.setText("Player Board");
@@ -566,6 +568,8 @@ public class BoardController extends ViewObservable implements SceneController {
     public void showBoard() {
         Board.setVisible(true);
         Board.setDisable(false);
+        playerBoard.setDisable(true);
+        playerBoard.setVisible(false);
         FirstAction.setVisible(false);
         FirstAction.setDisable(true);
         flag = false;
@@ -616,12 +620,16 @@ public class BoardController extends ViewObservable implements SceneController {
                 leader[i].setDisable(!active);
     }
 
+    public void notInTurn(boolean active) {
+        playerBoard.setDisable(active);
+        Board.setDisable(active);
+        notInTurn = active;
+    }
+
     //communication
     public void showCommunication(String communication, boolean visible) {
         ((Text) this.communication.getChildren().get(0)).setText(communication);
         this.communication.setVisible(visible);
-
-
     }
 
 

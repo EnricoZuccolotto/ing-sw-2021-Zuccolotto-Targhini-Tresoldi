@@ -35,7 +35,7 @@ public class Gui extends ViewObservable implements View {
     private CompressedPlayerBoard CompressedPlayerBoard;
     private ClientManager clientManager;
     private boolean local = false;
-    private boolean singlePlayer = true;
+    private boolean singlePlayer = false;
 
     public static Gui getInstance() {
         if (instance == null)
@@ -60,9 +60,11 @@ public class Gui extends ViewObservable implements View {
         if(gameController != null){
             clientManager = new ClientManager(this, gameController);
             local = true;
+            singlePlayer = true;
         } else {
             clientManager = new ClientManager(this);
             local = false;
+            singlePlayer = false;
         }
 
         return clientManager;
@@ -123,6 +125,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askAction(TurnState state) {
+        System.out.println(state);
         Platform.runLater(() ->
                 boardController.clearChoices());
         switch (state) {
@@ -137,6 +140,7 @@ public class Gui extends ViewObservable implements View {
             case FIRST_LEADER_ACTION:
             case NORMAL_ACTION: {
                 Platform.runLater(() -> {
+                    boardController.notInTurn(false);
                     boardController.showBoard();
                     boardController.activeEndTurn(false);
                     boardController.activeDecks(true);
@@ -147,7 +151,7 @@ public class Gui extends ViewObservable implements View {
             }
             case PRODUCTION_ACTIONS:
                 Platform.runLater(() -> {
-                    boardController.showBoard();
+
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
@@ -156,7 +160,7 @@ public class Gui extends ViewObservable implements View {
                 break;
             case WAREHOUSE_ACTION:
                 Platform.runLater(() -> {
-                    boardController.showBoard();
+
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
@@ -165,7 +169,6 @@ public class Gui extends ViewObservable implements View {
                 break;
             case LAST_LEADER_ACTION: {
                 Platform.runLater(() -> {
-                    boardController.showBoard();
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
@@ -173,6 +176,9 @@ public class Gui extends ViewObservable implements View {
                 });
                 break;
             }
+            case NOT_IN_TURN:
+                Platform.runLater(() -> boardController.notInTurn(true));
+                break;
         }
 
     }
@@ -191,7 +197,8 @@ public class Gui extends ViewObservable implements View {
         if (playerNumber == 0) {
             Platform.runLater(() ->
                     boardController.showCommunication("You are the first player.Waiting for other players to make their choices", true));
-            new Thread(this::communication);
+            Platform.runLater(() -> boardController.notInTurn(true));
+            new Thread(this::communication).start();
         } else {
             Platform.runLater(() ->
             {
@@ -367,7 +374,7 @@ public class Gui extends ViewObservable implements View {
                 break;
             case ILLEGAL_ACTION:
                 Platform.runLater(() -> boardController.showCommunication(communication, true));
-                new Thread(this::communication);
+                new Thread(this::communication).start();
                 break;
             case END_GAME:
                 //
@@ -381,6 +388,7 @@ public class Gui extends ViewObservable implements View {
         } catch (InterruptedException E) {
             System.exit(3);
         }
+
         Platform.runLater(() -> boardController.showCommunication("communication", false));
 
     }
