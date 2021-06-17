@@ -6,10 +6,11 @@ import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.SpaceProd;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class DecoratedPlayerBoard implements PlayerBoard {
-    protected PlayerBoard subBoard;
+public abstract class DecoratedPlayerBoard implements PlayerBoard, Serializable {
+    protected final PlayerBoard subBoard;
 
     public DecoratedPlayerBoard(PlayerBoard subBoard){
         this.subBoard = subBoard;

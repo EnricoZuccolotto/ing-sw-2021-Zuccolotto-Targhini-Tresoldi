@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard implements Serializable {
-    private ArrayList<Integer> quantities;
+    private final ArrayList<Integer> quantities;
     // This ArrayList contains the maximum number of possible resources
-    private ArrayList<Integer> enableSpecialWarehouse;
+    private final ArrayList<Integer> enableSpecialWarehouse;
 
     public DecoratedWarehousePlayerBoard(PlayerBoard subBoard){
         super(subBoard);

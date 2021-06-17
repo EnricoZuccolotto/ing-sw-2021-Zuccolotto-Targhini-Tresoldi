@@ -16,6 +16,11 @@ public class SocketServer implements Runnable {
     private final int port;
     ServerSocket serverSocket;
 
+    /**
+     * Default constructor
+     * @param server Game Server instance.
+     * @param port Server port
+     */
     public SocketServer(Server server, int port){
         this.server = server;
         this.port = port;
@@ -40,14 +45,19 @@ public class SocketServer implements Runnable {
         }
     }
 
-    public void onMessage(Message message){
-        server.onMessage(message);
+    /**
+     * Ask the server to run a message.
+     * @param message Message you want to handle.
+     * @param connection Connection from which the message originates.
+     */
+    public void onMessage(Message message, SocketConnection connection){
+        server.onMessage(message, connection);
     }
 
-    public void onLogin(String nickname, SocketConnection connection){
-        server.onLogin(nickname, connection);
-    }
-
+    /**
+     * Handle a disconnection.
+     * @param connection The terminating connection.
+     */
     public void onDisconnect(SocketConnection connection){
         server.onDisconnect(connection);
     }

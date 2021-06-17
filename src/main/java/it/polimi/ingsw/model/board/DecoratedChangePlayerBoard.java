@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DecoratedChangePlayerBoard extends DecoratedPlayerBoard implements Serializable {
-    private ArrayList<Boolean> substitutes;
+    private final ArrayList<Boolean> substitutes;
 
     public DecoratedChangePlayerBoard(PlayerBoard subBoard){
         super(subBoard);
-        substitutes = new ArrayList<Boolean>(4);
+        substitutes = new ArrayList<>(4);
         substitutes.add(false);
         substitutes.add(false);
         substitutes.add(false);
@@ -30,7 +30,7 @@ public class DecoratedChangePlayerBoard extends DecoratedPlayerBoard implements 
 
     @Override
     public ArrayList<Boolean> getSubstitutes(){
-        return new ArrayList<Boolean>(Arrays.asList(substitutes.get(0), substitutes.get(1), substitutes.get(2), substitutes.get(3)));
+        return new ArrayList<>(Arrays.asList(substitutes.get(0), substitutes.get(1), substitutes.get(2), substitutes.get(3)));
     }
 
     @Override

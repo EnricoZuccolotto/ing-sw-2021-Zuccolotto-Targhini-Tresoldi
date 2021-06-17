@@ -10,15 +10,20 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * This class sets and starts up the GUI.
+ */
 public class GuiEntryPoint extends Application  {
     public static void main(String[] args){
         launch(args);
     }
 
+    /**
+     * Starts up the application
+     * @param stage Current graphical stage.
+     */
     @Override
     public void start(Stage stage){
-
-
         // Load menu layout
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/fxml/menu.fxml"));
@@ -43,6 +48,9 @@ public class GuiEntryPoint extends Application  {
         stage.show();
     }
 
+    /**
+     * Stops the application cleanly.
+     */
     @Override
     public void stop(){
         Platform.exit();

@@ -18,12 +18,12 @@ import java.util.ArrayList;
 
 public class RoundController implements Serializable {
 
-    private final ActionController actionController;
-    private final GameBoard gameBoardInstance;
+    private ActionController actionController;
+    private GameBoard gameBoardInstance;
 
     private HumanPlayer playerInTurn;
-    private final ArrayList<HumanPlayer> players;
-    private final ArrayList<Integer> productions;
+    private ArrayList<HumanPlayer> players;
+    private ArrayList<Integer> productions;
 
     private int turnCount;
     private TurnState turnState;
@@ -32,7 +32,7 @@ public class RoundController implements Serializable {
     private int winnerPlayer;
     private boolean Winner;
 
-    private final GameController gameController;
+    private GameController gameController;
 
 
     public RoundController(GameBoard gameBoardInstance, GameController gameController) {
@@ -46,6 +46,21 @@ public class RoundController implements Serializable {
 
         this.Winner = false;
         this.winnerPlayer = -2;
+    }
+
+    public void restoreRoundController(RoundController restoredController, GameBoard gameBoard, GameController gameController){
+        this.actionController = restoredController.actionController;
+        this.gameBoardInstance = gameBoard;
+
+        this.playerInTurn = restoredController.playerInTurn;
+        this.players = restoredController.players;
+        this.productions = restoredController.productions;
+
+        this.turnCount = restoredController.turnCount;
+        this.turnState = restoredController.turnState;
+        this.gameState = restoredController.gameState;
+
+        this.gameController = gameController;
     }
 
     public void init() {
@@ -299,7 +314,7 @@ public class RoundController implements Serializable {
             handle_addFaithPoint(quantities, null);
     }
 
-    void nextTurn() {
+    public void nextTurn() {
         //clearing checks
         int playersNumber = players.size();
         turnCount++;
@@ -313,10 +328,18 @@ public class RoundController implements Serializable {
         else
             playerInTurn.setState(TurnState.NOT_IN_TURN);
 
-        playerInTurn = players.get((turnCount) % players.size());
+        if(gameController.getInstance().getActivePlayersCount() != 0)
+            goToNextTurn();
+        GameSaver.saveGame(gameController);
+    }
+
+    public void goToNextTurn(){
+        do {
+            // FIXME: handle TurnCount differently
+            playerInTurn = players.get((turnCount) % players.size());
+        } while(!playerInTurn.isActive());
         firstState();
         playerInTurn.setState(turnState);
-        GameSaver.saveGame(gameController);
     }
 
     private void checkWinner(int playersNumber){
