@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.cards.Decks;
+import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
@@ -19,6 +20,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.Image;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -33,6 +35,7 @@ public class Gui extends ViewObservable implements View {
     private CompressedPlayerBoard CompressedPlayerBoard;
     private ClientManager clientManager;
     private boolean local = false;
+    private boolean singlePlayer = true;
 
     public static Gui getInstance() {
         if (instance == null)
@@ -100,6 +103,8 @@ public class Gui extends ViewObservable implements View {
                 }
             } while (!exit);
 
+            singlePlayer = (numberOfPlayers == 1);
+
             int finalNumberOfPlayers = numberOfPlayers;
             notifyObserver(obs -> obs.PlayersNumber(finalNumberOfPlayers));
             if (numberOfPlayers != 1)
@@ -129,17 +134,47 @@ public class Gui extends ViewObservable implements View {
                 askSecondAction();
                 break;
             }
-            case PRODUCTION_ACTIONS:
-            case NORMAL_ACTION:
-            case WAREHOUSE_ACTION:
-            case LAST_LEADER_ACTION:
-            case FIRST_LEADER_ACTION: {
-                Platform.runLater(() ->
-                        boardController.showBoard());
+            case FIRST_LEADER_ACTION:
+            case NORMAL_ACTION: {
+                Platform.runLater(() -> {
+                    boardController.showBoard();
+                    boardController.activeEndTurn(false);
+                    boardController.activeDecks(true);
+                    boardController.activeMarket(true);
+                    boardController.activeProductions(true);
+                });
                 break;
             }
-
+            case PRODUCTION_ACTIONS:
+                Platform.runLater(() -> {
+                    boardController.showBoard();
+                    boardController.activeEndTurn(true);
+                    boardController.activeDecks(false);
+                    boardController.activeMarket(false);
+                    boardController.activeProductions(true);
+                });
+                break;
+            case WAREHOUSE_ACTION:
+                Platform.runLater(() -> {
+                    boardController.showBoard();
+                    boardController.activeEndTurn(true);
+                    boardController.activeDecks(false);
+                    boardController.activeMarket(false);
+                    boardController.activeProductions(false);
+                });
+                break;
+            case LAST_LEADER_ACTION: {
+                Platform.runLater(() -> {
+                    boardController.showBoard();
+                    boardController.activeEndTurn(true);
+                    boardController.activeDecks(false);
+                    boardController.activeMarket(false);
+                    boardController.activeProductions(false);
+                });
+                break;
+            }
         }
+
     }
 
     @Override
@@ -227,6 +262,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
+        Platform.runLater(() -> boardController.activeBotActions(singlePlayer));
         if (playerBoard.getName().equals(nickname)) {
             this.CompressedPlayerBoard = playerBoard;
             this.playerNumber = playerBoard.getPlayerNumber();
@@ -318,12 +354,14 @@ public class Gui extends ViewObservable implements View {
         if (type.equals(CommunicationMessage.STARTING_GAME)) {
             Platform.runLater(() -> GuiSceneUtils.changeActivePanel(observers, "board.fxml"));
         }
-        if(type.equals(CommunicationMessage.ILLEGAL_LOBBY_ACTION)){
+        if (type.equals(CommunicationMessage.ILLEGAL_LOBBY_ACTION)) {
             Platform.runLater(() -> {
                 GuiSceneUtils.showAlertWindow(AlertType.WARNING, "Warning", "There aren't any active games in the server, try again or join an existing lobby!");
                 askJoinOrSet();
             });
         }
+        if (type.equals(CommunicationMessage.BOT_ACTION))
+            Platform.runLater(() -> boardController.setBotActions(new Image(BotActions.valueOf(communication).getImagePath())));
         System.out.println(communication);
     }
 

@@ -174,9 +174,11 @@ public class RoundController implements Serializable {
                 if (actionController.getProduction(message.getColor(), message.getLevel(), gameBoardInstance, message.getIndex(), playerInTurn, message.getExchangeResources()))
                     nextState(Action.BUY_DEVELOPMENT_CARD);
             } catch (WinnerException e) {
-                winnerPlayer = players.indexOf(playerInTurn);
-                if (gameState == GameState.SINGLEPLAYER) {
-                    nextTurn();
+                if (winnerPlayer == -2) {
+                    winnerPlayer = players.indexOf(playerInTurn);
+                    if (gameState == GameState.SINGLEPLAYER) {
+                        nextTurn();
+                    }
                 }
             }
         }
@@ -259,9 +261,11 @@ public class RoundController implements Serializable {
         try {
             actionController.addFaithPoint(gameBoardInstance, player, quantities);
         } catch (WinnerException e) {
-            winnerPlayer = players.indexOf(player);
-            if (gameState == GameState.SINGLEPLAYER) {
-                nextTurn();
+            if (winnerPlayer == -2) {
+                winnerPlayer = players.indexOf(player);
+                if (gameState == GameState.SINGLEPLAYER) {
+                    nextTurn();
+                }
             }
         }
 
@@ -297,15 +301,20 @@ public class RoundController implements Serializable {
                     handle_addFaithPoint(quantities, player);
         } else if (gameState.equals(GameState.SINGLEPLAYER))
             handle_addFaithPoint(quantities, null);
+        playerInTurn.setTemporaryResourceStorage(new ArrayList<>());
     }
 
     void nextTurn() {
         //clearing checks
+
         int playersNumber = players.size();
         turnCount++;
         productions.clear();
-        int quantities = playerInTurn.getTemporaryResourceStorage().size();
-        movePlayersExceptSelected(quantities);
+        if (winnerPlayer == -2) {
+            int quantities = playerInTurn.getTemporaryResourceStorage().size();
+            movePlayersExceptSelected(quantities);
+        }
+
 
         checkWinner(playersNumber);
         if (gameState.equals(GameState.SINGLEPLAYER))

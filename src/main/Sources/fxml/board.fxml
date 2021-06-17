@@ -113,7 +113,7 @@
                 </Button>
             </children>
         </VBox>
-        <Pane fx:id="Board" disable="true" prefWidth="1280.0" visible="false">
+        <Pane fx:id="Board" prefWidth="1280.0" visible="false">
             <children>
                 <ImageView fitHeight="390.0" fitWidth="322.0" preserveRatio="true">
                     <image>
@@ -394,6 +394,12 @@
                         </ImageView>
                     </children>
                 </GridPane>
+                <ImageView fx:id="botActions" fitHeight="160.0" fitWidth="200.0" layoutX="80.0" layoutY="422.0"
+                           visible="false" preserveRatio="true">
+                    <image>
+                        <Image url="@../Image/Singleplayer/retro_cerchi.png"/>
+                    </image>
+                </ImageView>
             </children>
         </Pane>
         <AnchorPane fx:id="playerBoard" centerShape="false" disable="true" layoutX="10.0" layoutY="10.0"
@@ -401,8 +407,10 @@
                     prefHeight="670.0" prefWidth="1280.0" scaleShape="false"
                     stylesheets="@../Image/Market/components.css" visible="false">
             <children>
-                <ImageView disable="true" fitHeight="994.0" fitWidth="714.0" layoutX="132.0" layoutY="-152.0"
-                           pickOnBounds="true" preserveRatio="true" rotate="-90.0">
+                <ImageView disable="true" fitHeight="994.0" fitWidth="714.0" layoutX="142.0" layoutY="-152.0"
+                           pickOnBounds="true" preserveRatio="true" rotate="-90.0" AnchorPane.bottomAnchor="-172.0"
+                           AnchorPane.leftAnchor="142.0" AnchorPane.rightAnchor="427.40869140625"
+                           AnchorPane.topAnchor="-152.0">
                     <image>
                         <Image url="@../Image/playerBoard/playerBoard.png"/>
                     </image>
@@ -439,7 +447,7 @@
                         <Font name="System Bold" size="24.0"/>
                     </font>
                 </Text>
-                <ImageView fx:id="shiftRow23" fitHeight="148.0" fitWidth="143.0" layoutX="-39.0" layoutY="351.0"
+                <ImageView fx:id="shiftRow23" fitHeight="148.0" fitWidth="143.0" layoutX="-29.0" layoutY="351.0"
                            preserveRatio="true" rotate="24.4" styleClass="arrow2">
                     <image>
                         <Image url="@../Image/playerBoard/arrow2.png"/>
@@ -451,7 +459,7 @@
                         <InnerShadow/>
                     </effect>
                 </ImageView>
-                <ImageView fx:id="shiftRow13" fitHeight="160.0" fitWidth="60.0" layoutX="156.0" layoutY="282.0"
+                <ImageView fx:id="shiftRow13" fitHeight="160.0" fitWidth="60.0" layoutX="160.0" layoutY="282.0"
                            preserveRatio="true" rotate="141.3" styleClass="arrow2">
                     <image>
                         <Image url="@../Image/playerBoard/arrow.png"/>
@@ -463,7 +471,7 @@
                         <InnerShadow/>
                     </effect>
                 </ImageView>
-                <ImageView fx:id="shiftRow12" fitHeight="148.0" fitWidth="143.0" layoutX="-9.0" layoutY="283.0"
+                <ImageView fx:id="shiftRow12" fitHeight="148.0" fitWidth="143.0" layoutX="3.0" layoutY="283.0"
                            preserveRatio="true" rotate="18.4" styleClass="arrow2">
                     <image>
                         <Image url="@../Image/playerBoard/arrow2.png"/>
@@ -475,7 +483,7 @@
                         <InnerShadow/>
                     </effect>
                 </ImageView>
-                <HBox fx:id="firstRow" disable="true" layoutX="90.0" layoutY="290.0" prefHeight="55.0" prefWidth="60.0"
+                <HBox fx:id="firstRow" disable="true" layoutX="96.0" layoutY="290.0" prefHeight="55.0" prefWidth="60.0"
                       spacing="5.0">
                     <children>
                         <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true">
@@ -485,7 +493,7 @@
                         </ImageView>
                     </children>
                 </HBox>
-                <HBox fx:id="secondRow" disable="true" layoutX="66.0" layoutY="349.0" prefHeight="55.0"
+                <HBox fx:id="secondRow" disable="true" layoutX="73.0" layoutY="349.0" prefHeight="55.0"
                       prefWidth="120.0" spacing="5.0">
                     <children>
                         <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true">
@@ -500,7 +508,7 @@
                         </ImageView>
                     </children>
                 </HBox>
-                <HBox fx:id="thirdRow" disable="true" layoutX="30.0" layoutY="412.0" prefHeight="55.0" prefWidth="160.0"
+                <HBox fx:id="thirdRow" disable="true" layoutX="37.0" layoutY="412.0" prefHeight="55.0" prefWidth="160.0"
                       spacing="5.0">
                     <children>
                         <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true">
@@ -520,7 +528,32 @@
                         </ImageView>
                     </children>
                 </HBox>
-                <ImageView fx:id="faith1" fitHeight="70.0" fitWidth="70.0" layoutX="235.0" layoutY="93.0"
+                <HBox fx:id="bin" alignment="CENTER" disable="true" layoutX="90.0" layoutY="460.0" prefHeight="55.0"
+                      prefWidth="60.0" spacing="5.0" visible="false">
+                    <children>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true">
+                            <image>
+                                <Image url="@../Image/playerBoard/bin.png"/>
+                            </image>
+                        </ImageView>
+                    </children>
+                </HBox>
+
+                <HBox fx:id="specialWarehouse1" disable="true" layoutX="1069.0" layoutY="590.0" prefHeight="55.0"
+                      prefWidth="120.0" spacing="5.0">
+                    <children>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true"/>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true"/>
+                    </children>
+                </HBox>
+                <HBox fx:id="specialWarehouse2" disable="true" layoutX="1068.0" layoutY="247.0" prefHeight="55.0"
+                      prefWidth="120.0" spacing="5.0">
+                    <children>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true"/>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true"/>
+                    </children>
+                </HBox>
+                <ImageView fx:id="faith1" fitHeight="70.0" fitWidth="70.0" layoutX="245.0" layoutY="93.0"
                            pickOnBounds="true" preserveRatio="true" styleClass="faithCard">
                     <image>
                         <Image url="@../Image/Cards/Faith/quadrato_giallo.png"/>
@@ -529,7 +562,7 @@
                         <DropShadow/>
                     </effect>
                 </ImageView>
-                <ImageView fx:id="faith2" fitHeight="70.0" fitWidth="70.0" layoutX="480.0" layoutY="43.0"
+                <ImageView fx:id="faith2" fitHeight="70.0" fitWidth="70.0" layoutX="489.0" layoutY="43.0"
                            preserveRatio="true" styleClass="faithCard">
                     <image>
                         <Image url="@../Image/Cards/Faith/quadrato_arancione.png"/>
@@ -538,7 +571,7 @@
                         <DropShadow/>
                     </effect>
                 </ImageView>
-                <ImageView fx:id="faith3" fitHeight="70.0" fitWidth="70.0" layoutX="772.0" layoutY="93.0"
+                <ImageView fx:id="faith3" fitHeight="70.0" fitWidth="70.0" layoutX="782.0" layoutY="93.0"
                            preserveRatio="true" styleClass="faithCard">
                     <image>
                         <Image url="@../Image/Cards/Faith/quadrato_rosso.png"/>
@@ -547,20 +580,20 @@
                         <DropShadow/>
                     </effect>
                 </ImageView>
-                <ImageView fx:id="faithMarkerBlack" disable="true" fitHeight="45.0" fitWidth="45.0" layoutX="33.0"
-                           layoutY="128.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                <ImageView fx:id="faithMarkerBlack" disable="true" fitHeight="50.0" fitWidth="50.0" layoutX="39.0"
+                           layoutY="124.0" pickOnBounds="true" preserveRatio="true" visible="false">
                     <image>
                         <Image url="@../Image/Singleplayer/croce.png"/>
                     </image>
                 </ImageView>
-                <ImageView fx:id="faithMarker" disable="true" fitHeight="50.0" fitWidth="50.0" layoutX="28.0"
+                <ImageView fx:id="faithMarker" disable="true" fitHeight="50.0" fitWidth="50.0" layoutX="39.0"
                            layoutY="124.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../Image/playerBoard/Cross.png"/>
                     </image>
                 </ImageView>
-                <StackPane fx:id="spaceProd1" layoutX="560.0" layoutY="335.0" pickOnBounds="false" styleClass="card"
-                           stylesheets="@../Image/Market/components.css">
+                <StackPane fx:id="spaceProd1" disable="true" layoutX="564.0" layoutY="335.0" pickOnBounds="false"
+                           styleClass="card" stylesheets="@../Image/Market/components.css">
                     <children>
                         <ImageView fitHeight="304.0" fitWidth="188.0" preserveRatio="true" styleClass="first"
                                    translateY="-90.0">
@@ -584,8 +617,8 @@
                         <Cursor fx:constant="HAND"/>
                     </cursor>
                 </StackPane>
-                <StackPane fx:id="spaceProd0" layoutX="366.0" layoutY="335.0" pickOnBounds="false" styleClass="card"
-                           stylesheets="@../Image/Market/components.css">
+                <StackPane fx:id="spaceProd0" disable="true" layoutX="370.0" layoutY="335.0" pickOnBounds="false"
+                           styleClass="card" stylesheets="@../Image/Market/components.css">
                     <children>
                         <ImageView fitHeight="304.0" fitWidth="188.0" preserveRatio="true" styleClass="first"
                                    translateY="-90.0">
@@ -609,8 +642,8 @@
                         <Cursor fx:constant="HAND"/>
                     </cursor>
                 </StackPane>
-                <StackPane fx:id="spaceProd2" layoutX="756.0" layoutY="335.0" pickOnBounds="false" styleClass="card"
-                           stylesheets="@../Image/Market/components.css">
+                <StackPane fx:id="spaceProd2" disable="true" layoutX="760.0" layoutY="335.0" pickOnBounds="false"
+                           styleClass="card" stylesheets="@../Image/Market/components.css">
                     <children>
                         <ImageView fitHeight="304.0" fitWidth="188.0" preserveRatio="true" styleClass="first"
                                    translateY="-90.0">
@@ -671,7 +704,7 @@
                     </children>
                 </GridPane>
                 <ImageView fx:id="leaderCard1" fitHeight="300.0" fitWidth="300.0" layoutX="465.0" layoutY="560.0"
-                           preserveRatio="true" styleClass="handCard">
+                           pickOnBounds="true" preserveRatio="true" styleClass="handCard">
                     <image>
                         <Image url="@../Image/Cards/Leader/49.png"/>
                     </image>
@@ -683,7 +716,7 @@
                     </effect>
                 </ImageView>
                 <ImageView fx:id="leaderCard2" fitHeight="300.0" fitWidth="300.0" layoutX="675.0" layoutY="560.0"
-                           preserveRatio="true" styleClass="handCard">
+                           pickOnBounds="true" preserveRatio="true" styleClass="handCard">
                     <image>
                         <Image url="@../Image/Cards/Leader/49.png"/>
                     </image>
@@ -718,16 +751,9 @@
                         <DropShadow/>
                     </effect>
                 </ImageView>
-                <HBox fx:id="bin" alignment="CENTER" disable="true" visible="false" layoutX="90.0" layoutY="460.0"
-                      prefHeight="55.0" prefWidth="60.0" spacing="5.0">
-                    <children>
-                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true">
-                            <image>
-                                <Image url="@../Image/playerBoard/bin.png"/>
-                            </image>
-                        </ImageView>
-                    </children>
-                </HBox>
+                <Button fx:id="endTurn" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="15.0"
+                        layoutY="31.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="95.0" text="END TURN"
+                        visible="false"/>
             </children>
         </AnchorPane>
         <Button fx:id="viewBoard" layoutX="25.0" layoutY="630.0" mnemonicParsing="false" prefHeight="45.0"
