@@ -19,7 +19,7 @@ public class GameSaver {
         GameToSave gameToSave = new GameToSave(gameController);
 
         try {
-            FileOutputStream saveStream = new FileOutputStream(new File("savedgame.mor"));
+            FileOutputStream saveStream = new FileOutputStream("savedgame.mor");
             ObjectOutputStream objectWriter = new ObjectOutputStream(saveStream);
             objectWriter.writeObject(gameToSave);
             objectWriter.close();

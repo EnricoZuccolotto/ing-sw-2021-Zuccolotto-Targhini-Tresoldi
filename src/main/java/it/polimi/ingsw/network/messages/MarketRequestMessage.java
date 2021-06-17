@@ -14,7 +14,7 @@ public class MarketRequestMessage extends Message implements ExecutableMessage {
      * Default constructor.
      *
      * @param playerName Player name.
-     * @param rowIndex   Requested row. {@value =3} if you want to select a column.
+     * @param rowIndex   Requested row. {@code 3} if you want to select a column.
      * @param colIndex   Requested column. Value is not used if you want to select a row.
      */
     public MarketRequestMessage(String playerName, int rowIndex, int colIndex) {

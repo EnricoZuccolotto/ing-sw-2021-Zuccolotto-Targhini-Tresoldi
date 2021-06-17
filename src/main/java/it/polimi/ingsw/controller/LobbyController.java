@@ -40,6 +40,10 @@ public class LobbyController implements Serializable {
         } else throw new PlayerAlreadyExistsException();
     }
 
+    public void removeUser(String nickname){
+        inLobbyPlayer.removeIf(userToRemove -> userToRemove.equals(nickname));
+    }
+
     public boolean checkUserData(String s) {
         for (String string : inLobbyPlayer) {
             if (s.equals(string)) {

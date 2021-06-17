@@ -8,14 +8,12 @@ import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.BotPlayer;
 import it.polimi.ingsw.model.player.HumanPlayer;
-import it.polimi.ingsw.network.messages.CommunicationMex;
-import it.polimi.ingsw.network.messages.DecksUpdateMessage;
-import it.polimi.ingsw.network.messages.FaithPathUpdateMessage;
-import it.polimi.ingsw.network.messages.MarketUpdateMessage;
+import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observer.Observable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents the game board.
@@ -58,6 +56,25 @@ public class GameBoard extends Observable implements Serializable {
         notifyObserver(new DecksUpdateMessage(decks));
         notifyObserver(new MarketUpdateMessage("", market));
         notifyObserver(new FaithPathUpdateMessage(faithPath));
+    }
+
+    /**
+     * Sends all the possible information about the game to all players.
+     */
+    public void sendGameUpdateToAllPlayers(){
+        notifyObserver(new DecksUpdateMessage(decks));
+        notifyObserver(new MarketUpdateMessage("", market));
+        notifyObserver(new FaithPathUpdateMessage(faithPath));
+        sendPlayerUpdateToAllPlayers();
+    }
+
+    /**
+     * Send player information to all players.
+     */
+    public void sendPlayerUpdateToAllPlayers(){
+        for(HumanPlayer player : players){
+            player.sendUpdateToPlayer();
+        }
     }
 
     /**
@@ -189,5 +206,17 @@ public class GameBoard extends Observable implements Serializable {
             if (player.getName().equals(name))
                 return player;
         return null;
+    }
+
+    public List<String> getPlayersNicknames(){
+        ArrayList<String> playersList = new ArrayList<>();
+        for(HumanPlayer player : players){
+            playersList.add(player.getName());
+        }
+        return playersList;
+    }
+
+    public int getActivePlayersCount(){
+        return (int) players.stream().filter(HumanPlayer::isActive).count();
     }
 }

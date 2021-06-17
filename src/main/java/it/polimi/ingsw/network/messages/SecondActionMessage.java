@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * This message is sent in order to choose the starting resources for your game.
  */
 public class SecondActionMessage extends Message implements ExecutableMessage {
-    ArrayList<Resources> resources;
+    private final ArrayList<Resources> resources;
 
     /**
      * Default constructor.

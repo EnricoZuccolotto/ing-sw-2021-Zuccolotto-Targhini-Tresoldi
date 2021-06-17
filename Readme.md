@@ -22,7 +22,7 @@ Il progetto prevede lo sviluppo e l'implementazione del gioco da tavolo Maestri 
   - GUI con JavaFX (WIP);
 - Funzionalità avanzate:
   - Partita in locale
-  - Persistenza (WIP)
+  - Persistenza
 
 ## Report coverage classi di test
 
@@ -39,3 +39,6 @@ I diagrammi UML sono disponibili a questi link:
 - [Controller](UML/uml_Controller.png);
 - [Model](UML/uml_Model.png)
 - [View](UML/View.png)
+
+### JavaDOC
+La documentazione JavaDOC relativa al progetto può essere consultata [qui](JavaDoc/index.html)

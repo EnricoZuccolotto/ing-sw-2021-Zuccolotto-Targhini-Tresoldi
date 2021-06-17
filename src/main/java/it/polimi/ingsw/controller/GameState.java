@@ -4,6 +4,7 @@ package it.polimi.ingsw.controller;
  */
 public enum GameState {
     LOBBY,
+    GAMESETUP,
     GAMESTARTED,
     IDOL,
     TURN,

@@ -25,6 +25,7 @@ public class HumanPlayer extends Player implements Serializable {
     private final Communication privateCommunication;
     private TurnState state;
     private int playerNumber;
+    private boolean active = true;
 
     /**
      * Build a new human player with the name and the inkwell specified.
@@ -122,5 +123,13 @@ public class HumanPlayer extends Player implements Serializable {
     public void sendUpdateToPlayer() {
         CompressedPlayerBoard playerBoardToSend = new CompressedPlayerBoard(this);
         notifyObserver(new HumanPlayerUpdateMessage(playerBoardToSend));
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

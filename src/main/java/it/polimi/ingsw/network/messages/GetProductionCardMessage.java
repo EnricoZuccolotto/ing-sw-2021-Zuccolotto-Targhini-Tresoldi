@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 
 /**
- * Message sent in order to put a {@code DevelopmentCard} in the {@PlayerBoard} reserved space.
+ * Message sent in order to put a {@code DevelopmentCard} in the {@code PlayerBoard} reserved space.
  */
 public class GetProductionCardMessage extends ProductionMessage implements ExecutableMessage {
     private final Colors color;

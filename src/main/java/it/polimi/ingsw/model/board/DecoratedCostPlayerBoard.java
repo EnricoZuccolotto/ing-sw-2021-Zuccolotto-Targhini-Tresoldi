@@ -7,11 +7,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class DecoratedCostPlayerBoard extends DecoratedPlayerBoard implements Serializable {
-    private ArrayList<Integer> discounts;
+    private final ArrayList<Integer> discounts;
 
     public DecoratedCostPlayerBoard(PlayerBoard subBoard){
         super(subBoard);
-        discounts = new ArrayList<Integer>(4);
+        discounts = new ArrayList<>(4);
         discounts.add(0);
         discounts.add(0);
         discounts.add(0);

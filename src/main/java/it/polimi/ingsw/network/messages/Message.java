@@ -1,7 +1,5 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.controller.GameController;
-
 import java.io.Serializable;
 
 /**
@@ -13,7 +11,7 @@ public abstract class Message implements Serializable {
 
     /**
      * Default constructor
-     * @param playerName Player name or {@value "server"} in case of a generic broadcast message.
+     * @param playerName Player name or {@code "server"} in case of a generic broadcast message.
      * @param messageType Message type
      */
     Message(String playerName, MessageType messageType){
