@@ -7,9 +7,25 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import java.lang.String?>
 <Pane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/16"
       fx:controller="it.polimi.ingsw.view.gui.controllers.BoardController">
     <children>
+        <Pane fx:id="communication" disable="true" layoutX="350.0" layoutY="231.0"
+              stylesheets="@../Image/Market/components.css" visible="false">
+            <children>
+                <Text fill="RED" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="comunication"
+                      textAlignment="CENTER" wrappingWidth="500.00000000000006">
+                    <font>
+                        <Font size="36.0"/>
+                    </font>
+                </Text>
+            </children>
+            <styleClass>
+                <String fx:value="background"/>
+                <String fx:value="first"/>
+            </styleClass>
+        </Pane>
         <VBox fx:id="FirstAction" alignment="CENTER" prefHeight="670.0" prefWidth="1280.0"
               stylesheets="@../Image/Market/components.css">
             <children>
@@ -395,7 +411,7 @@
                     </children>
                 </GridPane>
                 <ImageView fx:id="botActions" fitHeight="160.0" fitWidth="200.0" layoutX="80.0" layoutY="422.0"
-                           visible="false" preserveRatio="true">
+                           preserveRatio="true" visible="false">
                     <image>
                         <Image url="@../Image/Singleplayer/retro_cerchi.png"/>
                     </image>
@@ -546,7 +562,7 @@
                         <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true"/>
                     </children>
                 </HBox>
-                <HBox fx:id="specialWarehouse2" disable="true" layoutX="1068.0" layoutY="247.0" prefHeight="55.0"
+                <HBox fx:id="specialWarehouse2" disable="true" layoutX="1068.0" layoutY="277.0" prefHeight="55.0"
                       prefWidth="120.0" spacing="5.0">
                     <children>
                         <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true"/>
@@ -740,7 +756,7 @@
                     </effect>
                 </ImageView>
                 <ImageView fx:id="active2" disable="true" fitHeight="300.0" fitWidth="300.0" layoutX="1029.0"
-                           layoutY="13.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                           layoutY="43.0" pickOnBounds="true" preserveRatio="true" visible="false">
                     <image>
                         <Image url="@../Image/Cards/Leader/49.png"/>
                     </image>
@@ -754,6 +770,18 @@
                 <Button fx:id="endTurn" alignment="CENTER" contentDisplay="CENTER" disable="true" layoutX="15.0"
                         layoutY="31.0" mnemonicParsing="false" prefHeight="55.0" prefWidth="95.0" text="END TURN"
                         visible="false"/>
+                <ImageView fx:id="inkWell" disable="true" fitHeight="104.0" fitWidth="95.0" layoutX="874.0"
+                           layoutY="105.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@../Image/playerBoard/calamaio.png"/>
+                    </image>
+                </ImageView>
+                <Text fx:id="name" layoutX="1029.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text"
+                      textAlignment="CENTER">
+                    <font>
+                        <Font name="System Bold" size="36.0"/>
+                    </font>
+                </Text>
             </children>
         </AnchorPane>
         <Button fx:id="viewBoard" layoutX="25.0" layoutY="630.0" mnemonicParsing="false" prefHeight="45.0"

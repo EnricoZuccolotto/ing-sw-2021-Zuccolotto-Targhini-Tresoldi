@@ -189,7 +189,9 @@ public class Gui extends ViewObservable implements View {
         Platform.runLater(() ->
                 boardController.showBoard());
         if (playerNumber == 0) {
-            // show comunication
+            Platform.runLater(() ->
+                    boardController.showCommunication("You are the first player.Waiting for other players to make their choices", true));
+            new Thread(this::communication);
         } else {
             Platform.runLater(() ->
             {
@@ -350,19 +352,37 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showCommunication(String communication, CommunicationMessage type) {
+        switch (type) {
+            case STARTING_GAME:
+                Platform.runLater(() -> GuiSceneUtils.changeActivePanel(observers, "board.fxml"));
+                break;
+            case ILLEGAL_LOBBY_ACTION:
+                Platform.runLater(() -> {
+                    GuiSceneUtils.showAlertWindow(AlertType.WARNING, "Warning", "There aren't any active games in the server, try again or join an existing lobby!");
+                    askJoinOrSet();
+                });
+                break;
+            case BOT_ACTION:
+                Platform.runLater(() -> boardController.setBotActions(new Image(BotActions.valueOf(communication).getImagePath())));
+                break;
+            case ILLEGAL_ACTION:
+                Platform.runLater(() -> boardController.showCommunication(communication, true));
+                new Thread(this::communication);
+                break;
+            case END_GAME:
+                //
 
-        if (type.equals(CommunicationMessage.STARTING_GAME)) {
-            Platform.runLater(() -> GuiSceneUtils.changeActivePanel(observers, "board.fxml"));
         }
-        if (type.equals(CommunicationMessage.ILLEGAL_LOBBY_ACTION)) {
-            Platform.runLater(() -> {
-                GuiSceneUtils.showAlertWindow(AlertType.WARNING, "Warning", "There aren't any active games in the server, try again or join an existing lobby!");
-                askJoinOrSet();
-            });
+    }
+
+    private void communication() {
+        try {
+            TimeUnit.MILLISECONDS.sleep(2000);
+        } catch (InterruptedException E) {
+            System.exit(3);
         }
-        if (type.equals(CommunicationMessage.BOT_ACTION))
-            Platform.runLater(() -> boardController.setBotActions(new Image(BotActions.valueOf(communication).getImagePath())));
-        System.out.println(communication);
+        Platform.runLater(() -> boardController.showCommunication("communication", false));
+
     }
 
     public void setBoardController(BoardController boardController) {

@@ -57,10 +57,16 @@ public class BoardController extends ViewObservable implements SceneController {
     private Pane chooseResource;
     @FXML
     private AnchorPane playerBoard;
+    @FXML
+    private Pane communication;
     //botActions
     @FXML
     private ImageView botActions;
     //playerboard components
+    @FXML
+    private ImageView inkWell;
+    @FXML
+    private Text name;
     @FXML
     private HBox firstRow, secondRow, thirdRow, bin, specialWarehouse1, specialWarehouse2;
     @FXML
@@ -191,6 +197,8 @@ public class BoardController extends ViewObservable implements SceneController {
         active2.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onSpecialProduction());
         //end turn
         endTurn.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onEndTurn());
+        //communication
+        DragController dragController2 = new DragController(communication, true);
     }
 
     //first methods
@@ -268,6 +276,10 @@ public class BoardController extends ViewObservable implements SceneController {
         ImageView imageViews;
         activePlayerBoard = playerBoard;
         PlayerBoard board = playerBoard.getPlayerBoard();
+        //name
+        name.setText((playerBoard.getPlayerNumber() + 1) + ". " + playerBoard.getName());
+        //inkwell
+        inkWell.setVisible(playerBoard.getPlayerBoard().getInkwell());
         //strongbox
         coinCount.setText(board.getNumberResourceStrongbox(Resources.COIN) + "");
         shieldCount.setText(board.getNumberResourceStrongbox(Resources.SHIELD) + "");
@@ -602,6 +614,14 @@ public class BoardController extends ViewObservable implements SceneController {
         for (int i = 0; i < activePlayerBoard.getPlayerBoard().getLeaderCardsNumber(); i++)
             if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getUncovered() && activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.PROD))
                 leader[i].setDisable(!active);
+    }
+
+    //communication
+    public void showCommunication(String communication, boolean visible) {
+        ((Text) this.communication.getChildren().get(0)).setText(communication);
+        this.communication.setVisible(visible);
+
+
     }
 
 
