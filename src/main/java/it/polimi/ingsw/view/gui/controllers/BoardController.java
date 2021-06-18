@@ -16,8 +16,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -44,8 +42,6 @@ public class BoardController extends ViewObservable implements SceneController {
     private ArrayList<Integer> choice;
     private ArrayList<Resources> resourcesToSend;
     private Colors colors;
-    private DevelopmentCard card;
-    private Decks deck;
 
 
     @FXML
@@ -57,12 +53,6 @@ public class BoardController extends ViewObservable implements SceneController {
     @FXML
     private AnchorPane playerBoard;
     //playerboard components
-    @FXML
-    private VBox productionBox;
-    @FXML
-    private GridPane productionPane;
-    @FXML
-    private Button productionConfirm;
     @FXML
     private HBox secondRow;
     @FXML
@@ -184,11 +174,11 @@ public class BoardController extends ViewObservable implements SceneController {
         pushRow1Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onMarketArrowButtonClick(1, 1));
         pushRow2Button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onMarketArrowButtonClick(1, 2));
         //decks button
-        ObservableList<Node> children = decks.getChildren();
+        ObservableList<Node> decksChildren = decks.getChildren();
         for (Colors colors : Colors.values())
             for (int j = 0; j < 3; j++) {
                 int finalJ = j;
-                children.get(colors.ordinal() * 3 + (j)).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onDecksCardSelection(colors, finalJ + 1));
+                decksChildren.get(colors.ordinal() * 3 + (j)).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onDecksCardSelection(colors, finalJ + 1));
             }
         //first action buttons
         choice = new ArrayList<>();
@@ -232,17 +222,8 @@ public class BoardController extends ViewObservable implements SceneController {
                 db.setContent(content);
                 event.consume();
             });
-        }
-        //resource exchange
-        children= productionPane.getChildren();
-        SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 99, 0);
-        productionConfirm= (Button) children.get(0);
-        productionConfirm.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickAskPosition);
-        for(int i=6; i<20; i++) {
-            if(i!=10 && i!=15){
-                Spinner<Integer> spinner=(Spinner) children.get(i);
-                spinner.setValueFactory(spinnerV);
-            }
+
+
         }
 
         //warehouse
@@ -312,28 +293,12 @@ public class BoardController extends ViewObservable implements SceneController {
                 image = new Image((NewDecks.getDeck(colors, j + 1).getFirstCard().getImagePath()));
                 imageView.setImage(image);
             }
-        deck=NewDecks;
     }
 
     private void onDecksCardSelection(Colors colors, int level) {
-        int[] value;
         this.colors = colors;
         choice.add(level);
         System.out.println(colors + "  " + level);
-        card = deck.getDeck(colors, level).getFirstCard();
-        value=card.getCostCard();
-        for (int i=0; i < 4; i++) {
-            SpinnerValueFactory spinnerV= new SpinnerValueFactory.IntegerSpinnerValueFactory(0, value[i], 0);
-            for (int j = 6+i; j < 20; j=j+5) {
-                Spinner<Integer> spinner = (Spinner) productionPane.getChildren().get(j);
-                spinner.setValueFactory(spinnerV);
-            }
-        }
-        askPayment(true);
-    }
-
-    private void onClickAskPosition(){
-        new Thread(() -> notifyObserver(obs -> obs.getProduction()))
     }
 
     //playerBoard method
@@ -533,13 +498,6 @@ public class BoardController extends ViewObservable implements SceneController {
 
     public void setChooseResourceText(String s) {
         resourceText.setText(s);
-    }
-
-    public void askPayment(boolean playable){
-        productionBox.setVisible(playable);
-        productionBox.setDisable(!playable);
-        playerBoard.setDisable(playable);
-        Board.setDisable(playable);
     }
 
 
