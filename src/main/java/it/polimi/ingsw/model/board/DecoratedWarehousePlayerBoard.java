@@ -109,17 +109,20 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard implemen
         }
         return true;
     }
+
+    @Override
     public boolean checkResources(int [] resources){
         int [] tmp=new int[4];
         ArrayList<Integer> Er=getExtraResources();
-        for(int  i=0;i<4;i++)
-            if(resources[i]!=0)
-            {
+        for(int  i=0; i<4; i++)
+            if(resources[i]!=0) {
                 tmp[i]=resources[i]-Er.get(i);
             }
         return subBoard.checkResources(tmp);
 
     }
+
+    @Override
     public int getNumberResources(){
         return quantities.stream().reduce(0, Integer::sum)+subBoard.getNumberResources();
     }

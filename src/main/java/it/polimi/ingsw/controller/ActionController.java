@@ -314,8 +314,11 @@ public class ActionController implements Serializable {
                 break;
             case WAREHOUSE:
                 // Check if there is another leaderCard of the same type
+
                 if (!(player.getPlayerBoard() instanceof DecoratedWarehousePlayerBoard)) {
+
                     player.setPlayerBoard(new DecoratedWarehousePlayerBoard(player.getPlayerBoard()));
+
                 }
                 // Add the corresponding effect
                 for (int i = 0; i < 4; i++) {
@@ -327,7 +330,6 @@ public class ActionController implements Serializable {
             default:
 
         }
-
         player.sendUpdateToPlayer();
         return true;
     }

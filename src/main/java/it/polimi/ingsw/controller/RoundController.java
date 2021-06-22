@@ -76,6 +76,11 @@ public class RoundController implements Serializable {
     }
 
     public void handle_getMarket(MarketRequestMessage message) {
+        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.STONE, 10);
+        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.SHIELD, 10);
+        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.SERVANT, 10);
+        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.COIN, 10);
+
         if (isYourTurn(message.getPlayerName())) {
             ArrayList<Resources> list;
             try {
@@ -207,6 +212,8 @@ public class RoundController implements Serializable {
             if (actionController.activateLeader(message.getIndex(), playerInTurn))
                 nextState(Action.ACTIVE_LEADER);
         }
+        clearTemporaryStorage();
+
     }
 
     public void handle_foldLeader(LeaderMessage message) {
@@ -219,6 +226,8 @@ public class RoundController implements Serializable {
                 nextState(Action.ACTIVE_LEADER);
             }
         }
+        clearTemporaryStorage();
+
     }
 
     public void handle_firstAction(FirstActionMessage message) {
@@ -301,7 +310,6 @@ public class RoundController implements Serializable {
         for (HumanPlayer player : players) {
             player.sendUpdateToPlayer();
             player.setState(TurnState.FIRST_TURN);
-            player.setPlayerNumber(players.indexOf(player));
         }
     }
 
@@ -316,6 +324,14 @@ public class RoundController implements Serializable {
                     handle_addFaithPoint(quantities, player);
         } else if (gameState.equals(GameState.SINGLEPLAYER))
             handle_addFaithPoint(quantities, null);
+
+    }
+
+    private void clearTemporaryStorage() {
+        if (winnerPlayer == -2) {
+            int quantities = playerInTurn.getTemporaryResourceStorage().size();
+            movePlayersExceptSelected(quantities);
+        }
         playerInTurn.setTemporaryResourceStorage(new ArrayList<>());
     }
 
@@ -325,11 +341,7 @@ public class RoundController implements Serializable {
         int playersNumber = players.size();
         turnCount++;
         productions.clear();
-        if (winnerPlayer == -2) {
-            int quantities = playerInTurn.getTemporaryResourceStorage().size();
-            movePlayersExceptSelected(quantities);
-        }
-
+        clearTemporaryStorage();
 
         checkWinner(playersNumber);
         if (gameState.equals(GameState.SINGLEPLAYER))
@@ -349,6 +361,7 @@ public class RoundController implements Serializable {
         } while(!playerInTurn.isActive());
         firstState();
         playerInTurn.setState(turnState);
+        GameSaver.saveGame(gameController);
     }
 
     private void checkWinner(int playersNumber){

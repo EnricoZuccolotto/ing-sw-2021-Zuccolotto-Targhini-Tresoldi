@@ -40,25 +40,27 @@ public class BoardController extends ViewObservable implements SceneController {
             "-fx-border-width: 3px;";
 
 
-    private boolean view = true, flag = true, notInTurn = true;
+    private boolean view = true, flag = true, notInTurn = true, panelViewBoardsActive = false, onlyView = false;
+
+    private Node activePanel;
 
     private CompressedPlayerBoard activePlayerBoard;
-
+    private ArrayList<AnchorPane> playerBoardsToView;
     private ArrayList<Integer> choice;
     private ArrayList<Resources> resourcesToSend;
     private Colors colors;
 
-
-    @FXML
-    private Pane Board;
     @FXML
     private VBox FirstAction;
     @FXML
-    private Pane chooseResource;
+    private Pane chooseResource, communication, Board;
     @FXML
-    private AnchorPane playerBoard;
+    private AnchorPane playerBoard, playerBoard1, playerBoard2, playerBoard3;
     @FXML
-    private Pane communication;
+    private HBox viewBoards;
+    @FXML
+    private ImageView arrow;
+
     //botActions
     @FXML
     private ImageView botActions;
@@ -125,8 +127,19 @@ public class BoardController extends ViewObservable implements SceneController {
 
     @FXML
     public void initialize() {
+
         Gui gui = Gui.getInstance();
         gui.setBoardController(this);
+        //set first pane to show
+        activePanel = FirstAction;
+        activePanel.setVisible(true);
+        activePanel.setDisable(false);
+        //playerBoard to view
+        playerBoardsToView = new ArrayList<>();
+        playerBoardsToView.add(playerBoard);
+        playerBoardsToView.add(playerBoard1);
+        playerBoardsToView.add(playerBoard2);
+        playerBoardsToView.add(playerBoard3);
         //board buttons
         viewBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> viewBoard(flag));
         //market buttons
@@ -199,12 +212,38 @@ public class BoardController extends ViewObservable implements SceneController {
         endTurn.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onEndTurn());
         //communication
         DragController dragController2 = new DragController(communication, true);
+
+        //view playerboards
+        viewBoards.getChildren().get(0).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            if (!panelViewBoardsActive) {
+                viewBoards.setTranslateX(viewBoards.getTranslateX() - 170);
+                arrow.setRotate(180);
+                panelViewBoardsActive = true;
+            } else {
+                viewBoards.setTranslateX(viewBoards.getTranslateX() + 170);
+                arrow.setRotate(0);
+                panelViewBoardsActive = false;
+            }
+
+
+        });
+
+        decksChildren = ((VBox) viewBoards.getChildren().get(1)).getChildren();
+        for (int i = 0; i < 4; i++) {
+            int finalI = i;
+            decksChildren.get(i).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+                changeActivePane(playerBoardsToView.get(finalI));
+                view = true;
+            });
+        }
+
     }
+
 
     //first methods
     private void onConfirm() {
         new Thread(() -> notifyObserver(obs -> obs.firstAction(choice.get(0), choice.get(1)))).start();
-        showBoard();
+        changeActivePane(Board);
     }
 
     private void onCardSelection(int index) {
@@ -274,6 +313,11 @@ public class BoardController extends ViewObservable implements SceneController {
     //playerBoard method
     public void updatePlayerBoard(CompressedPlayerBoard playerBoard) {
         ImageView imageViews;
+        //vievs other player boards method
+        ((VBox) viewBoards.getChildren().get(1)).getChildren().get(0).setDisable(false);
+        ((VBox) viewBoards.getChildren().get(1)).getChildren().get(0).setVisible(true);
+        ((Button) ((VBox) viewBoards.getChildren().get(1)).getChildren().get(0)).setText("My Board");
+
         activePlayerBoard = playerBoard;
         PlayerBoard board = playerBoard.getPlayerBoard();
         //name
@@ -324,29 +368,108 @@ public class BoardController extends ViewObservable implements SceneController {
         ImageView[] leader = new ImageView[]{leaderCard1, leaderCard2, active1, active2};
         HBox[] warehouse = new HBox[]{specialWarehouse1, specialWarehouse2};
         for (int i = 0; i < 2; i++) {
-            if (i < activePlayerBoard.getPlayerBoard().getLeaderCardsNumber()) {
+            try {
                 LeaderCard card = board.getLeaderCard(i);
                 if (card.getUncovered()) {
                     leader[i].setDisable(true);
                     leader[i].setVisible(false);
                     leader[i + 2].setImage(new Image(card.getImagePath()));
+                    leader[i + 2].setVisible(true);
                     //updating special warehouse
-                    if (card.getAdvantage().equals(Advantages.WAREHOUSE)) {
-                        int res = 0;
-                        for (int j = 0; j < 4; j++)
-                            if (card.getEffect().get(i) != 0)
-                                res = i;
-                        for (int j = 0; j < 2; j++) {
-                            if (i < activePlayerBoard.getPlayerBoard().getExtraResources().get(res)) {
-                                ((ImageView) warehouse[i].getChildren().get(j)).setImage(new Image(Resources.transform(res).getImagePath()));
-                            } else
-                                ((ImageView) warehouse[i].getChildren().get(j)).setImage(new Image(Resources.WHITE.getImagePath()));
-                        }
-                    }
+                    updateSpecialWarehouse(card, warehouse[i], activePlayerBoard);
                 } else leader[i].setImage(new Image(card.getImagePath()));
-            } else {
+            } catch (IndexOutOfBoundsException e) {
                 leader[i].setDisable(true);
                 leader[i].setVisible(false);
+            }
+        }
+    }
+
+    public void updatePlayerBoard2(CompressedPlayerBoard playerBoard, int n) {
+
+        ImageView imageViews;
+        ((VBox) viewBoards.getChildren().get(1)).getChildren().get(n).setDisable(false);
+        ((VBox) viewBoards.getChildren().get(1)).getChildren().get(n).setVisible(true);
+        ((Button) ((VBox) viewBoards.getChildren().get(1)).getChildren().get(n)).setText(playerBoard.getName() + "'s Board");
+        ObservableList<Node> children = playerBoardsToView.get(n).getChildren();
+        PlayerBoard board = playerBoard.getPlayerBoard();
+        //name
+        ((Text) children.get(22)).setText((playerBoard.getPlayerNumber() + 1) + ". " + playerBoard.getName());
+        //inkwell
+        (children.get(21)).setVisible(playerBoard.getPlayerBoard().getInkwell());
+
+        //strongbox
+        ((Text) children.get(2)).setText(board.getNumberResourceStrongbox(Resources.SERVANT) + "");
+        ((Text) children.get(3)).setText(board.getNumberResourceStrongbox(Resources.COIN) + "");
+        ((Text) children.get(4)).setText(board.getNumberResourceStrongbox(Resources.STONE) + "");
+        ((Text) children.get(5)).setText(board.getNumberResourceStrongbox(Resources.SHIELD) + "");
+
+        //warehouse
+        ((ImageView) ((HBox) children.get(6)).getChildren().get(0)).setImage(new Image(board.getResourceWarehouse(0).getImagePath()));
+        ((ImageView) ((HBox) children.get(7)).getChildren().get(0)).setImage(new Image(board.getResourceWarehouse(1).getImagePath()));
+        ((ImageView) ((HBox) children.get(7)).getChildren().get(1)).setImage(new Image(board.getResourceWarehouse(2).getImagePath()));
+        for (int i = 0; i < 3; i++)
+            ((ImageView) ((HBox) children.get(8)).getChildren().get(i)).setImage(new Image(board.getResourceWarehouse(i + 3).getImagePath()));
+
+        //spaceProd
+        StackPane[] spacesView = new StackPane[]{(StackPane) children.get(15), (StackPane) children.get(16), (StackPane) children.get(17)};
+        for (int i = 0; i < 3; i++) {
+            try {
+                SpaceProd spaceProd = board.getProductionSpaces().get(i);
+                if (spaceProd.getNumbCard() != 0) {
+                    for (DevelopmentCard card : spaceProd.getCards()) {
+                        imageViews = (ImageView) spacesView[i].getChildren().get(2 - spaceProd.getCards().indexOf(card));
+                        imageViews.setImage(new Image(card.getImagePath()));
+                    }
+                }
+            } catch (IndexOutOfBoundsException ignored) {
+                break;
+            }
+        }
+
+        //temporary storage
+        for (int i = 0; i < 4; i++) {
+            imageViews = (ImageView) ((GridPane) children.get(18)).getChildren().get(i);
+            if (i < playerBoard.getTemporaryResourceStorage().size()) {
+                Resources resources = playerBoard.getTemporaryResourceStorage().get(i);
+                imageViews.setVisible(true);
+                imageViews.setImage(new Image(resources.getImagePath()));
+            } else {
+                imageViews.setVisible(false);
+            }
+        }
+
+        //leaderCards
+        ImageView[] leader = new ImageView[]{(ImageView) children.get(19), (ImageView) children.get(20)};
+        HBox[] warehouse = new HBox[]{(HBox) children.get(9), (HBox) children.get(10)};
+        for (int i = 0; i < 2; i++) {
+            try {
+                LeaderCard card = board.getLeaderCard(i);
+                leader[i].setVisible(true);
+                if (card.getUncovered()) {
+                    leader[i].setImage(new Image(card.getImagePath()));
+                    //updating special warehouse
+                    updateSpecialWarehouse(card, warehouse[i], playerBoard);
+                } else leader[i].setImage(new Image("Image/Cards/Leader/back.png"));
+            } catch (IndexOutOfBoundsException e) {
+                leader[i].setImage(new Image("Image/Resources/white.png"));
+            }
+        }
+
+    }
+
+    private void updateSpecialWarehouse(LeaderCard card, HBox warehouse, CompressedPlayerBoard playerBoard) {
+
+        if (card.getAdvantage().equals(Advantages.WAREHOUSE)) {
+            int res = 0;
+            for (int j = 0; j < 4; j++)
+                if (card.getEffect().get(j) != 0)
+                    res = j;
+            for (int j = 0; j < 2; j++) {
+                if (j < playerBoard.getPlayerBoard().getExtraResources().get(res)) {
+                    ((ImageView) warehouse.getChildren().get(j)).setImage(new Image(Resources.transform(res).getImagePath()));
+                } else
+                    ((ImageView) warehouse.getChildren().get(j)).setImage(new Image(Resources.WHITE.getImagePath()));
             }
         }
     }
@@ -365,10 +488,14 @@ public class BoardController extends ViewObservable implements SceneController {
         thirdRow.setDisable(active);
         bin.setDisable(active);
         bin.setVisible(!active);
-        HBox[] spec = new HBox[]{specialWarehouse2, specialWarehouse1};
-        for (int i = 0; i < activePlayerBoard.getPlayerBoard().getLeaderCardsNumber(); i++)
-            if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getUncovered() && activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.WAREHOUSE))
-                spec[i].setDisable(active);
+        HBox[] spec = new HBox[]{specialWarehouse1, specialWarehouse2};
+        for (int i = 0; i < 2; i++)
+            try {
+                if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getUncovered() && activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.WAREHOUSE))
+                    spec[i].setDisable(active);
+            } catch (IndexOutOfBoundsException ignored) {
+
+            }
     }
 
     private void onClickShiftRows(int row1, int row2) {
@@ -377,15 +504,15 @@ public class BoardController extends ViewObservable implements SceneController {
     }
 
     private void initializeWarehouse() {
-        Node[] warehouseRows = new Node[]{firstRow, secondRow, thirdRow, bin};
-        for (int i = 0; i < 4; i++) {
+        Node[] warehouseRows = new Node[]{firstRow, secondRow, thirdRow, specialWarehouse1, specialWarehouse2, bin};
+        for (int i = 0; i < 6; i++) {
             int finalI = i;
             warehouseRows[i].setOnDragEntered(event -> {
                 /* the drag-and-drop gesture entered the target */
                 /* show to the user that it is an actual gesture target */
                 if (event.getGestureSource() != firstRow &&
                         event.getDragboard().hasImage()) {
-                    if (finalI < 3)
+                    if (finalI < 5)
                         warehouseRows[finalI].setStyle(effect);
                     else warehouseRows[finalI].setStyle(effect2);
                 }
@@ -416,8 +543,9 @@ public class BoardController extends ViewObservable implements SceneController {
                 if (db.hasImage()) {
                     if (finalI < 3)
                         onDropOnWarehouse(choice.get(0), finalI + 1);
-                    else
-                        onDropOnWarehouse(choice.get(0), 4);
+                    else if (finalI < 5)
+                        onDropOnWarehouse(choice.get(0), 0);
+                    else onDropOnWarehouse(choice.get(0), 4);
                     success = true;
                 }
                 event.setDropCompleted(success);
@@ -452,6 +580,12 @@ public class BoardController extends ViewObservable implements SceneController {
     //end turn
     private void onEndTurn() {
         new Thread(() -> notifyObserver(ViewObserver::endTurn)).start();
+        endTurn.setDisable(true);
+        endTurn.setVisible(false);
+        clearTemporary();
+    }
+
+    private void clearTemporary() {
         for (int i = 0; i < 4; i++) {
             ImageView imageViews = (ImageView) resourcesToSort.getChildren().get(i);
             imageViews.setDisable(true);
@@ -477,23 +611,45 @@ public class BoardController extends ViewObservable implements SceneController {
 
     //faith path methods
     public void updateFaithPath(FaithPath faithPath, int playerNumber) {
-        ImageView[] faith = new ImageView[]{faith1, faith2, faith3};
-        for (int i = 0; i < 3; i++) {
-            if (faithPath.getCard(i).getUncovered()) {
-                if (faithPath.getCardsState(i, playerNumber))
-                    faith[i].setImage(new Image(faithPath.getCard(i).getImagePath()));
-                else
-                    faith[i].setImage(new Image("Image/Resources/white.png"));
+        int position = faithPath.getPosition(playerNumber);
+        setFaithCards(this.faith1, this.faith2, this.faith3, faithPath, playerNumber);
+        setFaithMarkerPosition(position, this.faithMarker);
+        if (faithPath.isSinglePlayer()) {
+            faithMarkerBlack.setVisible(true);
+            setFaithMarkerPosition(faithPath.getPosition(1), faithMarkerBlack);
+        } else {
+            ArrayList<Integer> list = new ArrayList<>();
+            list.add(0);
+            list.add(1);
+            list.add(2);
+            list.add(3);
+            list.remove(playerNumber);
+            for (int i = 1; i < 4; i++) {
+                try {
+                    ObservableList<Node> children = playerBoardsToView.get(i).getChildren();
+                    setFaithCards((ImageView) children.get(11), (ImageView) children.get(12), (ImageView) children.get(13), faithPath, list.get(i - 1));
+                    setFaithMarkerPosition(faithPath.getPosition(list.get(i - 1)), (ImageView) children.get(14));
+                } catch (IndexOutOfBoundsException ignored) {
+                    break;
+                }
             }
-            int position = faithPath.getPosition(playerNumber);
-            setFaithMarkerPosition(position, this.faithMarker);
-            if (faithPath.isSinglePlayer()) {
-                faithMarkerBlack.setVisible(true);
-                setFaithMarkerPosition(faithPath.getPosition(1), faithMarkerBlack);
-            }
+
 
         }
     }
+
+    private void setFaithCards(ImageView faith1, ImageView faith2, ImageView faith3, FaithPath faithPath, int playerNumber) {
+        ImageView[] faith = new ImageView[]{faith1, faith2, faith3};
+        for (int i = 0; i < 3; i++) {
+            if (faithPath.getCard(i).getUncovered()) {
+                if (faithPath.getCardsState(i, playerNumber)) {
+                    faith[i].setImage(new Image(faithPath.getCard(i).getImagePath()));
+                } else
+                    faith[i].setImage(new Image("Image/Resources/white.png"));
+            }
+        }
+    }
+
 
     private void setFaithMarkerPosition(int position, ImageView faithMarker) {
         //setting x coordinates
@@ -528,8 +684,8 @@ public class BoardController extends ViewObservable implements SceneController {
     public void askResource(boolean visible) {
         chooseResource.setVisible(visible);
         chooseResource.setDisable(!visible);
-        playerBoard.setDisable(visible);
-        Board.setDisable(visible);
+        onlyView = visible;
+        activePanel.setDisable(visible);
     }
 
     public ArrayList<Resources> getResourcesToSend() {
@@ -544,42 +700,43 @@ public class BoardController extends ViewObservable implements SceneController {
     //exchange views
     private void viewBoard(boolean flag) {
         if (flag) {
-            FirstAction.setDisable(view);
-            FirstAction.setVisible(!view);
-            Board.setVisible(view);
-            Board.setDisable(true);
-            if (view)
-                viewBoard.setText("Return");
-            else viewBoard.setText("View Board");
+
+            if (view) {
+                changeActivePane(Board);
+            } else changeActivePane(FirstAction);
+
         } else {
-            Board.setVisible(!view);
-            if (!notInTurn) {
-                Board.setDisable(view);
-                playerBoard.setDisable(false);
-            }
-            playerBoard.setVisible(view);
-            if (view)
-                viewBoard.setText("Game board");
-            else viewBoard.setText("Player Board");
+
+            if (view) changeActivePane(playerBoard);
+            else changeActivePane(Board);
+
         }
+
         view = !view;
     }
 
-    public void showBoard() {
-        Board.setVisible(true);
-        Board.setDisable(false);
-        playerBoard.setDisable(true);
-        playerBoard.setVisible(false);
-        FirstAction.setVisible(false);
-        FirstAction.setDisable(true);
+    public void showBoard(boolean singlePlayer) {
+        changeActivePane(Board);
         flag = false;
         view = true;
-        viewBoard.setText("Player Board");
+
+        if (!singlePlayer) {
+            viewBoards.setVisible(true);
+            viewBoards.setDisable(false);
+        }
     }
 
     public void clearChoices() {
         resourcesToSend.clear();
         choice.clear();
+    }
+
+    public void changeActivePane(Node node) {
+        activePanel.setVisible(false);
+        activePanel.setDisable(true);
+        activePanel = node;
+        node.setVisible(true);
+        node.setDisable(false && !onlyView);
     }
 
     public void activeBotActions(boolean active) {
@@ -621,9 +778,19 @@ public class BoardController extends ViewObservable implements SceneController {
     }
 
     public void notInTurn(boolean active) {
-        playerBoard.setDisable(active);
-        Board.setDisable(active);
         notInTurn = active;
+        decks.setDisable(active);
+        leaderCard1.setDisable(active);
+        leaderCard2.setDisable(active);
+        active1.setDisable(active);
+        active2.setDisable(active);
+        activeMarket(!active);
+        activeProductions(!active);
+
+        //sort warehouse
+        shiftRow12.setDisable(active);
+        shiftRow23.setDisable(active);
+        shiftRow13.setDisable(active);
     }
 
     //communication

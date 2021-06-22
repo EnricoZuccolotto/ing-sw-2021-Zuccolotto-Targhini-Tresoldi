@@ -14,7 +14,10 @@ import it.polimi.ingsw.view.NetworkLayerView;
 import it.polimi.ingsw.view.View;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class GameController implements Serializable {
@@ -121,6 +124,7 @@ public class GameController implements Serializable {
                         Collections.shuffle(lobbyPlayers);
                         for (String string : lobbyPlayers) {
                             addPlayer(string, viewMap.get(string), lobbyPlayers.get(0).equals(string));
+                            gameBoardInstance.getPlayer(string).setPlayerNumber(lobbyPlayers.indexOf(string));
                         }
                         StartGame();
                     }

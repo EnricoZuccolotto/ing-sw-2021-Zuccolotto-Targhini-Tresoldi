@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Gui extends ViewObservable implements View {
     private String nickname = "";
-    private int playerNumber;
+    private int playerNumber = 5;
     private static Gui instance = null;
     private BoardController boardController;
     private UsernameController usernameController;
@@ -105,12 +105,13 @@ public class Gui extends ViewObservable implements View {
                 }
             } while (!exit);
 
-            singlePlayer = (numberOfPlayers == 1);
+
 
             int finalNumberOfPlayers = numberOfPlayers;
             notifyObserver(obs -> obs.PlayersNumber(finalNumberOfPlayers));
             if (numberOfPlayers != 1)
                 Platform.runLater(() -> usernameController.changeToLobby());
+            else singlePlayer = true;
         });
     }
 
@@ -130,10 +131,12 @@ public class Gui extends ViewObservable implements View {
                 boardController.clearChoices());
         switch (state) {
             case FIRST_TURN: {
+                Platform.runLater(() -> boardController.notInTurn(true));
                 askFirstAction();
                 break;
             }
             case SECOND_TURN: {
+                Platform.runLater(() -> boardController.notInTurn(true));
                 askSecondAction();
                 break;
             }
@@ -141,8 +144,7 @@ public class Gui extends ViewObservable implements View {
             case NORMAL_ACTION: {
                 Platform.runLater(() -> {
                     boardController.notInTurn(false);
-                    boardController.showBoard();
-                    boardController.activeEndTurn(false);
+                    boardController.showBoard(singlePlayer);
                     boardController.activeDecks(true);
                     boardController.activeMarket(true);
                     boardController.activeProductions(true);
@@ -193,7 +195,7 @@ public class Gui extends ViewObservable implements View {
     public void askSecondAction() {
 
         Platform.runLater(() ->
-                boardController.showBoard());
+                boardController.showBoard(singlePlayer));
         if (playerNumber == 0) {
             Platform.runLater(() ->
                     boardController.showCommunication("You are the first player.Waiting for other players to make their choices", true));
@@ -218,7 +220,14 @@ public class Gui extends ViewObservable implements View {
                     boardController.setChooseResourceText("CHOOSE THE 2ND RESOURCE");
                     boardController.askResource(true);
                 });
+                while (boardController.getResourcesToSend().size() != 2)
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(100);
+                    } catch (InterruptedException E) {
+                        System.exit(3);
+                    }
             }
+
             notifyObserver(obs -> obs.secondAction(boardController.getResourcesToSend()));
         }
     }
@@ -276,6 +285,11 @@ public class Gui extends ViewObservable implements View {
             this.CompressedPlayerBoard = playerBoard;
             this.playerNumber = playerBoard.getPlayerNumber();
             Platform.runLater(() -> boardController.updatePlayerBoard(playerBoard));
+        } else {
+            int n = playerBoard.getPlayerNumber();
+            if (n < this.playerNumber) n++;
+            int finalN = n;
+            Platform.runLater(() -> boardController.updatePlayerBoard2(playerBoard, finalN));
         }
     }
 

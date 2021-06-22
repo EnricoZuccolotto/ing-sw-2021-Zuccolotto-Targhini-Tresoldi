@@ -74,9 +74,11 @@ public class UsernameController extends ViewObservable implements SceneControlle
 
     public void updateLobby(ArrayList<String> players) {
         ObservableList<Node> lobbyChildren = lobby.getChildren();
-        for (int i = 0; i < players.size(); i++) {
+        for (int i = 0; i < 5; i++) {
             Text text = (Text) lobbyChildren.get(i + 1);
-            text.setText((i + 1) + ". " + players.get(i));
+            if (i < players.size()) {
+                text.setText((i + 1) + ". " + players.get(i));
+            } else text.setText("");
         }
         Text text = (Text) lobbyChildren.get(players.size() + 1);
         text.setText(s);

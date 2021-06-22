@@ -121,6 +121,7 @@ public class HumanPlayer extends Player implements Serializable {
      * Send the updated player to the view.
      */
     public void sendUpdateToPlayer() {
+
         CompressedPlayerBoard playerBoardToSend = new CompressedPlayerBoard(this);
         notifyObserver(new HumanPlayerUpdateMessage(playerBoardToSend));
     }

@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.SpaceProd;
 import it.polimi.ingsw.model.player.Strongbox;
 import it.polimi.ingsw.model.player.Warehouse;
+import it.polimi.ingsw.view.cli.ColorsCLI;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -412,6 +413,13 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
                 stringBuilder.append(". ");
                 stringBuilder.append(card);
                 stringBuilder.append("\n");
+            } else if (mine && card.getUncovered()) {
+                stringBuilder.append(ColorsCLI.YELLOW_BOLD);
+                stringBuilder.append(leaderCards.indexOf(card));
+                stringBuilder.append(". ");
+                stringBuilder.append(card);
+                stringBuilder.append("\n");
+                stringBuilder.append(ColorsCLI.CLEAR);
             }
         }
         if (productionSpaces.size() != 0)

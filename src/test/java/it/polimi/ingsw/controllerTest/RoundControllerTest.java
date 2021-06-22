@@ -1,18 +1,15 @@
 package it.polimi.ingsw.controllerTest;
 
-import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.GameState;
 import it.polimi.ingsw.controller.RoundController;
 import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
-import it.polimi.ingsw.model.board.DecoratedChangePlayerBoard;
 import it.polimi.ingsw.model.board.DecoratedProductionPlayerBoard;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
-import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.model.tools.ExchangeResources;
 import it.polimi.ingsw.network.messages.*;
@@ -246,143 +243,8 @@ public class RoundControllerTest {
 
     }
 
-    @Test
-    public void handle_marketTest() {
-        GameBoard gb = new GameBoard();
-        gb.addPlayer(new HumanPlayer("Harry", false));
-        gb.addPlayer(new HumanPlayer("Enry", true));
-        gb.init(gb);
-        RoundController g = new RoundController(gb, null) {
-
-            public void handle_getMarket(MarketRequestMessage message) {
-
-                ArrayList<Resources> list = new ArrayList<>();
-                list.add(Resources.COIN);
-                list.add(Resources.WHITE);
-                list.add(Resources.FAITH);
-                // remove faith element and add to the faith path
-                if (list.contains(Resources.FAITH)) {
-                    handle_addFaithPoint(1, gb.getPlayer(message.getPlayerName()));
-                    list.remove(Resources.FAITH);
-                }
-
-                if (list.contains(Resources.WHITE)) {
-                    int flag = (int) gb.getPlayer(message.getPlayerName()).getPlayerBoard().getSubstitutes().stream().filter(n -> n).count();
-                    //exchange white resource with another resource if there is only one exchangeable
-                    if (flag == 1) {
-                        Resources resource = Resources.transform(gb.getPlayer(message.getPlayerName()).getPlayerBoard().getSubstitutes().indexOf(true));
-                        for (Resources resources : list)
-                            if (resources.equals(Resources.WHITE))
-                                list.set(list.indexOf(Resources.WHITE), resource);
-                    }
-                    //remove white resource cause with have no exchange
-                    else if (flag == 0) {
-                        while (list.contains(Resources.WHITE))
-                            list.remove(Resources.WHITE);
-                    }
-                }
-                assertEquals(1, list.size());
-                gb.getPlayer(message.getPlayerName()).setTemporaryResourceStorage(list);
-                nextState(Action.GET_RESOURCES_FROM_MARKET);
-            }
-        };
-        g.init();
-        assertEquals(g.getGameState(), GameState.MULTIPLAYER);
-        //first action
-        g.handle_firstTurn();
-        g.handle_firstAction(new FirstActionMessage("Harry", 2, 3));
-        g.handle_firstAction(new FirstActionMessage("Enry", 1, 0));
-        //second action
-        ArrayList<Resources> r = new ArrayList<>();
-        r.add(Resources.STONE);
-        g.handle_secondAction(new SecondActionMessage("Enry", r));
-        // first turn
-        g.handle_getMarket(new MarketRequestMessage("Harry", 0, 0));
-        assertEquals(TurnState.WAREHOUSE_ACTION, g.getTurnState());
-        assertEquals(1, gb.getPlayerFaithPathPosition(0));
-        g.handle_sortingWarehouse(new SetResourceMessage("Harry", Resources.COIN, WarehousePositions.WAREHOUSE_FIRST_ROW, 0));
-        assertTrue(gb.getPlayer("Harry").getPlayerBoard().checkResourcesWarehouse(new int[]{0, 1, 0, 0}));
-        assertEquals(TurnState.LAST_LEADER_ACTION, g.getTurnState());
-    }
-
-    @Test
-    public void handle_marketTest_decorated1() {
-        GameBoard gb = new GameBoard();
-        gb.addPlayer(new HumanPlayer("Harry", false));
-        gb.addPlayer(new HumanPlayer("Enry", true));
-        gb.init(gb);
-        RoundController g = new RoundController(gb, null) {
-
-            public void handle_getMarket(MarketRequestMessage message) {
-
-                ArrayList<Resources> list = new ArrayList<>();
-                list.add(Resources.COIN);
-                list.add(Resources.WHITE);
-                list.add(Resources.FAITH);
-                // remove faith element and add to the faith path
-                if (list.contains(Resources.FAITH)) {
-                    handle_addFaithPoint(1, gb.getPlayer(message.getPlayerName()));
-                    list.remove(Resources.FAITH);
-                }
-
-                if (list.contains(Resources.WHITE)) {
-                    int flag = (int) gb.getPlayer(message.getPlayerName()).getPlayerBoard().getSubstitutes().stream().filter(n -> n).count();
-                    //exchange white resource with another resource if there is only one exchangeable
-                    if (flag == 1) {
-                        Resources resource = Resources.transform(gb.getPlayer(message.getPlayerName()).getPlayerBoard().getSubstitutes().indexOf(true));
-                        for (Resources resources : list)
-                            if (resources.equals(Resources.WHITE))
-                                list.set(list.indexOf(Resources.WHITE), resource);
-                    }
-                    //remove white resource cause with have no exchange
-                    else if (flag == 0) {
-                        while (list.contains(Resources.WHITE))
-                            list.remove(Resources.WHITE);
-                    }
-                }
-                assertEquals(2, list.size());
-                assertEquals(Resources.COIN, list.get(0));
 
 
-                gb.getPlayer(message.getPlayerName()).setTemporaryResourceStorage(list);
-                nextState(Action.GET_RESOURCES_FROM_MARKET);
-            }
-        };
-        g.init();
-        assertEquals(g.getGameState(), GameState.MULTIPLAYER);
-        //first action
-        g.handle_firstTurn();
-        g.handle_firstAction(new FirstActionMessage("Harry", 2, 3));
-        g.handle_firstAction(new FirstActionMessage("Enry", 1, 0));
-        //second action
-        ArrayList<Resources> r = new ArrayList<>();
-        r.add(Resources.STONE);
-        g.handle_secondAction(new SecondActionMessage("Enry", r));
-        // first turn
-        gb.getPlayer("Harry").setPlayerBoard(new DecoratedChangePlayerBoard(gb.getPlayer("Harry").getPlayerBoard()));
-        gb.getPlayer("Harry").getPlayerBoard().addSubstitute(Resources.COIN);
-        gb.getPlayer("Harry").getPlayerBoard().addSubstitute(Resources.STONE);
-        g.handle_getMarket(new MarketRequestMessage("Harry", 0, 0));
-        assertEquals(TurnState.WAREHOUSE_ACTION, g.getTurnState());
-        assertEquals(1, gb.getPlayerFaithPathPosition(0));
-        g.handle_sortingWarehouse(new SetResourceMessage("Harry", Resources.COIN, WarehousePositions.WAREHOUSE_FIRST_ROW, 0));
-        assertTrue(gb.getPlayer("Harry").getPlayerBoard().checkResourcesWarehouse(new int[]{0, 1, 0, 0}));
-        assertEquals(TurnState.WAREHOUSE_ACTION, g.getTurnState());
-        g.handle_endTurn();
-        assertEquals(1, gb.getPlayerFaithPathPosition(1));
-        // first turn second player
-        gb.getPlayer("Enry").setPlayerBoard(new DecoratedChangePlayerBoard(gb.getPlayer("Enry").getPlayerBoard()));
-        gb.getPlayer("Enry").getPlayerBoard().addSubstitute(Resources.COIN);
-        g.handle_getMarket(new MarketRequestMessage("Enry", 0, 0));
-        assertEquals(TurnState.WAREHOUSE_ACTION, g.getTurnState());
-        assertEquals(2, gb.getPlayerFaithPathPosition(1));
-        assertEquals(1, gb.getPlayerFaithPathPosition(0));
-        g.handle_sortingWarehouse(new SetResourceMessage("Enry", Resources.COIN, WarehousePositions.WAREHOUSE_FIRST_ROW, 0));
-        assertTrue(gb.getPlayer("Enry").getPlayerBoard().checkResourcesWarehouse(new int[]{0, 1, 0, 0}));
-        assertEquals(TurnState.WAREHOUSE_ACTION, g.getTurnState());
-        g.handle_endTurn();
-        assertEquals(2, gb.getPlayerFaithPathPosition(0));
-    }
 
 }
 

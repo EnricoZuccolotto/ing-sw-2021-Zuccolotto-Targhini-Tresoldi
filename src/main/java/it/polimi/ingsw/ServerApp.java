@@ -10,7 +10,7 @@ import it.polimi.ingsw.network.server.SocketServer;
  */
 public class ServerApp {
     public static void main(String[] args) {
-        int serverPort = 12222; // default value
+        int serverPort = 12221; // default value
 
         // Input argument parsing
         for (int i = 0; i < args.length; i++) {
