@@ -126,7 +126,6 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askAction(TurnState state) {
-        System.out.println(state);
         Platform.runLater(() ->
                 boardController.clearChoices());
         switch (state) {

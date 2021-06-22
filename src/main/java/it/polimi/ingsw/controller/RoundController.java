@@ -76,10 +76,6 @@ public class RoundController implements Serializable {
     }
 
     public void handle_getMarket(MarketRequestMessage message) {
-        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.STONE, 10);
-        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.SHIELD, 10);
-        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.SERVANT, 10);
-        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.COIN, 10);
 
         if (isYourTurn(message.getPlayerName())) {
             ArrayList<Resources> list;
