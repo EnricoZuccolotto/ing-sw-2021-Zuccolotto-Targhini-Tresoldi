@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controllerTest;
 
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.GameState;
 import it.polimi.ingsw.controller.RoundController;
 import it.polimi.ingsw.controller.TurnState;
@@ -90,7 +91,7 @@ public class RoundControllerTest {
         gb.addPlayer(new HumanPlayer("Ron", false));
         gb.addPlayer(new HumanPlayer("Hermione", false));
         gb.init(gb);
-        RoundController g = new RoundController(gb, null);
+        RoundController g = new RoundController(gb, new GameController(false));
         g.init();
         assertEquals(g.getGameState(), GameState.MULTIPLAYER);
         //first Turn
@@ -129,7 +130,7 @@ public class RoundControllerTest {
         GameBoard gb=new GameBoard();
         gb.addPlayer(new HumanPlayer("Harry",true));
         gb.init(gb);
-        RoundController g=new RoundController(gb, null);
+        RoundController g = new RoundController(gb, new GameController(false));
         g.init();
         assertEquals(g.getGameState(), GameState.SINGLEPLAYER);
         //first Turn

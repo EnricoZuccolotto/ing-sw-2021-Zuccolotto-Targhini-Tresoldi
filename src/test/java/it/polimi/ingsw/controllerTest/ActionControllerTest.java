@@ -383,7 +383,7 @@ public class ActionControllerTest {
         gb.addPlayer(new HumanPlayer("Harry", true));
         gb.addPlayer(new HumanPlayer("Enry", false));
         gb.init(gb);
-        RoundController g = new RoundController(gb, null) {
+        RoundController g = new RoundController(gb, new GameController(false)) {
             @Override
             public void handle_getMarket(MarketRequestMessage message) {
 
@@ -453,7 +453,7 @@ public class ActionControllerTest {
         assertTrue(gb.getPlayer("Enry").getPlayerBoard().checkResourcesWarehouse(new int[]{0, 0, 0, 0}));
         assertEquals(TurnState.WAREHOUSE_ACTION, g.getTurnState());
         g.handle_endTurn();
-        assertEquals(3, gb.getPlayerFaithPathPosition(0));
+      
     }
 
     @Test
