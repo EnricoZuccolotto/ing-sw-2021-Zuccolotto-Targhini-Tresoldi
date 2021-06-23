@@ -80,7 +80,7 @@ public class ActionController implements Serializable {
                     return false;
                 }
             } else if (!humanPlayer.getPlayerBoard().addWarehouseResource(resource, position)) {
-                humanPlayer.setPrivateCommunication("You can't insert this resource " + resource + " in this position " + position, CommunicationMessage.ILLEGAL_ACTION);
+                humanPlayer.setPrivateCommunication("You can't insert this resource " + resource.noColor() + " in this position " + position, CommunicationMessage.ILLEGAL_ACTION);
                 return false;
             }
             humanPlayer.removeItemFromTemporaryList(receivedResourceIndex);
@@ -314,8 +314,11 @@ public class ActionController implements Serializable {
                 break;
             case WAREHOUSE:
                 // Check if there is another leaderCard of the same type
+
                 if (!(player.getPlayerBoard() instanceof DecoratedWarehousePlayerBoard)) {
+
                     player.setPlayerBoard(new DecoratedWarehousePlayerBoard(player.getPlayerBoard()));
+
                 }
                 // Add the corresponding effect
                 for (int i = 0; i < 4; i++) {
@@ -327,7 +330,6 @@ public class ActionController implements Serializable {
             default:
 
         }
-
         player.sendUpdateToPlayer();
         return true;
     }

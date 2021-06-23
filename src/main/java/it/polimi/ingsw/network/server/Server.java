@@ -3,9 +3,10 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.GameState;
 import it.polimi.ingsw.controller.TurnState;
-import it.polimi.ingsw.network.messages.LoginMessage;
-import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.MessageType;
+import it.polimi.ingsw.model.enums.PlayerDisconnectionState;
+import it.polimi.ingsw.model.player.HumanPlayer;
+import it.polimi.ingsw.network.Client.SocketClient;
+import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.NetworkLayerView;
 
 import java.util.HashMap;
@@ -76,23 +77,37 @@ public class Server {
      */
     public void onDisconnect(SocketConnection connection){
         String nickname = fromConnectionToNickname(connection);
+        SocketClient.LOGGER.info("Nickname " + nickname + " has disconnected!");
 
         // Remove from the game
         synchronized (lock){
             clients.remove(nickname);
         }
-        gameController.removeView(nickname);
 
         GameState currentGameState = gameController.getGameState();
         TurnState currentTurnState = gameController.getRoundController().getTurnState();
-        if(currentGameState.equals(GameState.LOBBY) || currentTurnState.equals(TurnState.FIRST_TURN) || currentTurnState.equals(TurnState.SECOND_TURN)){
-            // In lobby or during setup turns, remove the client from the lobby and send updates.
+        if(currentGameState.equals(GameState.LOBBY)){
+            // We are in the lobby: remove the client from the lobby and send updates.
             gameController.getLobby().removeUser(nickname);
             gameController.sendLobby();
-        } else {
+        } else if(currentTurnState.equals(TurnState.FIRST_TURN)){
+            // We are during a setup turn, remove the client from the game.
+            // We handle removal through a "false" message: since message handling is thread-safe,
+            // we fakely send a first action message in order for the game logic to be consistent.
+            HumanPlayer disconnectedPlayer = gameController.getInstance().getPlayer(nickname);
+
+            disconnectedPlayer.setPlayerState(PlayerDisconnectionState.TERMINAL);
+            // TODO: handle inkwell
+            onMessage(new FirstActionMessage(nickname, 0, 1), connection);
+        } else if (currentTurnState.equals(TurnState.SECOND_TURN)){
+            HumanPlayer disconnectedPlayer = gameController.getInstance().getPlayer(nickname);
+            disconnectedPlayer.setPlayerState(PlayerDisconnectionState.TERMINAL);
+            // TODO: handle inkwell
+            onMessage(new SecondActionMessage(nickname, null), connection);
+        }
+        else {
             // Game started, remember the client in case it reconnects.
-            gameController.getInstance().getPlayer(nickname).setActive(false);
-            gameController.removeView(nickname);
+            gameController.getInstance().getPlayer(nickname).setPlayerState(PlayerDisconnectionState.INACTIVE);
 
             // If player was in turn go to a different turn
             if(gameController.getRoundController().getPlayerInTurn().getName().equals(nickname))

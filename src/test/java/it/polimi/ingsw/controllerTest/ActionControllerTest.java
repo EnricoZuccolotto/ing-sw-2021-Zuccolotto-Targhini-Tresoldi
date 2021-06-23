@@ -380,11 +380,11 @@ public class ActionControllerTest {
     @Test
     public void handle_marketTest_decorated1() {
         GameBoard gb = new GameBoard();
-        gb.addPlayer(new HumanPlayer("Harry", false));
-        gb.addPlayer(new HumanPlayer("Enry", true));
+        gb.addPlayer(new HumanPlayer("Harry", true));
+        gb.addPlayer(new HumanPlayer("Enry", false));
         gb.init(gb);
-        RoundController g = new RoundController(gb, null) {
-
+        RoundController g = new RoundController(gb, new GameController(false)) {
+            @Override
             public void handle_getMarket(MarketRequestMessage message) {
 
                 ArrayList<Resources> list = new ArrayList<>();
@@ -441,7 +441,7 @@ public class ActionControllerTest {
         assertTrue(gb.getPlayer("Harry").getPlayerBoard().checkResourcesWarehouse(new int[]{0, 1, 0, 0}));
         assertEquals(TurnState.WAREHOUSE_ACTION, g.getTurnState());
         g.handle_endTurn();
-        assertEquals(1, gb.getPlayerFaithPathPosition(1));
+        assertEquals(1, gb.getPlayerFaithPathPosition(0));
         // first turn second player
         gb.getPlayer("Enry").setPlayerBoard(new DecoratedChangePlayerBoard(gb.getPlayer("Enry").getPlayerBoard()));
         gb.getPlayer("Enry").getPlayerBoard().addSubstitute(Resources.COIN);
@@ -453,7 +453,7 @@ public class ActionControllerTest {
         assertTrue(gb.getPlayer("Enry").getPlayerBoard().checkResourcesWarehouse(new int[]{0, 0, 0, 0}));
         assertEquals(TurnState.WAREHOUSE_ACTION, g.getTurnState());
         g.handle_endTurn();
-        assertEquals(3, gb.getPlayerFaithPathPosition(0));
+      
     }
 
     @Test

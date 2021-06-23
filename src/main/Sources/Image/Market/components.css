@@ -59,9 +59,10 @@
 }
 
 .background {
-    -fx-background-color: white;
+    -fx-background-color: rgba(240, 240, 240, 0.9);
     -fx-border-color: black;
-    -fx-border-width: 3;
+    -fx-border-width: 2;
+    -fx-border-radius: 3;
 }
 
 

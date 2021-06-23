@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.cards.Decks;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.enums.Advantages;
+import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
@@ -674,6 +675,8 @@ public class Cli extends ViewObservable implements View {
                 winner = Integer.parseInt(communication) == 0;
                 showEndGame();
                 break;
+            case BOT_ACTION:
+                out.println(BotActions.valueOf(communication).toSentence());
         }
 
 

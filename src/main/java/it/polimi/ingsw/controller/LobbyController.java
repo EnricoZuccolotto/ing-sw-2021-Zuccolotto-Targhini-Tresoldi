@@ -61,6 +61,4 @@ public class LobbyController implements Serializable {
     public ArrayList<String> getPlayers() {
         return inLobbyPlayer;
     }
-
-
 }

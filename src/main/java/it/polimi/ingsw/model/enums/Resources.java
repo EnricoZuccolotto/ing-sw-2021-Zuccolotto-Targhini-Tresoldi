@@ -54,6 +54,23 @@ public enum Resources {
         return string.toString();
     }
 
+    public String noColor() {
+        switch (this) {
+            case COIN:
+                return "COIN";
+            case SHIELD:
+                return "SHIELD";
+            case SERVANT:
+                return "SERVANT";
+            case STONE:
+                return "STONE";
+            case WHITE:
+                return "WHITE";
+        }
+        return "WHATEVER";
+
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();

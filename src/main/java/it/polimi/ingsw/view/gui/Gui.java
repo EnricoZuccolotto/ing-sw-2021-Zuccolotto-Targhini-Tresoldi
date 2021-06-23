@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.cards.Decks;
+import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
@@ -19,6 +20,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.Image;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -26,13 +28,14 @@ import java.util.concurrent.TimeUnit;
 
 public class Gui extends ViewObservable implements View {
     private String nickname = "";
-    private int playerNumber;
+    private int playerNumber = 5;
     private static Gui instance = null;
     private BoardController boardController;
     private UsernameController usernameController;
     private CompressedPlayerBoard CompressedPlayerBoard;
     private ClientManager clientManager;
     private boolean local = false;
+    private boolean singlePlayer = false;
 
     public static Gui getInstance() {
         if (instance == null)
@@ -57,9 +60,11 @@ public class Gui extends ViewObservable implements View {
         if(gameController != null){
             clientManager = new ClientManager(this, gameController);
             local = true;
+            singlePlayer = true;
         } else {
             clientManager = new ClientManager(this);
             local = false;
+            singlePlayer = false;
         }
 
         return clientManager;
@@ -100,10 +105,13 @@ public class Gui extends ViewObservable implements View {
                 }
             } while (!exit);
 
+
+
             int finalNumberOfPlayers = numberOfPlayers;
             notifyObserver(obs -> obs.PlayersNumber(finalNumberOfPlayers));
             if (numberOfPlayers != 1)
                 Platform.runLater(() -> usernameController.changeToLobby());
+            else singlePlayer = true;
         });
     }
 
@@ -122,24 +130,58 @@ public class Gui extends ViewObservable implements View {
                 boardController.clearChoices());
         switch (state) {
             case FIRST_TURN: {
+                Platform.runLater(() -> boardController.notInTurn(true));
                 askFirstAction();
                 break;
             }
             case SECOND_TURN: {
+                Platform.runLater(() -> boardController.notInTurn(true));
                 askSecondAction();
                 break;
             }
-            case PRODUCTION_ACTIONS:
-            case NORMAL_ACTION:
-            case WAREHOUSE_ACTION:
-            case LAST_LEADER_ACTION:
-            case FIRST_LEADER_ACTION: {
-                Platform.runLater(() ->
-                        boardController.showBoard());
+            case FIRST_LEADER_ACTION:
+            case NORMAL_ACTION: {
+                Platform.runLater(() -> {
+                    boardController.notInTurn(false);
+                    boardController.showBoard(singlePlayer);
+                    boardController.activeDecks(true);
+                    boardController.activeMarket(true);
+                    boardController.activeProductions(true);
+                });
                 break;
             }
+            case PRODUCTION_ACTIONS:
+                Platform.runLater(() -> {
 
+                    boardController.activeEndTurn(true);
+                    boardController.activeDecks(false);
+                    boardController.activeMarket(false);
+                    boardController.activeProductions(true);
+                });
+                break;
+            case WAREHOUSE_ACTION:
+                Platform.runLater(() -> {
+
+                    boardController.activeEndTurn(true);
+                    boardController.activeDecks(false);
+                    boardController.activeMarket(false);
+                    boardController.activeProductions(false);
+                });
+                break;
+            case LAST_LEADER_ACTION: {
+                Platform.runLater(() -> {
+                    boardController.activeEndTurn(true);
+                    boardController.activeDecks(false);
+                    boardController.activeMarket(false);
+                    boardController.activeProductions(false);
+                });
+                break;
+            }
+            case NOT_IN_TURN:
+                Platform.runLater(() -> boardController.notInTurn(true));
+                break;
         }
+
     }
 
     @Override
@@ -152,9 +194,12 @@ public class Gui extends ViewObservable implements View {
     public void askSecondAction() {
 
         Platform.runLater(() ->
-                boardController.showBoard());
+                boardController.showBoard(singlePlayer));
         if (playerNumber == 0) {
-            // show comunication
+            Platform.runLater(() ->
+                    boardController.showCommunication("You are the first player.Waiting for other players to make their choices", true));
+            Platform.runLater(() -> boardController.notInTurn(true));
+            new Thread(this::communication).start();
         } else {
             Platform.runLater(() ->
             {
@@ -174,7 +219,14 @@ public class Gui extends ViewObservable implements View {
                     boardController.setChooseResourceText("CHOOSE THE 2ND RESOURCE");
                     boardController.askResource(true);
                 });
+                while (boardController.getResourcesToSend().size() != 2)
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(100);
+                    } catch (InterruptedException E) {
+                        System.exit(3);
+                    }
             }
+
             notifyObserver(obs -> obs.secondAction(boardController.getResourcesToSend()));
         }
     }
@@ -227,10 +279,16 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
+        Platform.runLater(() -> boardController.activeBotActions(singlePlayer));
         if (playerBoard.getName().equals(nickname)) {
             this.CompressedPlayerBoard = playerBoard;
             this.playerNumber = playerBoard.getPlayerNumber();
             Platform.runLater(() -> boardController.updatePlayerBoard(playerBoard));
+        } else {
+            int n = playerBoard.getPlayerNumber();
+            if (n < this.playerNumber) n++;
+            int finalN = n;
+            Platform.runLater(() -> boardController.updatePlayerBoard2(playerBoard, finalN));
         }
     }
 
@@ -314,17 +372,38 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showCommunication(String communication, CommunicationMessage type) {
+        switch (type) {
+            case STARTING_GAME:
+                Platform.runLater(() -> GuiSceneUtils.changeActivePanel(observers, "board.fxml"));
+                break;
+            case ILLEGAL_LOBBY_ACTION:
+                Platform.runLater(() -> {
+                    GuiSceneUtils.showAlertWindow(AlertType.WARNING, "Warning", "There aren't any active games in the server, try again or join an existing lobby!");
+                    askJoinOrSet();
+                });
+                break;
+            case BOT_ACTION:
+                Platform.runLater(() -> boardController.setBotActions(new Image(BotActions.valueOf(communication).getImagePath())));
+                break;
+            case ILLEGAL_ACTION:
+                Platform.runLater(() -> boardController.showCommunication(communication, true));
+                new Thread(this::communication).start();
+                break;
+            case END_GAME:
+                //
 
-        if (type.equals(CommunicationMessage.STARTING_GAME)) {
-            Platform.runLater(() -> GuiSceneUtils.changeActivePanel(observers, "board.fxml"));
         }
-        if(type.equals(CommunicationMessage.ILLEGAL_LOBBY_ACTION)){
-            Platform.runLater(() -> {
-                GuiSceneUtils.showAlertWindow(AlertType.WARNING, "Warning", "There aren't any active games in the server, try again or join an existing lobby!");
-                askJoinOrSet();
-            });
+    }
+
+    private void communication() {
+        try {
+            TimeUnit.MILLISECONDS.sleep(2000);
+        } catch (InterruptedException E) {
+            System.exit(3);
         }
-        System.out.println(communication);
+
+        Platform.runLater(() -> boardController.showCommunication("communication", false));
+
     }
 
     public void setBoardController(BoardController boardController) {

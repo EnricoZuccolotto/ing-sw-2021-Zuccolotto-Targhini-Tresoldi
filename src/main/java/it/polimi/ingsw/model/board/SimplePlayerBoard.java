@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.SpaceProd;
 import it.polimi.ingsw.model.player.Strongbox;
 import it.polimi.ingsw.model.player.Warehouse;
+import it.polimi.ingsw.view.cli.ColorsCLI;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.Arrays;
 
 public class SimplePlayerBoard implements PlayerBoard, Serializable {
     private final Strongbox strongbox;
-    private final boolean inkWell;
+    private boolean inkWell;
     private final ArrayList<LeaderCard> leaderCards;
     private final ArrayList<SpaceProd> productionSpaces;
     private final Warehouse warehouse;
@@ -65,6 +66,12 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     public boolean getInkwell() {
         return inkWell;
     }
+
+    @Override
+    public void setInkwell(boolean inkwell) {
+        this.inkWell = inkwell;
+    }
+
 
     @Override
     public LeaderCard getLeaderCard(int index ){
@@ -412,6 +419,13 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
                 stringBuilder.append(". ");
                 stringBuilder.append(card);
                 stringBuilder.append("\n");
+            } else if (mine && card.getUncovered()) {
+                stringBuilder.append(ColorsCLI.YELLOW_BOLD);
+                stringBuilder.append(leaderCards.indexOf(card));
+                stringBuilder.append(". ");
+                stringBuilder.append(card);
+                stringBuilder.append("\n");
+                stringBuilder.append(ColorsCLI.CLEAR);
             }
         }
         if (productionSpaces.size() != 0)

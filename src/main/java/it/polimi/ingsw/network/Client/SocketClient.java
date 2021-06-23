@@ -56,7 +56,6 @@ public class SocketClient extends Observable implements Client {
                 try {
                     message = (Message) objectInputStream.readObject();
                     LOGGER.info("Received: " + message.getMessageType() + " from " + message.getPlayerName());
-                    System.out.println(message.getMessageType());
                 } catch (IOException | ClassNotFoundException e) {
                     message = new ErrorMessage(null, "Connection lost with the server.\n" + e.getMessage());
                     disconnect();

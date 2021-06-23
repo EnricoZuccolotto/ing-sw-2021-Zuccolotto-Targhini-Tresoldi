@@ -6,6 +6,7 @@ import it.polimi.ingsw.exceptions.playerboard.WinnerException;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.cards.LeaderCard;
+import it.polimi.ingsw.model.enums.PlayerDisconnectionState;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.model.tools.CardParser;
@@ -24,6 +25,7 @@ public class RoundController implements Serializable {
     private HumanPlayer playerInTurn;
     private ArrayList<HumanPlayer> players;
     private ArrayList<Integer> productions;
+    private final Object productionLock;
 
     private int turnCount;
     private TurnState turnState;
@@ -40,9 +42,13 @@ public class RoundController implements Serializable {
         this.gameBoardInstance = gameBoardInstance;
         this.players = gameBoardInstance.getPlayers();
         this.turnState = TurnState.FIRST_TURN;
-        this.productions = new ArrayList<>(4);
+        this.productionLock = new Object();
+        synchronized (productionLock){
+            this.productions = new ArrayList<>(4);
+        }
         this.actionController = new ActionController();
         this.gameController = gameController;
+
 
         this.Winner = false;
         this.winnerPlayer = -2;
@@ -54,7 +60,9 @@ public class RoundController implements Serializable {
 
         this.playerInTurn = restoredController.playerInTurn;
         this.players = restoredController.players;
-        this.productions = restoredController.productions;
+        synchronized (productionLock){
+            this.productions = restoredController.productions;
+        }
 
         this.turnCount = restoredController.turnCount;
         this.turnState = restoredController.turnState;
@@ -76,6 +84,12 @@ public class RoundController implements Serializable {
     }
 
     public void handle_getMarket(MarketRequestMessage message) {
+        // FIXME: Handle these tests
+        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.STONE, 10);
+        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.SHIELD, 10);
+        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.SERVANT, 10);
+        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.COIN, 10);
+
         if (isYourTurn(message.getPlayerName())) {
             ArrayList<Resources> list;
             try {
@@ -189,9 +203,11 @@ public class RoundController implements Serializable {
                 if (actionController.getProduction(message.getColor(), message.getLevel(), gameBoardInstance, message.getIndex(), playerInTurn, message.getExchangeResources()))
                     nextState(Action.BUY_DEVELOPMENT_CARD);
             } catch (WinnerException e) {
-                winnerPlayer = players.indexOf(playerInTurn);
-                if (gameState == GameState.SINGLEPLAYER) {
-                    nextTurn();
+                if (winnerPlayer == -2) {
+                    winnerPlayer = players.indexOf(playerInTurn);
+                    if (gameState == GameState.SINGLEPLAYER) {
+                        nextTurn();
+                    }
                 }
             }
         }
@@ -205,6 +221,8 @@ public class RoundController implements Serializable {
             if (actionController.activateLeader(message.getIndex(), playerInTurn))
                 nextState(Action.ACTIVE_LEADER);
         }
+        clearTemporaryStorage();
+
     }
 
     public void handle_foldLeader(LeaderMessage message) {
@@ -217,11 +235,13 @@ public class RoundController implements Serializable {
                 nextState(Action.ACTIVE_LEADER);
             }
         }
+        clearTemporaryStorage();
+
     }
 
     public void handle_firstAction(FirstActionMessage message) {
         boolean flag = false;
-        synchronized (productions) {
+        synchronized (productionLock) {
             for (HumanPlayer player : players) {
                 if (player.getName().equals(message.getPlayerName())) {
                     flag = true;
@@ -245,7 +265,7 @@ public class RoundController implements Serializable {
 
     public void handle_secondAction(SecondActionMessage message){
         boolean flag=false;
-        synchronized (productions){
+        synchronized (productionLock){
             for (HumanPlayer player : players) {
                 if (player.getName().equals(message.getPlayerName())) {
                     flag = true;
@@ -254,7 +274,7 @@ public class RoundController implements Serializable {
                         flag = false;
 
                     else {
-                        if (actionController.secondAction(message.getResources(), n, player)) {
+                        if ((message.getResources() == null && player.getPlayerState().equals(PlayerDisconnectionState.TERMINAL)) || actionController.secondAction(message.getResources(), n, player)) {
                             if (n >= 2)
                                 actionController.addFaithPoint(gameBoardInstance, player, 1);
                             productions.add(n);
@@ -274,9 +294,11 @@ public class RoundController implements Serializable {
         try {
             actionController.addFaithPoint(gameBoardInstance, player, quantities);
         } catch (WinnerException e) {
-            winnerPlayer = players.indexOf(player);
-            if (gameState == GameState.SINGLEPLAYER) {
-                nextTurn();
+            if (winnerPlayer == -2) {
+                winnerPlayer = players.indexOf(player);
+                if (gameState == GameState.SINGLEPLAYER) {
+                    nextTurn();
+                }
             }
         }
 
@@ -297,7 +319,6 @@ public class RoundController implements Serializable {
         for (HumanPlayer player : players) {
             player.sendUpdateToPlayer();
             player.setState(TurnState.FIRST_TURN);
-            player.setPlayerNumber(players.indexOf(player));
         }
     }
 
@@ -312,15 +333,23 @@ public class RoundController implements Serializable {
                     handle_addFaithPoint(quantities, player);
         } else if (gameState.equals(GameState.SINGLEPLAYER))
             handle_addFaithPoint(quantities, null);
+
+    }
+
+    private void clearTemporaryStorage() {
+        if (winnerPlayer == -2) {
+            int quantities = playerInTurn.getTemporaryResourceStorage().size();
+            movePlayersExceptSelected(quantities);
+        }
+        playerInTurn.setTemporaryResourceStorage(new ArrayList<>());
     }
 
     public void nextTurn() {
         //clearing checks
+
         int playersNumber = players.size();
-        turnCount++;
         productions.clear();
-        int quantities = playerInTurn.getTemporaryResourceStorage().size();
-        movePlayersExceptSelected(quantities);
+        clearTemporaryStorage();
 
         checkWinner(playersNumber);
         if (gameState.equals(GameState.SINGLEPLAYER))
@@ -335,17 +364,18 @@ public class RoundController implements Serializable {
 
     public void goToNextTurn(){
         do {
-            // FIXME: handle TurnCount differently
+            turnCount++;
             playerInTurn = players.get((turnCount) % players.size());
-        } while(!playerInTurn.isActive());
+        } while(!playerInTurn.getPlayerState().equals(PlayerDisconnectionState.ACTIVE));
         firstState();
         playerInTurn.setState(turnState);
+        GameSaver.saveGame(gameController);
     }
 
     private void checkWinner(int playersNumber){
         switch (gameState){
             case MULTIPLAYER:{
-                if(players.get(turnCount%playersNumber).getPlayerBoard().getInkwell()&&winnerPlayer>=0) {
+                if(players.get(turnCount%playersNumber).getPlayerBoard().getInkwell() && winnerPlayer>=0) {
                     Winner = true;
                     turnState=TurnState.END;
                 }break;}
@@ -404,8 +434,7 @@ public class RoundController implements Serializable {
             turnState = TurnState.NORMAL_ACTION;
     }
 
-    public void nextState(Action action) {
-
+    public synchronized void nextState(Action action) {
         boolean flag = (!turnState.equals(TurnState.FIRST_TURN) && !turnState.equals(TurnState.SECOND_TURN));
         if (!action.equals(Action.SHIFT_WAREHOUSE))
             switch (turnState) {
@@ -415,6 +444,13 @@ public class RoundController implements Serializable {
                             turnState = TurnState.SECOND_TURN;
                             productions.clear();
                             productions.add(0);
+                            // For each disconnected player add corresponding actions
+                            for(HumanPlayer player : players){
+                                if(player.getPlayerState().equals(PlayerDisconnectionState.TERMINAL)){
+                                    productions.add(0);
+                                }
+                            }
+
                             setStateToAll(TurnState.SECOND_TURN);
                         } else if (gameState.equals(GameState.SINGLEPLAYER)) {
                             turnState = TurnState.FIRST_LEADER_ACTION;

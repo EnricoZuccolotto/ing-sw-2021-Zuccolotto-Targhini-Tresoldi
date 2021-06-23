@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<AnchorPane fx:id="anchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.controllers.ConnectController">
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="anchorPane" prefHeight="720.0" prefWidth="1280.0"
+            xmlns="http://javafx.com/javafx/16" fx:controller="it.polimi.ingsw.view.gui.controllers.ConnectController">
    <children>
-      <Label layoutX="153.0" layoutY="136.0" text="IP Address:" />
-      <Label layoutX="152.0" layoutY="171.0" text="Server port:" />
-      <Label fx:id="ipAddressErrorLabel" layoutX="377.0" layoutY="136.0" text="IP Address is invalid, try again!" visible="false" />
-      <Label fx:id="portErrorLabel" layoutX="377.0" layoutY="171.0" text="Server port is invalid, try again!" visible="false" />
-      <Label layoutX="246.0" layoutY="102.0" prefHeight="0.0" prefWidth="89.0" text="Insert server info" />
-      <TextField fx:id="ipAddressTextField" layoutX="216.0" layoutY="132.0" />
-      <TextField fx:id="portTextField" layoutX="216.0" layoutY="167.0" />
-      <Button fx:id="connectButton" defaultButton="true" layoutX="313.0" layoutY="229.0" mnemonicParsing="false" text="Connect..." />
-      <Button fx:id="backButton" cancelButton="true" layoutX="186.0" layoutY="229.0" mnemonicParsing="false" text="Back..." />
-      <ProgressBar fx:id="loadingProgressBar" layoutX="183.0" layoutY="262.0" prefWidth="200.0" visible="false" />
+      <Label layoutX="500.0" layoutY="305.0" text="IP Address:"/>
+      <Label layoutX="499.0" layoutY="340.0" text="Server port:"/>
+      <Label fx:id="ipAddressErrorLabel" layoutX="724.0" layoutY="305.0" text="IP Address is invalid, try again!"
+             visible="false"/>
+      <Label fx:id="portErrorLabel" layoutX="724.0" layoutY="340.0" text="Server port is invalid, try again!"
+             visible="false"/>
+      <Label layoutX="593.0" layoutY="271.0" prefHeight="0.0" prefWidth="89.0" text="Insert server info"/>
+      <TextField fx:id="ipAddressTextField" layoutX="563.0" layoutY="301.0"/>
+      <TextField fx:id="portTextField" layoutX="563.0" layoutY="336.0"/>
+      <Button fx:id="connectButton" defaultButton="true" layoutX="660.0" layoutY="398.0" mnemonicParsing="false"
+              text="Connect..."/>
+      <Button fx:id="backButton" cancelButton="true" layoutX="533.0" layoutY="398.0" mnemonicParsing="false"
+              text="Back..."/>
+      <ProgressBar fx:id="loadingProgressBar" layoutX="530.0" layoutY="431.0" prefWidth="200.0" visible="false"/>
    </children>
 </AnchorPane>

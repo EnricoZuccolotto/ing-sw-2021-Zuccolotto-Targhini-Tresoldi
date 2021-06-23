@@ -67,7 +67,7 @@ public class Card implements Serializable {
      * @return the image path of the card
      */
     public String getImagePath() {
-        return "Image/Cards/";
+        return "Image/Cards/Faith/" + this.ID + ".png";
     }
 
     @Override

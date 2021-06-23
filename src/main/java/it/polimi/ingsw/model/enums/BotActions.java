@@ -10,8 +10,8 @@ public enum BotActions {
     BlackCross2,
     BlackCross1Shuffle;
 
-    @Override
-    public String toString() {
+
+    public String toSentence() {
         switch (this) {
             case DiscardBlue:
                 return "Lorenzo the Magnifico discarded two " + Colors.BLUE + " development cards from the decks";
@@ -22,10 +22,28 @@ public enum BotActions {
             case DiscardYellow:
                 return "Lorenzo the Magnifico discarded two " + Colors.YELLOW + " development cards from the decks";
             case BlackCross2:
-                return "Lorenzo the Magnifico moves toward the Pope";
+                return "Lorenzo the Magnifico moves toward the Pope (+2)";
             case BlackCross1Shuffle:
-                return "Lorenzo the Magnifico moves toward the Pope and he shuffles his cards";
+                return "Lorenzo the Magnifico moves toward the Pope (+1) and he shuffles his cards ";
         }
         return "";
+    }
+
+    public String getImagePath() {
+        switch (this) {
+            case DiscardBlue:
+                return "Image/Singleplayer/cerchio1.png";
+            case DiscardGreen:
+                return "Image/Singleplayer/cerchio2.png";
+            case DiscardPurple:
+                return "Image/Singleplayer/cerchio3.png";
+            case DiscardYellow:
+                return "Image/Singleplayer/cerchio4.png";
+            case BlackCross2:
+                return "Image/Singleplayer/cerchio5.png";
+            case BlackCross1Shuffle:
+                return "Image/Singleplayer/cerchio7.png";
+        }
+        return "Image/Resources/white.png";
     }
 }
