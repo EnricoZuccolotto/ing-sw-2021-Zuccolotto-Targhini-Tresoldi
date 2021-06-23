@@ -192,6 +192,8 @@ public class GameController implements Serializable {
         return lobby;
     }
 
+    public Observer getViewFromMap(String nickname) {return viewMap.get(nickname); }
+
     public void setLocalView(View view){
         this.localView = view;
     }

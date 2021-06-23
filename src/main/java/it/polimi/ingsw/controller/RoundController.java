@@ -376,6 +376,7 @@ public class RoundController implements Serializable {
         switch (gameState){
             case MULTIPLAYER:{
                 if(players.get(turnCount%playersNumber).getPlayerBoard().getInkwell() && winnerPlayer>=0) {
+                    // TODO: Handle if disconnected player has the inkwell
                     Winner = true;
                     turnState=TurnState.END;
                 }break;}
