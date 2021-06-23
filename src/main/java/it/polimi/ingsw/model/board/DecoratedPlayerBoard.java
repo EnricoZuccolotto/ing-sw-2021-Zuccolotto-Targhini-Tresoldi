@@ -26,6 +26,9 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard, Serializable 
         return subBoard.getInkwell();
     }
     @Override
+    public void setInkwell(boolean inkwell) {subBoard.setInkwell(inkwell);}
+
+    @Override
     public void setVP(int VP){subBoard.setVP(VP);}
     @Override
     public boolean checkColors(int[] colors) {

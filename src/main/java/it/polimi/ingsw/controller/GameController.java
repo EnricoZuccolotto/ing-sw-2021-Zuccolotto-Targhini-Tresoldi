@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.exception.controller.LobbyException;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
+import it.polimi.ingsw.model.enums.PlayerDisconnectionState;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.ExecutableMessage;
@@ -58,18 +59,6 @@ public class GameController implements Serializable {
         viewMap.put(name, view);
     }
 
-    public void removeView(String name){
-        Observer viewToRemove = viewMap.get(name);
-
-        gameBoardInstance.removeObserver(viewToRemove);
-        gameBoardInstance.getMarket().removeObserver(viewToRemove);
-        gameBoardInstance.getFaithPath().removeObserver(viewToRemove);
-        gameBoardInstance.getDecks().addObserver(viewToRemove);
-        for(HumanPlayer player : gameBoardInstance.getPlayers())
-            player.removeObserver(viewToRemove);
-
-        viewMap.remove(name);
-    }
 
     public void StartGame() {
         roundController.init();
@@ -213,8 +202,13 @@ public class GameController implements Serializable {
 
         roundController.restoreRoundController(savedGameController.getRoundController(), gameBoardInstance, this);
 
-        // Add observers
+
         for(HumanPlayer player : gameBoardInstance.getPlayers()){
+            // The game starts if all players reconnected, we set them active if they previously disconnected.
+            if(!player.getPlayerState().equals(PlayerDisconnectionState.TERMINAL)){
+                player.setPlayerState(PlayerDisconnectionState.ACTIVE);
+            }
+            // Add observers
             Observer playerView = viewMap.get(player.getName());
             setViewObservers(playerView);
         }

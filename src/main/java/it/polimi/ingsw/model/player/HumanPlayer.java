@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Communication.Communication;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.board.SimplePlayerBoard;
+import it.polimi.ingsw.model.enums.PlayerDisconnectionState;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.network.messages.CommunicationMex;
@@ -25,7 +26,7 @@ public class HumanPlayer extends Player implements Serializable {
     private final Communication privateCommunication;
     private TurnState state;
     private int playerNumber;
-    private boolean active = true;
+    private PlayerDisconnectionState playerDisconnectionState = PlayerDisconnectionState.ACTIVE;
 
     /**
      * Build a new human player with the name and the inkwell specified.
@@ -126,11 +127,11 @@ public class HumanPlayer extends Player implements Serializable {
         notifyObserver(new HumanPlayerUpdateMessage(playerBoardToSend));
     }
 
-    public boolean isActive() {
-        return active;
+    public PlayerDisconnectionState getPlayerState() {
+        return playerDisconnectionState;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setPlayerState(PlayerDisconnectionState playerDisconnectionState) {
+        this.playerDisconnectionState = playerDisconnectionState;
     }
 }

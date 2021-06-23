@@ -4,6 +4,7 @@
 *.iws
 .attach_pid*
 
+
 # Mac
 .DS_Store
 
@@ -12,3 +13,4 @@ log/
 target/
 
 savedgame.mor
+*.log

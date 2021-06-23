@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 public class SimplePlayerBoard implements PlayerBoard, Serializable {
     private final Strongbox strongbox;
-    private final boolean inkWell;
+    private boolean inkWell;
     private final ArrayList<LeaderCard> leaderCards;
     private final ArrayList<SpaceProd> productionSpaces;
     private final Warehouse warehouse;
@@ -66,6 +66,12 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     public boolean getInkwell() {
         return inkWell;
     }
+
+    @Override
+    public void setInkwell(boolean inkwell) {
+        this.inkWell = inkwell;
+    }
+
 
     @Override
     public LeaderCard getLeaderCard(int index ){

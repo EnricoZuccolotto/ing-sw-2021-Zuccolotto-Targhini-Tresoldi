@@ -1,5 +1,6 @@
 package it.polimi.ingsw.observer;
 
+import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.Message;
 
 import java.util.ArrayList;
@@ -34,7 +35,12 @@ public class Observable {
      */
     protected void notifyObserver(Message message){
         for(Observer o : observerList){
-            o.update(message);
+            try {
+                o.update(message);
+            } catch (NullPointerException ex) {
+                // This could happen if a client disconnects during an update message. Do nothing, maybe log something
+                SocketClient.LOGGER.info("A client has disconnected");
+            }
         }
     }
 }

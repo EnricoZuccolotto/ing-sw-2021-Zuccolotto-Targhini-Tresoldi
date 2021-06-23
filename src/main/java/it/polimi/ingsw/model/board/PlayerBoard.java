@@ -20,6 +20,8 @@ public interface PlayerBoard {
      * @return the state of the inkwell in this player board.
      */
     boolean getInkwell();
+
+    void setInkwell(boolean inkwell);
     /**
      * Adds a leader card to the player board
      *

@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.Decks;
 import it.polimi.ingsw.model.enums.Colors;
+import it.polimi.ingsw.model.enums.PlayerDisconnectionState;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.BotPlayer;
 import it.polimi.ingsw.model.player.HumanPlayer;
@@ -217,6 +218,6 @@ public class GameBoard extends Observable implements Serializable {
     }
 
     public int getActivePlayersCount(){
-        return (int) players.stream().filter(HumanPlayer::isActive).count();
+        return (int) players.stream().filter(player -> player.getPlayerState().equals(PlayerDisconnectionState.ACTIVE)).count();
     }
 }
