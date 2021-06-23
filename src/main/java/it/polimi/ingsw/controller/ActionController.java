@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.playerboard.IllegalActionException;
+import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
 import it.polimi.ingsw.exceptions.playerboard.InsufficientLevelException;
 import it.polimi.ingsw.exceptions.playerboard.WinnerException;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
@@ -89,6 +90,46 @@ public class ActionController implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public boolean moveResourceToWarehouse(HumanPlayer humanPlayer, Resources resource, WarehousePositions position, WarehousePositions newPosition) {
+
+        int[] n = new int[4];
+        try {
+            n[resource.ordinal()] = 1;
+            //first it pays then it tries to move,if it fails it will restore the resource
+            if (newPosition.equals(WarehousePositions.SPECIAL_WAREHOUSE)) {
+                if (!humanPlayer.getPlayerBoard().addExtraResources(resource, 1)) {
+                    humanPlayer.setPrivateCommunication("You can't insert this resource in this position", CommunicationMessage.ILLEGAL_ACTION);
+                    return false;
+                }
+                payResourceWarehouses(humanPlayer, position, n);
+            } else {
+                payResourceWarehouses(humanPlayer, position, n);
+                if (!humanPlayer.getPlayerBoard().addWarehouseResource(resource, newPosition)) {
+                    humanPlayer.setPrivateCommunication("You can't insert this resource " + resource.noColor() + " in this position " + position, CommunicationMessage.ILLEGAL_ACTION);
+                    if (position.equals(WarehousePositions.SPECIAL_WAREHOUSE))
+                        humanPlayer.getPlayerBoard().addExtraResources(resource, 1);
+                    else
+                        humanPlayer.getPlayerBoard().addWarehouseResource(resource, position);
+                    return false;
+                }
+
+            }
+
+        } catch (IndexOutOfBoundsException | IllegalDecoratorException exception) {
+            humanPlayer.setPrivateCommunication(exception.getMessage(), CommunicationMessage.ILLEGAL_ACTION);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void payResourceWarehouses(HumanPlayer humanPlayer, WarehousePositions position, int[] n) {
+        if (position.equals(WarehousePositions.SPECIAL_WAREHOUSE))
+            humanPlayer.getPlayerBoard().payResourcesSpecialWarehouse(n);
+        else
+            humanPlayer.getPlayerBoard().payResourcesWarehouse(n);
     }
 
     /**

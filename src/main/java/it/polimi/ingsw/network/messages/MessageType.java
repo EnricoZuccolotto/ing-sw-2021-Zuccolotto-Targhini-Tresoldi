@@ -13,6 +13,7 @@ public enum MessageType {
     SET_RESOURCE,
     DISCARD_RESOURCE,
     SHIFT_WAREHOUSE,
+    MOVE_BETWEEN_WAREHOUSE,
     //Production action
     GET_PRODUCTIONCARD,
     USE_NORMAL_PRODUCTION,

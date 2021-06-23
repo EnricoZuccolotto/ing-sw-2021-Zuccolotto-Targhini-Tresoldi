@@ -71,9 +71,6 @@ public class RoundController implements Serializable {
         this.playerInTurn = gameBoardInstance.getPlayers().get(0);
     }
 
-    public void setPlayerInTurn(HumanPlayer player) {
-        this.playerInTurn = player;
-    }
 
     public void handle_getMarket(MarketRequestMessage message) {
         playerInTurn.getPlayerBoard().addStrongboxResource(Resources.STONE, 10);
@@ -114,12 +111,21 @@ public class RoundController implements Serializable {
             nextState(Action.GET_RESOURCES_FROM_MARKET);
         }
     }
+
     public void handle_shiftWarehouse(ShiftWarehouseMessage message) {
         if (isYourTurn(message.getPlayerName())) {
             actionController.shiftWarehouseRows(playerInTurn, message.getStartingPos(), message.getNewRowPos());
         }
-        nextState(Action.SHIFT_WAREHOUSE);
+        nextState(Action.SORTING_WAREHOUSES);
     }
+
+    public void handle_moveBetweenWarehouse(moveBetweenWarehouseMessage message) {
+        if (isYourTurn(message.getPlayerName())) {
+            actionController.moveResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getNewPosition());
+        }
+        nextState(Action.SORTING_WAREHOUSES);
+    }
+
     public void handle_sortingWarehouse(SetResourceMessage message) {
         if (isYourTurn(message.getPlayerName())) {
             if (message.getResource().ordinal() >= 4) {
@@ -128,7 +134,7 @@ public class RoundController implements Serializable {
             }
             try {
                 if (actionController.addResourceToWarehouse(playerInTurn, message.getResource(), message.getPosition(), message.getReceivedResourceIndex()))
-                    nextState(Action.SORTING_WAREHOUSE);
+                    nextState(Action.SORTING_TEMPORARY_STORAGE);
             } catch (IllegalDecoratorException e) {
                 playerInTurn.setPrivateCommunication("You don't have a special warehouse", CommunicationMessage.ILLEGAL_ACTION);
 
@@ -139,7 +145,7 @@ public class RoundController implements Serializable {
         if (isYourTurn(message.getPlayerName())) {
             if (actionController.discardResource(playerInTurn, message.getReceivedResourceIndex())) {
                 movePlayersExceptSelected(1);
-                nextState(Action.SORTING_WAREHOUSE);
+                nextState(Action.SORTING_TEMPORARY_STORAGE);
             }
         }
 
@@ -429,7 +435,7 @@ public class RoundController implements Serializable {
     public void nextState(Action action) {
 
         boolean flag = (!turnState.equals(TurnState.FIRST_TURN) && !turnState.equals(TurnState.SECOND_TURN));
-        if (!action.equals(Action.SHIFT_WAREHOUSE))
+        if (!action.equals(Action.SORTING_WAREHOUSES))
             switch (turnState) {
                 case FIRST_TURN: {
                     if (players.size() == productions.size()) {
@@ -481,7 +487,7 @@ public class RoundController implements Serializable {
                     }
                 }
                 case WAREHOUSE_ACTION: {
-                    if (action.equals(Action.SORTING_WAREHOUSE)) {
+                    if (action.equals(Action.SORTING_TEMPORARY_STORAGE)) {
                         if (playerInTurn.getTemporaryResourceStorage().size() == 0) {
                             turnState = TurnState.LAST_LEADER_ACTION;
                             break;

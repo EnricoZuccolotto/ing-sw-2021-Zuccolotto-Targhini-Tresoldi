@@ -150,13 +150,18 @@ public class ClientManager implements ViewObserver, Observer {
     }
 
     @Override
-    public void getProduction(int color, int level, ArrayList<Integer> pos, int index, int[] a){
-        int[][] matr= new int[3][4];
-        int count=0, count2=0;
+    public void moveBetweenWarehouses(Resources resources, int position, int newPosition) {
+        client.sendMessage(new moveBetweenWarehouseMessage(this.nickname, resources, WarehousePositions.transform(position), WarehousePositions.transform(newPosition)));
+    }
+
+    @Override
+    public void getProduction(int color, int level, ArrayList<Integer> pos, int index, int[] a) {
+        int[][] matr = new int[3][4];
+        int count = 0, count2 = 0;
         ExchangeResources ex;
-        for (int i=0; i<4; i++){
-            while (count!=a[i]){
-                matr[pos.get(count2)][i]+=1;
+        for (int i = 0; i < 4; i++) {
+            while (count != a[i]) {
+                matr[pos.get(count2)][i] += 1;
                 count2++;
                 count++;
             }

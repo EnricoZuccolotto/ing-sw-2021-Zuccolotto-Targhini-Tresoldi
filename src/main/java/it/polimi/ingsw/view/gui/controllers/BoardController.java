@@ -40,7 +40,7 @@ public class BoardController extends ViewObservable implements SceneController {
             "-fx-border-width: 3px;";
 
 
-    private boolean view = true, flag = true, notInTurn = true, panelViewBoardsActive = false, onlyView = false;
+    private boolean view = true, flag = true, notInTurn = true, panelViewBoardsActive = false;
 
     private Node activePanel;
 
@@ -171,7 +171,7 @@ public class BoardController extends ViewObservable implements SceneController {
 
 
         //choose resource buttons
-        DragController dragController = new DragController(chooseResource, true);
+        new DragController(chooseResource, true);
         resourcesToSend = new ArrayList<>();
         coinButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onResourceSelection(Resources.COIN));
         shieldButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onResourceSelection(Resources.SHIELD));
@@ -211,9 +211,9 @@ public class BoardController extends ViewObservable implements SceneController {
         //end turn
         endTurn.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onEndTurn());
         //communication
-        DragController dragController2 = new DragController(communication, true);
+        new DragController(communication, true);
 
-        //view playerboards
+        //view player Boards
         viewBoards.getChildren().get(0).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
             if (!panelViewBoardsActive) {
                 viewBoards.setTranslateX(viewBoards.getTranslateX() - 170);
@@ -684,7 +684,6 @@ public class BoardController extends ViewObservable implements SceneController {
     public void askResource(boolean visible) {
         chooseResource.setVisible(visible);
         chooseResource.setDisable(!visible);
-        onlyView = visible;
         activePanel.setDisable(visible);
     }
 
@@ -736,7 +735,7 @@ public class BoardController extends ViewObservable implements SceneController {
         activePanel.setDisable(true);
         activePanel = node;
         node.setVisible(true);
-        node.setDisable(false && !onlyView);
+        node.setDisable(false);
     }
 
     public void activeBotActions(boolean active) {
