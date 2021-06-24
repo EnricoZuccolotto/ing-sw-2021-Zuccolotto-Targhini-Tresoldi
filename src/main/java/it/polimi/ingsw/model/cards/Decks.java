@@ -7,12 +7,25 @@ import it.polimi.ingsw.observer.Observable;
 
 import java.io.Serializable;
 
+/**
+ * This class represents the collection of Development Card decks in a Game Board.
+ */
 public class Decks extends Observable implements Serializable {
     private final Deck [][] decks;
+
+    /**
+     * Default constructor. Populates the decks via the JSON file.
+     */
     public  Decks(){
         this.decks = CardParser.parseDevCards();
     }
 
+    /**
+     * Returns a deck given its position.
+     * @param color Color of the deck.
+     * @param level Level of the deck.
+     * @return The corresponding deck.
+     */
     public Deck getDeck(Colors color, int level) {
         level--;
         return decks[color.ordinal()][level];

@@ -21,7 +21,6 @@ public interface PlayerBoard {
      */
     boolean getInkwell();
 
-    void setInkwell(boolean inkwell);
     /**
      * Adds a leader card to the player board
      *
@@ -205,6 +204,26 @@ public interface PlayerBoard {
      */
     void setVP(int VP);
 
+    /**
+     * Returns the quantity of a resource in the strongbox.
+     * @param resources The resource you want to get its quantity
+     * @return The quantity of that resource.
+     */
+    int getNumberResourceStrongbox(Resources resources);
+
+    /**
+     * Gets the resource type of a particular row in the Warehouse
+     * @param position The row number
+     * @return The type of resource in that row.
+     */
+    Resources getResourceWarehouse(int position);
+
+    /**
+     * Get the victory point for that user.
+     * @return Obtained victory points.
+     */
+    int getVP();
+
     //Decorated special warehouse method
 
     /**
@@ -282,6 +301,11 @@ public interface PlayerBoard {
      */
     ArrayList<Boolean> getSubstitutes();
 
+    /**
+     * Gets all the indices of the resources that can be substituted.
+     * Similar to {@code getSubstitutes()} but the list size is the same length as the number of active substitutions.
+     * @return An array with the indices of the substitutable resources.
+     */
     ArrayList<Resources> getSubstitutableResources();
     /**
      * Gets if the resources is substitutable
@@ -322,12 +346,6 @@ public interface PlayerBoard {
      * @return The production space
      */
     ArrayList<SpaceProd> getProductionSpaces();
-
-    int getNumberResourceStrongbox(Resources resources);
-
-    Resources getResourceWarehouse(int position);
-
-    int getVP();
 
     String toString(boolean mine);
 }

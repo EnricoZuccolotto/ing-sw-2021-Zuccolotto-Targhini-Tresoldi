@@ -6,9 +6,16 @@ import it.polimi.ingsw.model.enums.Resources;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * This class represents the Resource Discount leader card decoration for a Player Board.
+ */
 public class DecoratedCostPlayerBoard extends DecoratedPlayerBoard implements Serializable {
     private final ArrayList<Integer> discounts;
 
+    /**
+     * Default constructor
+     * @param subBoard The lower board in the chain of decorators.
+     */
     public DecoratedCostPlayerBoard(PlayerBoard subBoard){
         super(subBoard);
         discounts = new ArrayList<>(4);

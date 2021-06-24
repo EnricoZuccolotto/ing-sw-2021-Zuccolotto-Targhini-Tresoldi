@@ -17,6 +17,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * This class represents a non-decorated Player Board.
+ */
 public class SimplePlayerBoard implements PlayerBoard, Serializable {
     private final Strongbox strongbox;
     private boolean inkWell;
@@ -66,12 +69,6 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     public boolean getInkwell() {
         return inkWell;
     }
-
-    @Override
-    public void setInkwell(boolean inkwell) {
-        this.inkWell = inkwell;
-    }
-
 
     @Override
     public LeaderCard getLeaderCard(int index ){

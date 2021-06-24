@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.GameState;
 import it.polimi.ingsw.controller.TurnState;
+import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.enums.PlayerDisconnectionState;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.network.Client.SocketClient;
@@ -54,11 +55,12 @@ public class Server {
                 if(reconnectingPlayer != null && reconnectingPlayer.getPlayerState().equals(PlayerDisconnectionState.INACTIVE)){
                     NetworkLayerView networkView = (NetworkLayerView) gameController.getViewFromMap(nickname);
                     networkView.setConnection(connection);
+                    reconnectingPlayer.setPlayerState(PlayerDisconnectionState.ACTIVE);
+                    reconnectingPlayer.setPrivateCommunication("The game is restarting", CommunicationMessage.STARTING_GAME);
                     gameController.getInstance().sendGameUpdateToAllPlayers();
                     reconnectingPlayer.sendUpdateToPlayer();
-                    reconnectingPlayer.setPlayerState(PlayerDisconnectionState.ACTIVE);
                     if(gameController.getInstance().getActivePlayersCount() == 1){
-                        // TODO: send restart message (state message)
+                        gameController.getRoundController().handle_endTurn();
                     }
 
                 } else {

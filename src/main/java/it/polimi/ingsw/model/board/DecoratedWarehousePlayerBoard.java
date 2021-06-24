@@ -7,11 +7,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * This class represents the Extra Warehouse Space leader card decoration for a Player Board.
+ */
 public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard implements Serializable {
     private final ArrayList<Integer> quantities;
     // This ArrayList contains the maximum number of possible resources
     private final ArrayList<Integer> enableSpecialWarehouse;
 
+    /**
+     * Default constructor
+     * @param subBoard The lower board in the chain of decorators.
+     */
     public DecoratedWarehousePlayerBoard(PlayerBoard subBoard){
         super(subBoard);
         quantities = new ArrayList<>(4);

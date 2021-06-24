@@ -29,6 +29,9 @@ public class SocketClient extends Observable implements Client {
     private final ExecutorService readExecutionQueue;
     private final ScheduledExecutorService heartBeat;
 
+    private final Object inLock;
+    private final Object outLock;
+
     /**
      * Default constructor
      * @param address IP address of the server. The method assumes the string is already correctly formatted.
@@ -36,12 +39,19 @@ public class SocketClient extends Observable implements Client {
      * @throws IOException Thrown if I/O streams cannot be opened.
      */
     public SocketClient(String address, int port) throws IOException {
+        this.inLock = new Object();
+        this.outLock = new Object();
         this.socket = new Socket();
         this.socket.connect(new InetSocketAddress(address, port), TIMEOUT);
-        this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-        this.objectInputStream = new ObjectInputStream(socket.getInputStream());
+        synchronized (outLock){
+            this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+        }
+        synchronized (inLock){
+            this.objectInputStream = new ObjectInputStream(socket.getInputStream());
+        }
         this.readExecutionQueue = Executors.newSingleThreadExecutor();
         this.heartBeat = Executors.newSingleThreadScheduledExecutor();
+
     }
 
 
@@ -54,7 +64,9 @@ public class SocketClient extends Observable implements Client {
             while (!readExecutionQueue.isShutdown()) {
                 Message message;
                 try {
-                    message = (Message) objectInputStream.readObject();
+                    synchronized (inLock){
+                        message = (Message) objectInputStream.readObject();
+                    }
                     LOGGER.info("Received: " + message.getMessageType() + " from " + message.getPlayerName());
                 } catch (IOException | ClassNotFoundException e) {
                     message = new ErrorMessage(null, "Connection lost with the server.\n" + e.getMessage());
@@ -73,8 +85,10 @@ public class SocketClient extends Observable implements Client {
     @Override
     public void sendMessage(Message message) {
         try {
-            objectOutputStream.writeObject(message);
-            objectOutputStream.reset();
+            synchronized (outLock){
+                objectOutputStream.writeObject(message);
+                objectOutputStream.reset();
+            }
         } catch (IOException e) {
             disconnect();
             notifyObserver(new ErrorMessage("", "Message not sent"));
@@ -91,6 +105,7 @@ public class SocketClient extends Observable implements Client {
                 readExecutionQueue.shutdownNow();
                 enablePinger(false);
                 socket.close();
+                System.exit(0);
             }
         } catch (IOException e) {
             notifyObserver(new ErrorMessage("", "Cannot disconnect"));

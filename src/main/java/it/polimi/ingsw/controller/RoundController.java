@@ -25,7 +25,7 @@ public class RoundController implements Serializable {
     private HumanPlayer playerInTurn;
     private ArrayList<HumanPlayer> players;
     private ArrayList<Integer> productions;
-    private final Object productionLock;
+    private transient final Object productionLock;
 
     private int turnCount;
     private TurnState turnState;
@@ -346,12 +346,10 @@ public class RoundController implements Serializable {
 
     public void nextTurn() {
         //clearing checks
-
-        int playersNumber = players.size();
         productions.clear();
         clearTemporaryStorage();
 
-        checkWinner(playersNumber);
+
         if (gameState.equals(GameState.SINGLEPLAYER))
             handle_Bot();
         else
@@ -365,6 +363,7 @@ public class RoundController implements Serializable {
     public void goToNextTurn(){
         do {
             turnCount++;
+            checkWinner(players.size());
             playerInTurn = players.get((turnCount) % players.size());
         } while(!playerInTurn.getPlayerState().equals(PlayerDisconnectionState.ACTIVE));
         firstState();
@@ -375,8 +374,7 @@ public class RoundController implements Serializable {
     private void checkWinner(int playersNumber){
         switch (gameState){
             case MULTIPLAYER:{
-                if(players.get(turnCount%playersNumber).getPlayerBoard().getInkwell() && winnerPlayer>=0) {
-                    // TODO: Handle if disconnected player has the inkwell
+                if(players.get(turnCount % playersNumber).getPlayerBoard().getInkwell() && winnerPlayer>=0) {
                     Winner = true;
                     turnState=TurnState.END;
                 }break;}
