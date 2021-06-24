@@ -85,13 +85,15 @@ public class RoundControllerTest {
 
     @Test
     public void checkWinnerMultiplayer() {
-        GameBoard gb = new GameBoard();
+        GameController gc = new GameController(false);
+        GameBoard gb = gc.getInstance();
+        RoundController g = new RoundController(gb, gc);
         gb.addPlayer(new HumanPlayer("Harry", false));
         gb.addPlayer(new HumanPlayer("Enry", true));
         gb.addPlayer(new HumanPlayer("Ron", false));
         gb.addPlayer(new HumanPlayer("Hermione", false));
         gb.init(gb);
-        RoundController g = new RoundController(gb, new GameController(false));
+
         g.init();
         assertEquals(g.getGameState(), GameState.MULTIPLAYER);
         //first Turn
@@ -127,10 +129,11 @@ public class RoundControllerTest {
 
     @Test
     public void checkWinnerSinglePlayer(){
-        GameBoard gb=new GameBoard();
+        GameController gc = new GameController(false);
+        GameBoard gb = gc.getInstance();
         gb.addPlayer(new HumanPlayer("Harry",true));
         gb.init(gb);
-        RoundController g = new RoundController(gb, new GameController(false));
+        RoundController g = new RoundController(gb, gc);
         g.init();
         assertEquals(g.getGameState(), GameState.SINGLEPLAYER);
         //first Turn

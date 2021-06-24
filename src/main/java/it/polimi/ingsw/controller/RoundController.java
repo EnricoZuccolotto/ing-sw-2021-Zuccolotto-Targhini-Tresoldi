@@ -355,7 +355,6 @@ public class RoundController implements Serializable {
         productions.clear();
         clearTemporaryStorage();
 
-
         if (gameState.equals(GameState.SINGLEPLAYER))
             handle_Bot();
         else
