@@ -126,6 +126,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askAction(TurnState state) {
+        System.out.println(state);
         Platform.runLater(() ->
                 boardController.clearChoices());
         switch (state) {
@@ -147,33 +148,38 @@ public class Gui extends ViewObservable implements View {
                     boardController.activeDecks(true);
                     boardController.activeMarket(true);
                     boardController.activeProductions(true);
+                    boardController.notActiveWarehouse(false);
                 });
                 break;
             }
             case PRODUCTION_ACTIONS:
                 Platform.runLater(() -> {
-
+                    boardController.activeMovingWarehouse(true);
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
                     boardController.activeProductions(true);
+                    boardController.notActiveWarehouse(false);
                 });
                 break;
             case WAREHOUSE_ACTION:
                 Platform.runLater(() -> {
-
+                    boardController.activeMovingWarehouse(true);
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
                     boardController.activeProductions(false);
+                    boardController.notActiveWarehouse(false);
                 });
                 break;
             case LAST_LEADER_ACTION: {
                 Platform.runLater(() -> {
+                    boardController.activeMovingWarehouse(true);
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
                     boardController.activeProductions(false);
+                    boardController.notActiveWarehouse(false);
                 });
                 break;
             }

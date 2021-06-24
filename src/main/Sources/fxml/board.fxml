@@ -562,45 +562,63 @@
                 <HBox fx:id="firstRow" disable="true" layoutX="96.0" layoutY="290.0" prefHeight="55.0" prefWidth="60.0"
                       spacing="5.0">
                     <children>
-                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true">
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../Image/Resources/coin.png"/>
                             </image>
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
                         </ImageView>
                     </children>
                 </HBox>
                 <HBox fx:id="secondRow" disable="true" layoutX="73.0" layoutY="349.0" prefHeight="55.0"
                       prefWidth="120.0" spacing="5.0">
                     <children>
-                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true">
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../Image/Resources/coin.png"/>
                             </image>
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
                         </ImageView>
-                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true">
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../Image/Resources/coin.png"/>
                             </image>
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
                         </ImageView>
                     </children>
                 </HBox>
                 <HBox fx:id="thirdRow" disable="true" layoutX="37.0" layoutY="412.0" prefHeight="55.0" prefWidth="160.0"
                       spacing="5.0">
                     <children>
-                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true">
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../Image/Resources/coin.png"/>
                             </image>
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
                         </ImageView>
-                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true">
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../Image/Resources/coin.png"/>
                             </image>
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
                         </ImageView>
-                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true">
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../Image/Resources/coin.png"/>
                             </image>
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
                         </ImageView>
                     </children>
                 </HBox>
@@ -618,15 +636,32 @@
                 <HBox fx:id="specialWarehouse1" disable="true" layoutX="1069.0" layoutY="590.0" prefHeight="55.0"
                       prefWidth="120.0" spacing="5.0" styleClass="first" stylesheets="@../Image/Market/components.css">
                     <children>
-                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true"/>
-                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true"/>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
+                        </ImageView>
+
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
+                        </ImageView>
                     </children>
                 </HBox>
                 <HBox fx:id="specialWarehouse2" disable="true" layoutX="1068.0" layoutY="277.0" prefHeight="55.0"
                       prefWidth="120.0" spacing="5.0" styleClass="first">
                     <children>
-                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true"/>
-                        <ImageView fitHeight="60.0" fitWidth="55.0" preserveRatio="true"/>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
+                        </ImageView>
+                        <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
+                        </ImageView>
                     </children>
                 </HBox>
                 <ImageView fx:id="faith1" fitHeight="70.0" fitWidth="70.0" layoutX="245.0" layoutY="93.0"

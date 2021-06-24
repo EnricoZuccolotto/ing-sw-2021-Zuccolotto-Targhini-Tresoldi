@@ -40,8 +40,12 @@ public class BoardController extends ViewObservable implements SceneController {
             "-fx-border-width: 3px;";
 
 
-    private boolean view = true, flag = true, notInTurn = true, panelViewBoardsActive = false;
-
+    private final boolean leaderCard = false;//if true we are holding a leaderCard,used in the drag interaction// used to alternate the change board button
+    private boolean view = true; //if flag is false, we did the first action
+    private boolean flag = true; //if true this is not our turn
+    private boolean notInTurn = true;//if false we cannot see other player's boards
+    private boolean panelViewBoardsActive = false;//if true we are moving between warehouse, if false we are moving between temporary storage and warehouses,used in drag interaction
+    private boolean movingWarehouse = true;
     private Node activePanel;
 
     private CompressedPlayerBoard activePlayerBoard;
@@ -191,7 +195,8 @@ public class BoardController extends ViewObservable implements SceneController {
                 /* put the image on dragBoard */
                 ClipboardContent content = new ClipboardContent();
                 choice.add(0, finalI1);
-                activeWarehouse(false);
+                movingWarehouse = false;
+                notActiveWarehouse(false);
                 content.putImage(imageView.getImage());
                 db.setContent(content);
                 event.consume();
@@ -200,6 +205,7 @@ public class BoardController extends ViewObservable implements SceneController {
 
         //warehouse
         initializeWarehouse();
+
         shiftRow12.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickShiftRows(1, 2));
         shiftRow13.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickShiftRows(1, 3));
         shiftRow23.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickShiftRows(2, 3));
@@ -476,18 +482,50 @@ public class BoardController extends ViewObservable implements SceneController {
 
     //warehouse
     private void onDropOnWarehouse(int index, int row) {
-
-        new Thread(() -> notifyObserver(obs -> obs.sortingMarket(activePlayerBoard.getTemporaryResourceStorage().get(index), row, index))).start();
-        activeWarehouse(true);
+        if (!movingWarehouse) {
+            new Thread(() -> notifyObserver(obs -> obs.sortingMarket(activePlayerBoard.getTemporaryResourceStorage().get(index), row, index))).start();
+        } else {
+            new Thread(() -> notifyObserver(obs -> obs.moveBetweenWarehouses(resourcesToSend.get(0), index, row))).start();
+        }
         choice.clear();
     }
 
-    public void activeWarehouse(boolean active) {
+    public void activeMovingWarehouse(boolean active) {
+        int i;
+        ImageView[] warehouses = createImageViewsOfWarehouses();
+
+        for (i = 0; i < 6; i++)
+            if (!activePlayerBoard.getPlayerBoard().getResourceWarehouse(i).equals(Resources.WHITE))
+                warehouses[i].setDisable(!active);
+            else warehouses[i].setDisable(true);
+
+        //special warehouse
+        for (i = 0; i < 2; i++)
+            if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.WAREHOUSE)) {
+                int res = 0;
+                for (int j = 0; j < 4; j++)
+                    if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getEffect().get(j) != 0)
+                        res = j;
+                for (int j = 0; j < 2; j++) {
+                    if (j < activePlayerBoard.getPlayerBoard().getExtraResources().get(res)) {
+                        warehouses[6 + i * 2 + j].setDisable(!active);
+                    } else
+                        warehouses[6 + i * 2 + j].setDisable(true);
+                }
+            }
+
+
+    }
+
+    public void notActiveWarehouse(boolean active) {
         firstRow.setDisable(active);
         secondRow.setDisable(active);
         thirdRow.setDisable(active);
-        bin.setDisable(active);
-        bin.setVisible(!active);
+        if (!movingWarehouse) {
+            notActiveBin(active);
+        } else {
+            notActiveBin(true);
+        }
         HBox[] spec = new HBox[]{specialWarehouse1, specialWarehouse2};
         for (int i = 0; i < 2; i++)
             try {
@@ -498,6 +536,11 @@ public class BoardController extends ViewObservable implements SceneController {
             }
     }
 
+    private void notActiveBin(boolean active) {
+        bin.setDisable(active);
+        bin.setVisible(!active);
+    }
+
     private void onClickShiftRows(int row1, int row2) {
         new Thread(() -> notifyObserver(obs -> obs.switchRows(row1, row2))).start();
 
@@ -505,6 +548,7 @@ public class BoardController extends ViewObservable implements SceneController {
 
     private void initializeWarehouse() {
         Node[] warehouseRows = new Node[]{firstRow, secondRow, thirdRow, specialWarehouse1, specialWarehouse2, bin};
+
         for (int i = 0; i < 6; i++) {
             int finalI = i;
             warehouseRows[i].setOnDragEntered(event -> {
@@ -551,8 +595,60 @@ public class BoardController extends ViewObservable implements SceneController {
                 event.setDropCompleted(success);
                 event.consume();
             });
-
         }
+
+        ImageView[] images = createImageViewsOfWarehouses();
+
+        //dragController = new DragController(imageView, true, true);
+
+
+        for (int i = 0; i < 10; i++) {
+            int finalI = i;
+            int n = 0;
+            int k = 0;
+            if (i <= 0) n = 1;
+            else if (i <= 2) {
+                k = 1;
+                n = 2;
+            } else if (i <= 5) {
+                n = 3;
+                k = 3;
+            } else if (i >= 8)
+                k = 1;
+            int finalN = n;
+            int finalK = k;
+            images[i].setOnDragDetected(event -> {
+                /* drag was detected, start drag-and-drop gesture*/
+                /* allow any transfer mode */
+                Dragboard db = images[finalI].startDragAndDrop(TransferMode.ANY);
+                /* put the image on dragBoard */
+                ClipboardContent content = new ClipboardContent();
+                choice.add(0, finalN);
+                if (finalI < 6)
+                    resourcesToSend.add(0, activePlayerBoard.getPlayerBoard().getResourceWarehouse(finalK));
+                else {
+                    for (int j = 0; j < 4; j++)
+                        if (activePlayerBoard.getPlayerBoard().getLeaderCard(finalK).getEffect().get(j) != 0) {
+                            resourcesToSend.add(0, Resources.transform(j));
+                            break;
+                        }
+                }
+                movingWarehouse = true;
+                notActiveWarehouse(false);
+                content.putImage(images[finalI].getImage());
+                db.setContent(content);
+                event.consume();
+            });
+        }
+    }
+
+    private ImageView[] createImageViewsOfWarehouses() {
+        ImageView[] images = new ImageView[]{(ImageView) firstRow.getChildren().get(0),
+                (ImageView) secondRow.getChildren().get(0), (ImageView) secondRow.getChildren().get(1),
+                (ImageView) thirdRow.getChildren().get(0), (ImageView) thirdRow.getChildren().get(1), (ImageView) thirdRow.getChildren().get(2),
+                (ImageView) specialWarehouse1.getChildren().get(0), (ImageView) specialWarehouse1.getChildren().get(1),
+                (ImageView) specialWarehouse2.getChildren().get(0), (ImageView) specialWarehouse2.getChildren().get(1)};
+        return images;
     }
 
     //on temporary resource white selection
@@ -728,6 +824,7 @@ public class BoardController extends ViewObservable implements SceneController {
     public void clearChoices() {
         resourcesToSend.clear();
         choice.clear();
+        movingWarehouse = true;
     }
 
     public void changeActivePane(Node node) {
@@ -778,6 +875,7 @@ public class BoardController extends ViewObservable implements SceneController {
 
     public void notInTurn(boolean active) {
         notInTurn = active;
+        movingWarehouse = true;
         decks.setDisable(active);
         leaderCard1.setDisable(active);
         leaderCard2.setDisable(active);
@@ -785,7 +883,8 @@ public class BoardController extends ViewObservable implements SceneController {
         active2.setDisable(active);
         activeMarket(!active);
         activeProductions(!active);
-
+        activeMovingWarehouse(!active);
+        notActiveWarehouse(active);
         //sort warehouse
         shiftRow12.setDisable(active);
         shiftRow23.setDisable(active);
