@@ -40,8 +40,7 @@ public class BoardController extends ViewObservable implements SceneController {
             "-fx-border-width: 3px;";
 
 
-    private final boolean leaderCard = false;//if true we are holding a leaderCard,used in the drag interaction// used to alternate the change board button
-    private boolean view = true; //if flag is false, we did the first action
+   private boolean view = true; //if flag is false, we did the first action
     private boolean flag = true; //if true this is not our turn
     private boolean notInTurn = true;//if false we cannot see other player's boards
     private boolean panelViewBoardsActive = false;//if true we are moving between warehouse, if false we are moving between temporary storage and warehouses,used in drag interaction
@@ -64,11 +63,12 @@ public class BoardController extends ViewObservable implements SceneController {
     private HBox viewBoards;
     @FXML
     private ImageView arrow;
-
+    @FXML
+    private FlowPane discard_activate_Leader;
     //botActions
     @FXML
     private ImageView botActions;
-    //playerboard components
+    //player board components
     @FXML
     private ImageView inkWell;
     @FXML
@@ -210,6 +210,18 @@ public class BoardController extends ViewObservable implements SceneController {
         shiftRow13.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickShiftRows(1, 3));
         shiftRow23.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickShiftRows(2, 3));
         //leader cards
+        discard_activate_Leader.getChildren().get(1).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            new Thread(() -> notifyObserver(obs -> obs.activeLeader(choice.get(0)))).start();
+            notInTurn(false);
+            discard_activate_Leader.setVisible(false);
+            discard_activate_Leader.setDisable(true);
+        });
+        discard_activate_Leader.getChildren().get(2).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            new Thread(() -> notifyObserver(obs -> obs.foldLeader(choice.get(0)))).start();
+            notInTurn(false);
+            discard_activate_Leader.setVisible(false);
+            discard_activate_Leader.setDisable(true);
+        });
         leaderCard1.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickLeaderInactive(0));
         leaderCard2.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickLeaderInactive(1));
         active1.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onSpecialProduction());
@@ -239,7 +251,7 @@ public class BoardController extends ViewObservable implements SceneController {
             int finalI = i;
             decksChildren.get(i).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
                 changeActivePane(playerBoardsToView.get(finalI));
-                view = true;
+                view = false;
             });
         }
 
@@ -501,17 +513,21 @@ public class BoardController extends ViewObservable implements SceneController {
 
         //special warehouse
         for (i = 0; i < 2; i++)
-            if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.WAREHOUSE)) {
-                int res = 0;
-                for (int j = 0; j < 4; j++)
-                    if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getEffect().get(j) != 0)
-                        res = j;
-                for (int j = 0; j < 2; j++) {
-                    if (j < activePlayerBoard.getPlayerBoard().getExtraResources().get(res)) {
-                        warehouses[6 + i * 2 + j].setDisable(!active);
-                    } else
-                        warehouses[6 + i * 2 + j].setDisable(true);
+            try {
+                if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.WAREHOUSE)) {
+                    int res = 0;
+                    for (int j = 0; j < 4; j++)
+                        if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getEffect().get(j) != 0)
+                            res = j;
+                    for (int j = 0; j < 2; j++) {
+                        if (j < activePlayerBoard.getPlayerBoard().getExtraResources().get(res)) {
+                            warehouses[6 + i * 2 + j].setDisable(!active);
+                        } else
+                            warehouses[6 + i * 2 + j].setDisable(true);
+                    }
                 }
+            } catch (IndexOutOfBoundsException ignored) {
+
             }
 
 
@@ -643,12 +659,11 @@ public class BoardController extends ViewObservable implements SceneController {
     }
 
     private ImageView[] createImageViewsOfWarehouses() {
-        ImageView[] images = new ImageView[]{(ImageView) firstRow.getChildren().get(0),
+        return new ImageView[]{(ImageView) firstRow.getChildren().get(0),
                 (ImageView) secondRow.getChildren().get(0), (ImageView) secondRow.getChildren().get(1),
                 (ImageView) thirdRow.getChildren().get(0), (ImageView) thirdRow.getChildren().get(1), (ImageView) thirdRow.getChildren().get(2),
                 (ImageView) specialWarehouse1.getChildren().get(0), (ImageView) specialWarehouse1.getChildren().get(1),
                 (ImageView) specialWarehouse2.getChildren().get(0), (ImageView) specialWarehouse2.getChildren().get(1)};
-        return images;
     }
 
     //on temporary resource white selection
@@ -697,7 +712,11 @@ public class BoardController extends ViewObservable implements SceneController {
 
     //leader card method
     private void onClickLeaderInactive(int index) {
-        new Thread(() -> notifyObserver(obs -> obs.activeLeader(index))).start();
+        choice.add(0, index);
+        notInTurn(true);
+        discard_activate_Leader.setDisable(false);
+        discard_activate_Leader.setVisible(true);
+
     }
 
     //productionAction

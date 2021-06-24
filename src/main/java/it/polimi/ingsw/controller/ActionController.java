@@ -121,7 +121,7 @@ public class ActionController implements Serializable {
             humanPlayer.setPrivateCommunication(exception.getMessage(), CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
-
+        humanPlayer.sendUpdateToPlayer();
         return true;
     }
 

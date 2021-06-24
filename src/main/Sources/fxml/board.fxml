@@ -7,7 +7,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import java.lang.String?>
+<?import java.lang.*?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/16"
             fx:controller="it.polimi.ingsw.view.gui.controllers.BoardController">
     <children>
@@ -1834,5 +1834,41 @@
                 </VBox>
             </children>
         </Pane>
+        <FlowPane fx:id="discard_activate_Leader" alignment="CENTER" disable="true" layoutX="375.0" layoutY="251.0"
+                  maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                  prefHeight="200.0" prefWidth="501.0" stylesheets="@../Image/Market/components.css" visible="false"
+                  AnchorPane.bottomAnchor="220.0" AnchorPane.topAnchor="251.0">
+            <children>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="DO YOU WANT TO DISCARD THIS CARD OR ACTIVATE IT?"
+                      textAlignment="CENTER" wrappingWidth="500.13671875">
+                    <font>
+                        <Font name="System Bold" size="36.0"/>
+                    </font>
+                </Text>
+                <Button alignment="CENTER" contentDisplay="TEXT_ONLY" mnemonicParsing="false" prefHeight="60.0"
+                        prefWidth="120.0" text="ACTIVE" textAlignment="CENTER">
+                    <FlowPane.margin>
+                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0"/>
+                    </FlowPane.margin>
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Button>
+                <Button alignment="CENTER" contentDisplay="TEXT_ONLY" layoutX="35.0" layoutY="131.0"
+                        mnemonicParsing="false" prefHeight="60.0" prefWidth="120.0" text="DISCARD"
+                        textAlignment="CENTER">
+                    <FlowPane.margin>
+                        <Insets left="175.0"/>
+                    </FlowPane.margin>
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Button>
+            </children>
+            <styleClass>
+                <String fx:value="background"/>
+                <String fx:value="first"/>
+            </styleClass>
+        </FlowPane>
     </children>
 </AnchorPane>

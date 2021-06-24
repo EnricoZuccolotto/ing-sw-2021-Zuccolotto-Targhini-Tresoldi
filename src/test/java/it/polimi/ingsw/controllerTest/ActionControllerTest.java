@@ -624,7 +624,7 @@ public class ActionControllerTest {
         //adding a not special resource to the special warehouse
         player.getPlayerBoard().addWarehouseResource(Resources.SHIELD, WarehousePositions.WAREHOUSE_THIRD_ROW);
         assertFalse(actionController.moveResourceToWarehouse(player, Resources.SHIELD, WarehousePositions.SPECIAL_WAREHOUSE, WarehousePositions.WAREHOUSE_SECOND_ROW));
-        assertFalse(actionController.moveResourceToWarehouse(player, Resources.COIN, WarehousePositions.WAREHOUSE_FIRST_ROW, WarehousePositions.WAREHOUSE_FIRST_ROW));
+        assertTrue(actionController.moveResourceToWarehouse(player, Resources.COIN, WarehousePositions.WAREHOUSE_FIRST_ROW, WarehousePositions.WAREHOUSE_FIRST_ROW));
 
 
     }
