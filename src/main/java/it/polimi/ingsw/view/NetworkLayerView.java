@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * with the {@code update} method.
  */
 public class NetworkLayerView implements View, Observer {
-    private final SocketConnection connection;
+    private SocketConnection connection;
 
     /**
      * Default constructor
@@ -167,5 +167,9 @@ public class NetworkLayerView implements View, Observer {
     @Override
     public ClientManager getClientManager(){
         return null;
+    }
+
+    public void setConnection(SocketConnection connection){
+        this.connection = connection;
     }
 }

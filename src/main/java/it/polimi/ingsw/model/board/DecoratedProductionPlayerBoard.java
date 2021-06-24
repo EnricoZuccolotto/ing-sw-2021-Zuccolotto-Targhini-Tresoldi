@@ -7,9 +7,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * This class represents the Extra Production leader card decoration for a Player Board.
+ */
 public class DecoratedProductionPlayerBoard extends DecoratedPlayerBoard implements Serializable {
     private final ArrayList<Boolean> productionInputs;
 
+    /**
+     * Default constructor
+     * @param subBoard The lower board in the chain of decorators.
+     */
     public DecoratedProductionPlayerBoard(PlayerBoard subBoard){
         super(subBoard);
         productionInputs = new ArrayList<>(4);

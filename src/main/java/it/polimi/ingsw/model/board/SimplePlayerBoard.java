@@ -17,9 +17,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * This class represents a non-decorated Player Board.
+ */
 public class SimplePlayerBoard implements PlayerBoard, Serializable {
     private final Strongbox strongbox;
-    private final boolean inkWell;
+    private boolean inkWell;
     private final ArrayList<LeaderCard> leaderCards;
     private final ArrayList<SpaceProd> productionSpaces;
     private final Warehouse warehouse;

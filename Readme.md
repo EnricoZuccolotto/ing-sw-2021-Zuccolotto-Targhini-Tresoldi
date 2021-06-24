@@ -23,6 +23,7 @@ Il progetto prevede lo sviluppo e l'implementazione del gioco da tavolo Maestri 
 - Funzionalità avanzate:
   - Partita in locale
   - Persistenza
+  - Resilienza alle disconnessioni.
 
 ## Report coverage classi di test
 

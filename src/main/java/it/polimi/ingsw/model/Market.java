@@ -90,6 +90,12 @@ public class Market extends Observable implements Serializable {
         return slide;
     }
 
+    /**
+     * Returns the market resource for a particular position
+     * @param i Row number
+     * @param j Column number
+     * @return The corresponding resource.
+     */
     public Resources getResource(int i, int j) {
         return market[i][j];
     }

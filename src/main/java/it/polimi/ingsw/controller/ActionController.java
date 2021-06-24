@@ -169,6 +169,14 @@ public class ActionController implements Serializable {
         }
     }
 
+    /**
+     * Handles the base production of a playerboard.
+     * @param player The current player
+     * @param n
+     * @param output
+     * @param exchangeResources
+     * @return
+     */
     public boolean useBaseProduction(HumanPlayer player, int n, Resources output, ExchangeResources exchangeResources) {
 
         int[] resWar = exchangeResources.getWarehouse();

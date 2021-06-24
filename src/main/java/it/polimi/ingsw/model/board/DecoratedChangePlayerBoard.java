@@ -7,9 +7,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * This class represents the White Marble Substitution leader card decoration for a Player Board.
+ */
 public class DecoratedChangePlayerBoard extends DecoratedPlayerBoard implements Serializable {
     private final ArrayList<Boolean> substitutes;
 
+    /**
+     * Default constructor
+     * @param subBoard The lower board in the chain of decorators.
+     */
     public DecoratedChangePlayerBoard(PlayerBoard subBoard){
         super(subBoard);
         substitutes = new ArrayList<>(4);
