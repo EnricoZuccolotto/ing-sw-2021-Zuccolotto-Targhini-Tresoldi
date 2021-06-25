@@ -254,7 +254,6 @@ public class BoardController extends ViewObservable implements SceneController {
                 view = false;
             });
         }
-
     }
 
 

@@ -43,7 +43,7 @@ public class moveBetweenWarehouseMessage extends Message implements ExecutableMe
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.SORTING_WAREHOUSES) && instance.getGameState().equals(GameState.GAMESTARTED)) {
+        if (instance.validateAction(Action.SORTING_WAREHOUSES) && instance.getGameState().equals(GameState.GAME_STARTED)) {
             instance.getRoundController().handle_moveBetweenWarehouse(this);
         } else instance.buildInvalidResponse(playerName);
     }

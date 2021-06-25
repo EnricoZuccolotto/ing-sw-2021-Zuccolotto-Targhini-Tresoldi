@@ -9,7 +9,6 @@ import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.NetworkLayerView;
-import it.polimi.ingsw.view.cli.Cli;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class GameControllerTest {
          public void StartGame() {
              getRoundController().init();
              getInstance().setPublicCommunication("The game is starting", CommunicationMessage.STARTING_GAME);
-             setGameState(GameState.GAMESTARTED);
+             setGameState(GameState.GAME_STARTED);
              getRoundController().handle_firstTurn();
          }
      };

@@ -68,7 +68,7 @@ public class GameController implements Serializable {
 
         gameBoardInstance.setPublicCommunication("The game is starting", CommunicationMessage.STARTING_GAME);
         gameBoardInstance.init(gameBoardInstance);
-        gamestate = GameState.GAMESTARTED;
+        gamestate = GameState.GAME_STARTED;
         roundController.handle_firstTurn();
     }
 
@@ -122,8 +122,8 @@ public class GameController implements Serializable {
                 }
                 break;
             }
-            case GAMESETUP:
-            case GAMESTARTED: {
+            case GAME_SETUP:
+            case GAME_STARTED: {
                 executableMessages(message);
                 if (roundController.isWinner())
                     endGame();
@@ -176,6 +176,7 @@ public class GameController implements Serializable {
             VP += gameBoardInstance.get_PV(gameBoardInstance.getPlayers().indexOf(player));
             VP += Math.floorDiv(player.getPlayerBoard().getNumberResources(), 5);
             player.getPlayerBoard().setVP(VP);
+            player.sendUpdateToPlayer();
         }
         gamestate = GameState.END;
         gameBoardInstance.setPublicCommunication(roundController.getWinnerPlayer() + "", CommunicationMessage.END_GAME);

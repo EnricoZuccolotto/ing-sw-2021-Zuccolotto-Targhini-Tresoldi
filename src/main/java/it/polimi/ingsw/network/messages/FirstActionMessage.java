@@ -34,7 +34,7 @@ public class FirstActionMessage extends Message implements ExecutableMessage {
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.FIRST_ACTION) && instance.getGameState().equals(GameState.GAMESTARTED)) {
+        if (instance.validateAction(Action.FIRST_ACTION) && instance.getGameState().equals(GameState.GAME_STARTED)) {
             instance.getRoundController().handle_firstAction(this);
         } else instance.buildInvalidResponse(playerName);
     }

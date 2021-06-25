@@ -156,6 +156,12 @@ public class ClientManager implements ViewObserver, Observer {
 
     @Override
     public void getProduction(int color, int level, ArrayList<Integer> pos, int index, int[] a) {
+
+        ExchangeResources ex = fromArrayToExchangeResource(pos, a);
+        client.sendMessage(new GetProductionCardMessage(this.nickname, ex, Colors.transform(color), level, index));
+    }
+
+    private ExchangeResources fromArrayToExchangeResource(ArrayList<Integer> pos, int[] a) {
         int[][] matr = new int[3][4];
         int count = 0, count2 = 0;
         ExchangeResources ex;
@@ -165,32 +171,20 @@ public class ClientManager implements ViewObserver, Observer {
                 count2++;
                 count++;
             }
-            count=0;
+            count = 0;
         }
-        ex= new ExchangeResources(matr[0], matr[1], matr[2]);
-        client.sendMessage(new GetProductionCardMessage(this.nickname, ex, Colors.transform(color), level, index));
+        return new ExchangeResources(matr[0], matr[1], matr[2]);
     }
 
     @Override
-    public void useNormalProduction(int index, ArrayList<Integer> pos, int[] a){
-        int[][] matr= new int[3][4];
-        int count=0, count2=0;
-        ExchangeResources ex;
-        for (int i=0; i<4; i++){
-            while (count!=a[i]){
-                matr[pos.get(count2)][i]+=1;
-                count2++;
-                count++;
-            }
-            count=0;
-        }
-        ex= new ExchangeResources(matr[0], matr[1], matr[2]);
+    public void useNormalProduction(int index, ArrayList<Integer> pos, int[] a) {
+        ExchangeResources ex = fromArrayToExchangeResource(pos, a);
         client.sendMessage(new UseProductionNormalMessage(this.nickname, ex, index));
     }
 
     @Override
     public void useBaseProduction(ArrayList<Integer> value, ArrayList<Resources> pass, Resources obtain) {
-        int[][] matr= new int[3][4];
+        int[][] matr = new int[3][4];
         matr[value.get(0)][pass.get(0).ordinal()]=1;
         matr[value.get(1)][pass.get(1).ordinal()]+=1;
         ExchangeResources ex= new ExchangeResources(matr[0], matr[1], matr[2]);

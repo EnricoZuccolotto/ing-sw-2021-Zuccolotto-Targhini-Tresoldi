@@ -30,7 +30,7 @@ public class UseProductionBaseMessage extends ProductionMessage implements Execu
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.USE_PRODUCTIONS) && instance.getGameState().equals(GameState.GAMESTARTED)) {
+        if (instance.validateAction(Action.USE_PRODUCTIONS) && instance.getGameState().equals(GameState.GAME_STARTED)) {
             instance.getRoundController().handle_useBaseProduction(this);
         } else instance.buildInvalidResponse(playerName);
     }

@@ -34,7 +34,7 @@ public class ShiftWarehouseMessage extends Message implements ExecutableMessage 
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.SORTING_WAREHOUSES) && instance.getGameState().equals(GameState.GAMESTARTED)) {
+        if (instance.validateAction(Action.SORTING_WAREHOUSES) && instance.getGameState().equals(GameState.GAME_STARTED)) {
             instance.getRoundController().handle_shiftWarehouse(this);
         } else instance.buildInvalidResponse(playerName);
     }
