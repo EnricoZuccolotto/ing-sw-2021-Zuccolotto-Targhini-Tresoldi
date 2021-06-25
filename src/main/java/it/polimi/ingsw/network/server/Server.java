@@ -45,6 +45,8 @@ public class Server {
         NetworkLayerView view = new NetworkLayerView(connection);
         if ((clients.get(nickname) != null)) {
             connection.sendMessage(new LoginMessage(nickname, true, false));
+        } else if(gameController.getGameState().equals(GameState.END)){
+            // TODO: send error
         } else if (!gameController.getGameState().equals(GameState.LOBBY)) {
             if (currentTurnState.equals(TurnState.FIRST_TURN) || currentTurnState.equals(TurnState.SECOND_TURN)) {
                 // We are in the setup, prevent logins.
@@ -99,6 +101,7 @@ public class Server {
      */
     public void onDisconnect(SocketConnection connection){
         String nickname = fromConnectionToNickname(connection);
+        if(nickname == null) return;
         SocketClient.LOGGER.info("Nickname " + nickname + " has disconnected!");
 
         // Remove from the game

@@ -8,6 +8,8 @@ import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.view.NetworkLayerView;
+import it.polimi.ingsw.view.cli.Cli;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -85,6 +87,19 @@ public class GameControllerTest {
    assertEquals(gb.getPlayers().get(i).getPrivateCommunication().getMessage(), "This is not your turn");
   }
   assertTrue(true);
+ }
+
+ @Test
+ public void addViewTest(){
+     NetworkLayerView view = new NetworkLayerView(null);
+     GameController gc = new GameController(false);
+     gc.addView("prova", view);
+     assertEquals(gc.getViewFromMap("prova"), view);
+ }
+
+ @Test
+ public void localViewTest(){
+
  }
 
 }

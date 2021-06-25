@@ -42,8 +42,8 @@ public class GuiEntryPoint extends Application  {
         stage.setWidth(1280d);
         stage.setHeight(720d);
         stage.setResizable(false);
-        stage.setMaximized(false);
-        stage.setFullScreen(false);
+        stage.setMaximized(true);
+        stage.setFullScreen(true);
         stage.setTitle("Masters of Renaissance");
         stage.show();
     }

@@ -40,7 +40,7 @@ public class BoardController extends ViewObservable implements SceneController {
             "-fx-border-width: 3px;";
 
 
-   private boolean view = true; //if flag is false, we did the first action
+    private boolean view = true; //if flag is false, we did the first action
     private boolean flag = true; //if true this is not our turn
     private boolean notInTurn = true;//if false we cannot see other player's boards
     private boolean panelViewBoardsActive = false;//if true we are moving between warehouse, if false we are moving between temporary storage and warehouses,used in drag interaction

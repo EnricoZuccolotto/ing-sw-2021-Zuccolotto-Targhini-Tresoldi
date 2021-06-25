@@ -55,7 +55,7 @@ public class GameController implements Serializable {
         gameBoardInstance.getDecks().addObserver(view);
     }
 
-    public void addView(String name, NetworkLayerView view) {
+    public void addView(String name, Observer view) {
         viewMap.put(name, view);
     }
 
@@ -77,7 +77,7 @@ public class GameController implements Serializable {
         if(local && message.getMessageType().equals(MessageType.LOGIN)){
             if(localView != null){
                 if(message.getMessageType().equals(MessageType.LOGIN)){
-                    viewMap.put(message.getPlayerName(), localView.getClientManager());
+                    addView(message.getPlayerName(), localView.getClientManager());
                     addPlayer(message.getPlayerName(), localView.getClientManager(), true);
                     StartGame();
                 }
