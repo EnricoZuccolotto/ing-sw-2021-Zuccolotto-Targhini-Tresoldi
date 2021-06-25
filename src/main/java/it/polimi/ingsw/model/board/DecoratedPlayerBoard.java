@@ -216,9 +216,18 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard, Serializable 
     }
 
     @Override
-    public ArrayList<Resources> getResources(int choice, int temp){ return subBoard.getResources(choice, temp);}
+    public ArrayList<Resources> getResources(int choice, int temp) {
+        return subBoard.getResources(choice, temp);
+    }
 
     @Override
-    public ArrayList<SpaceProd> getProductionSpaces(){ return subBoard.getProductionSpaces(); }
+    public ArrayList<SpaceProd> getProductionSpaces() {
+        return subBoard.getProductionSpaces();
+    }
+
+    @Override
+    public boolean checkLevel(DevelopmentCard c) {
+        return subBoard.checkLevel(c);
+    }
 
 }

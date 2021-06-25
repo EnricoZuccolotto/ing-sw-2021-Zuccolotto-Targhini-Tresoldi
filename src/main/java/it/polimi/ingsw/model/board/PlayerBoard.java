@@ -347,5 +347,8 @@ public interface PlayerBoard {
      */
     ArrayList<SpaceProd> getProductionSpaces();
 
+
+    boolean checkLevel(DevelopmentCard c);
+
     String toString(boolean mine);
 }

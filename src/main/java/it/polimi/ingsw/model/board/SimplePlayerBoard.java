@@ -22,7 +22,7 @@ import java.util.Arrays;
  */
 public class SimplePlayerBoard implements PlayerBoard, Serializable {
     private final Strongbox strongbox;
-    private boolean inkWell;
+    private final boolean inkWell;
     private final ArrayList<LeaderCard> leaderCards;
     private final ArrayList<SpaceProd> productionSpaces;
     private final Warehouse warehouse;
@@ -289,27 +289,26 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     }
 
     @Override
-    public boolean checkResourcesStrongbox(int [] r){
-        for(int  i=0;i<4;i++){
-            if(r[i]!=0)
-            {
-                if(strongbox.getResources(Resources.transform(i))<r[i] )
+    public boolean checkResourcesStrongbox(int[] r) {
+        for (int i = 0; i < 4; i++) {
+            if (r[i] != 0) {
+                if (strongbox.getResources(Resources.transform(i)) < r[i])
                     return false;
             }
         }
         return true;
     }
 
-    private boolean checkLevel(DevelopmentCard c){
-        if(c.getLevel()==1) {
+    @Override
+    public boolean checkLevel(DevelopmentCard c) {
+        if (c.getLevel() == 1) {
             return productionSpaces.size() < 3;
+        } else {
+            for (SpaceProd sp : productionSpaces)
+                if (sp.getTop().getLevel() == c.getLevel() - 1)
+                    return true;
         }
-        else {
-                    for (SpaceProd sp : productionSpaces)
-                        if (sp.getTop().getLevel() == c.getLevel() - 1)
-                            return true;
-                }
-       throw new InsufficientLevelException();
+        throw new InsufficientLevelException();
     }
 
     @Override

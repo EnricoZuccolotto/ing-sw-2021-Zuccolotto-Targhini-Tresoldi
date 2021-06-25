@@ -156,12 +156,6 @@ public class ClientManager implements ViewObserver, Observer {
 
     @Override
     public void getProduction(int color, int level, ArrayList<Integer> pos, int index, int[] a) {
-
-        ExchangeResources ex = fromArrayToExchangeResource(pos, a);
-        client.sendMessage(new GetProductionCardMessage(this.nickname, ex, Colors.transform(color), level, index));
-    }
-
-    private ExchangeResources fromArrayToExchangeResource(ArrayList<Integer> pos, int[] a) {
         int[][] matr = new int[3][4];
         int count = 0, count2 = 0;
         ExchangeResources ex;
@@ -173,12 +167,25 @@ public class ClientManager implements ViewObserver, Observer {
             }
             count = 0;
         }
-        return new ExchangeResources(matr[0], matr[1], matr[2]);
+        ex = new ExchangeResources(matr[0], matr[1], matr[2]);
+        client.sendMessage(new GetProductionCardMessage(this.nickname, ex, Colors.transform(color), level, index));
     }
+
 
     @Override
     public void useNormalProduction(int index, ArrayList<Integer> pos, int[] a) {
-        ExchangeResources ex = fromArrayToExchangeResource(pos, a);
+        int[][] matr = new int[3][4];
+        int count = 0, count2 = 0;
+        ExchangeResources ex;
+        for (int i = 0; i < 4; i++) {
+            while (count != a[i]) {
+                matr[pos.get(count2)][i] += 1;
+                count2++;
+                count++;
+            }
+            count = 0;
+        }
+        ex = new ExchangeResources(matr[0], matr[1], matr[2]);
         client.sendMessage(new UseProductionNormalMessage(this.nickname, ex, index));
     }
 
