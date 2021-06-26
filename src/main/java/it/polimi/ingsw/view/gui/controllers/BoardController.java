@@ -249,6 +249,17 @@ public class BoardController extends ViewObservable implements SceneController {
             /*((Spinner) productionPane.getChildren().get(j)).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickSetMax(j));*/
         }
 
+        temporaryCard.setOnDragDetected(event -> {
+            /* drag was detected, start drag-and-drop gesture*/
+            /* allow any transfer mode */
+            Dragboard db = temporaryCard.startDragAndDrop(TransferMode.ANY);
+            /* put the image on dragBoard */
+            ClipboardContent content = new ClipboardContent();
+            content.putImage(temporaryCard.getImage());
+            db.setContent(content);
+            event.consume();
+        });
+
         baseProduction.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> BaseProduction());
 
         //end turn
@@ -434,7 +445,7 @@ public class BoardController extends ViewObservable implements SceneController {
 
     private void NormalProduction(int index){
         choice.add(index);
-        choice.add(3);
+        choice.add(1);
         int[] a= activePlayerBoard.getPlayerBoard().getProductionCost(index);
         for(int i=0; i<4; i++)
                 for (int j = 7+i; j < 19; j++) if (j<11 && activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j-7) % 4)))<a[i]) {
@@ -456,11 +467,6 @@ public class BoardController extends ViewObservable implements SceneController {
         askPayment(true);
     }
 
-     /*private void OnProductionClick() {
-         int i = index della carta;
-         NormalProduction(i);
-     }*/
-
     private void onClickChoose(){
         ArrayList<Integer> pos= new ArrayList<>();
         ArrayList<Resources> res= new ArrayList<>();
@@ -480,6 +486,11 @@ public class BoardController extends ViewObservable implements SceneController {
         switch (choice.get(1)) {
             case 0:
                 new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), choice.get(0), pos, 0, deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard())));
+                temporaryCard.setDisable(false);
+                temporaryCard.setVisible(true);
+                temporaryCard.setImage(new Image(deck.getDeck(colors, choice.get(0)).getFirstCard().getImagePath()));
+            case 1:
+                new Thread(() -> notifyObserver(obs -> obs.useNormalProduction(choice.get(0), pos, activePlayerBoard.getPlayerBoard().getProductionCost(choice.get(0)))));
             case 10:
                 new Thread(() -> notifyObserver(obs -> obs.useBaseProduction(pos, res, resourcesToSend.get(0) )));
             case 11:
@@ -533,6 +544,8 @@ public class BoardController extends ViewObservable implements SceneController {
                         imageViews = (ImageView) spacesView[i].getChildren().get(2 - spaceProd.getCards().indexOf(card));
                         spacesView[i].setDisable(false);
                         imageViews.setImage(new Image(card.getImagePath()));
+                        int finalI = i;
+                        imageViews.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> NormalProduction(finalI));
                     }
                 } else spacesView[i].setDisable(true);
             } catch (IndexOutOfBoundsException e) {
