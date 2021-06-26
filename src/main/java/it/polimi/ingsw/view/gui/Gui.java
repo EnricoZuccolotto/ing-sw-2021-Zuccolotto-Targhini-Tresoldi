@@ -132,6 +132,7 @@ public class Gui extends ViewObservable implements View {
             case FIRST_TURN: {
                 Platform.runLater(() -> boardController.notInTurn(true));
                 askFirstAction();
+                Platform.runLater(() -> boardController.clearChoices());
                 break;
             }
             case SECOND_TURN: {
@@ -203,7 +204,7 @@ public class Gui extends ViewObservable implements View {
         } else {
             Platform.runLater(() ->
             {
-                boardController.setChooseResourceText("YOU ARE THE " + (playerNumber + 1) + " PLAYER.CHOOSE 1 RESOURCE");
+                boardController.setChooseResourceText("YOU ARE THE " + (playerNumber + 1) + " PLAYER. CHOOSE 1 RESOURCE");
                 boardController.askResource(true);
             });
             while (boardController.getResourcesToSend().size() != 1)

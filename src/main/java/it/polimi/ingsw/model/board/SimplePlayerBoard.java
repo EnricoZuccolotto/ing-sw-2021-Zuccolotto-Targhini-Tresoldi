@@ -406,6 +406,16 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     }
 
     @Override
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    @Override
+    public Strongbox getStrongbox() {
+        return strongbox;
+    }
+
+    @Override
     public String toString(boolean mine) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Strongbox: ");

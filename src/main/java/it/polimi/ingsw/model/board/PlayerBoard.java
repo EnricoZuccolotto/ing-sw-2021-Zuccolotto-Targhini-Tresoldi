@@ -6,6 +6,8 @@ import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.SpaceProd;
+import it.polimi.ingsw.model.player.Strongbox;
+import it.polimi.ingsw.model.player.Warehouse;
 
 import java.util.ArrayList;
 
@@ -328,6 +330,10 @@ public interface PlayerBoard {
     Resources getResourceWarehouse(int position);
 
     int getVP();
+
+    Warehouse getWarehouse();
+
+    Strongbox getStrongbox();
 
     String toString(boolean mine);
 }

@@ -5,6 +5,8 @@ import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.SpaceProd;
+import it.polimi.ingsw.model.player.Strongbox;
+import it.polimi.ingsw.model.player.Warehouse;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -217,4 +219,9 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard, Serializable 
     @Override
     public ArrayList<SpaceProd> getProductionSpaces(){ return subBoard.getProductionSpaces(); }
 
+    @Override
+    public Warehouse getWarehouse() { return subBoard.getWarehouse(); }
+
+    @Override
+    public Strongbox getStrongbox() { return subBoard.getStrongbox(); }
 }
