@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.ClientManager;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.TurnState;
+import it.polimi.ingsw.exceptions.playerboard.InsufficientLevelException;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
@@ -258,25 +259,26 @@ public class Cli extends ViewObservable implements View {
                             notifyObserver(ViewObserver::endTurn);
                             break;
                         case GET_RESOURCES_FROM_MARKET:
-                            exit=askGetMarket();
+                            exit = askGetMarket();
                             break;
-                        case SORTING_WAREHOUSE:
-                            exit=askSortingMarket();
+                        case SORTING_TEMPORARY_STORAGE:
+                            exit = askSortingMarket();
                             break;
-                        case SHIFT_WAREHOUSE:
-                            askSwitchRows();
+                        case SORTING_WAREHOUSES:
+                            exit = askWhichSortingAction();
                             break;
                         case BUY_DEVELOPMENT_CARD:
-                            exit=askGetProduction();
+                            exit = askGetProduction();
                             break;
                         case USE_PRODUCTIONS:
-                            exit=askUseProduction();
+                            exit = askUseProduction();
                             break;
                     }
                 } catch (ExecutionException e) {
                     out.println("Error");
                 }
             } while(!exit);
+        clearCli();
     }
 
     private boolean askUseProduction() {
@@ -399,11 +401,90 @@ public class Cli extends ViewObservable implements View {
                 list.removeAll(boards.get(playerNumber).getPlayerBoard().getSubstitutableResources());
                 choice = validateResources(question, list);
             }
-            question="Select a row in the warehouse between 1 and 3, select 4 to discard it or select 0 for the special warehouse (with leader card only) and 5 to exit: ";
-            row=validateInput(0, 5, null, question);
-            if (row==5){ return false; }
+            question = "Select a row in the warehouse between 1 and 3, select 4 to discard it or select 0 for the special warehouse (with leader card only) and 5 to exit: ";
+            row = validateInput(0, 5, null, question);
+            if (row == 5) {
+                return false;
+            }
             Resources finalChoice = choice;
             notifyObserver(obs -> obs.sortingMarket(finalChoice, row, boards.get(playerNumber).getTemporaryResourceStorage().indexOf(finalChoice)));
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
+        return true;
+    }
+
+    public boolean askWhichSortingAction() {
+        int choice;
+        String question = "What do you want to move? \n1.Switch rows \n2.Move resource between warehouses\n3.Exit\n";
+        try {
+            choice = validateInput(1, 4, null, question);
+            if (choice == 1) {
+                askSwitchRows();
+            } else if (choice == 2) {
+                return askMoveBetweenWarehouses();
+            } else {
+                return false;
+            }
+        } catch (ExecutionException e) {
+            out.println("Error");
+        }
+        return true;
+    }
+
+    public boolean askMoveBetweenWarehouses() {
+        Resources resources;
+        int position, newPosition;
+        String question;
+        try {
+            question = "From where do you want to get the Resource?\n0.Special warehouse\n1.First row\n2.Second row\n3.Third row\n";
+            position = validateInput(0, 3, null, question);
+            question = "Where do you want to put the Resource?\n0.Special warehouse\n1.First row\n2.Second row\n3.Third row\n";
+            newPosition = validateInput(0, 3, null, question);
+
+            ArrayList<Resources> jumpList = new ArrayList<>();
+            jumpList.add(Resources.WHATEVER);
+            jumpList.add(Resources.WHITE);
+            jumpList.add(Resources.FAITH);
+            if (position == 0) {
+                for (int i = 0; i < 4; i++)
+                    if (boards.get(0).getPlayerBoard().getExtraResources().get(i) == 0)
+                        jumpList.add(Resources.transform(i));
+            } else {
+                ArrayList<Resources> jumpList2 = new ArrayList<>();
+                jumpList2.add(Resources.COIN);
+                jumpList2.add(Resources.SERVANT);
+                jumpList2.add(Resources.SHIELD);
+                jumpList2.add(Resources.STONE);
+                int n = 0;
+                switch (position) {
+                    case 1:
+                        n = 0;
+                        break;
+                    case 2:
+                        n = 1;
+                        break;
+                    case 3:
+                        n = 3;
+                        break;
+                }
+                if (!boards.get(0).getPlayerBoard().getResourceWarehouse(n).equals(Resources.WHITE))
+                    jumpList2.remove(boards.get(0).getPlayerBoard().getResourceWarehouse(n));
+                jumpList.addAll(jumpList2);
+            }
+            if (jumpList.size() == 7) {
+                out.println("You don't have resources in this warehouse");
+                return false;
+            }
+            if (jumpList.size() == 6) {
+                ArrayList<Resources> resources1 = (ArrayList<Resources>) Arrays.stream(Resources.values()).collect(Collectors.toList());
+                resources1.removeAll(jumpList);
+                resources = resources1.get(0);
+            } else {
+                question = "which resource do you want to move?";
+                resources = validateResources(question, jumpList);
+            }
+            notifyObserver(obs -> obs.moveBetweenWarehouses(resources, position, newPosition));
         } catch (ExecutionException e) {
             out.println("Error");
         }
@@ -454,14 +535,21 @@ public class Cli extends ViewObservable implements View {
                     flag = true;
                 }
             }
-            a=decks.getDeck(col.get(color1), level).getFirstCard().getCostCard();
-            pos=SelectResources(a);
-            if(pos==null) { return false; }
-            question="Choose where to place your new card, select a number between 1 and 3 (select 0 to auto-place the card): ";
-            index=validateInput(0, 3, null, question);
+            a = decks.getDeck(col.get(color1), level).getFirstCard().getCostCard();
+            pos = SelectResources(a);
+            if (pos == null) {
+                return false;
+            }
+            try {
+                boards.get(0).getPlayerBoard().checkLevel(decks.getDeck(col.get(color1), level).getFirstCard());
+                index = 0;
+            } catch (InsufficientLevelException e) {
+                question = "Choose where to place your new card, select a number between 1 and 3 : ";
+                index = validateInput(1, 3, null, question);
+            }
             int finalColor = color1;
             int finalLevel = level;
-            int finalIndex = index-1;
+            int finalIndex = index - 1;
             notifyObserver(obs -> obs.getProduction(finalColor, finalLevel, pos, finalIndex, a));
         } catch (ExecutionException e) {
             out.println("Error");
@@ -577,7 +665,11 @@ public class Cli extends ViewObservable implements View {
         ArrayList<Integer> pos;
         int[] a;
         for(int i=0; i<3; i++){
-            if (boards.get(playerNumber).getPlayerBoard().getProductionSpaces().get(i).getNumbCard() == 0) {
+            try {
+                if (boards.get(playerNumber).getPlayerBoard().getProductionSpaces().get(i).getNumbCard() == 0) {
+                    jump.add(i);
+                }
+            } catch (IndexOutOfBoundsException e) {
                 jump.add(i);
             }
         }
@@ -615,7 +707,7 @@ public class Cli extends ViewObservable implements View {
     public boolean askActiveLeader() {
         int activeCard;
         int numCards = boards.get(playerNumber).getPlayerBoard().getLeaderCardsNumber() - 1;
-        String question = "Which card do you want to active? Select 1, between 0 and " + numCards + " (" + numCards + 1 + " to exit:";
+        String question = "Which card do you want to active? Select 1, between 0 and " + numCards + " (" + (numCards + 1) + ") to exit:";
         try {
             activeCard = validateInput(0, numCards+1, null, question);
             if(activeCard==numCards+1) { return false; }
@@ -690,7 +782,6 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
-        clearCli();
         out.println(decks);
         out.println(market);
         out.println(faithPath);

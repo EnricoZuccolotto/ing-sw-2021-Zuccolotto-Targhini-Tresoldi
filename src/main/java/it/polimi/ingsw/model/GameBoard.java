@@ -196,12 +196,22 @@ public class GameBoard extends Observable implements Serializable {
         return publicCommunication;
     }
 
+    /**
+     * Sets a communication message for all players
+     * @param communication The string you want to send
+     * @param communicationMessage The message type.
+     */
     public void setPublicCommunication(String communication, CommunicationMessage communicationMessage) {
         this.publicCommunication.setCommunicationMessage(communicationMessage);
         this.publicCommunication.setMessage(communication);
         notifyObserver(new CommunicationMex("", communication, communicationMessage));
     }
 
+    /**
+     * Returns a {@code HumanPlayer} given its name
+     * @param name The name of the player you want
+     * @return The {@code HumanPlayer} pointer for that player.
+     */
     public HumanPlayer getPlayer(String name) {
         for (HumanPlayer player : players)
             if (player.getName().equals(name))
@@ -209,6 +219,10 @@ public class GameBoard extends Observable implements Serializable {
         return null;
     }
 
+    /**
+     * Get all players' names in a list.
+     * @return A list containing all players' names.
+     */
     public List<String> getPlayersNicknames(){
         ArrayList<String> playersList = new ArrayList<>();
         for(HumanPlayer player : players){
@@ -217,6 +231,10 @@ public class GameBoard extends Observable implements Serializable {
         return playersList;
     }
 
+    /**
+     * Get the number of currently "active" (connected) players
+     * @return The number of players that are {@code ACTIVE}
+     */
     public int getActivePlayersCount(){
         return (int) players.stream().filter(player -> player.getPlayerState().equals(PlayerDisconnectionState.ACTIVE)).count();
     }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.playerboard.IllegalActionException;
+import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
 import it.polimi.ingsw.exceptions.playerboard.InsufficientLevelException;
 import it.polimi.ingsw.exceptions.playerboard.WinnerException;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
@@ -31,6 +32,7 @@ public class ActionController implements Serializable {
      * @param rowIndex  Market row index. To obtain a column this must be set to 3.
      * @param colIndex  Column index. If rowIndex == 3 this indicates the column, else this number is not considered
      * @return List of market-obtained resources
+     * @throws IllegalActionException Exception threw if the player try to do something that he shouldn't be able to do.
      */
     public ArrayList<Resources> getMarket(GameBoard gameBoard, int rowIndex, int colIndex) {
         ArrayList<Resources> list;
@@ -92,6 +94,62 @@ public class ActionController implements Serializable {
     }
 
     /**
+     * Move a resource from position to the newPosition int the warehouses.
+     *
+     * @param resource    Resource to move between the warehouses.
+     * @param humanPlayer Player sorting the warehouse.
+     * @param position    Starting position of the resource.
+     * @param newPosition New position of the resource.
+     * @return if the operation is successful
+     */
+    public boolean moveResourceToWarehouse(HumanPlayer humanPlayer, Resources resource, WarehousePositions position, WarehousePositions newPosition) {
+
+        int[] n = new int[4];
+        try {
+            n[resource.ordinal()] = 1;
+            //first it pays then it tries to move,if it fails it will restore the resource
+            if (newPosition.equals(WarehousePositions.SPECIAL_WAREHOUSE)) {
+                if (!humanPlayer.getPlayerBoard().addExtraResources(resource, 1)) {
+                    humanPlayer.setPrivateCommunication("You can't insert this resource in this position", CommunicationMessage.ILLEGAL_ACTION);
+                    return false;
+                }
+                payResourceWarehouses(humanPlayer, position, n);
+            } else {
+                payResourceWarehouses(humanPlayer, position, n);
+                if (!humanPlayer.getPlayerBoard().addWarehouseResource(resource, newPosition)) {
+                    humanPlayer.setPrivateCommunication("You can't insert this resource " + resource.noColor() + " in this position " + position, CommunicationMessage.ILLEGAL_ACTION);
+                    if (position.equals(WarehousePositions.SPECIAL_WAREHOUSE))
+                        humanPlayer.getPlayerBoard().addExtraResources(resource, 1);
+                    else
+                        humanPlayer.getPlayerBoard().addWarehouseResource(resource, position);
+                    return false;
+                }
+
+            }
+
+        } catch (IndexOutOfBoundsException | IllegalDecoratorException exception) {
+            humanPlayer.setPrivateCommunication(exception.getMessage(), CommunicationMessage.ILLEGAL_ACTION);
+            return false;
+        }
+        humanPlayer.sendUpdateToPlayer();
+        return true;
+    }
+
+    /**
+     * Pay the number of resource from the warehouses.
+     *
+     * @param humanPlayer Player sorting the warehouse.
+     * @param position    Choose from which warehouse we wanna pay the resources
+     * @param n           Resources to pay.
+     */
+    private void payResourceWarehouses(HumanPlayer humanPlayer, WarehousePositions position, int[] n) {
+        if (position.equals(WarehousePositions.SPECIAL_WAREHOUSE))
+            humanPlayer.getPlayerBoard().payResourcesSpecialWarehouse(n);
+        else
+            humanPlayer.getPlayerBoard().payResourcesWarehouse(n);
+    }
+
+    /**
      * Discard a resource from the temporary storage of a player.
      *
      * @param humanPlayer           Player sorting the warehouse.
@@ -128,6 +186,14 @@ public class ActionController implements Serializable {
         }
     }
 
+    /**
+     * Handles the base production of a player board.
+     * @param player            The current player
+     * @param n                 The number of resources that it wants to pay(1 for the special,2 for the base production)
+     * @param output            The resource that the player want.
+     * @param exchangeResources It contains how the player wants to pay the costs of the operation.
+     * @return if the operation is successful
+     */
     public boolean useBaseProduction(HumanPlayer player, int n, Resources output, ExchangeResources exchangeResources) {
 
         int[] resWar = exchangeResources.getWarehouse();
@@ -157,7 +223,14 @@ public class ActionController implements Serializable {
         return true;
     }
 
-
+    /**
+     * Handles the normal production of a player board.
+     *
+     * @param player            The current player.
+     * @param index             Index of the development card to use.
+     * @param exchangeResources It contains how the player wants to pay the costs of the operation.
+     * @return if the operation is successful
+     */
     public boolean useNormalProduction(HumanPlayer player, int index, ExchangeResources exchangeResources) {
         int[] resWar = exchangeResources.getWarehouse();
         int[] resStr = exchangeResources.getStrongbox();
@@ -187,6 +260,15 @@ public class ActionController implements Serializable {
         return true;
     }
 
+    /**
+     * Handles the special production of a player board.
+     *
+     * @param player            The current player
+     * @param index             Index of the leader cards to use.
+     * @param output            The resource that the player want.
+     * @param exchangeResources It contains how the player wants to pay the costs of the operation.
+     * @return if the operation is successful
+     */
     public boolean useSpecialProduction(HumanPlayer player, Resources output, int index, ExchangeResources exchangeResources) {
         int[] resWar = exchangeResources.getWarehouse();
         int[] resStr = exchangeResources.getStrongbox();
@@ -205,6 +287,17 @@ public class ActionController implements Serializable {
         return useBaseProduction(player, 1, output, exchangeResources);
     }
 
+    /**
+     * Handles the buy of a development card from the game board.
+     *
+     * @param player            The current player
+     * @param index             Index of the production space to use.
+     * @param color             Color of the card to buy.
+     * @param level             Level of the card to buy.
+     * @param gameBoard         Current game board of the game.
+     * @param exchangeResources It contains how the player wants to pay the costs of the operation.
+     * @return if the operation is successful
+     */
     public boolean getProduction(Colors color, int level, GameBoard gameBoard, int index, HumanPlayer player, ExchangeResources exchangeResources) {
         int[] resWar = exchangeResources.getWarehouse();
         int[] resStr = exchangeResources.getStrongbox();
@@ -248,6 +341,13 @@ public class ActionController implements Serializable {
         return true;
     }
 
+    /**
+     * Handles the activation of a leader card.
+     *
+     * @param player The current player
+     * @param index  Index of the leader card to activate.
+     * @return if the operation is successful
+     */
     public boolean activateLeader(int index, HumanPlayer player) {
 
         LeaderCard leaderCard = player.getPlayerBoard().getLeaderCard(index);
@@ -334,6 +434,14 @@ public class ActionController implements Serializable {
         return true;
     }
 
+    /**
+     * Handles the folding of the two first leader cards.
+     *
+     * @param player The current player
+     * @param index1 Index of the first leader card to discard.
+     * @param index2 Index of the second leader card to discard.
+     * @return if the operation is successful
+     */
     public boolean firstAction(int index1, int index2, HumanPlayer player) {
 
         if (index1 == index2 || index1 > 3 || index2 > 3 || index1 < 0 || index2 < 0) {
@@ -362,6 +470,14 @@ public class ActionController implements Serializable {
         return true;
     }
 
+    /**
+     * Handles the choice of resources that the players need to do before starting the game.The number of resources to choose depends of the player number.
+     *
+     * @param player      The current player.
+     * @param indexPlayer Number of the player(0,1,2,3).
+     * @param resources   Resources the player chose.
+     * @return if the operation is successful
+     */
     public boolean secondAction(ArrayList<Resources> resources, int indexPlayer, HumanPlayer player) {
         switch (indexPlayer) {
             case 0: {
@@ -403,6 +519,13 @@ public class ActionController implements Serializable {
         return true;
     }
 
+    /**
+     * Handles the folding of a leader card.
+     *
+     * @param player The current player
+     * @param index  Index of the leader card to fold.
+     * @return if the operation is successful
+     */
     public boolean foldLeader(int index, HumanPlayer player) {
         PlayerBoard pb = player.getPlayerBoard();
         LeaderCard c;
@@ -423,6 +546,14 @@ public class ActionController implements Serializable {
         return true;
     }
 
+    /**
+     * Checks if the player has enough resources to pay with this configuration.
+     *
+     * @param player            The current player
+     * @param exchangeResources It contains how the player wants to pay the costs of the operation.
+     * @param buy_use           Boolean used to set the message that the player will get if something goes wrong,true for buy,false for use.
+     * @return if the operation is successful
+     */
     public boolean isResourcesAvailable(HumanPlayer player, ExchangeResources exchangeResources, boolean buy_use) {
         String s;
         if (buy_use)
@@ -443,6 +574,12 @@ public class ActionController implements Serializable {
         return true;
     }
 
+    /**
+     * Pays the resources from the Strongbox,Warehouse and Special warehouse.
+     *
+     * @param player            The current player
+     * @param exchangeResources It contains how the player wants to pay the costs of the operation.
+     */
     public void payResources(HumanPlayer player, ExchangeResources exchangeResources) {
         player.getPlayerBoard().payResourcesStrongbox(exchangeResources.getStrongbox());
         player.getPlayerBoard().payResourcesSpecialWarehouse(exchangeResources.getSpecialWarehouse());

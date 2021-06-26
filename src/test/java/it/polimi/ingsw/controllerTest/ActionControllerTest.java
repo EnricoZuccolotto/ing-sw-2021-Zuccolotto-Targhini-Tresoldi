@@ -19,6 +19,7 @@ import it.polimi.ingsw.network.messages.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -585,6 +586,46 @@ public class ActionControllerTest {
         assertNotEquals(c, gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(1));
         assertNotEquals(c, gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(2));
         assertNotEquals(c, gb.getPlayers().get(0).getPlayerBoard().getLeaderCard(0));
+
+    }
+
+    @Test
+    public void moveResourceTestBetweenWarehouses() {
+
+        ActionController actionController = new ActionController();
+        HumanPlayer player = new HumanPlayer("Harry", true);
+        GameBoard gameBoard = new GameBoard();
+        gameBoard.addPlayer(player);
+        player.setPlayerBoard(new DecoratedWarehousePlayerBoard(player.getPlayerBoard()));
+        LeaderCard leaderCard = new LeaderCard(1, 2, null, null, null, new int[]{0, 5, 1, 0});
+        // Add the corresponding effect
+        for (int i = 0; i < 4; i++) {
+            if (leaderCard.getEffect().get(i) != 0) {
+                player.getPlayerBoard().addWarehouseSpace(Resources.transform(i), leaderCard.getEffect().get(i));
+            }
+        }
+
+        //adding resources to the warehouse
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
+        player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
+        player.getPlayerBoard().addExtraResources(Resources.COIN, 4);
+        //moving 1 stone from warehouse to special
+        actionController.moveResourceToWarehouse(player, Resources.STONE, WarehousePositions.WAREHOUSE_FIRST_ROW, WarehousePositions.SPECIAL_WAREHOUSE);
+        assertEquals((player.getPlayerBoard().getExtraResources().stream().reduce(Integer::sum)), Optional.of(5));
+        assertFalse(player.getPlayerBoard().checkResourcesWarehouse(new int[]{0, 0, 2, 0}));
+        //opposite failing
+        assertFalse(actionController.moveResourceToWarehouse(player, Resources.COIN, WarehousePositions.SPECIAL_WAREHOUSE, WarehousePositions.WAREHOUSE_SECOND_ROW));
+        assertEquals((player.getPlayerBoard().getExtraResources().stream().reduce(Integer::sum)), Optional.of(5));
+        assertFalse(player.getPlayerBoard().checkResourcesWarehouse(new int[]{0, 1, 1, 0}));
+        //opposite working
+        assertTrue(actionController.moveResourceToWarehouse(player, Resources.COIN, WarehousePositions.SPECIAL_WAREHOUSE, WarehousePositions.WAREHOUSE_FIRST_ROW));
+        assertEquals((player.getPlayerBoard().getExtraResources().stream().reduce(Integer::sum)), Optional.of(4));
+        assertTrue(player.getPlayerBoard().checkResourcesWarehouse(new int[]{0, 1, 1, 0}));
+        //adding a not special resource to the special warehouse
+        player.getPlayerBoard().addWarehouseResource(Resources.SHIELD, WarehousePositions.WAREHOUSE_THIRD_ROW);
+        assertFalse(actionController.moveResourceToWarehouse(player, Resources.SHIELD, WarehousePositions.SPECIAL_WAREHOUSE, WarehousePositions.WAREHOUSE_SECOND_ROW));
+        assertTrue(actionController.moveResourceToWarehouse(player, Resources.COIN, WarehousePositions.WAREHOUSE_FIRST_ROW, WarehousePositions.WAREHOUSE_FIRST_ROW));
+
 
     }
 

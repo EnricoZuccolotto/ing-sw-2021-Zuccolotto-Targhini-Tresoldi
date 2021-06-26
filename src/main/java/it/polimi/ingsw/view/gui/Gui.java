@@ -23,6 +23,8 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -32,10 +34,12 @@ public class Gui extends ViewObservable implements View {
     private static Gui instance = null;
     private BoardController boardController;
     private UsernameController usernameController;
-    private CompressedPlayerBoard CompressedPlayerBoard;
+    private CompressedPlayerBoard compressedPlayerBoard;
     private ClientManager clientManager;
     private boolean local = false;
     private boolean singlePlayer = false;
+    private final Map<String, Integer> victoryPoints = new HashMap<>();
+    private boolean winner = false;
 
     public static Gui getInstance() {
         if (instance == null)
@@ -72,11 +76,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askUsername() {
-
-        Platform.runLater(() -> {
-            GuiSceneUtils.changeActivePanel(observers, "username.fxml");
-        });
-
+        Platform.runLater(() -> GuiSceneUtils.changeActivePanel(observers, "username.fxml"));
     }
 
     @Override
@@ -126,6 +126,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askAction(TurnState state) {
+        System.out.println(state);
         Platform.runLater(() ->
                 boardController.clearChoices());
         switch (state) {
@@ -148,33 +149,38 @@ public class Gui extends ViewObservable implements View {
                     boardController.activeDecks(true);
                     boardController.activeMarket(true);
                     boardController.activeProductions(true);
+                    boardController.notActiveWarehouse(false);
                 });
                 break;
             }
             case PRODUCTION_ACTIONS:
                 Platform.runLater(() -> {
-
+                    boardController.activeMovingWarehouse(true);
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
                     boardController.activeProductions(true);
+                    boardController.notActiveWarehouse(false);
                 });
                 break;
             case WAREHOUSE_ACTION:
                 Platform.runLater(() -> {
-
+                    boardController.activeMovingWarehouse(true);
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
                     boardController.activeProductions(false);
+                    boardController.notActiveWarehouse(false);
                 });
                 break;
             case LAST_LEADER_ACTION: {
                 Platform.runLater(() -> {
+                    boardController.activeMovingWarehouse(true);
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
                     boardController.activeProductions(false);
+                    boardController.notActiveWarehouse(false);
                 });
                 break;
             }
@@ -188,7 +194,7 @@ public class Gui extends ViewObservable implements View {
     @Override
     public void askFirstAction() {
         Platform.runLater(() ->
-                boardController.updateFirstAction(CompressedPlayerBoard.getPlayerBoard()));
+                boardController.updateFirstAction(compressedPlayerBoard.getPlayerBoard()));
     }
 
     @Override
@@ -280,9 +286,10 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
+        victoryPoints.put(playerBoard.getName(), playerBoard.getPlayerBoard().getVP());
         Platform.runLater(() -> boardController.activeBotActions(singlePlayer));
         if (playerBoard.getName().equals(nickname)) {
-            this.CompressedPlayerBoard = playerBoard;
+            this.compressedPlayerBoard = playerBoard;
             this.playerNumber = playerBoard.getPlayerNumber();
             Platform.runLater(() -> boardController.updatePlayerBoard(playerBoard));
         } else {
@@ -391,7 +398,9 @@ public class Gui extends ViewObservable implements View {
                 new Thread(this::communication).start();
                 break;
             case END_GAME:
-                //
+                winner = Integer.parseInt(communication) == 0;
+                Platform.runLater(() -> GuiSceneUtils.changeActivePanel(observers, "winner.fxml"));
+                break;
 
         }
     }
@@ -417,5 +426,15 @@ public class Gui extends ViewObservable implements View {
     @Override
     public ClientManager getClientManager(){
         return clientManager;
+    }
+
+    public Map<String, Integer> getVictoryPoints() {
+        return victoryPoints;
+    }
+
+    public boolean isSinglePlayer() { return singlePlayer; }
+    public boolean isWinner() { return winner; }
+    public int getVictoryPointsForCurrentUser() {
+        return compressedPlayerBoard.getPlayerBoard().getVP();
     }
 }

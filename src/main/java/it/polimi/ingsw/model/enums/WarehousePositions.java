@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.enums;
 
-
+/**
+ * Represents all possible Warehouse positions, including the Special Warehouse.
+ */
 public enum WarehousePositions {
     SPECIAL_WAREHOUSE,
     WAREHOUSE_FIRST_ROW,

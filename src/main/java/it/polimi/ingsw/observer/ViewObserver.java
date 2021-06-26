@@ -42,6 +42,8 @@ public interface ViewObserver {
 
     void switchRows(int row1, int row2);
 
+    void moveBetweenWarehouses(Resources resources, int position, int newPosition);
+
     void getProduction(int color, int level, ArrayList<Integer> pos, int index, int[] a);
 
     void useBaseProduction(ArrayList<Integer> value, ArrayList<Resources> pass, Resources obtain);

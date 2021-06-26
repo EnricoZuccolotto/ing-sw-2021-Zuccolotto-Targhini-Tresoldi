@@ -161,9 +161,9 @@ public class ChangeTurnTest {
         }
         HumanPlayer p = g.getPlayerInTurn();
         assertEquals(g.getTurnState(), TurnState.WAREHOUSE_ACTION);
-        if (g.getTurnState().isPossible(Action.SORTING_WAREHOUSE)) {
+        if (g.getTurnState().isPossible(Action.SORTING_TEMPORARY_STORAGE)) {
             g.getPlayerInTurn().removeItemFromTemporaryList(0);
-            g.nextState(Action.SORTING_WAREHOUSE);
+            g.nextState(Action.SORTING_TEMPORARY_STORAGE);
         }
 
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);

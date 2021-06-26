@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.controllers.WinnerController">
+   <children>
+      <Label layoutX="196.0" layoutY="46.0" text="The game has ended!">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Label>
+      <Label fx:id="winnerLabel" layoutX="276.0" layoutY="125.0" text="You won!" />
+      <Label fx:id="standingsLabel" layoutX="273.0" layoutY="175.0" text="Standings:" />
+      <Label fx:id="firstPlaceLabel" layoutX="286.0" layoutY="200.0" text="Label" />
+      <Label fx:id="secondPlaceLabel" layoutX="286.0" layoutY="217.0" text="Label" />
+      <Label fx:id="thirdPlaceLabel" layoutX="286.0" layoutY="234.0" text="Label" />
+      <Label fx:id="fourthPlaceLabel" layoutX="286.0" layoutY="251.0" text="Label" />
+      <Button fx:id="exitButton" layoutX="283.0" layoutY="325.0" mnemonicParsing="false" text="Exit" />
+   </children>
+</AnchorPane>

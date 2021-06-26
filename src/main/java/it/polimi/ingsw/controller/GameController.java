@@ -55,7 +55,7 @@ public class GameController implements Serializable {
         gameBoardInstance.getDecks().addObserver(view);
     }
 
-    public void addView(String name, NetworkLayerView view) {
+    public void addView(String name, Observer view) {
         viewMap.put(name, view);
     }
 
@@ -68,7 +68,7 @@ public class GameController implements Serializable {
 
         gameBoardInstance.setPublicCommunication("The game is starting", CommunicationMessage.STARTING_GAME);
         gameBoardInstance.init(gameBoardInstance);
-        gamestate = GameState.GAMESTARTED;
+        gamestate = GameState.GAME_STARTED;
         roundController.handle_firstTurn();
     }
 
@@ -77,7 +77,7 @@ public class GameController implements Serializable {
         if(local && message.getMessageType().equals(MessageType.LOGIN)){
             if(localView != null){
                 if(message.getMessageType().equals(MessageType.LOGIN)){
-                    viewMap.put(message.getPlayerName(), localView.getClientManager());
+                    addView(message.getPlayerName(), localView.getClientManager());
                     addPlayer(message.getPlayerName(), localView.getClientManager(), true);
                     StartGame();
                 }
@@ -122,8 +122,8 @@ public class GameController implements Serializable {
                 }
                 break;
             }
-            case GAMESETUP:
-            case GAMESTARTED: {
+            case GAME_SETUP:
+            case GAME_STARTED: {
                 executableMessages(message);
                 if (roundController.isWinner())
                     endGame();
@@ -176,6 +176,7 @@ public class GameController implements Serializable {
             VP += gameBoardInstance.get_PV(gameBoardInstance.getPlayers().indexOf(player));
             VP += Math.floorDiv(player.getPlayerBoard().getNumberResources(), 5);
             player.getPlayerBoard().setVP(VP);
+            player.sendUpdateToPlayer();
         }
         gamestate = GameState.END;
         gameBoardInstance.setPublicCommunication(roundController.getWinnerPlayer() + "", CommunicationMessage.END_GAME);
@@ -191,6 +192,8 @@ public class GameController implements Serializable {
     public LobbyController getLobby() {
         return lobby;
     }
+
+    public Observer getViewFromMap(String nickname) {return viewMap.get(nickname); }
 
     public void setLocalView(View view){
         this.localView = view;

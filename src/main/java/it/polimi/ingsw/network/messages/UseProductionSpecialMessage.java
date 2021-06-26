@@ -37,7 +37,7 @@ public class UseProductionSpecialMessage extends ProductionMessage implements Ex
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.USE_PRODUCTIONS) && instance.getGameState().equals(GameState.GAMESTARTED)) {
+        if (instance.validateAction(Action.USE_PRODUCTIONS) && instance.getGameState().equals(GameState.GAME_STARTED)) {
             instance.getRoundController().handle_useSpecialProduction(this);
         } else instance.buildInvalidResponse(playerName);
     }

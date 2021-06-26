@@ -19,7 +19,7 @@ public class EndTurnMessage extends Message implements ExecutableMessage {
 
     @Override
     public void execute(GameController instance) {
-        if (instance.validateAction(Action.END_TURN) && instance.getGameState().equals(GameState.GAMESTARTED)) {
+        if (instance.validateAction(Action.END_TURN) && instance.getGameState().equals(GameState.GAME_STARTED)) {
             instance.getRoundController().handle_endTurn();
         } else instance.buildInvalidResponse(playerName);
     }

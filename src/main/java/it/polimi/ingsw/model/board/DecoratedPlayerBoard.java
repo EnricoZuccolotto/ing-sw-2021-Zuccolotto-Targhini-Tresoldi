@@ -11,9 +11,16 @@ import it.polimi.ingsw.model.player.Warehouse;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * This class represents a generic decoration for a Player Board.
+ */
 public abstract class DecoratedPlayerBoard implements PlayerBoard, Serializable {
     protected final PlayerBoard subBoard;
 
+    /**
+     * Default constructor
+     * @param subBoard The lower board in the chain of decorators.
+     */
     public DecoratedPlayerBoard(PlayerBoard subBoard){
         this.subBoard = subBoard;
     }
@@ -27,9 +34,6 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard, Serializable 
     public boolean getInkwell() {
         return subBoard.getInkwell();
     }
-    @Override
-    public void setInkwell(boolean inkwell) {subBoard.setInkwell(inkwell);}
-
     @Override
     public void setVP(int VP){subBoard.setVP(VP);}
     @Override
@@ -214,10 +218,19 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard, Serializable 
     }
 
     @Override
-    public ArrayList<Resources> getResources(int choice, int temp){ return subBoard.getResources(choice, temp);}
+    public ArrayList<Resources> getResources(int choice, int temp) {
+        return subBoard.getResources(choice, temp);
+    }
 
     @Override
-    public ArrayList<SpaceProd> getProductionSpaces(){ return subBoard.getProductionSpaces(); }
+    public ArrayList<SpaceProd> getProductionSpaces() {
+        return subBoard.getProductionSpaces();
+    }
+
+    @Override
+    public boolean checkLevel(DevelopmentCard c) {
+        return subBoard.checkLevel(c);
+    }
 
     @Override
     public Warehouse getWarehouse() { return subBoard.getWarehouse(); }
