@@ -485,16 +485,20 @@ public class BoardController extends ViewObservable implements SceneController {
         askPayment(false);
         switch (choice.get(1)) {
             case 0:
-                new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), choice.get(0), pos, 0, deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard())));
+                new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), choice.get(0), pos, 0, deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard()))).start();
                 temporaryCard.setDisable(false);
                 temporaryCard.setVisible(true);
                 temporaryCard.setImage(new Image(deck.getDeck(colors, choice.get(0)).getFirstCard().getImagePath()));
+                break;
             case 1:
-                new Thread(() -> notifyObserver(obs -> obs.useNormalProduction(choice.get(0), pos, activePlayerBoard.getPlayerBoard().getProductionCost(choice.get(0)))));
+                new Thread(() -> notifyObserver(obs -> obs.useNormalProduction(choice.get(0), pos, activePlayerBoard.getPlayerBoard().getProductionCost(choice.get(0))))).start();
+                break;
             case 10:
-                new Thread(() -> notifyObserver(obs -> obs.useBaseProduction(pos, res, resourcesToSend.get(0) )));
+                new Thread(() -> notifyObserver(obs -> obs.useBaseProduction(pos, res, resourcesToSend.get(0) ))).start();
+                break;
             case 11:
-                new Thread(() -> notifyObserver(obs -> obs.useSpecialProduction(choice.get(0), pos.get(0), res.get(0) , resourcesToSend.get(0) )));
+                new Thread(() -> notifyObserver(obs -> obs.useSpecialProduction(choice.get(0), pos.get(0), res.get(0) , resourcesToSend.get(0) ))).start();
+                break;
         }
     }
 
