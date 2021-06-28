@@ -410,7 +410,6 @@ public class RoundController implements Serializable {
             actionController.addFaithPoint(gameBoardInstance, player, quantities);
         } catch (WinnerException e) {
             if (winnerPlayer == -2) {
-                if (player != null)
                     winnerPlayer = players.indexOf(player);
                 if (gameState == GameState.SINGLEPLAYER) {
                     nextTurn();
@@ -677,7 +676,6 @@ public class RoundController implements Serializable {
                 case LAST_LEADER_ACTION: {
                     if (0 == playerInTurn.getPlayerBoard().getLeaderCardsNumber()) {
                         nextTurn();
-                        return;
                     }
                     break;
                 }

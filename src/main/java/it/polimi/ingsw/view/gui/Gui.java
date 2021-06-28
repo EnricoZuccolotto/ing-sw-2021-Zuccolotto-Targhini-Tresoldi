@@ -126,6 +126,7 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askAction(TurnState state) {
+        Platform.runLater(() -> boardController.clearChoices());
         System.out.println(state);
         Platform.runLater(() ->
                 boardController.clearChoices());
@@ -133,7 +134,6 @@ public class Gui extends ViewObservable implements View {
             case FIRST_TURN: {
                 Platform.runLater(() -> boardController.notInTurn(true));
                 askFirstAction();
-                Platform.runLater(() -> boardController.clearChoices());
                 break;
             }
             case SECOND_TURN: {
@@ -147,7 +147,7 @@ public class Gui extends ViewObservable implements View {
                     boardController.notInTurn(false);
                     boardController.activeDecks(true);
                     boardController.activeMarket(true);
-                    boardController.activeProductions(false);
+                    boardController.activeProductions(true);
                     boardController.notActiveWarehouse(false);
                 });
                 break;
@@ -158,7 +158,7 @@ public class Gui extends ViewObservable implements View {
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
-                    boardController.activeProductions(false);
+                    boardController.activeProductions(true);
                     boardController.notActiveWarehouse(false);
                 });
                 break;
@@ -168,7 +168,7 @@ public class Gui extends ViewObservable implements View {
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
-                    boardController.activeProductions(true);
+                    boardController.activeProductions(false);
                     boardController.notActiveWarehouse(false);
                 });
                 break;
@@ -178,7 +178,7 @@ public class Gui extends ViewObservable implements View {
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
-                    boardController.activeProductions(true);
+                    boardController.activeProductions(false);
                     boardController.notActiveWarehouse(false);
                 });
                 break;
