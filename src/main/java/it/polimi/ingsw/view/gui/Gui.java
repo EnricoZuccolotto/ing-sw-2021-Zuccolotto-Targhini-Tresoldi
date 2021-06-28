@@ -127,9 +127,8 @@ public class Gui extends ViewObservable implements View {
     @Override
     public void askAction(TurnState state) {
         Platform.runLater(() -> boardController.clearChoices());
-        System.out.println(state);
         Platform.runLater(() ->
-                boardController.clearChoices());
+                boardController.setSinglePlayer(singlePlayer));
         switch (state) {
             case FIRST_TURN: {
                 Platform.runLater(() -> boardController.notInTurn(true));
@@ -141,6 +140,7 @@ public class Gui extends ViewObservable implements View {
                 askSecondAction();
                 break;
             }
+
             case FIRST_LEADER_ACTION:
             case NORMAL_ACTION: {
                 Platform.runLater(() -> {
@@ -200,7 +200,7 @@ public class Gui extends ViewObservable implements View {
     public void askSecondAction() {
 
         Platform.runLater(() ->
-                boardController.showBoard(singlePlayer));
+                boardController.showBoard());
         if (playerNumber == 0) {
             Platform.runLater(() ->
                     boardController.showCommunication("You are the first player.Waiting for other players to make their choices", true));
@@ -232,7 +232,7 @@ public class Gui extends ViewObservable implements View {
                         System.exit(3);
                     }
             }
-            Platform.runLater(() -> boardController.showBoard(singlePlayer));
+
             notifyObserver(obs -> obs.secondAction(boardController.getResourcesToSend()));
         }
     }

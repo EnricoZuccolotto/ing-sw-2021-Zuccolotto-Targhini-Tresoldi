@@ -559,23 +559,24 @@
                         <InnerShadow/>
                     </effect>
                 </ImageView>
-            <ImageView fx:id="temporaryCard" fitHeight="268.0" fitWidth="143.0" layoutX="255.0" layoutY="170.0"
-                       pickOnBounds="true" preserveRatio="true" visible="false">
-                <image>
-                    <Image url="@../Image/Cards/Development/1.png"/>
-                </image>
-                <cursor>
-                    <Cursor fx:constant="OPEN_HAND"/>
-                </cursor>
-            </ImageView>
-            <ImageView fx:id="baseProduction" fitHeight="118.0" fitWidth="124.0" layoutX="239.0" layoutY="467.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../Image/Resources/white.png" />
-               </image>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </ImageView>
+                <ImageView fx:id="temporaryCard" fitHeight="268.0" fitWidth="143.0" layoutX="255.0" layoutY="170.0"
+                           pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@../Image/Cards/Development/1.png"/>
+                    </image>
+                    <cursor>
+                        <Cursor fx:constant="OPEN_HAND"/>
+                    </cursor>
+                </ImageView>
+                <ImageView fx:id="baseProduction" fitHeight="118.0" fitWidth="124.0" layoutX="239.0" layoutY="467.0"
+                           pickOnBounds="true" preserveRatio="true" styleClass="card">
+                    <image>
+                        <Image url="@../Image/Resources/white.png"/>
+                    </image>
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </ImageView>
                 <HBox fx:id="firstRow" disable="true" layoutX="96.0" layoutY="290.0" prefHeight="55.0" prefWidth="60.0" spacing="5.0">
                     <children>
                         <ImageView fitHeight="60.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
@@ -857,7 +858,7 @@
                     </effect>
                 </ImageView>
                 <ImageView fx:id="active1" disable="true" fitHeight="300.0" fitWidth="300.0" layoutX="1029.0"
-                           layoutY="357.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                           layoutY="357.0" pickOnBounds="true" preserveRatio="true" styleClass="card" visible="false">
                     <image>
                         <Image url="@../Image/Cards/Leader/49.png"/>
                     </image>
@@ -869,7 +870,7 @@
                     </effect>
                 </ImageView>
                 <ImageView fx:id="active2" disable="true" fitHeight="300.0" fitWidth="300.0" layoutX="1029.0"
-                           layoutY="43.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                           layoutY="43.0" pickOnBounds="true" preserveRatio="true" styleClass="card" visible="false">
                     <image>
                         <Image url="@../Image/Cards/Leader/49.png"/>
                     </image>

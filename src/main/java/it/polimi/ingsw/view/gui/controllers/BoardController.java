@@ -48,6 +48,7 @@ public class BoardController extends ViewObservable implements SceneController {
     private boolean notInTurn = true;//if false we cannot see other player's boards
     private boolean panelViewBoardsActive = false;//if true we are moving between warehouse, if false we are moving between temporary storage and warehouses,used in drag interaction
     private boolean movingWarehouse = true;
+    private boolean singlePlayer = false;
     private Node activePanel;
 
     private CompressedPlayerBoard activePlayerBoard;
@@ -227,13 +228,13 @@ public class BoardController extends ViewObservable implements SceneController {
         //leader cards
         discard_activate_Leader.getChildren().get(1).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
             new Thread(() -> notifyObserver(obs -> obs.activeLeader(choice.get(0)))).start();
-            notInTurn(false);
+            activePanel.setDisable(false);
             discard_activate_Leader.setVisible(false);
             discard_activate_Leader.setDisable(true);
         });
         discard_activate_Leader.getChildren().get(2).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
             new Thread(() -> notifyObserver(obs -> obs.foldLeader(choice.get(0)))).start();
-            notInTurn(false);
+            activePanel.setDisable(false);
             discard_activate_Leader.setVisible(false);
             discard_activate_Leader.setDisable(true);
         });
@@ -308,6 +309,8 @@ public class BoardController extends ViewObservable implements SceneController {
     private void onConfirm() {
         new Thread(() -> notifyObserver(obs -> obs.firstAction(choice.get(0), choice.get(1)))).start();
         changeActivePane(Board);
+        flag = false;
+        view = true;
     }
 
     private void onCardSelection(int index) {
@@ -362,9 +365,13 @@ public class BoardController extends ViewObservable implements SceneController {
                     try {
                         if (NewDecks.getDeck(colors, j + 1).getDeck().size() > 0)
                             image = new Image((NewDecks.getDeck(colors, j + 1).getFirstCard().getImagePath()));
-                        else image = new Image(Resources.WHITE.getImagePath());
+                        else {
+                            image = new Image(Resources.WHITE.getImagePath());
+                            imageView.setDisable(true);
+                        }
                     } catch (NullPointerException e) {
                         image = new Image(Resources.WHITE.getImagePath());
+                        imageView.setDisable(true);
                     }
                     imageView.setImage(image);
                 }
@@ -377,7 +384,7 @@ public class BoardController extends ViewObservable implements SceneController {
         this.colors = colors;
         choice.add(level);
         System.out.println(colors + "  " + level);
-        int a[]= deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard();
+        int[] a = deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard();
         if(activePlayerBoard.getPlayerBoard().checkResources(a)) {
             buyCard(colors, level);
         }
@@ -591,7 +598,6 @@ public class BoardController extends ViewObservable implements SceneController {
                         imageViews = (ImageView) spacesView[i].getChildren().get(2 - spaceProd.getCards().indexOf(card));
                         spacesView[i].setDisable(false);
                         imageViews.setImage(new Image(card.getImagePath()));
-                        int finalI = i;
                     }
                 } else spacesView[i].setDisable(true);
             } catch (IndexOutOfBoundsException e) {
@@ -605,7 +611,10 @@ public class BoardController extends ViewObservable implements SceneController {
                 Resources resources = playerBoard.getTemporaryResourceStorage().get(i);
                 imageViews.setVisible(true);
                 imageViews.setDisable(false);
-                imageViews.setImage(new Image(resources.getImagePath()));
+                if (Resources.WHITE.equals(resources))
+                    imageViews.setImage(new Image(Resources.WHITE.getBallImagePath()));
+                else
+                    imageViews.setImage(new Image(resources.getImagePath()));
             } else {
                 imageViews.setVisible(false);
                 imageViews.setDisable(true);
@@ -1125,7 +1134,7 @@ public class BoardController extends ViewObservable implements SceneController {
         view = !view;
     }
 
-    public void showBoard(boolean singlePlayer) {
+    public void showBoard() {
         changeActivePane(Board);
         flag = false;
         view = true;
@@ -1134,6 +1143,10 @@ public class BoardController extends ViewObservable implements SceneController {
             viewBoards.setVisible(true);
             viewBoards.setDisable(false);
         }
+    }
+
+    public void setSinglePlayer(boolean singlePlayer) {
+        this.singlePlayer = singlePlayer;
     }
 
     public void clearChoices() {
@@ -1183,9 +1196,15 @@ public class BoardController extends ViewObservable implements SceneController {
             } else spaces[i].setDisable(true);
         }
         ImageView[] leader = new ImageView[]{active1, active2};
-        for (int i = 0; i < activePlayerBoard.getPlayerBoard().getLeaderCardsNumber(); i++)
-            if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getUncovered() && activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.PROD))
-                leader[i].setDisable(!active);
+        for (int i = 0; i < 2; i++)
+            try {
+                if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getUncovered() && activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.PROD))
+                    leader[i].setDisable(!active);
+                else
+                    leader[i].setDisable(true);
+            } catch (IndexOutOfBoundsException e) {
+
+            }
         baseProduction.setDisable(!active);
     }
 

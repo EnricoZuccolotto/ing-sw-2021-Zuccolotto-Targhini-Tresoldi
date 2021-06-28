@@ -444,11 +444,27 @@
     {
       "ID": 3,
       "VP": 1,
-      "Cost": [0,3,0,0],
-      "ProductionCost": [0,0,0,1],
-      "ProductionResult": [0,0,0,0,1],
-      "Level":1,
-      "Color":"BLUE"
+      "Cost": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "ProductionCost": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "ProductionResult": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "Level": 1,
+      "Color": "BLUE"
     },
     {
       "ID": 2,
