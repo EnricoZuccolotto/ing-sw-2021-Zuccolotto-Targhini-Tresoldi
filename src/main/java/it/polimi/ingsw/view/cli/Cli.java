@@ -526,7 +526,7 @@ public class Cli extends ViewObservable implements View {
             while (!flag) {
                 question = "Choose the level of the card you would like to buy (0 to exit): ";
                 level = validateInput(0, 3, null, question);
-                out.println("\nThis are the possible card color to buy: ");
+                out.println("\nThis are the possible card color: ");
                 for (Colors color: col) {
                     out.println(col.indexOf(color) + ". " + color);
                 }
@@ -547,7 +547,7 @@ public class Cli extends ViewObservable implements View {
                 return false;
             }
             try {
-                if (boards.get(0).getPlayerBoard().checkLevel(decks.getDeck(col.get(color1), level).getFirstCard()))
+                if (boards.get(0).getPlayerBoard().checkLevel(decks.getDeck(col.get(color1), level).getFirstCard()) && decks.getDeck(col.get(color1), level).getFirstCard().getLevel() == 1)
                     index = 0;
                 else {
                     question = "Choose where to place your new card, select a number between 1 and 3 : ";

@@ -354,9 +354,13 @@ public class BoardController extends ViewObservable implements SceneController {
             for (int j = 0; j < 3; j++) {
                 {
                     ImageView imageView = (ImageView) decksChildren.get(colors.ordinal() * 3 + (j));
-                    if (NewDecks.getDeck(colors, j + 1).getDeck().size() > 0)
-                        image = new Image((NewDecks.getDeck(colors, j + 1).getFirstCard().getImagePath()));
-                    else image = new Image(Resources.WHITE.getImagePath());
+                    try {
+                        if (NewDecks.getDeck(colors, j + 1).getDeck().size() > 0)
+                            image = new Image((NewDecks.getDeck(colors, j + 1).getFirstCard().getImagePath()));
+                        else image = new Image(Resources.WHITE.getImagePath());
+                    } catch (NullPointerException e) {
+                        image = new Image(Resources.WHITE.getImagePath());
+                    }
                     imageView.setImage(image);
                 }
 
