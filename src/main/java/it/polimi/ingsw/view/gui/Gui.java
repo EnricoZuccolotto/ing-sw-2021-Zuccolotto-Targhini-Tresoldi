@@ -148,7 +148,7 @@ public class Gui extends ViewObservable implements View {
                     boardController.showBoard(singlePlayer);
                     boardController.activeDecks(true);
                     boardController.activeMarket(true);
-                    boardController.activeProductions(true);
+                    boardController.activeProductions(false);
                     boardController.notActiveWarehouse(false);
                 });
                 break;
@@ -159,7 +159,7 @@ public class Gui extends ViewObservable implements View {
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
-                    boardController.activeProductions(true);
+                    boardController.activeProductions(false);
                     boardController.notActiveWarehouse(false);
                 });
                 break;
@@ -169,7 +169,7 @@ public class Gui extends ViewObservable implements View {
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
-                    boardController.activeProductions(false);
+                    boardController.activeProductions(true);
                     boardController.notActiveWarehouse(false);
                 });
                 break;
@@ -179,7 +179,7 @@ public class Gui extends ViewObservable implements View {
                     boardController.activeEndTurn(true);
                     boardController.activeDecks(false);
                     boardController.activeMarket(false);
-                    boardController.activeProductions(false);
+                    boardController.activeProductions(true);
                     boardController.notActiveWarehouse(false);
                 });
                 break;

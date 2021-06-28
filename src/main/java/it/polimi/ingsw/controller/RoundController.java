@@ -113,6 +113,7 @@ public class RoundController implements Serializable {
         playerInTurn.getPlayerBoard().addStrongboxResource(Resources.SERVANT, 10);
         playerInTurn.getPlayerBoard().addStrongboxResource(Resources.COIN, 10);
 
+
         if (isYourTurn(message.getPlayerName())) {
             ArrayList<Resources> list;
             try {

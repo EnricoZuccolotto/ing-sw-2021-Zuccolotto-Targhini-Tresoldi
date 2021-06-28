@@ -429,9 +429,9 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
                 stringBuilder.append(ColorsCLI.YELLOW_BOLD);
                 stringBuilder.append(leaderCards.indexOf(card));
                 stringBuilder.append(". ");
+                stringBuilder.append(ColorsCLI.CLEAR);
                 stringBuilder.append(card);
                 stringBuilder.append("\n");
-                stringBuilder.append(ColorsCLI.CLEAR);
             }
         }
         if (productionSpaces.size() != 0)

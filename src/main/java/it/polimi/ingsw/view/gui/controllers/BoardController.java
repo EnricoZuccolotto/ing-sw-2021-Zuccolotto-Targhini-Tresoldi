@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view.gui.controllers;
 
+import it.polimi.ingsw.exceptions.playerboard.InsufficientLevelException;
+import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.board.PlayerBoard;
@@ -209,6 +211,7 @@ public class BoardController extends ViewObservable implements SceneController {
                 choice.add(0, finalI1);
                 movingWarehouse = false;
                 notActiveWarehouse(false);
+                activeProductions(false);
                 content.putImage(imageView.getImage());
                 db.setContent(content);
                 event.consume();
@@ -241,7 +244,6 @@ public class BoardController extends ViewObservable implements SceneController {
         active2.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onSpecialProduction(1));
 
         //production
-        productionConfirm= (Button) productionPane.getChildren().get(19);
         productionConfirm.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickChoose());
         for (int j = 7; j < 19; j=j+1) {
             SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0);
@@ -254,11 +256,15 @@ public class BoardController extends ViewObservable implements SceneController {
             /* allow any transfer mode */
             Dragboard db = temporaryCard.startDragAndDrop(TransferMode.ANY);
             /* put the image on dragBoard */
+            movingWarehouse = false;
+            notActiveWarehouse(true);
+            activeProductions(false);
             ClipboardContent content = new ClipboardContent();
             content.putImage(temporaryCard.getImage());
             db.setContent(content);
             event.consume();
         });
+        initializeProductionDrag();
 
         baseProduction.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> BaseProduction());
 
@@ -485,21 +491,42 @@ public class BoardController extends ViewObservable implements SceneController {
         askPayment(false);
         switch (choice.get(1)) {
             case 0:
-                new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), choice.get(0), pos, 0, deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard()))).start();
-                temporaryCard.setDisable(false);
-                temporaryCard.setVisible(true);
-                temporaryCard.setImage(new Image(deck.getDeck(colors, choice.get(0)).getFirstCard().getImagePath()));
+                try {
+                    //FIXME:fix position
+                    pos.add(1);
+                    pos.add(1);
+                    pos.add(1);
+                    if (activePlayerBoard.getPlayerBoard().checkLevel(deck.getDeck(colors, choice.get(0)).getFirstCard()) && deck.getDeck(colors, choice.get(0)).getFirstCard().getLevel() == 1)
+                        new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), choice.get(0), pos, -1, deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard()))).start();
+                    else askWhereToPutCard();
+                } catch (InsufficientLevelException e) {
+                    askWhereToPutCard();
+                }
                 break;
             case 1:
                 new Thread(() -> notifyObserver(obs -> obs.useNormalProduction(choice.get(0), pos, activePlayerBoard.getPlayerBoard().getProductionCost(choice.get(0))))).start();
                 break;
             case 10:
-                new Thread(() -> notifyObserver(obs -> obs.useBaseProduction(pos, res, resourcesToSend.get(0) ))).start();
+                new Thread(() -> notifyObserver(obs -> obs.useBaseProduction(pos, res, resourcesToSend.get(0)))).start();
                 break;
             case 11:
-                new Thread(() -> notifyObserver(obs -> obs.useSpecialProduction(choice.get(0), pos.get(0), res.get(0) , resourcesToSend.get(0) ))).start();
+                new Thread(() -> notifyObserver(obs -> obs.useSpecialProduction(choice.get(0), pos.get(0), res.get(0), resourcesToSend.get(0)))).start();
                 break;
         }
+    }
+
+    private void askWhereToPutCard() {
+        boolean flag = false;
+        for (SpaceProd spaceProd : activePlayerBoard.getPlayerBoard().getProductionSpaces())
+            if (spaceProd.getTop().getLevel() == choice.get(0) - 1)
+                flag = true;
+        if (flag) {
+            temporaryCard.setDisable(false);
+            temporaryCard.setVisible(true);
+            temporaryCard.setImage(new Image(deck.getDeck(colors, choice.get(0)).getFirstCard().getImagePath()));
+            changeActivePane(playerBoard);
+        } else
+            Gui.getInstance().showCommunication("You don't have a card that metts the requirement", CommunicationMessage.ILLEGAL_ACTION);
     }
 
     /*private void OnClickSetMax(int i) {
@@ -750,6 +777,65 @@ public class BoardController extends ViewObservable implements SceneController {
 
     }
 
+    private void onDropOnProduction(int index) {
+        ArrayList<Integer> pos = new ArrayList<>();
+        //FIXME:fix position
+        new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), choice.get(0), pos, index, deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard()))).start();
+
+    }
+
+    private void initializeProductionDrag() {
+        Node[] spaceProds = new Node[]{spaceProd0, spaceProd1, spaceProd2};
+
+        for (int i = 0; i < 3; i++) {
+            int finalI = i;
+            spaceProds[i].setOnDragEntered(event -> {
+                /* the drag-and-drop gesture entered the target */
+                /* show to the user that it is an actual gesture target */
+                if (event.getGestureSource() != firstRow &&
+                        event.getDragboard().hasImage()) {
+                    spaceProds[finalI].setStyle(effect);
+                }
+                event.consume();
+            });
+            removeEffectWhenExited(spaceProds, i, finalI);
+
+            spaceProds[i].setOnDragDropped(event -> {
+                /* data dropped */
+                /* if there is a string data on dragBoard, read it and use it */
+                Dragboard db = event.getDragboard();
+                boolean success = false;
+                if (db.hasImage()) {
+                    onDropOnProduction(finalI);
+                    success = true;
+                }
+                event.setDropCompleted(success);
+                event.consume();
+            });
+        }
+
+    }
+
+    private void removeEffectWhenExited(Node[] spaceProds, int i, int finalI) {
+        spaceProds[i].setOnDragExited(event -> {
+            /* mouse moved away, remove the graphical cues */
+            spaceProds[finalI].setStyle("");
+            event.consume();
+        });
+
+        spaceProds[i].setOnDragOver(event -> {
+            /* data is dragged over the target */
+            /* accept it only if it is  not dragged from the same node
+             * and if it has a string data */
+            if (event.getGestureSource() != spaceProds[finalI] &&
+                    event.getDragboard().hasImage()) {
+                /* allow for moving, whatever user chooses */
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            }
+            event.consume();
+        });
+    }
+
     private void initializeWarehouse() {
         Node[] warehouseRows = new Node[]{firstRow, secondRow, thirdRow, specialWarehouse1, specialWarehouse2, bin};
 
@@ -766,23 +852,7 @@ public class BoardController extends ViewObservable implements SceneController {
                 }
                 event.consume();
             });
-            warehouseRows[i].setOnDragExited(event -> {
-                /* mouse moved away, remove the graphical cues */
-                warehouseRows[finalI].setStyle("");
-                event.consume();
-            });
-
-            warehouseRows[i].setOnDragOver(event -> {
-                /* data is dragged over the target */
-                /* accept it only if it is  not dragged from the same node
-                 * and if it has a string data */
-                if (event.getGestureSource() != warehouseRows[finalI] &&
-                        event.getDragboard().hasImage()) {
-                    /* allow for moving, whatever user chooses */
-                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-                }
-                event.consume();
-            });
+            removeEffectWhenExited(warehouseRows, i, finalI);
             warehouseRows[i].setOnDragDropped(event -> {
                 /* data dropped */
                 /* if there is a string data on dragBoard, read it and use it */
@@ -993,8 +1063,7 @@ public class BoardController extends ViewObservable implements SceneController {
     public void askPayment(boolean playable){
         productionBox.setVisible(playable);
         productionBox.setDisable(!playable);
-        playerBoard.setDisable(playable);
-        Board.setDisable(playable);
+        activePanel.setDisable(playable);
     }
 
     public ArrayList<Resources> getResourcesToSend() {

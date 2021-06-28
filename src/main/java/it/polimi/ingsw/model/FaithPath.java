@@ -167,11 +167,11 @@ public class FaithPath extends Observable implements Serializable {
         if(report < 3) {
             return "FaithPath: " +
                     " playerPositions=" + Arrays.toString(playerPositions) +
-                    ", report=" + rep[report];
+                    ", report=" + rep[report] + ",";
         } else {
             return "FaithPath: " +
                     " playerPositions=" + Arrays.toString(playerPositions) +
-                    ", report=" + rep[2];
+                    ", report=" + rep[2] + ",";
         }
 
     }

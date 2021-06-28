@@ -790,7 +790,8 @@ public class Cli extends ViewObservable implements View {
     public void showPlayerBoard(CompressedPlayerBoard playerBoard) {
         out.println(decks);
         out.println(market);
-        out.println(faithPath);
+        out.print(faithPath);
+        out.print(" cards: " + faithPath.getCardsState(0, playerNumber) + ", " + faithPath.getCardsState(1, playerNumber) + ", " + faithPath.getCardsState(2, playerNumber));
 
         if (playerBoard.getName().equals(nickname)) {
             this.playerNumber = playerBoard.getPlayerNumber();

@@ -339,11 +339,27 @@
     {
       "ID": 11,
       "VP": 3,
-      "Cost": [0,2,0,0],
-      "ProductionCost": [1,1,0,1],
-      "ProductionResult": [0,0,2,0,0],
-      "Level":1,
-      "Color":"BLUE"
+      "Cost": [
+        0,
+        3,
+        0,
+        0
+      ],
+      "ProductionCost": [
+        0,
+        0,
+        2,
+        0
+      ],
+      "ProductionResult": [
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "Level": 1,
+      "Color": "BLUE"
     },
     {
       "ID": 10,
