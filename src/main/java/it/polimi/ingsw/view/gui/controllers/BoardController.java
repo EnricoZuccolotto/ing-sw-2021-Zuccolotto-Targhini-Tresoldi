@@ -244,12 +244,17 @@ public class BoardController extends ViewObservable implements SceneController {
         active2.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onSpecialProduction(1));
 
         //production
+        productionConfirm.setDisable(true);
         productionConfirm.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickChoose());
+        new DragController(productionBox, true);
         for (int j = 7; j < 19; j=j+1) {
             SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0);
             ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-            /*((Spinner) productionPane.getChildren().get(j)).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickSetMax(j));*/
+            ( productionPane.getChildren().get(j)).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickCheckConfirm());
         }
+        spaceProd0.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> NormalProduction(0));
+        spaceProd1.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> NormalProduction(1));
+        spaceProd2.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> NormalProduction(2));
 
         temporaryCard.setOnDragDetected(event -> {
             /* drag was detected, start drag-and-drop gesture*/
@@ -258,7 +263,7 @@ public class BoardController extends ViewObservable implements SceneController {
             /* put the image on dragBoard */
             movingWarehouse = false;
             notActiveWarehouse(true);
-            activeProductions(false);
+            activeProductions(true);
             ClipboardContent content = new ClipboardContent();
             content.putImage(temporaryCard.getImage());
             db.setContent(content);
@@ -266,6 +271,7 @@ public class BoardController extends ViewObservable implements SceneController {
         });
         initializeProductionDrag();
 
+        baseProduction.setDisable(true);
         baseProduction.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> BaseProduction());
 
         //end turn
@@ -372,7 +378,10 @@ public class BoardController extends ViewObservable implements SceneController {
         this.colors = colors;
         choice.add(level);
         System.out.println(colors + "  " + level);
-        buyCard(colors, level);
+        int a[]= deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard();
+        if(activePlayerBoard.getPlayerBoard().checkResources(a)) {
+            buyCard(colors, level);
+        }
     }
 
     private void buyCard(Colors colors, int level){
@@ -380,22 +389,7 @@ public class BoardController extends ViewObservable implements SceneController {
         int[] a=deck.getDeck(colors, level).getFirstCard().getCostCard();
         for (int i=0; i < 4; i++) {
             for (int j = 7+i; j < 19; j=j+4) {
-                if (j<11 && activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j-7) % 4)))<a[i]) {
-                    SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j-7) % 4))), 0);
-                    ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-                }
-                else if(j<15 && j>10 && activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j-7) % 4)))<a[i]){
-                    SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j-7) % 4))), 0);
-                    ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-                }
-                else if(j>14 && activePlayerBoard.getPlayerBoard().getExtraResources().get(j-15)<a[i]){
-                    SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getExtraResources().get(j-15), 0);
-                    ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-                }
-                else {
-                    SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, a[i], 0);
-                    ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-                }
+                setSpinnerValue(a[i], j);
             }
         }
         askPayment(true);
@@ -404,24 +398,8 @@ public class BoardController extends ViewObservable implements SceneController {
     private void BaseProduction(){
         choice.add(1000);
         choice.add(10);
-        int[] a= {0, 0, 0, 0};
         for (int j = 7; j < 19; j++) {
-            if (j<11 && activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j-7) % 4)))<2) {
-                SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j-7) % 4))), 0);
-                ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-            }
-            else if(j<15 && j>10 && activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j-7) % 4)))<2){
-                SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j-7) % 4))), 0);
-                ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-            }
-            else if(j>14 && activePlayerBoard.getPlayerBoard().getExtraResources().get(j-15)<2){
-                SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getExtraResources().get(j-15), 0);
-                ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-            }
-            else {
-                SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 2, 0);
-                ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-            }
+            setSpinnerValue(2, j);
         }
         askResource(true);
     }
@@ -434,19 +412,7 @@ public class BoardController extends ViewObservable implements SceneController {
         for (int i = 0; i < 4; i++) {
             if (!(a.get(i).equals(0))) {
                 for (int j = 7 + i; j < 19; j++) {
-                    if (j < 11 && activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j - 7) % 4))) < 1) {
-                        SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 0, 0);
-                        ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-                    } else if (j < 15 && j > 10 && activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j - 7) % 4))) < 1) {
-                        SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 0, 0);
-                        ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-                    } else if (j > 14 && activePlayerBoard.getPlayerBoard().getExtraResources().get(j - 15) < 2) {
-                        SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 0, 0);
-                        ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-                    } else {
-                        SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1, 0);
-                        ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-                    }
+                    setSpinnerValue(1, j);
                 }
             }
         }
@@ -458,37 +424,42 @@ public class BoardController extends ViewObservable implements SceneController {
         choice.add(1);
         int[] a= activePlayerBoard.getPlayerBoard().getProductionCost(index);
         for(int i=0; i<4; i++)
-                for (int j = 7+i; j < 19; j++) if (j<11 && activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j-7) % 4)))<a[i]) {
-                    SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j-7) % 4))), 0);
-                    ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-                }
-                else if(j<15 && j>10 && activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j-7) % 4)))<a[i]){
-                    SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j-7) % 4))), 0);
-                    ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-                }
-                else if(j>14 && activePlayerBoard.getPlayerBoard().getExtraResources().get(j-15)<a[i]){
-                    SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getExtraResources().get(j-15), 0);
-                    ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-                }
-                else {
-                    SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, a[i], 0);
-                    ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
+                for (int j = 7+i; j < 19; j = j+4) {
+                    setSpinnerValue(a[i], j);
                 }
         askPayment(true);
+    }
+
+    private void setSpinnerValue(int i, int j) {
+        if (j<11 && activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j-7) % 4)))<i) {
+            SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j-7) % 4))), 0);
+            ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
+        }
+        else if(j<15 && j>10 && activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j-7) % 4)))<i){
+            SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j-7) % 4))), 0);
+            ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
+        }
+        else if(j>14 && activePlayerBoard.getPlayerBoard().getExtraResources().get(j-15)<i){
+            SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getExtraResources().get(j-15), 0);
+            ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
+        }
+        else {
+            SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, i, 0);
+            ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
+        }
     }
 
     private void onClickChoose(){
         ArrayList<Integer> pos= new ArrayList<>();
         ArrayList<Resources> res= new ArrayList<>();
-        for (int j=0; j<4; j++){
-            for(int i=7+j; i<19; i=i+4) {
+        for (int j=0; j<4; j++) {
+            for (int i = 7 + j; i < 19; i = i + 4) {
                 if ((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue() != 0) {
                     choice.add((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue());
-                    res.add(Resources.transform(j));
-                    if((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue() == 2){
+                    for (int c = 0; c < (Integer) ((Spinner) productionPane.getChildren().get(i)).getValue(); c++) {
                         res.add(Resources.transform(j));
+                        pos.add((int) Math.floor((i - 7) / 4));
                     }
-                    pos.add((int) Math.floor((i - 7) / 4));
                 }
             }
         }
@@ -496,10 +467,6 @@ public class BoardController extends ViewObservable implements SceneController {
         switch (choice.get(1)) {
             case 0:
                 try {
-                    //FIXME:fix position
-                    pos.add(1);
-                    pos.add(1);
-                    pos.add(1);
                     if (activePlayerBoard.getPlayerBoard().checkLevel(deck.getDeck(colors, choice.get(0)).getFirstCard()) && deck.getDeck(colors, choice.get(0)).getFirstCard().getLevel() == 1)
                         new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), choice.get(0), pos, -1, deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard()))).start();
                     else askWhereToPutCard();
@@ -515,6 +482,8 @@ public class BoardController extends ViewObservable implements SceneController {
                 break;
             case 11:
                 new Thread(() -> notifyObserver(obs -> obs.useSpecialProduction(choice.get(0), pos.get(0), res.get(0), resourcesToSend.get(0)))).start();
+                break;
+            default:
                 break;
         }
     }
@@ -533,16 +502,64 @@ public class BoardController extends ViewObservable implements SceneController {
             Gui.getInstance().showCommunication("You don't have a card that metts the requirement", CommunicationMessage.ILLEGAL_ACTION);
     }
 
-    /*private void OnClickSetMax(int i) {
-        if (i < 11) {
-            for (int j = 4 + i; j < 19; j = j + 4) {
-                SpinnerValueFactory<Integer> spinnerV1= ((Spinner) productionPane.getChildren().get(i)).getValueFactory();
-                SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, spinnerV1.getValue(), 0);
-                ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-            }
-        }
-    }*/
 
+    private void onClickCheckConfirm() {
+        int cont = 0, value;
+        boolean bool = false;
+        int[] c= {0, 0, 0, 0};
+        switch (choice.get(1)) {
+            case 0:
+                int[] a = deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard();
+                for (int i = 0; i < 4; i++) {
+                    if(a[i]!=0) {
+                        bool = isBool(bool, c, a, i);
+                    }
+                }
+                productionConfirm.setDisable(bool);
+                break;
+            case 1:
+                int[] b = activePlayerBoard.getPlayerBoard().getProductionCost(choice.get(0));
+                for (int i = 0; i < 4; i++) {
+                    bool = isBool(bool, c, b, i);
+                }
+                productionConfirm.setDisable(bool);
+                break;
+            case 10:
+                for (int j = 7; j < 19; j++) {
+                    value = (int) ((Spinner) productionPane.getChildren().get(j)).getValue();
+                    cont = cont + value;
+                }
+                if (cont != 2) {
+                    bool = true;
+                }
+                productionConfirm.setDisable(bool);
+                break;
+            case 11:
+                for (int j = 7; j < 19; j = j++) {
+                    value = (int) ((Spinner) productionPane.getChildren().get(j)).getValue();
+                    cont = cont + value;
+                }
+                if (cont != 1) {
+                    bool = true;
+                }
+                productionConfirm.setDisable(bool);
+                break;
+            default:
+                productionConfirm.setDisable(true);
+        }
+    }
+
+    private boolean isBool(boolean bool, int[] c, int[] a, int i) {
+        int value;
+        for (int j = 7 + i; j < 19; j = j + 4) {
+            value = (int) ((Spinner) productionPane.getChildren().get(j)).getValue();
+            c[i] = c[i] + value;
+        }
+        if (c[i] != a[i]) {
+            bool = true;
+        }
+        return bool;
+    }
 
     //playerBoard method
     public void updatePlayerBoard(CompressedPlayerBoard playerBoard) {
@@ -580,7 +597,6 @@ public class BoardController extends ViewObservable implements SceneController {
                         spacesView[i].setDisable(false);
                         imageViews.setImage(new Image(card.getImagePath()));
                         int finalI = i;
-                        imageViews.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> NormalProduction(finalI));
                     }
                 } else spacesView[i].setDisable(true);
             } catch (IndexOutOfBoundsException e) {
@@ -783,9 +799,19 @@ public class BoardController extends ViewObservable implements SceneController {
 
     private void onDropOnProduction(int index) {
         ArrayList<Integer> pos = new ArrayList<>();
-        //FIXME:fix position
+        for (int j=0; j<4; j++) {
+            for (int i = 7 + j; i < 19; i = i + 4) {
+                if ((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue() != 0) {
+                    choice.add((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue());
+                    for (int c = 0; c < (Integer) ((Spinner) productionPane.getChildren().get(i)).getValue(); c++) {
+                        pos.add((int) Math.floor((i - 7) / 4));
+                    }
+                }
+            }
+        }
         new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), choice.get(0), pos, index, deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard()))).start();
-
+        temporaryCard.setDisable(true);
+        temporaryCard.setVisible(false);
     }
 
     private void initializeProductionDrag() {
@@ -1151,13 +1177,14 @@ public class BoardController extends ViewObservable implements SceneController {
                 if (activePlayerBoard.getPlayerBoard().getProductionSpaces().get(i).getNumbCard() == 0)
                     spaces[i].setDisable(true);
                 else
-                    spaces[i].setDisable(active);
+                    spaces[i].setDisable(!active);
             } else spaces[i].setDisable(true);
         }
         ImageView[] leader = new ImageView[]{active1, active2};
         for (int i = 0; i < activePlayerBoard.getPlayerBoard().getLeaderCardsNumber(); i++)
             if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getUncovered() && activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.PROD))
                 leader[i].setDisable(!active);
+        baseProduction.setDisable(!active);
     }
 
     public void notInTurn(boolean active) {
