@@ -184,9 +184,9 @@ public class RoundControllerTest {
         gb.getPlayers().get(0).getPlayerBoard().addStrongboxResource(Resources.STONE, 100);
         gb.getPlayers().get(0).getPlayerBoard().addStrongboxResource(Resources.SHIELD, 100);
         //adding  production cards
-        gb.getPlayers().get(0).getPlayerBoard().addProductionCard(new DevelopmentCard(4, 2, new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{7, 0, 0, 0, 2}, Colors.BLUE, 1));
-        gb.getPlayers().get(0).getPlayerBoard().addProductionCard(new DevelopmentCard(4, 2, new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{0, 5, 0, 0, 2}, Colors.BLUE, 1));
-        gb.getPlayers().get(0).getPlayerBoard().addProductionCard(new DevelopmentCard(4, 2, new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{7, 0, 0, 0, 2}, Colors.BLUE, 1));
+        gb.getPlayers().get(0).getPlayerBoard().addProductionCard(new DevelopmentCard(4, 2, new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{7, 0, 0, 0, 2}, Colors.BLUE, 1), 0);
+        gb.getPlayers().get(0).getPlayerBoard().addProductionCard(new DevelopmentCard(4, 2, new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{0, 5, 0, 0, 2}, Colors.BLUE, 1), 1);
+        gb.getPlayers().get(0).getPlayerBoard().addProductionCard(new DevelopmentCard(4, 2, new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{7, 0, 0, 0, 2}, Colors.BLUE, 1), 2);
         //normal base production functioning
         assertFalse(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 1, 0, 0}));
         g.handle_useBaseProduction(new UseProductionBaseMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 1, 1}, new int[]{0, 0, 0, 0}), Resources.COIN));

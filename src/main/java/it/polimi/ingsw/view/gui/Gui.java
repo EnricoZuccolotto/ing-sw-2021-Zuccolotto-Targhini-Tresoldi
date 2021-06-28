@@ -145,7 +145,6 @@ public class Gui extends ViewObservable implements View {
             case NORMAL_ACTION: {
                 Platform.runLater(() -> {
                     boardController.notInTurn(false);
-                    boardController.showBoard(singlePlayer);
                     boardController.activeDecks(true);
                     boardController.activeMarket(true);
                     boardController.activeProductions(false);
@@ -233,7 +232,7 @@ public class Gui extends ViewObservable implements View {
                         System.exit(3);
                     }
             }
-
+            Platform.runLater(() -> boardController.showBoard(singlePlayer));
             notifyObserver(obs -> obs.secondAction(boardController.getResourcesToSend()));
         }
     }

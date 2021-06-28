@@ -12,11 +12,13 @@ public class ProductionSpacesTest {
 
 @Test
     public void ProductionSpaces() {
-        SpaceProd s = new SpaceProd(new DevelopmentCard(12, 1, new int[]{ 1, 2, 3, 4}, new int[]{ 4, 5, 6, 7}, new int[]{8, 9, 10, 11}, Colors.BLUE, 1));
-        assertArrayEquals(new int[]{1, 2, 3, 4}, s.getTop().getCostCard());
-        assertArrayEquals(new int[]{4, 5, 6, 7}, s.getTop().getCostProduction());
-        assertArrayEquals(new int[]{8, 9, 10, 11}, s.getTop().getProductionResult());
-        assertEquals(Colors.BLUE, s.getTop().getColor());
+    SpaceProd s = new SpaceProd();
+    s.addCard(new DevelopmentCard(12, 1, new int[]{1, 2, 3, 4}, new int[]{4, 5, 6, 7}, new int[]{8, 9, 10, 11}, Colors.BLUE, 1));
+
+    assertArrayEquals(new int[]{1, 2, 3, 4}, s.getTop().getCostCard());
+    assertArrayEquals(new int[]{4, 5, 6, 7}, s.getTop().getCostProduction());
+    assertArrayEquals(new int[]{8, 9, 10, 11}, s.getTop().getProductionResult());
+    assertEquals(Colors.BLUE, s.getTop().getColor());
     assertEquals(1, s.getTop().getLevel());
     assertEquals(s.getVictoryPoints(), 12);
     assertEquals(s.checkColor(Colors.BLUE), 1);

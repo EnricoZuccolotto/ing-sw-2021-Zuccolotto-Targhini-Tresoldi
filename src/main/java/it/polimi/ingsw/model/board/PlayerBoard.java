@@ -55,11 +55,6 @@ public interface PlayerBoard {
      */
     boolean shiftWarehouseRows(WarehousePositions startingRow, WarehousePositions newRowPosition);
 
-    /**
-     * Adds production card in the only possible place
-     * @see PlayerBoard#addProductionCard(DevelopmentCard, int)
-     */
-    boolean addProductionCard(DevelopmentCard card);
 
     /**
      * Adds a production card to the board

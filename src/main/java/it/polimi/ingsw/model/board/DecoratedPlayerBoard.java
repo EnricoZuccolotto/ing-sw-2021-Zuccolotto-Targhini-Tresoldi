@@ -146,8 +146,6 @@ public abstract class DecoratedPlayerBoard implements PlayerBoard, Serializable 
         return subBoard.addProductionCard(c, index);
     }
 
-    @Override
-    public boolean addProductionCard(DevelopmentCard c){return subBoard.addProductionCard(c);}
 
     @Override
     public void addWarehouseSpace(Resources resource, int maxQuantity) {

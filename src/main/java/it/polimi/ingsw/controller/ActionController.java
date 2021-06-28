@@ -236,12 +236,12 @@ public class ActionController implements Serializable {
         int[] resStr = exchangeResources.getStrongbox();
         int[] resSpeWar = exchangeResources.getSpecialWarehouse();
         int[] cost;
-        try {
-            cost = player.getPlayerBoard().getProductionCost(index);
-        } catch (IndexOutOfBoundsException e) {
+        cost = player.getPlayerBoard().getProductionCost(index);
+        if (player.getPlayerBoard().getProductionSpaces().get(index).getTop().getLevel() == 0) {
             player.setPrivateCommunication("You don't have a card in this position", CommunicationMessage.ILLEGAL_ACTION);
             return false;
         }
+
 
         for (int i = 0; i < 4; i++)
             if (cost[i] != (resWar[i] + resSpeWar[i] + resStr[i])) {
@@ -302,6 +302,7 @@ public class ActionController implements Serializable {
         int[] resWar = exchangeResources.getWarehouse();
         int[] resStr = exchangeResources.getStrongbox();
         int[] resSpeWar = exchangeResources.getSpecialWarehouse();
+        if (index < 0) return false;
         boolean winner = false;
         DevelopmentCard card = gameBoard.getDeck(color, level).getFirstCard();
 
@@ -318,10 +319,7 @@ public class ActionController implements Serializable {
         if (isResourcesAvailable(player, exchangeResources, false)) {
 
             try {
-                if (index < 0)
-                    player.getPlayerBoard().addProductionCard(card);
-                else
-                    player.getPlayerBoard().addProductionCard(card, index);
+                player.getPlayerBoard().addProductionCard(card, index);
             } catch (WinnerException e) {
                 winner = true;
             } catch (InsufficientLevelException | IndexOutOfBoundsException e) {

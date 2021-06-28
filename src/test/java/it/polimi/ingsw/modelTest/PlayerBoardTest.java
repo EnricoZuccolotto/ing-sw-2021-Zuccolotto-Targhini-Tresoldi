@@ -143,7 +143,7 @@ public class PlayerBoardTest {
         int[] col3={2,1,1,3};
         DevelopmentCard d= new DevelopmentCard(0,0,a,b,a, Colors.BLUE,1);
         DevelopmentCard e= new DevelopmentCard(1,2,a,b,a, Colors.BLUE,1);
-        assertTrue(s.addProductionCard(d));
+        assertTrue(s.addProductionCard(d, 0));
         try {
             s.addProductionCard(e,0);
             fail();
@@ -151,13 +151,13 @@ public class PlayerBoardTest {
         catch (InsufficientLevelException w) {
             assertTrue(true);
         }
-        assertTrue(s.addProductionCard(e));
+        assertTrue(s.addProductionCard(e, 2));
         assertTrue(s.checkColors(col1));
         assertFalse(s.checkColors(col2));
         assertEquals(b,s.getProductionCost(0));
         assertEquals(a, s.getProductionResult(0));
         DevelopmentCard g= new DevelopmentCard(1,2,a,a,b, Colors.YELLOW,2);
-        assertTrue(s.addProductionCard(g));
+        assertTrue(s.addProductionCard(g, 0));
         assertEquals(a, s.getProductionCost(0));
         assertEquals(b, s.getProductionResult(0));
         assertTrue(s.checkColors(col1));
@@ -189,12 +189,12 @@ public class PlayerBoardTest {
         catch (InsufficientLevelException w) {
             assertTrue(true);
         }
-        assertTrue(s.addProductionCard(i));
+        assertTrue(s.addProductionCard(i, 1));
         assertTrue(s.checkColors(col1));
         assertTrue(s.checkColors(col2));
         assertTrue(s.addProductionCard(l, 1));
         try {
-            s.addProductionCard(m);
+            s.addProductionCard(m, 1);
             fail();
         }
         catch (WinnerException w) {
@@ -248,7 +248,7 @@ public class PlayerBoardTest {
         assertEquals(0, board.getVictoryPointsCards());
         board.getLeaderCard(0).flipCard();
         assertEquals(10, board.getVictoryPointsCards());
-        board.addProductionCard(new DevelopmentCard(4, 2, new int[]{0, 0, 0, 0}, new int[]{0, 1, 2, 0}, new int[]{7, 5, 2, 0, 0, 2}, Colors.BLUE, 1));
+        board.addProductionCard(new DevelopmentCard(4, 2, new int[]{0, 0, 0, 0}, new int[]{0, 1, 2, 0}, new int[]{7, 5, 2, 0, 0, 2}, Colors.BLUE, 1), 0);
         assertEquals(14, board.getVictoryPointsCards());
     }
 }

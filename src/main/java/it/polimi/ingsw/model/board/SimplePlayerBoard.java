@@ -33,6 +33,9 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         strongbox = new Strongbox();
         leaderCards = new ArrayList<>(2);
         productionSpaces = new ArrayList<>();
+        productionSpaces.add(new SpaceProd());
+        productionSpaces.add(new SpaceProd());
+        productionSpaces.add(new SpaceProd());
         warehouse = new Warehouse();
     }
 
@@ -182,29 +185,7 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         return warehouse.MoveRow(startingRow, newRowPosition);
     }
 
-    @Override
-    // Add a DevelopementCard to the production Spaces with only 1 choice possible
-    public boolean addProductionCard(DevelopmentCard c){
-            if(checkLevel(c))
-            {
-               if(c.getLevel()==1) {
-                   if (productionSpaces.size() < 3) {
-                       productionSpaces.add(new SpaceProd(c));
-                       checkWinnerNumCards();
-                       return true;
-                   }
-               }
-               else
-                       for (SpaceProd sp: productionSpaces) {
-                           if (sp.getTop().getLevel() == c.getLevel() - 1) {
-                               sp.addCard(c);
-                               checkWinnerNumCards();
-                               return true;
-                           }
-                       }
-            }
-        throw new InsufficientLevelException();
-    }
+
     @Override
     // Add a DevelopementCard to the production Space[index]
     public boolean addProductionCard(DevelopmentCard c,int index){
@@ -301,13 +282,10 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
 
     @Override
     public boolean checkLevel(DevelopmentCard c) {
-        if (c.getLevel() == 1) {
-            return productionSpaces.size() < 3;
-        } else {
-            for (SpaceProd sp : productionSpaces)
+
+        for (SpaceProd sp : productionSpaces)
                 if (sp.getTop().getLevel() == c.getLevel() - 1)
                     return true;
-        }
         throw new InsufficientLevelException();
     }
 
@@ -437,10 +415,12 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         if (productionSpaces.size() != 0)
             stringBuilder.append("Development cards:\n");
         for (SpaceProd prod : productionSpaces) {
-            stringBuilder.append(productionSpaces.indexOf(prod));
-            stringBuilder.append(". ");
-            stringBuilder.append(prod.getTop());
-            stringBuilder.append("\n");
+            if (prod.getTop().getLevel() != 0) {
+                stringBuilder.append(productionSpaces.indexOf(prod));
+                stringBuilder.append(". ");
+                stringBuilder.append(prod.getTop());
+                stringBuilder.append("\n");
+            }
         }
         stringBuilder.append(warehouse);
         return stringBuilder.toString();

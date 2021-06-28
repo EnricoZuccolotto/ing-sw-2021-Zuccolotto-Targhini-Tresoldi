@@ -15,13 +15,9 @@ public class SpaceProd implements Serializable {
 
     /**
      * Build a new SpaceProd with the first development card.
-     *
-     * @param c first development card.
      */
-    public SpaceProd(DevelopmentCard c) {
+    public SpaceProd() {
         spaceProd = new Stack<>();
-        this.spaceProd.push(c);
-
     }
 
     /**
@@ -30,6 +26,7 @@ public class SpaceProd implements Serializable {
      * @return the sum of the victory points of all the cards in this production space.
      */
     public int getVictoryPoints() {
+        if(spaceProd.size() == 0) return 0;
         int cont = 0;
         for (DevelopmentCard c : spaceProd)
             cont += c.getVP();
@@ -51,6 +48,7 @@ public class SpaceProd implements Serializable {
      * @param c color of interest
      */
     public int checkColor(Colors c) {
+        if(spaceProd.size() == 0) return 0;
         int cont = 0;
         for (DevelopmentCard card : spaceProd) {
 
@@ -68,6 +66,7 @@ public class SpaceProd implements Serializable {
      * @param c color of interest
      */
     public int checkColor(Colors c, int level) {
+        if(spaceProd.size() == 0) return 0;
         int cont = 0;
         for (DevelopmentCard card : spaceProd) {
             if (card.getColor().equals(c) && card.getLevel() == level) {
@@ -83,6 +82,8 @@ public class SpaceProd implements Serializable {
      * @return the usable development card.
      */
     public DevelopmentCard getTop() {
+        if(spaceProd.size() == 0)
+            return new DevelopmentCard(0, -1, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, Colors.BLUE, 0);
         return spaceProd.peek();
     }
 

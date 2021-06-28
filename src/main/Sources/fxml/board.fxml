@@ -559,13 +559,14 @@
                         <InnerShadow/>
                     </effect>
                 </ImageView>
-            <ImageView fx:id="temporaryCard" fitHeight="268.0" fitWidth="143.0" layoutX="255.0" layoutY="243.0" pickOnBounds="true" preserveRatio="true" visible="false">
-               <image>
-                  <Image url="@../Image/Cards/Development/1.png" />
-               </image>
-               <cursor>
-                  <Cursor fx:constant="OPEN_HAND" />
-               </cursor>
+            <ImageView fx:id="temporaryCard" fitHeight="268.0" fitWidth="143.0" layoutX="255.0" layoutY="170.0"
+                       pickOnBounds="true" preserveRatio="true" visible="false">
+                <image>
+                    <Image url="@../Image/Cards/Development/1.png"/>
+                </image>
+                <cursor>
+                    <Cursor fx:constant="OPEN_HAND"/>
+                </cursor>
             </ImageView>
             <ImageView fx:id="baseProduction" fitHeight="118.0" fitWidth="124.0" layoutX="239.0" layoutY="467.0" pickOnBounds="true" preserveRatio="true">
                <image>

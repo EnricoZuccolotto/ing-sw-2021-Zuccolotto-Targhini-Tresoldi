@@ -49,7 +49,7 @@ public class ActionControllerTest {
         player.getPlayerBoard().addExtraResources(Resources.SHIELD, 3);
 
 
-        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3})));
+        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, 0, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3})));
 
         assertEquals(0, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
         assertEquals(player.getPlayerBoard().getExtraResources().get(3), (Integer) 0);
@@ -69,13 +69,13 @@ public class ActionControllerTest {
         player.getPlayerBoard().addStrongboxResource(Resources.SHIELD, 3);
         player.getPlayerBoard().addStrongboxResource(Resources.STONE, 2);
 
-        assertFalse(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 1, 0, 3}, new int[]{0, 0, 0, 0})));
+        assertFalse(actionController.getProduction(Colors.BLUE, 1, gameBoard, 0, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 1, 0, 3}, new int[]{0, 0, 0, 0})));
         assertEquals(player.getPrivateCommunication().getMessage(), "The resources sent are different from the cost of the card");
         assertEquals(1, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
 
-        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 1, 2, 3}, new int[]{0, 0, 0, 0})));
+        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, 0, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 1, 2, 3}, new int[]{0, 0, 0, 0})));
         gameBoard.getDeck(Colors.BLUE, 1).addCard(new DevelopmentCard(4, 2, new int[]{0, 0, 0, 0}, null, null, Colors.BLUE, 2));
-        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0})));
+        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, 0, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0})));
         assertEquals(0, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
     }
 
@@ -102,11 +102,11 @@ public class ActionControllerTest {
 
         player.getPlayerBoard().addExtraResources(Resources.SHIELD, 3);
 
-        assertFalse(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3})));
+        assertFalse(actionController.getProduction(Colors.BLUE, 1, gameBoard, 0, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3})));
         assertEquals(player.getPrivateCommunication().getCommunicationMessage(), CommunicationMessage.ILLEGAL_ACTION);
         assertEquals(1, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
         player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
-        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3})));
+        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, 0, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3})));
         assertEquals(0, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
     }
 
@@ -124,7 +124,7 @@ public class ActionControllerTest {
 
         gameBoard.getDeck(Colors.BLUE, 1).addCard(new DevelopmentCard(4, 2, new int[]{0, 1, 2, 3}, null, null, Colors.BLUE, 3));
 
-        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0})));
+        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, 0, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0})));
         player.getPlayerBoard().addStrongboxResource(Resources.COIN, 1);
         player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
         player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
@@ -139,7 +139,7 @@ public class ActionControllerTest {
 
         player.getPlayerBoard().addExtraResources(Resources.SHIELD, 3);
         //wrong level
-        assertFalse(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3})));
+        assertFalse(actionController.getProduction(Colors.BLUE, 1, gameBoard, 0, player, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 1, 0, 0}, new int[]{0, 0, 0, 3})));
         assertEquals(player.getPrivateCommunication().getMessage(), "You don't have a space available");
 
 
@@ -167,11 +167,11 @@ public class ActionControllerTest {
         player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
         player.getPlayerBoard().addWarehouseResource(Resources.STONE, WarehousePositions.WAREHOUSE_SECOND_ROW);
 
-        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}, new int[]{0, 0, 0, 0})));
+        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, 0, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}, new int[]{0, 0, 0, 0})));
         assertEquals(6, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
-        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}, new int[]{0, 0, 0, 0})));
+        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, 1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}, new int[]{0, 0, 0, 0})));
         assertEquals(5, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
-        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}, new int[]{0, 0, 0, 0})));
+        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, 2, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}, new int[]{0, 0, 0, 0})));
         assertEquals(4, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
 
         assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, 0, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}, new int[]{0, 0, 0, 0})));
@@ -283,7 +283,7 @@ public class ActionControllerTest {
             gameBoard.getDeck(Colors.BLUE, 1).popFirstCard();
 
         gameBoard.getDeck(Colors.BLUE, 1).addCard(new DevelopmentCard(4, 2, new int[]{0, 0, 0, 0}, new int[]{0, 1, 2, 0}, new int[]{7, 5, 2, 0, 2}, Colors.BLUE, 1));
-        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, -1, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0, 25})));
+        assertTrue(actionController.getProduction(Colors.BLUE, 1, gameBoard, 0, player, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0, 25})));
         player.setPlayerBoard(new DecoratedWarehousePlayerBoard(player.getPlayerBoard()));
         LeaderCard leaderCard = new LeaderCard(1, 2, null, null, null, new int[]{0, 5, 0, 0});
         // Add the corresponding effect

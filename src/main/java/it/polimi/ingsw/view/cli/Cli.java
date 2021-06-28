@@ -4,7 +4,6 @@ import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.ClientManager;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.TurnState;
-import it.polimi.ingsw.exceptions.playerboard.InsufficientLevelException;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
@@ -547,20 +546,13 @@ public class Cli extends ViewObservable implements View {
             if (pos == null) {
                 return false;
             }
-            try {
-                if (boards.get(0).getPlayerBoard().checkLevel(decks.getDeck(col.get(color1), level).getFirstCard()) && decks.getDeck(col.get(color1), level).getFirstCard().getLevel() == 1)
-                    index = 0;
-                else {
-                    question = "Choose where to place your new card, select a number between 1 and 3 : ";
-                    index = validateInput(1, 3, null, question);
-                }
-            } catch (InsufficientLevelException e) {
-                question = "Choose where to place your new card, select a number between 1 and 3 : ";
-                index = validateInput(1, 3, null, question);
-            }
+
+            question = "Choose where to place your new card, select a number between 0 and 2 : ";
+            index = validateInput(0, 2, null, question);
+
             int finalColor = color1;
             int finalLevel = level;
-            int finalIndex = index - 1;
+            int finalIndex = index;
             notifyObserver(obs -> obs.getProduction(finalColor, finalLevel, pos, finalIndex, a));
         } catch (ExecutionException e) {
             out.println("Error");
@@ -704,7 +696,7 @@ public class Cli extends ViewObservable implements View {
     public boolean askFoldLeader() {
         int foldCard;
         int numCards = boards.get(playerNumber).getPlayerBoard().getLeaderCardsNumber() - 1;
-        String question = "Which card do you want to discard? Select 1, between 0 and " + numCards + " (" + numCards + 1 + " to exit:";
+        String question = "Which card do you want to discard? Select 1, between 0 and " + numCards + " (" + (1 + numCards) + ") to exit:";
         try {
             foldCard = validateInput(0, numCards+1, null, question);
             if(foldCard==numCards+1) { return false; }

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.gui.controllers;
 
-import it.polimi.ingsw.exceptions.playerboard.InsufficientLevelException;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
@@ -211,7 +210,7 @@ public class BoardController extends ViewObservable implements SceneController {
                 choice.add(0, finalI1);
                 movingWarehouse = false;
                 notActiveWarehouse(false);
-                activeProductions(false);
+                activeSpaceProds(false);
                 content.putImage(imageView.getImage());
                 db.setContent(content);
                 event.consume();
@@ -258,7 +257,7 @@ public class BoardController extends ViewObservable implements SceneController {
             /* put the image on dragBoard */
             movingWarehouse = false;
             notActiveWarehouse(true);
-            activeProductions(false);
+            activeSpaceProds(true);
             ClipboardContent content = new ClipboardContent();
             content.putImage(temporaryCard.getImage());
             db.setContent(content);
@@ -495,17 +494,8 @@ public class BoardController extends ViewObservable implements SceneController {
         askPayment(false);
         switch (choice.get(1)) {
             case 0:
-                try {
                     //FIXME:fix position
-                    pos.add(1);
-                    pos.add(1);
-                    pos.add(1);
-                    if (activePlayerBoard.getPlayerBoard().checkLevel(deck.getDeck(colors, choice.get(0)).getFirstCard()) && deck.getDeck(colors, choice.get(0)).getFirstCard().getLevel() == 1)
-                        new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), choice.get(0), pos, -1, deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard()))).start();
-                    else askWhereToPutCard();
-                } catch (InsufficientLevelException e) {
                     askWhereToPutCard();
-                }
                 break;
             case 1:
                 new Thread(() -> notifyObserver(obs -> obs.useNormalProduction(choice.get(0), pos, activePlayerBoard.getPlayerBoard().getProductionCost(choice.get(0))))).start();
@@ -529,6 +519,7 @@ public class BoardController extends ViewObservable implements SceneController {
             temporaryCard.setVisible(true);
             temporaryCard.setImage(new Image(deck.getDeck(colors, choice.get(0)).getFirstCard().getImagePath()));
             changeActivePane(playerBoard);
+            view = false;
         } else
             Gui.getInstance().showCommunication("You don't have a card that metts the requirement", CommunicationMessage.ILLEGAL_ACTION);
     }
@@ -783,9 +774,20 @@ public class BoardController extends ViewObservable implements SceneController {
 
     private void onDropOnProduction(int index) {
         ArrayList<Integer> pos = new ArrayList<>();
+        pos.add(1);
+        pos.add(1);
+        pos.add(1);
         //FIXME:fix position
         new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), choice.get(0), pos, index, deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard()))).start();
+        activeSpaceProds(false);
+        temporaryCard.setDisable(true);
+        temporaryCard.setVisible(false);
+    }
 
+    private void activeSpaceProds(boolean active) {
+        spaceProd2.setDisable(!active);
+        spaceProd1.setDisable(!active);
+        spaceProd0.setDisable(!active);
     }
 
     private void initializeProductionDrag() {
