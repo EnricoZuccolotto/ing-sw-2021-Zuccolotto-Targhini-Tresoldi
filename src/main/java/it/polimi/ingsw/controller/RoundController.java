@@ -412,6 +412,7 @@ public class RoundController implements Serializable {
                 winnerPlayer = players.indexOf(player);
                 if (gameState == GameState.SINGLEPLAYER) {
                     nextTurn();
+                    winnerPlayer = -1;
                 }
             }
         }

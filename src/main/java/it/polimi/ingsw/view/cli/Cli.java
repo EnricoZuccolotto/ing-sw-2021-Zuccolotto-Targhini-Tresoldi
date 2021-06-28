@@ -50,6 +50,9 @@ public class Cli extends ViewObservable implements View {
     public Cli() {
         out = System.out;
         boards = new ArrayList<>(4);
+        for(int i = 0; i < 4; i++){
+            boards.add(null);
+        }
         turnState = TurnState.END;
         init();
     }
@@ -230,6 +233,9 @@ public class Cli extends ViewObservable implements View {
     }
 
     private void askWhichAction() {
+        if(turnState.equals(TurnState.END)){
+            return;
+        }
         int action;
         Action act;
         boolean exit=true;
@@ -788,11 +794,11 @@ public class Cli extends ViewObservable implements View {
 
         if (playerBoard.getName().equals(nickname)) {
             this.playerNumber = playerBoard.getPlayerNumber();
-            this.boards.add(playerNumber, playerBoard);
+            this.boards.set(playerNumber, playerBoard);
             out.println(playerBoard.toString(true));
         } else if (!turnState.equals(TurnState.FIRST_TURN)) {
             out.println("\n");
-            this.boards.add(playerBoard.getPlayerNumber(), playerBoard);
+            this.boards.set(playerBoard.getPlayerNumber(), playerBoard);
             out.println("Another player is playing...");
             out.println(playerBoard.toString(false));
         }
@@ -817,7 +823,13 @@ public class Cli extends ViewObservable implements View {
 
     private void showEndGame() {
         clearCli();
-        if (boards.size() > 1) {
+        int gameSize = 0;
+        for(CompressedPlayerBoard board : boards){
+            if(board != null) {
+                gameSize++;
+            }
+        }
+        if (gameSize > 1) {
             ArrayList<CompressedPlayerBoard> sorted = (ArrayList<CompressedPlayerBoard>) boards.stream().sorted(Comparator.comparingInt(CompressedPlayerBoard::getPlayerNumber).reversed()).collect(Collectors.toList());
             for (int i = 0; i < sorted.size(); i++)
                 out.println((i + 1) + ". " + sorted.get(i).getName() + "  score:" + sorted.get(i).getPlayerBoard().getVP());
@@ -827,6 +839,7 @@ public class Cli extends ViewObservable implements View {
             else
                 out.println("Loser");
             out.println(boards.get(0).getName() + "  score:" + boards.get(0).getPlayerBoard().getVP());
+            System.exit(0);
         }
 
 

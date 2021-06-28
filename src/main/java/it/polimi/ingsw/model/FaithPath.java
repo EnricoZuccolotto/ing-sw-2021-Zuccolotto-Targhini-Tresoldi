@@ -164,8 +164,15 @@ public class FaithPath extends Observable implements Serializable {
     @Override
     public String toString() {
         final int[] rep = new int[]{8, 16, 24};
-        return "FaithPath: " +
-                " playerPositions=" + Arrays.toString(playerPositions) +
-                ", report=" + rep[report];
+        if(report < 3) {
+            return "FaithPath: " +
+                    " playerPositions=" + Arrays.toString(playerPositions) +
+                    ", report=" + rep[report];
+        } else {
+            return "FaithPath: " +
+                    " playerPositions=" + Arrays.toString(playerPositions) +
+                    ", report=" + rep[2];
+        }
+
     }
 }
