@@ -8,6 +8,7 @@ import it.polimi.ingsw.exceptions.playerboard.InsufficientLevelException;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
+import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.cards.Decks;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.enums.Advantages;
@@ -914,6 +915,24 @@ public class Cli extends ViewObservable implements View {
         for (String st : s) {
             out.println(s.indexOf(st) + ". " + st);
         }
+
+        // Remove discounted resources
+        PlayerBoard myBoard = null;
+        for(CompressedPlayerBoard cpb : boards){
+            if(cpb.getName().equals(nickname)){
+                myBoard = cpb.getPlayerBoard();
+                break;
+            }
+        }
+        for(int i = 0; i < 4; i++){
+            if(myBoard != null){
+                if(myBoard.isResourceDiscounted(Resources.transform(i)) && a[i] > 0){
+                    a[i] -= myBoard.getResourceDiscount(Resources.transform(i));
+                    if(a[i] < 0) a[i] = 0;
+                }
+            }
+        }
+
         try {
             for (int i = 0; i < 4; i++) {
                 while (count != a[i]) {

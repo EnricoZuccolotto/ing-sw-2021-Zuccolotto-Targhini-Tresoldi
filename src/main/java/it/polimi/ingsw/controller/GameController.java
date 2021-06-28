@@ -220,4 +220,8 @@ public class GameController implements Serializable {
             for (HumanPlayer player1 : gameBoardInstance.getPlayers())
                 player.addObserver(viewMap.get(player1.getName()));
     }
+
+    public boolean isLocal() {
+        return local;
+    }
 }
