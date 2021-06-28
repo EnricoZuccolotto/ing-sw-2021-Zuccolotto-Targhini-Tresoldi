@@ -239,7 +239,7 @@ public class Cli extends ViewObservable implements View {
         }
         int action;
         Action act;
-        boolean exit=true;
+        boolean exit=false;
         showPlayerBoard(boards.get(playerNumber));
         ArrayList<Action> possibilities = turnState.possibleActions();
         if (boards.get(playerNumber).getPlayerBoard().getLeaderCardsNumber() == 0) {
@@ -264,6 +264,7 @@ public class Cli extends ViewObservable implements View {
                             break;
                         case END_TURN:
                             notifyObserver(ViewObserver::endTurn);
+                            exit = true;
                             break;
                         case GET_RESOURCES_FROM_MARKET:
                             exit = askGetMarket();
