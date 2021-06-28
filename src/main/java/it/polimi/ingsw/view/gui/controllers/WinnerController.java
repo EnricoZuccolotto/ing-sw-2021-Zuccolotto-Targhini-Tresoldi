@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui.controllers;
 
+import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.view.gui.Gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -11,7 +12,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class WinnerController {
+public class WinnerController extends ViewObservable implements SceneController {
     @FXML
     private Label winnerLabel;
     @FXML

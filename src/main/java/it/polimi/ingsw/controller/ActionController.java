@@ -76,15 +76,19 @@ public class ActionController implements Serializable {
             return false;
         }
         if (item.equals(resource) || (item.equals(Resources.WHITE) && humanPlayer.getPlayerBoard().isResourceSubstitutable(resource))) {
+
             if (position.equals(WarehousePositions.SPECIAL_WAREHOUSE)) {
                 if (!humanPlayer.getPlayerBoard().addExtraResources(resource, 1)) {
                     humanPlayer.setPrivateCommunication("You can't insert this resource in this position", CommunicationMessage.ILLEGAL_ACTION);
                     return false;
                 }
-            } else if (!humanPlayer.getPlayerBoard().addWarehouseResource(resource, position)) {
-                humanPlayer.setPrivateCommunication("You can't insert this resource " + resource.noColor() + " in this position " + position, CommunicationMessage.ILLEGAL_ACTION);
-                return false;
+            } else {
+                if (!humanPlayer.getPlayerBoard().addWarehouseResource(resource, position)) {
+                    humanPlayer.setPrivateCommunication("You can't insert this resource " + resource.noColor() + " in this position " + position, CommunicationMessage.ILLEGAL_ACTION);
+                    return false;
+                }
             }
+
             humanPlayer.removeItemFromTemporaryList(receivedResourceIndex);
         } else {
             humanPlayer.setPrivateCommunication("Resource not found", CommunicationMessage.ILLEGAL_ACTION);

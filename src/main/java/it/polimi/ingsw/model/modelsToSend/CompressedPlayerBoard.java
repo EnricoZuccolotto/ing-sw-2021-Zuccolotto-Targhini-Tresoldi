@@ -45,6 +45,7 @@ public class CompressedPlayerBoard implements Serializable {
 
     /**
      * Returns the resourced obtained from the Market and not yet stored or discarded.
+     *
      * @return The temporary resource array.
      */
     public ArrayList<Resources> getTemporaryResourceStorage() {
@@ -52,7 +53,18 @@ public class CompressedPlayerBoard implements Serializable {
     }
 
     /**
+     * Modify the temporary resource storage
+     *
+     * @param index    Position of the resource to change.
+     * @param resource New resource.
+     */
+    public void setTemporaryResource(int index, Resources resource) {
+        temporaryResourceStorage.set(index, resource);
+    }
+
+    /**
      * Get the player's name
+     *
      * @return The Player Name.
      */
     public String getName() {

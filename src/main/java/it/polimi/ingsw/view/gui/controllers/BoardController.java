@@ -31,7 +31,6 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 
 public class BoardController extends ViewObservable implements SceneController {
@@ -383,7 +382,7 @@ public class BoardController extends ViewObservable implements SceneController {
     private void onDecksCardSelection(Colors colors, int level) {
         this.colors = colors;
         choice.add(level);
-        System.out.println(colors + "  " + level);
+
         int[] a = deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard();
         if(activePlayerBoard.getPlayerBoard().checkResources(a)) {
             buyCard(colors, level);
@@ -472,7 +471,6 @@ public class BoardController extends ViewObservable implements SceneController {
         askPayment(false);
         switch (choice.get(1)) {
             case 0:
-                    //FIXME:fix position
                     askWhereToPutCard();
                 break;
             case 1:
@@ -566,6 +564,7 @@ public class BoardController extends ViewObservable implements SceneController {
     //playerBoard method
     public void updatePlayerBoard(CompressedPlayerBoard playerBoard) {
         ImageView imageViews;
+
         //vievs other player boards method
         ((VBox) viewBoards.getChildren().get(1)).getChildren().get(0).setDisable(false);
         ((VBox) viewBoards.getChildren().get(1)).getChildren().get(0).setVisible(true);
@@ -621,6 +620,7 @@ public class BoardController extends ViewObservable implements SceneController {
             }
         }
 
+
         //leaderCards
         ImageView[] leader = new ImageView[]{leaderCard1, leaderCard2, active1, active2};
         HBox[] warehouse = new HBox[]{specialWarehouse1, specialWarehouse2};
@@ -634,7 +634,10 @@ public class BoardController extends ViewObservable implements SceneController {
                     leader[i + 2].setVisible(true);
                     //updating special warehouse
                     updateSpecialWarehouse(card, warehouse[i], activePlayerBoard);
-                } else leader[i].setImage(new Image(card.getImagePath()));
+                } else {
+                    leader[i].setImage(new Image(card.getImagePath()));
+                    leader[i].setDisable(false);
+                }
             } catch (IndexOutOfBoundsException e) {
                 leader[i].setDisable(true);
                 leader[i].setVisible(false);
@@ -967,23 +970,17 @@ public class BoardController extends ViewObservable implements SceneController {
 
     //on temporary resource white selection
     private void onResourceWhite(int index) {
+
         if (activePlayerBoard.getTemporaryResourceStorage().get(index).equals(Resources.WHITE)) {
-            playerBoard.setDisable(true);
+            activePanel.setDisable(true);
             chooseResource.setDisable(false);
+            choice.add(0, -2);
+            choice.add(1, index);
             chooseResource.setVisible(true);
             Button[] buttons = new Button[]{servantButton, coinButton, stoneButton, shieldButton};
             for (int i = 0; i < 4; i++)
                 buttons[i].setDisable(!activePlayerBoard.getPlayerBoard().isResourceSubstitutable(Resources.transform(i)));
-            while (resourcesToSend.size() != 1)
-                try {
-                    TimeUnit.MILLISECONDS.sleep(100);
-                } catch (InterruptedException E) {
-                    System.exit(3);
-                }
-            ((ImageView) resourcesToSort.getChildren().get(index)).setImage(new Image(resourcesToSend.get(0).getImagePath()));
-            activePlayerBoard.getTemporaryResourceStorage().set(index, resourcesToSend.get(0));
-            chooseResource.setVisible(false);
-            chooseResource.setDisable(true);
+
         }
     }
 
@@ -1088,11 +1085,13 @@ public class BoardController extends ViewObservable implements SceneController {
     //choose resource methods
     private void onResourceSelection(Resources resources) {
         resourcesToSend.add(resources);
-        if(choice.get(0)>9){
-            askResource(false);
+        if (choice.get(0) > 9) {
             askPayment(true);
+        } else if (choice.get(0) < 0) {
+            ((ImageView) resourcesToSort.getChildren().get(choice.get(1))).setImage(new Image(resourcesToSend.get(0).getImagePath()));
+            activePlayerBoard.setTemporaryResource(choice.get(1), resourcesToSend.get(0));
         }
-        else { askResource(false); }
+        askResource(false);
     }
 
     public void askResource(boolean visible) {
