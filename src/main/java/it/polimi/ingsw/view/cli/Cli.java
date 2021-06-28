@@ -547,8 +547,12 @@ public class Cli extends ViewObservable implements View {
                 return false;
             }
             try {
-                boards.get(0).getPlayerBoard().checkLevel(decks.getDeck(col.get(color1), level).getFirstCard());
-                index = 0;
+                if (boards.get(0).getPlayerBoard().checkLevel(decks.getDeck(col.get(color1), level).getFirstCard()))
+                    index = 0;
+                else {
+                    question = "Choose where to place your new card, select a number between 1 and 3 : ";
+                    index = validateInput(1, 3, null, question);
+                }
             } catch (InsufficientLevelException e) {
                 question = "Choose where to place your new card, select a number between 1 and 3 : ";
                 index = validateInput(1, 3, null, question);
@@ -562,6 +566,7 @@ public class Cli extends ViewObservable implements View {
         }
         return true;
     }
+
 
     @Override
     public boolean askUseBaseProduction() {
