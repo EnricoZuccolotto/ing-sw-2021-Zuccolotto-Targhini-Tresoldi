@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.tools.MORLogger;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.gui.controllers.SceneController;
@@ -32,7 +33,8 @@ public class GuiSceneUtils {
             activeScene = scene;
             activeScene.setRoot(root);
         } catch(IOException e){
-            // TODO: Error
+            MORLogger.LOGGER.severe("Could not load the scene from file! Game will end!");
+            System.exit(1);
         }
         return controller;
     }

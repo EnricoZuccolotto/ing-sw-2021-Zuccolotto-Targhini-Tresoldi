@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 
+import it.polimi.ingsw.model.tools.MORLogger;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.view.cli.Cli;
 import it.polimi.ingsw.view.gui.GuiEntryPoint;
@@ -25,7 +26,7 @@ public class ClientApp {
 
         }
 
-        SocketClient.LOGGER.setLevel(Level.WARNING);
+        MORLogger.LOGGER.setLevel(Level.WARNING);
 
         if (!cli) {
             // Launch the CLI

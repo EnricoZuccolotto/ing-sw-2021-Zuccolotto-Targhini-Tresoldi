@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.enums.PlayerDisconnectionState;
 import it.polimi.ingsw.model.player.HumanPlayer;
+import it.polimi.ingsw.model.tools.MORLogger;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.ExecutableMessage;
 import it.polimi.ingsw.network.messages.Message;
@@ -136,7 +137,7 @@ public class GameController implements Serializable {
             ExecutableMessage currentMessage = (ExecutableMessage) message;
             currentMessage.execute(this);
         } catch (ClassCastException ex) {
-            SocketClient.LOGGER.warning("Invalid message: " + ex.getMessage());
+            MORLogger.LOGGER.warning("Invalid message: " + ex.getMessage());
         }
     }
 

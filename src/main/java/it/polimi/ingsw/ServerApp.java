@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.model.tools.MORLogger;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.server.Server;
 import it.polimi.ingsw.network.server.SocketServer;
@@ -18,7 +19,7 @@ public class ServerApp {
                 try {
                     serverPort = Integer.parseInt(args[i + 1]);
                 } catch (NumberFormatException e) {
-                    SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
+                    MORLogger.LOGGER.warning("Invalid message: " + e.getMessage());
                     System.out.println("Invalid port number. Retry.");
                     System.exit(1);
                 }

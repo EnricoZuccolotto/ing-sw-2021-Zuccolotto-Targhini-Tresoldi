@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui;
 
+import it.polimi.ingsw.model.tools.MORLogger;
 import it.polimi.ingsw.network.Client.SocketClient;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -31,7 +32,7 @@ public class GuiEntryPoint extends Application  {
         try {
             layout = loader.load();
         } catch(IOException e){
-            SocketClient.LOGGER.warning("Error loading from file!");
+            MORLogger.LOGGER.warning("Error loading from file!");
             System.exit(1);
         }
 

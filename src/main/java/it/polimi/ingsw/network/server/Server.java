@@ -6,6 +6,7 @@ import it.polimi.ingsw.controller.TurnState;
 import it.polimi.ingsw.model.Communication.CommunicationMessage;
 import it.polimi.ingsw.model.enums.PlayerDisconnectionState;
 import it.polimi.ingsw.model.player.HumanPlayer;
+import it.polimi.ingsw.model.tools.MORLogger;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.NetworkLayerView;
@@ -102,7 +103,7 @@ public class Server {
     public void onDisconnect(SocketConnection connection){
         String nickname = fromConnectionToNickname(connection);
         if(nickname == null) return;
-        SocketClient.LOGGER.info("Nickname " + nickname + " has disconnected!");
+        MORLogger.LOGGER.info("Nickname " + nickname + " has disconnected!");
 
         // Remove from the game
         synchronized (lock){
@@ -122,11 +123,11 @@ public class Server {
             // we fakely send a first action message in order for the game logic to be consistent.
             HumanPlayer disconnectedPlayer = gameController.getInstance().getPlayer(nickname);
             if(gameController.getInstance().getActivePlayersCount() == 1){
-                SocketClient.LOGGER.info("Every player has disconnected, kill the game.");
+                MORLogger.LOGGER.info("Every player has disconnected, kill the game.");
                 System.exit(0);
             }
             if(disconnectedPlayer.getPlayerBoard().getInkwell()){
-                SocketClient.LOGGER.info("The inkwell player has disconnected. The game cannot proceed.");
+                MORLogger.LOGGER.info("The inkwell player has disconnected. The game cannot proceed.");
                 System.exit(0);
             }
             disconnectedPlayer.setPlayerState(PlayerDisconnectionState.TERMINAL);
@@ -134,11 +135,11 @@ public class Server {
         } else if (currentTurnState.equals(TurnState.SECOND_TURN)){
             HumanPlayer disconnectedPlayer = gameController.getInstance().getPlayer(nickname);
             if(gameController.getInstance().getActivePlayersCount() == 1){
-                SocketClient.LOGGER.info("Every player has disconnected, kill the game.");
+                MORLogger.LOGGER.info("Every player has disconnected, kill the game.");
                 System.exit(0);
             }
             if(disconnectedPlayer.getPlayerBoard().getInkwell()){
-                SocketClient.LOGGER.info("The inkwell player has disconnected. The game cannot proceed.");
+                MORLogger.LOGGER.info("The inkwell player has disconnected. The game cannot proceed.");
                 System.exit(0);
             }
             disconnectedPlayer.setPlayerState(PlayerDisconnectionState.TERMINAL);

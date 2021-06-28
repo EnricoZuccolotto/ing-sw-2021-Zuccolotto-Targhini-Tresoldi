@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.Client;
 
+import it.polimi.ingsw.model.tools.MORLogger;
 import it.polimi.ingsw.network.messages.ErrorMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.Ping;
@@ -14,7 +15,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 /**
  * This class represents a socket client implementation.
@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 public class SocketClient extends Observable implements Client {
 
     private static final int TIMEOUT = 10000;
-    public static final Logger LOGGER = Logger.getLogger(SocketClient.class.getName());
     private final Socket socket;
     private final ObjectOutputStream objectOutputStream;
     private final ObjectInputStream objectInputStream;
@@ -67,7 +66,7 @@ public class SocketClient extends Observable implements Client {
                     synchronized (inLock){
                         message = (Message) objectInputStream.readObject();
                     }
-                    LOGGER.info("Received: " + message.getMessageType() + " from " + message.getPlayerName());
+                    MORLogger.LOGGER.info("Received: " + message.getMessageType() + " from " + message.getPlayerName());
                 } catch (IOException | ClassNotFoundException e) {
                     message = new ErrorMessage(null, "Connection lost with the server.\n" + e.getMessage());
                     disconnect();

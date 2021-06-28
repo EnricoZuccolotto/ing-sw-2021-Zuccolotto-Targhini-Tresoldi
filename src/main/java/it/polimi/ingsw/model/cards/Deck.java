@@ -51,7 +51,15 @@ public class Deck implements Serializable {
      * @return the first card of the deck.
      */
     public DevelopmentCard getFirstCard() {
-        return (DevelopmentCard) deck.toArray()[0];
+        try {
+            return (DevelopmentCard) deck.toArray()[0];
+        } catch(ArrayIndexOutOfBoundsException ex) {
+            ex.printStackTrace();
+            System.out.println(deck.size());
+            System.exit(0);
+            return null;
+        }
+
     }
 
     /**

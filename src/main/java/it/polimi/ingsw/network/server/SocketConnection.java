@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.model.tools.MORLogger;
 import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;
@@ -47,7 +48,7 @@ public class SocketConnection implements Runnable {
                 this.output = new ObjectOutputStream(client.getOutputStream());
             }
         } catch (IOException e) {
-            SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
+            MORLogger.LOGGER.warning("Invalid message: " + e.getMessage());
         }
 
         // Start the listener thread.
@@ -71,7 +72,7 @@ public class SocketConnection implements Runnable {
             } catch (IOException e) {
                 disconnect();
             } catch (ClassNotFoundException e) {
-                SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
+                MORLogger.LOGGER.warning("Invalid message: " + e.getMessage());
             }
         }
     }
@@ -94,7 +95,7 @@ public class SocketConnection implements Runnable {
                     output.reset();
                 }
             } catch (IOException e) {
-                SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
+                MORLogger.LOGGER.warning("Invalid message: " + e.getMessage());
                 disconnect();
             }
         }
@@ -110,7 +111,7 @@ public class SocketConnection implements Runnable {
                     clientSocket.close();
                 }
             } catch(IOException e){
-                SocketClient.LOGGER.warning("Invalid message: " + e.getMessage());
+                MORLogger.LOGGER.warning("Invalid message: " + e.getMessage());
             }
 
             socketConnectionThread.interrupt();

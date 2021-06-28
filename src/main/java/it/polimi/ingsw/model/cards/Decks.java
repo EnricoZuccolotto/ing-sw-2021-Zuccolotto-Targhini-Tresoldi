@@ -58,7 +58,7 @@ public class Decks extends Observable implements Serializable {
         stringBuilder.append("Decks:\n");
         for (int i = 1; i < 4; i++) {
             for (Colors colors : Colors.values()) {
-                if (this.getDeck(colors, i) != null)
+                if (this.getDeck(colors, i).DeckLength() != 0)
                     stringBuilder.append(this.getDeck(colors, i).getFirstCard());
                 else
                     stringBuilder.append("-----------");

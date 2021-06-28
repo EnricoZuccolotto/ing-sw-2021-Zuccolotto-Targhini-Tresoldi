@@ -22,16 +22,11 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard implemen
     public DecoratedWarehousePlayerBoard(PlayerBoard subBoard){
         super(subBoard);
         quantities = new ArrayList<>(4);
-        // TODO: Move to an initializer static method
-        quantities.add(0);
-        quantities.add(0);
-        quantities.add(0);
-        quantities.add(0);
         enableSpecialWarehouse = new ArrayList<>(4);
-        enableSpecialWarehouse.add(0);
-        enableSpecialWarehouse.add(0);
-        enableSpecialWarehouse.add(0);
-        enableSpecialWarehouse.add(0);
+        for(int i = 0; i < 4; i++){
+            quantities.add(0);
+            enableSpecialWarehouse.add(0);
+        }
     }
 
     @Override

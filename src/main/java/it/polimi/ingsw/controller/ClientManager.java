@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.tools.ExchangeResources;
+import it.polimi.ingsw.model.tools.MORLogger;
 import it.polimi.ingsw.network.Client.Client;
 import it.polimi.ingsw.network.Client.LocalClient;
 import it.polimi.ingsw.network.Client.SocketClient;
@@ -241,7 +242,7 @@ public class ClientManager implements ViewObserver, Observer {
 
 
         } catch (ClassCastException ex) {
-            SocketClient.LOGGER.warning("Invalid message: " + ex.getMessage());
+            MORLogger.LOGGER.warning("Invalid message: " + ex.getMessage());
         }
     }
 

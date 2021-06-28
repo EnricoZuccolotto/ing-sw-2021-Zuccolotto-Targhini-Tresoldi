@@ -1,6 +1,7 @@
 package it.polimi.ingsw.utils;
 
 import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.model.tools.MORLogger;
 import it.polimi.ingsw.network.Client.SocketClient;
 
 import java.io.*;
@@ -25,8 +26,7 @@ public class GameSaver {
             objectWriter.close();
             saveStream.close();
         } catch(IOException ex){
-            // TODO: Maybe create a better LOGGER interface...
-            SocketClient.LOGGER.severe(ex.getMessage());
+            MORLogger.LOGGER.severe(ex.getMessage());
         }
     }
 
@@ -38,8 +38,7 @@ public class GameSaver {
         try {
             Files.deleteIfExists(file.toPath());
         } catch (IOException ex){
-            // TODO: Maybe create a better LOGGER interface...
-            SocketClient.LOGGER.severe(ex.getMessage());
+            MORLogger.LOGGER.severe(ex.getMessage());
         }
     }
 
@@ -57,11 +56,9 @@ public class GameSaver {
             loadStream.close();
             return restoredGame.getGameController();
         } catch (IOException ex){
-            // TODO: Maybe create a better LOGGER interface...
-            SocketClient.LOGGER.severe("Error loading from file!");
+            MORLogger.LOGGER.severe("Error loading from file!");
         } catch (ClassNotFoundException ex) {
-            // TODO: Maybe create a better LOGGER interface...
-            SocketClient.LOGGER.severe(ex.getMessage());
+            MORLogger.LOGGER.severe(ex.getMessage());
         }
         return null;
     }
