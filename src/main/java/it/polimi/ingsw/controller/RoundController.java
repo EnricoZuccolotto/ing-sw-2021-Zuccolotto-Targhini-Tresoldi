@@ -488,7 +488,8 @@ public class RoundController implements Serializable {
 
         if (gameController.getInstance().getActivePlayersCount() != 0)
             goToNextTurn();
-        GameSaver.saveGame(gameController);
+        if(!gameController.isLocal())
+            GameSaver.saveGame(gameController);
     }
 
     /**
@@ -504,7 +505,6 @@ public class RoundController implements Serializable {
         } while (!playerInTurn.getPlayerState().equals(PlayerDisconnectionState.ACTIVE));
         firstState();
         playerInTurn.setState(turnState);
-        GameSaver.saveGame(gameController);
     }
 
     /**
