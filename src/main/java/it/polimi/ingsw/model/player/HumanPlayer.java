@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.controller.TurnState;
-import it.polimi.ingsw.model.Communication.Communication;
-import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.model.communication.Communication;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.board.SimplePlayerBoard;
 import it.polimi.ingsw.model.enums.PlayerDisconnectionState;

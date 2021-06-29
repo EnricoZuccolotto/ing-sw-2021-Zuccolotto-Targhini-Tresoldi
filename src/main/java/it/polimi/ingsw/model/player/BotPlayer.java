@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.player;
 
-import it.polimi.ingsw.exceptions.playerboard.WinnerException;
-import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.exceptions.WinnerException;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.enums.Colors;

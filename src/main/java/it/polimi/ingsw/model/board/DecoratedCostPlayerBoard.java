@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.board;
 
-import it.polimi.ingsw.exceptions.playerboard.IllegalResourceException;
+import it.polimi.ingsw.exceptions.IllegalResourceException;
 import it.polimi.ingsw.model.enums.Resources;
 
 import java.io.Serializable;

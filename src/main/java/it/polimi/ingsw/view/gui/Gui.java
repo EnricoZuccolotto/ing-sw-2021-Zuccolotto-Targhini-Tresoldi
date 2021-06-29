@@ -3,7 +3,7 @@ package it.polimi.ingsw.view.gui;
 import it.polimi.ingsw.controller.ClientManager;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.TurnState;
-import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.cards.Decks;

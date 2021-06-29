@@ -1,4 +1,4 @@
-package it.polimi.ingsw.exception.controller;
+package it.polimi.ingsw.exceptions;
 
 public class LobbyException extends RuntimeException {
     private final LobbyError lobbyError;

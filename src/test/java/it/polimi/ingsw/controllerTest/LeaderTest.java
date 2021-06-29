@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controllerTest;
 
 import it.polimi.ingsw.controller.RoundController;
-import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
+import it.polimi.ingsw.exceptions.IllegalDecoratorException;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.cards.LeaderCard;

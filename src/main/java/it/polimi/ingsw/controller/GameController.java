@@ -1,12 +1,11 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.exception.controller.LobbyException;
-import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.exceptions.LobbyException;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.enums.PlayerDisconnectionState;
 import it.polimi.ingsw.model.player.HumanPlayer;
 import it.polimi.ingsw.model.tools.MORLogger;
-import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.ExecutableMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.MessageType;

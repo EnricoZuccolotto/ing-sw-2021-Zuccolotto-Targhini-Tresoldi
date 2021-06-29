@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controllerTest;
 
 import it.polimi.ingsw.controller.LobbyController;
-import it.polimi.ingsw.exception.controller.LobbyException;
-import it.polimi.ingsw.exception.controller.PlayerAlreadyExistsException;
+import it.polimi.ingsw.exceptions.LobbyException;
+import it.polimi.ingsw.exceptions.PlayerAlreadyExistsException;
 import it.polimi.ingsw.network.messages.LobbyJoinMessage;
 import it.polimi.ingsw.network.messages.LobbySetMessage;
 import org.junit.Test;

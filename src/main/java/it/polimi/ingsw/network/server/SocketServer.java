@@ -1,7 +1,6 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.model.tools.MORLogger;
-import it.polimi.ingsw.network.Client.SocketClient;
 import it.polimi.ingsw.network.messages.Message;
 
 import java.io.IOException;

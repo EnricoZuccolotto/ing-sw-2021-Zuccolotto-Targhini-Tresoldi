@@ -5,7 +5,7 @@ import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.RoundController;
 import it.polimi.ingsw.controller.TurnState;
-import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.cards.LeaderCard;
 import it.polimi.ingsw.model.enums.Resources;

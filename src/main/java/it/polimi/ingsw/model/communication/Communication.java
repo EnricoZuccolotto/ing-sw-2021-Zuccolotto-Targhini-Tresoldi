@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.Communication;
+package it.polimi.ingsw.model.communication;
 
 import java.io.Serializable;
 

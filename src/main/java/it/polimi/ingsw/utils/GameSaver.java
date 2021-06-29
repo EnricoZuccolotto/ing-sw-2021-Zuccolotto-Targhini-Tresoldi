@@ -2,7 +2,6 @@ package it.polimi.ingsw.utils;
 
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.tools.MORLogger;
-import it.polimi.ingsw.network.Client.SocketClient;
 
 import java.io.*;
 import java.nio.file.Files;

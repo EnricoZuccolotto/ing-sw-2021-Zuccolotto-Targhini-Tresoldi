@@ -1,6 +1,6 @@
 package it.polimi.ingsw.modelTest;
 
-import it.polimi.ingsw.exceptions.playerboard.WinnerException;
+import it.polimi.ingsw.exceptions.WinnerException;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.enums.Colors;

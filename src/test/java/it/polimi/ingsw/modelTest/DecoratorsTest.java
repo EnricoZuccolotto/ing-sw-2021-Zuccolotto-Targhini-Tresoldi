@@ -1,6 +1,6 @@
 package it.polimi.ingsw.modelTest;
 
-import it.polimi.ingsw.exceptions.playerboard.IllegalDecoratorException;
+import it.polimi.ingsw.exceptions.IllegalDecoratorException;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;

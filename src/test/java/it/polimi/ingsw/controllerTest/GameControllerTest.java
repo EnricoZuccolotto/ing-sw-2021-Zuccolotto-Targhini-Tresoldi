@@ -2,7 +2,7 @@ package it.polimi.ingsw.controllerTest;
 
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.GameState;
-import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;

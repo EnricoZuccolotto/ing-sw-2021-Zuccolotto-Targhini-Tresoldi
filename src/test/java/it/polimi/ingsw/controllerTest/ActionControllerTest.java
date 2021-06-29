@@ -1,9 +1,9 @@
 package it.polimi.ingsw.controllerTest;
 
 import it.polimi.ingsw.controller.*;
-import it.polimi.ingsw.exceptions.playerboard.IllegalActionException;
-import it.polimi.ingsw.exceptions.playerboard.WinnerException;
-import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.exceptions.IllegalActionException;
+import it.polimi.ingsw.exceptions.WinnerException;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.board.DecoratedChangePlayerBoard;
 import it.polimi.ingsw.model.board.DecoratedWarehousePlayerBoard;

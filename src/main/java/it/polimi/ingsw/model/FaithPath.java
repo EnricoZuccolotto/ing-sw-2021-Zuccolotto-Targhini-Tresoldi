@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.playerboard.WinnerException;
+import it.polimi.ingsw.exceptions.WinnerException;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.tools.CardParser;
 import it.polimi.ingsw.network.messages.FaithPathUpdateMessage;

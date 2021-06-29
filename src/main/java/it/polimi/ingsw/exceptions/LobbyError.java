@@ -1,4 +1,4 @@
-package it.polimi.ingsw.exception.controller;
+package it.polimi.ingsw.exceptions;
 
 public enum LobbyError {
     FULL,

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.exceptions.playerboard;
+package it.polimi.ingsw.exceptions;
 
 public class InsufficientLevelException  extends RuntimeException {
     public InsufficientLevelException(){

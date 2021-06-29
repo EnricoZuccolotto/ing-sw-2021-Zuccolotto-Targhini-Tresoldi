@@ -1,9 +1,9 @@
 package it.polimi.ingsw.controller;
 
 
-import it.polimi.ingsw.exception.controller.LobbyError;
-import it.polimi.ingsw.exception.controller.LobbyException;
-import it.polimi.ingsw.exception.controller.PlayerAlreadyExistsException;
+import it.polimi.ingsw.exceptions.LobbyError;
+import it.polimi.ingsw.exceptions.LobbyException;
+import it.polimi.ingsw.exceptions.PlayerAlreadyExistsException;
 import it.polimi.ingsw.network.messages.LobbyJoinMessage;
 import it.polimi.ingsw.network.messages.LobbySetMessage;
 

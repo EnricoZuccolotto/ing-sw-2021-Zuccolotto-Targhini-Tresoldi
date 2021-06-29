@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.view.View;
 
 import java.util.concurrent.ExecutorService;

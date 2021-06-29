@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.Communication.Communication;
-import it.polimi.ingsw.model.Communication.CommunicationMessage;
+import it.polimi.ingsw.model.communication.Communication;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.Decks;
 import it.polimi.ingsw.model.enums.Colors;
