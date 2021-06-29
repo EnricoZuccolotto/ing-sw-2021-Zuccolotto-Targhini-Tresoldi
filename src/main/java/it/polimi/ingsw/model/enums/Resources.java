@@ -27,6 +27,12 @@ public enum Resources {
         return Resources.WHATEVER;
     }
 
+    /**
+     * Gets the string associated with this array of Resources.
+     *
+     * @param resources Array to transform into a string.
+     * @return the string associated with this array of Resources.
+     */
     public static String toString(int[] resources) {
         StringBuilder string = new StringBuilder();
         for (int i = 0; i < resources.length; i++)
@@ -41,6 +47,12 @@ public enum Resources {
         return string.toString();
     }
 
+    /**
+     * Gets the string associated with this array of Resources for the leader cards.
+     *
+     * @param effect Array to transform into a string.
+     * @return the string associated with this array of Resources for the leader cards.
+     */
     public static String getResources(int[] effect) {
         StringBuilder string = new StringBuilder();
         for (int i = 0; i < 4; i++)
@@ -54,6 +66,11 @@ public enum Resources {
         return string.toString();
     }
 
+    /**
+     * Gets the string associated with this resource with no color.
+     *
+     * @return the string associated with this resource with no color.
+     */
     public String noColor() {
         switch (this) {
             case COIN:

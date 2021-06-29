@@ -13,10 +13,11 @@ import java.util.Arrays;
 /**
  * This class represents the faith path.
  * cards is an array list of cards containing the 3 Pope's favor tiles.
- * playerPositions contains each player's position
- * playerPV contains all of the victory points earned in the faith path
+ * playerPositions contains each player's position.
+ * playerPV contains all of the victory points earned in the faith path.
  * cardState contains the state of each card for each player.
- * report represents how many vatican reports occurred
+ * report represents how many vatican reports occurred.
+ * singlePlayer it's true if the game is singlePlayer.
  */
 public class FaithPath extends Observable implements Serializable {
     private final ArrayList<Card> cards;
@@ -37,7 +38,7 @@ public class FaithPath extends Observable implements Serializable {
     /**
      * Initialize the faith path with n players.
      *
-     * @param n    number of players
+     * @param n    number of players.
      * @param flag true if the game is single player.
      */
     public void init(int n, boolean flag) {
@@ -51,7 +52,7 @@ public class FaithPath extends Observable implements Serializable {
      * Move the player of n positions.
      *
      * @param n      number of positions.
-     * @param player moving player
+     * @param player moving player.
      */
     public void movePlayer(int player, int n) {
         playerPositions[player] += n;
@@ -62,9 +63,9 @@ public class FaithPath extends Observable implements Serializable {
 
     /**
      * Check the position of each player and when a Faith Marker reaches (or goes beyond) a Pope
-     * space, make a Vatican Report
+     * space, make a Vatican Report.
      *
-     * @param player that moved
+     * @param player that moved.
      */
     private void checkReport(int player) {
         int[] rep = {5, 8, 12, 16, 19, 24};
@@ -98,7 +99,7 @@ public class FaithPath extends Observable implements Serializable {
     /**
      * Gets the quantity of victory points earned by the player in faith path.
      *
-     * @param player player
+     * @param player player.
      * @return number of victory points earned by the player.
      */
     public int get_PV(int player) {
@@ -124,8 +125,8 @@ public class FaithPath extends Observable implements Serializable {
     /**
      * Gets the card state of the card number  for the player.
      *
-     * @param player player
-     * @param number Pope's tile
+     * @param player player.
+     * @param number Pope's tile.
      * @return the state of the card number for the player.
      */
     public boolean getCardsState(int number, int player) {
@@ -135,7 +136,7 @@ public class FaithPath extends Observable implements Serializable {
     /**
      * Gets the faith card in position pos.
      *
-     * @param pos position of the card
+     * @param pos position of the card.
      * @return the faith card in position pos.
      */
     public Card getCard(int pos) {
@@ -145,7 +146,7 @@ public class FaithPath extends Observable implements Serializable {
     /**
      * Gets the position of the player in the faith path.
      *
-     * @param player player
+     * @param player player.
      * @return the position of the player in the faith path.
      */
     public int getPosition(int player) {

@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.controller.TurnState;
-import it.polimi.ingsw.model.communication.Communication;
-import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.board.SimplePlayerBoard;
+import it.polimi.ingsw.model.communication.Communication;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.enums.PlayerDisconnectionState;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
@@ -42,32 +42,55 @@ public class HumanPlayer extends Player implements Serializable {
         this.state = TurnState.NOT_IN_TURN;
     }
 
+    /**
+     * Gets the player's number.
+     *
+     * @return the player's number.
+     */
     public int getPlayerNumber() {
         return playerNumber;
     }
 
+    /**
+     * Sets the player's number.
+     *
+     * @param playerNumber player's number.
+     */
     public void setPlayerNumber(int playerNumber) {
         this.playerNumber = playerNumber;
     }
 
+    /**
+     * Sets the player's state.
+     *
+     * @param state State to set.
+     */
     public void setState(TurnState state) {
         this.state = state;
         notifyObserver(new StateMessage(this.name, state));
     }
 
+    /**
+     * Gets the private communication between the server and this player.
+     *
+     * @return the private communication between the server and this player.
+     */
     public Communication getPrivateCommunication() {
         return privateCommunication;
     }
 
+    /**
+     * Sets the private communication between the server and this player.
+     *
+     * @param communicationMessage Type of the message to set.
+     * @param communication        Message to set.
+     */
     public void setPrivateCommunication(String communication, CommunicationMessage communicationMessage) {
         this.privateCommunication.setCommunicationMessage(communicationMessage);
         this.privateCommunication.setMessage(communication);
         notifyObserver(new CommunicationMex(this.name, communication, communicationMessage));
     }
 
-    public void doAction() {
-
-    }
 
     /**
      * Gets the player board.
@@ -126,10 +149,20 @@ public class HumanPlayer extends Player implements Serializable {
         notifyObserver(new HumanPlayerUpdateMessage(playerBoardToSend));
     }
 
+    /**
+     * Gets the PlayerDisconnectionState of this player.
+     *
+     * @return the PlayerDisconnectionState.
+     */
     public PlayerDisconnectionState getPlayerState() {
         return playerDisconnectionState;
     }
 
+    /**
+     * Sets the PlayerDisconnectionState of this player.
+     *
+     * @param playerDisconnectionState PlayerDisconnectionState to set.
+     */
     public void setPlayerState(PlayerDisconnectionState playerDisconnectionState) {
         this.playerDisconnectionState = playerDisconnectionState;
     }

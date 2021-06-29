@@ -10,7 +10,11 @@ public enum BotActions {
     BlackCross2,
     BlackCross1Shuffle;
 
-
+    /**
+     * Gets the string associated with this bot action.
+     *
+     * @return the string associated with this bot action.
+     */
     public String toSentence() {
         switch (this) {
             case DiscardBlue:
@@ -28,6 +32,12 @@ public enum BotActions {
         }
         return "";
     }
+
+    /**
+     * Gets the image path of this bot action.
+     *
+     * @return the image path of this bot action.
+     */
 
     public String getImagePath() {
         switch (this) {

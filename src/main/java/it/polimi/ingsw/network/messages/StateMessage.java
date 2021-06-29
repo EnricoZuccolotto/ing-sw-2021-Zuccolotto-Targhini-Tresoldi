@@ -8,7 +8,12 @@ import java.util.concurrent.ExecutorService;
 public class StateMessage extends Message implements ExecutableViewMessage {
     private final TurnState state;
 
-
+    /**
+     * Default constructor.
+     *
+     * @param playerName Player name.
+     * @param state      TurnState of the player.
+     */
     public StateMessage(String playerName, TurnState state) {
         super(playerName, MessageType.STATE);
         this.state = state;

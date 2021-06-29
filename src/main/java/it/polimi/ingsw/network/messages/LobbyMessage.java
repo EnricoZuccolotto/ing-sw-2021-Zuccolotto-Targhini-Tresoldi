@@ -8,6 +8,12 @@ import java.util.concurrent.ExecutorService;
 public class LobbyMessage extends Message implements ExecutableViewMessage {
     private final ArrayList<String> players;
 
+    /**
+     * Default constructor.
+     *
+     * @param playerName Player name.
+     * @param players    Players in this lobby.
+     */
     public LobbyMessage(String playerName, ArrayList<String> players) {
         super(playerName, MessageType.LOBBY);
         this.players = players;

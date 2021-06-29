@@ -9,6 +9,12 @@ public enum WarehousePositions {
     WAREHOUSE_SECOND_ROW,
     WAREHOUSE_THIRD_ROW;
 
+    /**
+     * Transform an integer into a WarehousePosition.
+     *
+     * @param i integer to transform.
+     * @return the integer into a WarehousePosition.
+     */
     public static WarehousePositions transform(int i) {
         for (WarehousePositions warehousePositions : WarehousePositions.values())
             if (warehousePositions.ordinal() == i)

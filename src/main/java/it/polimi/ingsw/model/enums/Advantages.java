@@ -8,6 +8,12 @@ public enum Advantages {
     WAREHOUSE,
     CHANGE;
 
+    /**
+     * Gets the string associated with this card.
+     *
+     * @return the string associated with this card.
+     */
+
     public String toString(int[] effect) {
         StringBuilder string = new StringBuilder();
         switch (this) {

@@ -12,8 +12,6 @@ public abstract class Player extends Observable implements Serializable {
     }
 
 
-    abstract public void doAction();
-
     public String getName() {
         return name;
     }

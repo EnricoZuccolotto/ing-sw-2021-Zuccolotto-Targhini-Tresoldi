@@ -1,15 +1,18 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.communication.Communication;
-import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.Decks;
+import it.polimi.ingsw.model.communication.Communication;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.PlayerDisconnectionState;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.BotPlayer;
 import it.polimi.ingsw.model.player.HumanPlayer;
-import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.network.messages.CommunicationMex;
+import it.polimi.ingsw.network.messages.DecksUpdateMessage;
+import it.polimi.ingsw.network.messages.FaithPathUpdateMessage;
+import it.polimi.ingsw.network.messages.MarketUpdateMessage;
 import it.polimi.ingsw.observer.Observable;
 
 import java.io.Serializable;
@@ -190,10 +193,6 @@ public class GameBoard extends Observable implements Serializable {
      */
     public FaithPath getFaithPath() {
         return faithPath;
-    }
-
-    public Communication getPublicCommunication() {
-        return publicCommunication;
     }
 
     /**

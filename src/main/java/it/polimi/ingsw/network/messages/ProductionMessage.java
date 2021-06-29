@@ -1,7 +1,9 @@
 package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.model.tools.ExchangeResources;
-
+/**
+ * This class represents a production message containing the exchange resources.
+ */
 public abstract class  ProductionMessage extends Message {
     private final ExchangeResources exchangeResources;
 

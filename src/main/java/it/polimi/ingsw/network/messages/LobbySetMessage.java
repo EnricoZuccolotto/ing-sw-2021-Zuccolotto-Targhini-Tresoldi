@@ -6,6 +6,12 @@ import it.polimi.ingsw.controller.GameState;
 public class LobbySetMessage extends Message implements ExecutableMessage {
     private final int playerNumber;
 
+    /**
+     * Default constructor.
+     *
+     * @param playerName Player name.
+     * @param p          Player's number.
+     */
     public LobbySetMessage(String playerName, int p) {
         super(playerName, MessageType.SET_GAME);
         this.playerNumber = p;

@@ -71,7 +71,12 @@ public class CompressedPlayerBoard implements Serializable {
         return name;
     }
 
-
+    /**
+     * Gets the toString of the Board.If the board is not yours, it will cover the inactive leader cards.
+     *
+     * @param mine true if the board is mine.
+     * @return the board to string.
+     */
     public String toString(boolean mine) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Name: ").append(this.getName());

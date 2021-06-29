@@ -154,7 +154,7 @@ public class ClientManager implements ViewObserver, Observer {
     public void moveBetweenWarehouses(Resources resources, int position, int newPosition) {
         client.sendMessage(new moveBetweenWarehouseMessage(this.nickname, resources, WarehousePositions.transform(position), WarehousePositions.transform(newPosition)));
     }
-
+    //FIXME:eliminiamo i duplicati di codice
     @Override
     public void getProduction(int color, int level, ArrayList<Integer> pos, int index, int[] a) {
         int[][] matr = new int[3][4];
@@ -196,8 +196,7 @@ public class ClientManager implements ViewObserver, Observer {
         matr[value.get(0)][pass.get(0).ordinal()]=1;
         matr[value.get(1)][pass.get(1).ordinal()]+=1;
         ExchangeResources ex= new ExchangeResources(matr[0], matr[1], matr[2]);
-        System.out.println(ex);
-        System.out.println("value" +value);
+
         client.sendMessage(new UseProductionBaseMessage(this.nickname, ex, obtain));
     }
 

@@ -4,12 +4,12 @@ import it.polimi.ingsw.controller.Action;
 import it.polimi.ingsw.controller.ClientManager;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.TurnState;
-import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.cards.Decks;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.enums.Colors;
@@ -59,10 +59,15 @@ public class Cli extends ViewObservable implements View {
 
 
     @Override
-    public void setNickname(String nickname){
+    public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
+    /**
+     * Reads the line of the cli.
+     *
+     * @return what the player's written on the cli.
+     */
     public String readLine() throws ExecutionException {
         FutureTask<String> futureTask = new FutureTask<>(new ReadingThread());
         Thread inputThread = new Thread(futureTask);
@@ -98,6 +103,9 @@ public class Cli extends ViewObservable implements View {
         }
     }
 
+    /**
+     * Starts a local game.
+     */
     public void initLocal() {
         GameController gameController = new GameController(true);
         gameController.setLocalView(this);
@@ -107,6 +115,9 @@ public class Cli extends ViewObservable implements View {
         askUsername();
     }
 
+    /**
+     * Asks the server info.
+     */
     public void askServerInfo() throws ExecutionException {
         clientManager = new ClientManager(this);
         this.addObserver(clientManager);

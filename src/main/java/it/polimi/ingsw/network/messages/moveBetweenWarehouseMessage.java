@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
 
 /**
- * Message that the client sends when it decides to put amove the resource between warehouses.
+ * Message that the client sends when it decides to move a resource between the warehouses.
  */
 public class moveBetweenWarehouseMessage extends Message implements ExecutableMessage {
 

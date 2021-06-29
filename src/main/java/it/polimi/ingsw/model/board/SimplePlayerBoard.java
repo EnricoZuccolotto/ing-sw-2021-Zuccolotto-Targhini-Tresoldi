@@ -91,7 +91,7 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     @Override
     public int getVictoryPointsCards() {
         int VP = 0;
-        // Get leadercards victory points
+        // Get leader cards victory points
         for(LeaderCard card : leaderCards){
             if(card.getUncovered())
             VP += card.getVP();
@@ -187,7 +187,6 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
 
 
     @Override
-    // Add a DevelopementCard to the production Space[index]
     public boolean addProductionCard(DevelopmentCard c,int index){
             if(productionSpaces.get(index).getTop().getLevel()==c.getLevel()-1)
             {

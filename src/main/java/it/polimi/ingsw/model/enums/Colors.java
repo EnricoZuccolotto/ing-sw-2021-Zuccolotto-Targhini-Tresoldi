@@ -11,12 +11,26 @@ public enum Colors {
     PURPLE,
     GREEN;
 
+    /**
+     * Transform an integer into a Color.
+     *
+     * @param i integer to transform.
+     * @return the integer into a Color.
+     */
+
     public static Colors transform(int i) {
         for (Colors colors : Colors.values())
             if (colors.ordinal() == i)
                 return colors;
         return Colors.BLUE;
     }
+
+    /**
+     * Gets the string associated with this array of colors.
+     *
+     * @param colors Array to transform into a string.
+     * @return the string associated with this array of colors.
+     */
 
     public static String toString(int[] colors) {
         StringBuilder string = new StringBuilder();
