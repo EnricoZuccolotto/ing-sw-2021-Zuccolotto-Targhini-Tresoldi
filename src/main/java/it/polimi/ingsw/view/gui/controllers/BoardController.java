@@ -31,6 +31,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 
 public class BoardController extends ViewObservable implements SceneController {
@@ -52,7 +53,7 @@ public class BoardController extends ViewObservable implements SceneController {
 
     private CompressedPlayerBoard activePlayerBoard;
     private ArrayList<AnchorPane> playerBoardsToView;
-    private ArrayList<Integer> choice;
+    private ArrayList<Integer> choice, production;
     private ArrayList<Resources> resourcesToSend;
     private Colors colors;
     private Decks deck;
@@ -243,6 +244,8 @@ public class BoardController extends ViewObservable implements SceneController {
         active2.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onSpecialProduction(1));
 
         //production
+        production = new ArrayList<>();
+
         productionConfirm.setDisable(true);
         productionConfirm.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickChoose());
         new DragController(productionBox, true);
@@ -381,28 +384,28 @@ public class BoardController extends ViewObservable implements SceneController {
 
     private void onDecksCardSelection(Colors colors, int level) {
         this.colors = colors;
-        choice.add(level);
-
-        int[] a = deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard();
+        System.out.println(colors + "  " + level);
+        int[] a = deck.getDeck(colors, level).getFirstCard().getCostCard();
         if(activePlayerBoard.getPlayerBoard().checkResources(a)) {
             buyCard(colors, level);
         }
     }
 
     private void buyCard(Colors colors, int level){
-        choice.add(0);
+        production.add(level);
+        production.add(0);
         int[] a=deck.getDeck(colors, level).getFirstCard().getCostCard();
         for (int i=0; i < 4; i++) {
             for (int j = 7+i; j < 19; j=j+4) {
-                setSpinnerValue(a[i], j);
+                setSpinnerValue(a[i]-activePlayerBoard.getPlayerBoard().getResourceDiscount(Resources.transform(i)), j);
             }
         }
         askPayment(true);
     }
 
     private void BaseProduction(){
-        choice.add(1000);
-        choice.add(10);
+        production.add(1000);
+        production.add(10);
         for (int j = 7; j < 19; j++) {
             setSpinnerValue(2, j);
         }
@@ -410,8 +413,9 @@ public class BoardController extends ViewObservable implements SceneController {
     }
 
     private void onSpecialProduction(int index) {
-        choice.add(index);
-        choice.add(11);
+        production.add(index);
+        production.add(11);
+        choice.addAll(production);
         ArrayList<Integer> a;
         a = activePlayerBoard.getPlayerBoard().getLeaderCard(index).getEffect();
         for (int i = 0; i < 4; i++) {
@@ -419,14 +423,18 @@ public class BoardController extends ViewObservable implements SceneController {
                 for (int j = 7 + i; j < 19; j++) {
                     setSpinnerValue(1, j);
                 }
+            } else {
+                for (int j = 7 + i; j < 19; j++) {
+                    setSpinnerValue(0, j);
+                }
             }
         }
         askResource(true);
     }
 
     private void NormalProduction(int index){
-        choice.add(index);
-        choice.add(1);
+        production.add(index);
+        production.add(1);
         int[] a= activePlayerBoard.getPlayerBoard().getProductionCost(index);
         for(int i=0; i<4; i++)
                 for (int j = 7+i; j < 19; j = j+4) {
@@ -460,7 +468,7 @@ public class BoardController extends ViewObservable implements SceneController {
         for (int j=0; j<4; j++) {
             for (int i = 7 + j; i < 19; i = i + 4) {
                 if ((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue() != 0) {
-                    choice.add((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue());
+                    production.add((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue());
                     for (int c = 0; c < (Integer) ((Spinner) productionPane.getChildren().get(i)).getValue(); c++) {
                         res.add(Resources.transform(j));
                         pos.add((int) Math.floor((i - 7) / 4));
@@ -469,18 +477,18 @@ public class BoardController extends ViewObservable implements SceneController {
             }
         }
         askPayment(false);
-        switch (choice.get(1)) {
+        switch (production.get(1)) {
             case 0:
                     askWhereToPutCard();
                 break;
             case 1:
-                new Thread(() -> notifyObserver(obs -> obs.useNormalProduction(choice.get(0), pos, activePlayerBoard.getPlayerBoard().getProductionCost(choice.get(0))))).start();
+                new Thread(() -> notifyObserver(obs -> obs.useNormalProduction(production.get(0), pos, activePlayerBoard.getPlayerBoard().getProductionCost(production.get(0))))).start();
                 break;
             case 10:
                 new Thread(() -> notifyObserver(obs -> obs.useBaseProduction(pos, res, resourcesToSend.get(0)))).start();
                 break;
             case 11:
-                new Thread(() -> notifyObserver(obs -> obs.useSpecialProduction(choice.get(0), pos.get(0), res.get(0), resourcesToSend.get(0)))).start();
+                new Thread(() -> notifyObserver(obs -> obs.useSpecialProduction(production.get(0), pos.get(0), res.get(0), resourcesToSend.get(0)))).start();
                 break;
             default:
                 break;
@@ -490,12 +498,12 @@ public class BoardController extends ViewObservable implements SceneController {
     private void askWhereToPutCard() {
         boolean flag = false;
         for (SpaceProd spaceProd : activePlayerBoard.getPlayerBoard().getProductionSpaces())
-            if (spaceProd.getTop().getLevel() == choice.get(0) - 1)
+            if (spaceProd.getTop().getLevel() == production.get(0) - 1)
                 flag = true;
         if (flag) {
             temporaryCard.setDisable(false);
             temporaryCard.setVisible(true);
-            temporaryCard.setImage(new Image(deck.getDeck(colors, choice.get(0)).getFirstCard().getImagePath()));
+            temporaryCard.setImage(new Image(deck.getDeck(colors, production.get(0)).getFirstCard().getImagePath()));
             changeActivePane(playerBoard);
             view = false;
         } else
@@ -507,18 +515,19 @@ public class BoardController extends ViewObservable implements SceneController {
         int cont = 0, value;
         boolean bool = false;
         int[] c= {0, 0, 0, 0};
-        switch (choice.get(1)) {
+        switch (production.get(1)) {
             case 0:
-                int[] a = deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard();
+                int[] a = deck.getDeck(colors, production.get(0)).getFirstCard().getCostCard();
                 for (int i = 0; i < 4; i++) {
-                    if(a[i]!=0) {
+                    a[i] = (a[i]-activePlayerBoard.getPlayerBoard().getResourceDiscount(Resources.transform(i)));
+                    if(a[i]>0) {
                         bool = isBool(bool, c, a, i);
                     }
                 }
                 productionConfirm.setDisable(bool);
                 break;
             case 1:
-                int[] b = activePlayerBoard.getPlayerBoard().getProductionCost(choice.get(0));
+                int[] b = activePlayerBoard.getPlayerBoard().getProductionCost(production.get(0));
                 for (int i = 0; i < 4; i++) {
                     bool = isBool(bool, c, b, i);
                 }
@@ -565,7 +574,7 @@ public class BoardController extends ViewObservable implements SceneController {
     public void updatePlayerBoard(CompressedPlayerBoard playerBoard) {
         ImageView imageViews;
 
-        //vievs other player boards method
+        //views other player boards method
         ((VBox) viewBoards.getChildren().get(1)).getChildren().get(0).setDisable(false);
         ((VBox) viewBoards.getChildren().get(1)).getChildren().get(0).setVisible(true);
         ((Button) ((VBox) viewBoards.getChildren().get(1)).getChildren().get(0)).setText("My Board");
@@ -809,14 +818,14 @@ public class BoardController extends ViewObservable implements SceneController {
         for (int j=0; j<4; j++) {
             for (int i = 7 + j; i < 19; i = i + 4) {
                 if ((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue() != 0) {
-                    choice.add((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue());
+                    production.add((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue());
                     for (int c = 0; c < (Integer) ((Spinner) productionPane.getChildren().get(i)).getValue(); c++) {
                         pos.add((int) Math.floor((i - 7) / 4));
                     }
                 }
             }
         }
-        new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), choice.get(0), pos, index, deck.getDeck(colors, choice.get(0)).getFirstCard().getCostCard()))).start();
+        new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), production.get(0), pos, index, deck.getDeck(colors, production.get(0)).getFirstCard().getCostCard()))).start();
         activeSpaceProds(false);
         temporaryCard.setDisable(true);
         temporaryCard.setVisible(false);
@@ -1085,7 +1094,7 @@ public class BoardController extends ViewObservable implements SceneController {
     //choose resource methods
     private void onResourceSelection(Resources resources) {
         resourcesToSend.add(resources);
-        if (choice.get(0) > 9) {
+        if (production.get(0) > 9) {
             askPayment(true);
         } else if (choice.get(0) < 0) {
             ((ImageView) resourcesToSort.getChildren().get(choice.get(1))).setImage(new Image(resourcesToSend.get(0).getImagePath()));
@@ -1104,6 +1113,7 @@ public class BoardController extends ViewObservable implements SceneController {
         productionBox.setVisible(playable);
         productionBox.setDisable(!playable);
         activePanel.setDisable(playable);
+        productionConfirm.setDisable(true);
     }
 
     public ArrayList<Resources> getResourcesToSend() {
@@ -1152,6 +1162,7 @@ public class BoardController extends ViewObservable implements SceneController {
         resourcesToSend.clear();
         choice.clear();
         movingWarehouse = true;
+        production.clear();
     }
 
     public void changeActivePane(Node node) {
@@ -1188,23 +1199,31 @@ public class BoardController extends ViewObservable implements SceneController {
         StackPane[] spaces = new StackPane[]{spaceProd0, spaceProd1, spaceProd2};
         for (int i = 0; i < 3; i++) {
             if (i < activePlayerBoard.getPlayerBoard().getProductionSpaces().size()) {
-                if (activePlayerBoard.getPlayerBoard().getProductionSpaces().get(i).getNumbCard() == 0)
-                    spaces[i].setDisable(true);
-                else
+                if (activePlayerBoard.getPlayerBoard().getProductionSpaces().get(i).getNumbCard() > 0 && activePlayerBoard.getPlayerBoard().checkResources(activePlayerBoard.getPlayerBoard().getProductionCost(i))) {
                     spaces[i].setDisable(!active);
+                } else spaces[i].setDisable(true);
             } else spaces[i].setDisable(true);
         }
         ImageView[] leader = new ImageView[]{active1, active2};
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 2; i++) {
             try {
-                if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getUncovered() && activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.PROD))
+                int[] a = {0, 0, 0, 0};
+                for (int j = 0; j < 4; j++) {
+                    a[j] = activePlayerBoard.getPlayerBoard().getLeaderCard(i).getEffect().get(i);
+                }
+                if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getUncovered() && activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.PROD) && activePlayerBoard.getPlayerBoard().checkResources(a))
                     leader[i].setDisable(!active);
                 else
                     leader[i].setDisable(true);
             } catch (IndexOutOfBoundsException e) {
 
             }
-        baseProduction.setDisable(!active);
+        }
+        if (activePlayerBoard.getPlayerBoard().getNumberResources() > 1) {
+            baseProduction.setDisable(!active);
+        } else {
+            baseProduction.setDisable(true);
+        }
     }
 
     public void notInTurn(boolean active) {
