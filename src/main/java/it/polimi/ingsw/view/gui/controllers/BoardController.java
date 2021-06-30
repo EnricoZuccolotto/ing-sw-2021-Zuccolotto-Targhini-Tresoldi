@@ -30,6 +30,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -395,9 +396,16 @@ public class BoardController extends ViewObservable implements SceneController {
         production.add(level);
         production.add(0);
         int[] a=deck.getDeck(colors, level).getFirstCard().getCostCard();
+
+        for(int i = 0; i < 4; i++){
+            // Handle resource discounts
+            a[i] -= activePlayerBoard.getPlayerBoard().getResourceDiscount(Resources.transform(i));
+            if(a[i] < 0) a[i] = 0;
+        }
+
         for (int i=0; i < 4; i++) {
             for (int j = 7+i; j < 19; j=j+4) {
-                setSpinnerValue(a[i]-activePlayerBoard.getPlayerBoard().getResourceDiscount(Resources.transform(i)), j);
+                setSpinnerValue(a[i], j);
             }
         }
         askPayment(true);
@@ -429,6 +437,7 @@ public class BoardController extends ViewObservable implements SceneController {
         production.add(index);
         production.add(1);
         int[] a= activePlayerBoard.getPlayerBoard().getProductionCost(index);
+
         for(int i=0; i<4; i++)
                 for (int j = 7+i; j < 19; j = j+4) {
                     setSpinnerValue(a[i], j);
@@ -500,7 +509,7 @@ public class BoardController extends ViewObservable implements SceneController {
             changeActivePane(playerBoard);
             view = false;
         } else
-            Gui.getInstance().showCommunication("You don't have a card that metts the requirement", CommunicationMessage.ILLEGAL_ACTION);
+            Gui.getInstance().showCommunication("You don't have a card that meets the requirement", CommunicationMessage.ILLEGAL_ACTION);
     }
 
 
@@ -818,7 +827,15 @@ public class BoardController extends ViewObservable implements SceneController {
                 }
             }
         }
-        new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), production.get(0), pos, index, deck.getDeck(colors, production.get(0)).getFirstCard().getCostCard()))).start();
+
+        int[] discountedCosts = new int[4];
+        // Consider discounted costs for the card. Otherwise IndexOutOfBound...
+        for(int i = 0; i < 4; i++){
+            discountedCosts[i] = (deck.getDeck(colors, production.get(0)).getFirstCard().getCostCard())[i] - activePlayerBoard.getPlayerBoard().getResourceDiscount(Resources.transform(i));
+            if(discountedCosts[i] < 0) discountedCosts[i] = 0;
+        }
+
+        new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), production.get(0), pos, index, discountedCosts))).start();
         activeSpaceProds(false);
         temporaryCard.setDisable(true);
         temporaryCard.setVisible(false);

@@ -554,7 +554,7 @@ public class Cli extends ViewObservable implements View {
                 }
             }
             a = decks.getDeck(col.get(color1), level).getFirstCard().getCostCard();
-            pos = SelectResources(a);
+            pos = SelectResources(a, true);
             if (pos == null) {
                 return false;
             }
@@ -695,7 +695,7 @@ public class Cli extends ViewObservable implements View {
             if(index==3) { return false; }
             d = boards.get(playerNumber).getPlayerBoard().getProductionSpaces().get(index).getTop();
             a = d.getCostProduction();
-            pos=SelectResources(a);
+            pos=SelectResources(a, false);
             if(pos==null) { return false; }
             notifyObserver(obs -> obs.useNormalProduction(index, pos, a));
         } catch (ExecutionException e) {
@@ -905,7 +905,7 @@ public class Cli extends ViewObservable implements View {
         return number;
     }
 
-    private ArrayList<Integer> SelectResources(int[] a) throws ExecutionException {
+    private ArrayList<Integer> SelectResources(int[] a, boolean doYouWantADiscount) throws ExecutionException {
         ArrayList<String> s = new ArrayList<>();
         ArrayList<Resources> resource;
         ArrayList<Integer> pos = new ArrayList<>();
@@ -921,18 +921,20 @@ public class Cli extends ViewObservable implements View {
         }
 
         // Remove discounted resources
-        PlayerBoard myBoard = null;
-        for(CompressedPlayerBoard cpb : boards){
-            if(cpb.getName().equals(nickname)){
-                myBoard = cpb.getPlayerBoard();
-                break;
+        if(doYouWantADiscount){
+            PlayerBoard myBoard = null;
+            for(CompressedPlayerBoard cpb : boards){
+                if(cpb.getName().equals(nickname)){
+                    myBoard = cpb.getPlayerBoard();
+                    break;
+                }
             }
-        }
-        for(int i = 0; i < 4; i++){
-            if(myBoard != null){
-                if(myBoard.isResourceDiscounted(Resources.transform(i)) && a[i] > 0){
-                    a[i] -= myBoard.getResourceDiscount(Resources.transform(i));
-                    if(a[i] < 0) a[i] = 0;
+            for(int i = 0; i < 4; i++){
+                if(myBoard != null){
+                    if(myBoard.isResourceDiscounted(Resources.transform(i)) && a[i] > 0){
+                        a[i] -= myBoard.getResourceDiscount(Resources.transform(i));
+                        if(a[i] < 0) a[i] = 0;
+                    }
                 }
             }
         }

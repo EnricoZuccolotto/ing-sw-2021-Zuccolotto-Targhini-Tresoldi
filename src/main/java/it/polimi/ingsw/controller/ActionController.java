@@ -315,8 +315,15 @@ public class ActionController implements Serializable {
             return false;
         }
 
+        // Check discounts
+        int[] realCost = card.getCostCard();
+        for(int i = 0; i < 4; i++){
+            realCost[i] -= player.getPlayerBoard().getResourceDiscount(Resources.transform(i));
+            if (realCost[i] < 0 ) realCost[i] = 0;
+        }
+
         for (int i = 0; i < 4; i++)
-            if (card.getCostCard()[i] != (resWar[i] + resSpeWar[i] + resStr[i])) {
+            if (realCost[i] != (resWar[i] + resSpeWar[i] + resStr[i])) {
                 player.setPrivateCommunication("The resources sent are different from the cost of the card", CommunicationMessage.ILLEGAL_ACTION);
                 return false;
             }
