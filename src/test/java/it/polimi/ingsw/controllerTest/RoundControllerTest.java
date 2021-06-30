@@ -4,11 +4,11 @@ import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.GameState;
 import it.polimi.ingsw.controller.RoundController;
 import it.polimi.ingsw.controller.TurnState;
-import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.board.DecoratedProductionPlayerBoard;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
@@ -191,6 +191,7 @@ public class RoundControllerTest {
         assertFalse(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 1, 0, 0}));
         g.handle_useBaseProduction(new UseProductionBaseMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 1, 1}, new int[]{0, 0, 0, 0}), Resources.COIN));
         assertEquals(g.getTurnState(), TurnState.PRODUCTION_ACTIONS);
+        g.addOutputProductions();
         assertTrue(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 1, 0, 0}));
         //redoing base production
 
@@ -202,6 +203,7 @@ public class RoundControllerTest {
         assertFalse(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{7, 0, 0, 0}));
         g.handle_useNormalProduction(new UseProductionNormalMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}), 0));
         assertEquals(g.getTurnState(), TurnState.PRODUCTION_ACTIONS);
+        g.addOutputProductions();
         assertEquals(2, gb.getPlayerFaithPathPosition(0));
         assertTrue(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{7, 0, 0, 0}));
         //redoing normal  production 1
@@ -211,6 +213,7 @@ public class RoundControllerTest {
         assertFalse(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 6, 0, 0}));
         g.handle_useNormalProduction(new UseProductionNormalMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}), 1));
         assertEquals(g.getTurnState(), TurnState.PRODUCTION_ACTIONS);
+        g.addOutputProductions();
         assertEquals(4, gb.getPlayerFaithPathPosition(0));
         assertTrue(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 6, 0, 0}));
         //redoing normal production 2
@@ -220,6 +223,7 @@ public class RoundControllerTest {
         assertFalse(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{14, 0, 0, 0}));
         g.handle_useNormalProduction(new UseProductionNormalMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}), 2));
         assertEquals(g.getTurnState(), TurnState.PRODUCTION_ACTIONS);
+        g.addOutputProductions();
         assertEquals(6, gb.getPlayerFaithPathPosition(0));
         assertTrue(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{14, 0, 0, 0}));
         //redoing base production 3
@@ -229,6 +233,7 @@ public class RoundControllerTest {
         assertFalse(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 7, 0, 0}));
         g.handle_useSpecialProduction(new UseProductionSpecialMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 1, 0}, new int[]{0, 0, 0, 0}), Resources.COIN, 3));
         assertEquals(g.getTurnState(), TurnState.PRODUCTION_ACTIONS);
+        g.addOutputProductions();
         assertEquals(7, gb.getPlayerFaithPathPosition(0));
         assertTrue(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 7, 0, 0}));
         //redoing special production 2
@@ -238,6 +243,7 @@ public class RoundControllerTest {
         assertFalse(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 8, 0, 0}));
         g.handle_useSpecialProduction(new UseProductionSpecialMessage("Harry", new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1}, new int[]{0, 0, 0, 0}), Resources.COIN, 2));
         assertEquals(g.getTurnState(), TurnState.LAST_LEADER_ACTION);
+        g.addOutputProductions();
         assertEquals(8, gb.getPlayerFaithPathPosition(0));
         assertTrue(gb.getPlayers().get(0).getPlayerBoard().checkResourcesStrongbox(new int[]{0, 8, 0, 0}));
         //redoing special production 2

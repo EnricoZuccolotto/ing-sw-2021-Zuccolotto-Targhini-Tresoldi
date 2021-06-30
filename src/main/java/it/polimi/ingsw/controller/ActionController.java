@@ -220,7 +220,6 @@ public class ActionController implements Serializable {
 
         if (isResourcesAvailable(player, exchangeResources, true)) {
             payResources(player, exchangeResources);
-            player.getPlayerBoard().addStrongboxResource(output, 1);
         } else return false;
 
 
@@ -255,9 +254,6 @@ public class ActionController implements Serializable {
             }
         if (isResourcesAvailable(player, exchangeResources, true)) {
             payResources(player, exchangeResources);
-            int[] result = player.getPlayerBoard().getProductionResult(index);
-            for (int i = 0; i < 4; i++)
-                player.getPlayerBoard().addStrongboxResource(Resources.transform(i), result[i]);
         } else return false;
 
 
@@ -440,7 +436,7 @@ public class ActionController implements Serializable {
             default:
 
         }
-        player.sendUpdateToPlayer();
+
         return true;
     }
 
@@ -555,7 +551,7 @@ public class ActionController implements Serializable {
             return false;
         }
 
-        player.sendUpdateToPlayer();
+
         return true;
     }
 

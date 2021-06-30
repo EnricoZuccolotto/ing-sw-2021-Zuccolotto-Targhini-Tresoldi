@@ -3,12 +3,12 @@ package it.polimi.ingsw.controllerTest;
 import it.polimi.ingsw.controller.*;
 import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.exceptions.WinnerException;
-import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.board.DecoratedChangePlayerBoard;
 import it.polimi.ingsw.model.board.DecoratedWarehousePlayerBoard;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.enums.WarehousePositions;
@@ -222,7 +222,6 @@ public class ActionControllerTest {
         //normal functioning
         assertTrue(actionController.useBaseProduction(player, 2, Resources.SHIELD, new ExchangeResources(new int[]{0, 0, 1, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1})));
 
-        assertTrue(player.getPlayerBoard().checkResourcesStrongbox(new int[]{0, 0, 0, 1}));
         assertEquals(player.getPlayerBoard().getExtraResources().get(3), (Integer) 2);
 
     }
@@ -267,7 +266,6 @@ public class ActionControllerTest {
         //normal functioning
         assertTrue(actionController.useSpecialProduction(player, Resources.COIN, 0, new ExchangeResources(new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 0, 0, 1})));
 
-        assertTrue(player.getPlayerBoard().checkResourcesStrongbox(new int[]{0, 1, 0, 0}));
         assertEquals(player.getPlayerBoard().getExtraResources().get(3), (Integer) 2);
 
     }
@@ -314,7 +312,6 @@ public class ActionControllerTest {
         //normal functioning
         assertTrue(actionController.useNormalProduction(player, 0, new ExchangeResources(new int[]{0, 0, 2, 0}, new int[]{0, 0, 0, 0}, new int[]{0, 1, 0, 0})));
 
-        assertTrue(player.getPlayerBoard().checkResourcesStrongbox(new int[]{7, 5, 2, 0}));
         assertEquals(player.getPlayerBoard().getExtraResources().get(1), (Integer) 3);
 
     }

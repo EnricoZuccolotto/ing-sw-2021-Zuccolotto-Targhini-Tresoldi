@@ -1159,20 +1159,9 @@ public class BoardController extends ViewObservable implements SceneController {
         new Thread(() -> notifyObserver(ViewObserver::endTurn)).start();
         endTurn.setDisable(true);
         endTurn.setVisible(false);
-        clearTemporary();
         clearChoices();
     }
 
-    /**
-     * Clear the tempoaray storage.
-     */
-    private void clearTemporary() {
-        for (int i = 0; i < 4; i++) {
-            ImageView imageViews = (ImageView) resourcesToSort.getChildren().get(i);
-            imageViews.setDisable(true);
-            imageViews.setImage(new Image(Resources.WHITE.getImagePath()));
-        }
-    }
 
     /**
      * Actives the end turn button.

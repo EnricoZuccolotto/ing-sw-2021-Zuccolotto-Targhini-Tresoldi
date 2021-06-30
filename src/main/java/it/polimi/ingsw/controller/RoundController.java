@@ -28,6 +28,7 @@ public class RoundController implements Serializable {
     private HumanPlayer playerInTurn;
     private ArrayList<HumanPlayer> players;
     private ArrayList<Integer> productions;
+    private int[] productionOutput;
     private transient final Object productionLock;
 
     private int turnCount;
@@ -56,7 +57,7 @@ public class RoundController implements Serializable {
         }
         this.actionController = new ActionController();
         this.gameController = gameController;
-
+        this.productionOutput = new int[4];
 
         this.Winner = false;
         this.winnerPlayer = -2;
@@ -78,6 +79,7 @@ public class RoundController implements Serializable {
         synchronized (productionLock) {
             this.productions = restoredController.productions;
         }
+        this.productionOutput = restoredController.productionOutput;
 
         this.turnCount = restoredController.turnCount;
         this.turnState = restoredController.turnState;
@@ -225,6 +227,7 @@ public class RoundController implements Serializable {
                 if (actionController.useBaseProduction(playerInTurn, 2, message.getOutput(), message.getExchangeResources())) {
                     productions.add(3);
                     nextState(Action.USE_PRODUCTIONS);
+                    productionOutput[message.getOutput().ordinal()] = +1;
                 }
             }
         }
@@ -246,6 +249,8 @@ public class RoundController implements Serializable {
                     productions.add(message.getIndex());
                     int faith = playerInTurn.getPlayerBoard().getProductionResult(message.getIndex())[Resources.FAITH.ordinal()];
                     handle_addFaithPoint(faith, playerInTurn);
+                    for (int i = 0; i < 4; i++)
+                        productionOutput[i] = +playerInTurn.getPlayerBoard().getProductionSpaces().get(message.getIndex()).getTop().getProductionResult()[i];
                     nextState(Action.USE_PRODUCTIONS);
                 }
             }
@@ -269,6 +274,7 @@ public class RoundController implements Serializable {
                     productions.add(message.getIndex() + 4);
                     handle_addFaithPoint(1, playerInTurn);
                     nextState(Action.USE_PRODUCTIONS);
+                    productionOutput[message.getOutput().ordinal()] = +1;
                 }
             }
         }
@@ -311,6 +317,8 @@ public class RoundController implements Serializable {
             if (actionController.activateLeader(message.getIndex(), playerInTurn)) {
                 nextState(Action.ACTIVE_LEADER);
                 clearTemporaryStorage();
+                addOutputProductions();
+                playerInTurn.sendUpdateToPlayer();
             }
         }
 
@@ -332,6 +340,8 @@ public class RoundController implements Serializable {
                 handle_addFaithPoint(1, playerInTurn);
                 nextState(Action.ACTIVE_LEADER);
                 clearTemporaryStorage();
+                addOutputProductions();
+                playerInTurn.sendUpdateToPlayer();
             }
         }
 
@@ -476,6 +486,16 @@ public class RoundController implements Serializable {
     }
 
     /**
+     * Adds the production output to the player's StrongBox.
+     */
+    public void addOutputProductions() {
+        for (int i = 0; i < 4; i++) {
+            playerInTurn.getPlayerBoard().addStrongboxResource(Resources.transform(i), productionOutput[i]);
+            productionOutput[i] = 0;
+        }
+    }
+
+    /**
      * Sets the new player in turn.
      * Clears the temporary storage and the productions.
      * Move the bot player, if it's single player.
@@ -485,7 +505,8 @@ public class RoundController implements Serializable {
         //clearing checks
         productions.clear();
         clearTemporaryStorage();
-
+        addOutputProductions();
+        playerInTurn.sendUpdateToPlayer();
         if (gameState.equals(GameState.SINGLEPLAYER))
             handle_Bot();
         else
@@ -493,7 +514,7 @@ public class RoundController implements Serializable {
 
         if (gameController.getInstance().getActivePlayersCount() != 0)
             goToNextTurn();
-        if(!gameController.isLocal())
+        if (!gameController.isLocal())
             GameSaver.saveGame(gameController);
     }
 
