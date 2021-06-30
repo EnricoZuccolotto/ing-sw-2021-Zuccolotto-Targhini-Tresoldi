@@ -418,17 +418,10 @@ public class BoardController extends ViewObservable implements SceneController {
         choice.addAll(production);
         ArrayList<Integer> a;
         a = activePlayerBoard.getPlayerBoard().getLeaderCard(index).getEffect();
-        for (int i = 0; i < 4; i++) {
-            if (!(a.get(i).equals(0))) {
-                for (int j = 7 + i; j < 19; j++) {
-                    setSpinnerValue(1, j);
-                }
-            } else {
-                for (int j = 7 + i; j < 19; j++) {
-                    setSpinnerValue(0, j);
-                }
+        for(int i=0; i<4; i++)
+            for (int j = 7+i; j < 19; j = j+4) {
+                setSpinnerValue(a.get(i), j);
             }
-        }
         askResource(true);
     }
 
@@ -488,7 +481,7 @@ public class BoardController extends ViewObservable implements SceneController {
                 new Thread(() -> notifyObserver(obs -> obs.useBaseProduction(pos, res, resourcesToSend.get(0)))).start();
                 break;
             case 11:
-                new Thread(() -> notifyObserver(obs -> obs.useSpecialProduction(production.get(0), pos.get(0), res.get(0), resourcesToSend.get(0)))).start();
+                new Thread(() -> notifyObserver(obs -> obs.useSpecialProduction(production.get(0), pos.get(0), resourcesToSend.get(0), res.get(0)))).start();
                 break;
             default:
                 break;
@@ -544,7 +537,7 @@ public class BoardController extends ViewObservable implements SceneController {
                 productionConfirm.setDisable(bool);
                 break;
             case 11:
-                for (int j = 7; j < 19; j = j++) {
+                for (int j = 7; j < 19; j++) {
                     value = (int) ((Spinner) productionPane.getChildren().get(j)).getValue();
                     cont = cont + value;
                 }
@@ -1094,7 +1087,11 @@ public class BoardController extends ViewObservable implements SceneController {
     //choose resource methods
     private void onResourceSelection(Resources resources) {
         resourcesToSend.add(resources);
-        if (production.get(0) > 9) {
+
+        if(production.get(1) == 11){
+            // Special production, ask payment.
+            askPayment(true);
+        } else if (production.get(0) > 9) {
             askPayment(true);
         } else if (choice.get(0) < 0) {
             ((ImageView) resourcesToSort.getChildren().get(choice.get(1))).setImage(new Image(resourcesToSend.get(0).getImagePath()));
