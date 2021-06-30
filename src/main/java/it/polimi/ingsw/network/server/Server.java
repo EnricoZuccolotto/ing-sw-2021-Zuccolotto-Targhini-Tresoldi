@@ -64,6 +64,9 @@ public class Server {
                     if(gameController.getInstance().getActivePlayersCount() == 1){
                         gameController.getRoundController().handle_endTurn();
                     }
+                    synchronized (lock) {
+                        clients.put(nickname, connection);
+                    }
 
                 } else {
                     // TODO: send error message.
