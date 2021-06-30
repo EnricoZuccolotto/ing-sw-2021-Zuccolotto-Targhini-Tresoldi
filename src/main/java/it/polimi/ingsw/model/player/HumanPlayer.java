@@ -71,6 +71,15 @@ public class HumanPlayer extends Player implements Serializable {
     }
 
     /**
+     * Gets the player's state.
+     *
+     * @return the state.
+     */
+    public TurnState getState() {
+        return state;
+    }
+
+    /**
      * Gets the private communication between the server and this player.
      *
      * @return the private communication between the server and this player.

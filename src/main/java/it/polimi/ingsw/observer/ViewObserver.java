@@ -102,31 +102,50 @@ public interface ViewObserver {
     void useBaseProduction(ArrayList<Integer> value, ArrayList<Resources> pass, Resources obtain);
 
     /**
-     * Send a message to the server for activate the production of a card
+     * Send a message to the server for activating the production of a card
      *
      * @param index for the Space production index of the card
-     * @param pos for the position of the resources used to pay
-     * @param a for the actual production cost
+     * @param pos   for the position of the resources used to pay
+     * @param a     for the actual production cost
      */
     void useNormalProduction(int index, ArrayList<Integer> pos, int[] a);
 
     /**
-     * Send a message for activate the special production
+     * Send a message for activating the special production
      *
-     * @param index for the index of the leader card
-     * @param choice for the position of the resource used to pay
+     * @param index    for the index of the leader card
+     * @param choice   for the position of the resource used to pay
      * @param resource for the resource to get
-     * @param res for the resource used to pay
+     * @param res      for the resource used to pay
      */
     void useSpecialProduction(int index, int choice, Resources resource, Resources res);
 
+    /**
+     * Send a message to active a leader card.
+     *
+     * @param index Index of the leader card.
+     */
     void activeLeader(int index);
 
+    /**
+     * Send a message to add himself to the lobby.
+     */
     void addPlayerLobby();
 
+    /**
+     * Send a message to fold a leader card.
+     *
+     * @param index Index of the leader card.
+     */
     void foldLeader(int index);
 
+    /**
+     * Send a message to end the turn.
+     */
     void endTurn();
 
+    /**
+     * Handle on disconnection.
+     */
     void onDisconnect();
 }

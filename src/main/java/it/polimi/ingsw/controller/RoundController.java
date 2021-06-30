@@ -3,9 +3,9 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.exceptions.IllegalDecoratorException;
 import it.polimi.ingsw.exceptions.WinnerException;
-import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.cards.LeaderCard;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.enums.PlayerDisconnectionState;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
@@ -112,6 +112,7 @@ public class RoundController implements Serializable {
         playerInTurn.getPlayerBoard().addStrongboxResource(Resources.SHIELD, 10);
         playerInTurn.getPlayerBoard().addStrongboxResource(Resources.SERVANT, 10);
         playerInTurn.getPlayerBoard().addStrongboxResource(Resources.COIN, 10);
+
 
         if (isYourTurn(message.getPlayerName())) {
             ArrayList<Resources> list;
@@ -307,10 +308,12 @@ public class RoundController implements Serializable {
             turnState = TurnState.NORMAL_ACTION;
             playerInTurn.setPrivateCommunication("You cannot do leader action", CommunicationMessage.ILLEGAL_ACTION);
         } else if (isYourTurn(message.getPlayerName())) {
-            if (actionController.activateLeader(message.getIndex(), playerInTurn))
+            if (actionController.activateLeader(message.getIndex(), playerInTurn)) {
                 nextState(Action.ACTIVE_LEADER);
+                clearTemporaryStorage();
+            }
         }
-        clearTemporaryStorage();
+
 
     }
 
@@ -328,9 +331,10 @@ public class RoundController implements Serializable {
             if (actionController.foldLeader(message.getIndex(), playerInTurn)) {
                 handle_addFaithPoint(1, playerInTurn);
                 nextState(Action.ACTIVE_LEADER);
+                clearTemporaryStorage();
             }
         }
-        clearTemporaryStorage();
+
 
     }
 
@@ -600,21 +604,22 @@ public class RoundController implements Serializable {
                             productions.clear();
                             productions.add(0);
                             // For each disconnected player add corresponding actions
-                            for(HumanPlayer player : players){
-                                if(player.getPlayerState().equals(PlayerDisconnectionState.TERMINAL)){
+                            for (HumanPlayer player : players) {
+                                if (player.getPlayerState().equals(PlayerDisconnectionState.TERMINAL)) {
                                     productions.add(0);
                                 }
                             }
-
                             setStateToAll(TurnState.SECOND_TURN);
                         } else if (gameState.equals(GameState.SINGLEPLAYER)) {
                             turnState = TurnState.FIRST_LEADER_ACTION;
                             setStateToAll(TurnState.FIRST_LEADER_ACTION);
+                            break;
                         }
                     }
-                    break;
+
                 }
                 case SECOND_TURN: {
+
                     if (players.size() == productions.size()) {
                         productions.clear();
                         turnState = TurnState.FIRST_LEADER_ACTION;

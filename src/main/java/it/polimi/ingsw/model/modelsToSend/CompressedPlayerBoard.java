@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.player.HumanPlayer;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -21,14 +21,28 @@ public class CompressedPlayerBoard implements Serializable {
      * @param player The player you want to generate the Player Board package
      */
     public CompressedPlayerBoard(HumanPlayer player) {
-        this.playerBoard = player.getPlayerBoard();
-        this.temporaryResourceStorage = player.getTemporaryResourceStorage();
+        this.playerBoard = clone(player.getPlayerBoard());
+        this.temporaryResourceStorage = (ArrayList<Resources>) player.getTemporaryResourceStorage().clone();
         this.name = player.getName();
         this.playerNumber = player.getPlayerNumber();
     }
 
+    private PlayerBoard clone(PlayerBoard playerBoard) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(playerBoard);
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            return (PlayerBoard) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return null;
+        }
+    }
+
     /**
      * Get a player's position number.
+     *
      * @return The player's number.
      */
     public int getPlayerNumber() {

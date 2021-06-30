@@ -1,12 +1,12 @@
 package it.polimi.ingsw.view.gui.controllers;
 
-import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.board.PlayerBoard;
 import it.polimi.ingsw.model.cards.Decks;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
@@ -30,9 +30,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 
 public class BoardController extends ViewObservable implements SceneController {
@@ -44,11 +42,11 @@ public class BoardController extends ViewObservable implements SceneController {
             "-fx-border-width: 3px;";
 
 
-    private boolean view = true; //if flag is false, we did the first action
-    private boolean flag = true; //if true this is not our turn
-    private boolean notInTurn = true;//if false we cannot see other player's boards
-    private boolean panelViewBoardsActive = false;//if true we are moving between warehouse, if false we are moving between temporary storage and warehouses,used in drag interaction
-    private boolean movingWarehouse = true;
+    private boolean view = true;
+    private boolean flag = false;//if flag is false, we did the first action
+    private boolean notInTurn = true; //if true this is not our turn
+    private boolean panelViewBoardsActive = false;//if false we cannot see other player's boards
+    private boolean movingWarehouse = true;///if true we are moving between warehouse, if false we are moving between temporary storage and warehouses,used in drag interaction
     private boolean singlePlayer = false;
     private Node activePanel;
 
@@ -134,13 +132,13 @@ public class BoardController extends ViewObservable implements SceneController {
     private Button coinButton, shieldButton, servantButton, stoneButton;
     @FXML
     private Text resourceText;
-
+    //how to pay
     @FXML
     private VBox productionBox;
     @FXML
     private GridPane productionPane;
     @FXML
-    private Button productionConfirm;
+    private Button productionConfirm, abort;
     @FXML
     private ImageView temporaryCard, baseProduction;
 
@@ -150,9 +148,9 @@ public class BoardController extends ViewObservable implements SceneController {
         Gui gui = Gui.getInstance();
         gui.setBoardController(this);
         //set first pane to show
-        activePanel = FirstAction;
+        activePanel = Board;
         activePanel.setVisible(true);
-        activePanel.setDisable(false);
+        activePanel.setDisable(true);
         //playerBoard to view
         playerBoardsToView = new ArrayList<>();
         playerBoardsToView.add(playerBoard);
@@ -229,13 +227,17 @@ public class BoardController extends ViewObservable implements SceneController {
         //leader cards
         discard_activate_Leader.getChildren().get(1).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
             new Thread(() -> notifyObserver(obs -> obs.activeLeader(choice.get(0)))).start();
-            activePanel.setDisable(false);
+            discard_activate_Leader.setVisible(false);
+            discard_activate_Leader.setDisable(true);
+        });
+        discard_activate_Leader.getChildren().get(3).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            new Thread(() -> notifyObserver(obs -> obs.foldLeader(choice.get(0)))).start();
             discard_activate_Leader.setVisible(false);
             discard_activate_Leader.setDisable(true);
         });
         discard_activate_Leader.getChildren().get(2).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-            new Thread(() -> notifyObserver(obs -> obs.foldLeader(choice.get(0)))).start();
-            activePanel.setDisable(false);
+            clearChoices();
+            gui.askAction(null);
             discard_activate_Leader.setVisible(false);
             discard_activate_Leader.setDisable(true);
         });
@@ -246,14 +248,19 @@ public class BoardController extends ViewObservable implements SceneController {
 
         //production
         production = new ArrayList<>();
-
+        abort.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            clearChoices();
+            gui.askAction(null);
+            productionBox.setVisible(false);
+            productionBox.setDisable(true);
+        });
         productionConfirm.setDisable(true);
         productionConfirm.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickChoose());
         new DragController(productionBox, true);
-        for (int j = 7; j < 19; j=j+1) {
+        for (int j = 7; j < 19; j = j + 1) {
             SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 0);
             ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-            ( productionPane.getChildren().get(j)).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickCheckConfirm());
+            (productionPane.getChildren().get(j)).addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> onClickCheckConfirm());
         }
         spaceProd0.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> NormalProduction(0));
         spaceProd1.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> NormalProduction(1));
@@ -306,9 +313,11 @@ public class BoardController extends ViewObservable implements SceneController {
             });
         }
     }
+    //FIRST ACTION PANE
 
-
-    //first methods
+    /**
+     * Sens to the server the indexes of the leader cards to discard in the first turn.
+     */
     private void onConfirm() {
         new Thread(() -> notifyObserver(obs -> obs.firstAction(choice.get(0), choice.get(1)))).start();
         changeActivePane(Board);
@@ -316,6 +325,12 @@ public class BoardController extends ViewObservable implements SceneController {
         view = true;
     }
 
+    /**
+     * Adds the index of the leader card chosen by the player to the array choice.
+     * Sets an image hover the selected card and disables the selected card.
+     *
+     * @param index Index of the selected card.
+     */
     private void onCardSelection(int index) {
         ImageView[] hover = new ImageView[]{HoverCard1, HoverCard2, HoverCard3, HoverCard4};
         if (choice.contains(index)) {
@@ -329,8 +344,15 @@ public class BoardController extends ViewObservable implements SceneController {
         Confirm.setDisable(!(choice.size() == 2));
     }
 
+    /**
+     * Shows the cards possessed by the player.
+     * Change the active pane to the FIRST ACTION pane.
+     *
+     * @param playerBoard Player's board.
+     */
     public void updateFirstAction(PlayerBoard playerBoard) {
-
+        changeActivePane(FirstAction);
+        flag = true;
         Card1.setImage(new Image(playerBoard.getLeaderCard(0).getImagePath()));
         Card2.setImage(new Image(playerBoard.getLeaderCard(1).getImagePath()));
         Card3.setImage(new Image(playerBoard.getLeaderCard(2).getImagePath()));
@@ -338,10 +360,22 @@ public class BoardController extends ViewObservable implements SceneController {
     }
 
     //market methods
+
+    /**
+     * Sends to the server a getMarket request.
+     *
+     * @param choice 1 for rows and 2 for columns.
+     * @param index  Index of the row/column.
+     */
     private void onMarketArrowButtonClick(int choice, int index) {
         new Thread(() -> notifyObserver(obs -> obs.getMarket(choice, index))).start();
     }
 
+    /**
+     * Shows the market on the BOARD pane.
+     *
+     * @param m Market to show.
+     */
     public void updateMarket(Market m) {
         Image image;
         image = new Image(m.getSlide().getBallImagePath());
@@ -357,6 +391,12 @@ public class BoardController extends ViewObservable implements SceneController {
     }
 
     //decks methods
+
+    /**
+     * Shows the top cards of the decks on the BOARD pane.
+     *
+     * @param NewDecks Decks to show.
+     */
     public void updateDecks(Decks NewDecks) {
         Image image;
 
@@ -380,38 +420,58 @@ public class BoardController extends ViewObservable implements SceneController {
                 }
 
             }
-        deck=NewDecks;
+        deck = NewDecks;
     }
 
+    /**
+     * Selects a card from the decks.Starts the buy action if possible.
+     * Saves the color of the card.
+     *
+     * @param level  Card's level.
+     * @param colors Card's color.
+     */
     private void onDecksCardSelection(Colors colors, int level) {
         this.colors = colors;
-        System.out.println(colors + "  " + level);
         int[] a = deck.getDeck(colors, level).getFirstCard().getCostCard();
-        if(activePlayerBoard.getPlayerBoard().checkResources(a)) {
+        if (activePlayerBoard.getPlayerBoard().checkResources(a)) {
             buyCard(colors, level);
         }
     }
 
-    private void buyCard(Colors colors, int level){
+    /**
+     * Buys a card from the decks.
+     * Saves the level of the card.
+     * Sets the spinners for the buy card action.
+     * Asks for payment(ProductionBox pane).
+     *
+     * @param level  Card's level.
+     * @param colors Card's color.
+     */
+    private void buyCard(Colors colors, int level) {
         production.add(level);
         production.add(0);
-        int[] a=deck.getDeck(colors, level).getFirstCard().getCostCard();
+        int[] a = deck.getDeck(colors, level).getFirstCard().getCostCard();
 
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             // Handle resource discounts
             a[i] -= activePlayerBoard.getPlayerBoard().getResourceDiscount(Resources.transform(i));
-            if(a[i] < 0) a[i] = 0;
+            if (a[i] < 0) a[i] = 0;
         }
 
-        for (int i=0; i < 4; i++) {
-            for (int j = 7+i; j < 19; j=j+4) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 7 + i; j < 19; j = j + 4) {
                 setSpinnerValue(a[i], j);
             }
         }
         askPayment(true);
     }
 
-    private void BaseProduction(){
+    /**
+     * Starts a base production action.
+     * Sets the spinners for the base production.
+     * Asks the output's resource(chooseResource pane).
+     */
+    private void BaseProduction() {
         production.add(1000);
         production.add(10);
         for (int j = 7; j < 19; j++) {
@@ -420,54 +480,75 @@ public class BoardController extends ViewObservable implements SceneController {
         askResource(true);
     }
 
+    /**
+     * Starts a special production action of a leader card.
+     * Sets the spinners for the special production.
+     * Asks the output's resource(chooseResource pane).
+     *
+     * @param index Leader card's index.
+     */
     private void onSpecialProduction(int index) {
         production.add(index);
         production.add(11);
         choice.addAll(production);
         ArrayList<Integer> a;
         a = activePlayerBoard.getPlayerBoard().getLeaderCard(index).getEffect();
-        for(int i=0; i<4; i++)
-            for (int j = 7+i; j < 19; j = j+4) {
+        for (int i = 0; i < 4; i++)
+            for (int j = 7 + i; j < 19; j = j + 4) {
                 setSpinnerValue(a.get(i), j);
             }
         askResource(true);
     }
 
-    private void NormalProduction(int index){
+    /**
+     * Starts a normal production action.
+     * Sets the spinners for the normal production.
+     * Asks for payment(ProductionBox pane).
+     *
+     * @param index Leader card's index.
+     */
+    private void NormalProduction(int index) {
         production.add(index);
         production.add(1);
-        int[] a= activePlayerBoard.getPlayerBoard().getProductionCost(index);
+        int[] a = activePlayerBoard.getPlayerBoard().getProductionCost(index);
 
-        for(int i=0; i<4; i++)
-                for (int j = 7+i; j < 19; j = j+4) {
-                    setSpinnerValue(a[i], j);
-                }
+        for (int i = 0; i < 4; i++)
+            for (int j = 7 + i; j < 19; j = j + 4) {
+                setSpinnerValue(a[i], j);
+            }
         askPayment(true);
     }
 
+    /**
+     * Sets the value of the spinner in position j according to the value i.
+     *
+     * @param i Number of resource to pay.
+     * @param j Index of the spinner.
+     */
     private void setSpinnerValue(int i, int j) {
-        if (j<11 && activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j-7) % 4)))<i) {
-            SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j-7) % 4))), 0);
+        if (j < 11 && activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j - 7) % 4))) < i) {
+            SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getWarehouse().getNumberResource(Resources.transform((int) Math.floor((j - 7) % 4))), 0);
             ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-        }
-        else if(j<15 && j>10 && activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j-7) % 4)))<i){
-            SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j-7) % 4))), 0);
+        } else if (j < 15 && j > 10 && activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j - 7) % 4))) < i) {
+            SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getStrongbox().getResources(Resources.transform((int) Math.floor((j - 7) % 4))), 0);
             ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-        }
-        else if(j>14 && activePlayerBoard.getPlayerBoard().getExtraResources().get(j-15)<i){
-            SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getExtraResources().get(j-15), 0);
+        } else if (j > 14 && activePlayerBoard.getPlayerBoard().getExtraResources().get(j - 15) < i) {
+            SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, activePlayerBoard.getPlayerBoard().getExtraResources().get(j - 15), 0);
             ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
-        }
-        else {
+        } else {
             SpinnerValueFactory<Integer> spinnerV = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, i, 0);
             ((Spinner) productionPane.getChildren().get(j)).setValueFactory(spinnerV);
         }
     }
 
-    private void onClickChoose(){
-        ArrayList<Integer> pos= new ArrayList<>();
-        ArrayList<Resources> res= new ArrayList<>();
-        for (int j=0; j<4; j++) {
+    /**
+     * Sends to the server the message to perform a production.
+     */
+    private void onClickChoose() {
+        notInTurn(true);
+        ArrayList<Integer> pos = new ArrayList<>();
+        ArrayList<Resources> res = new ArrayList<>();
+        for (int j = 0; j < 4; j++) {
             for (int i = 7 + j; i < 19; i = i + 4) {
                 if ((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue() != 0) {
                     production.add((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue());
@@ -497,6 +578,9 @@ public class BoardController extends ViewObservable implements SceneController {
         }
     }
 
+    /**
+     * Asks to the player where he wants to put the card he's buying.
+     */
     private void askWhereToPutCard() {
         boolean flag = false;
         for (SpaceProd spaceProd : activePlayerBoard.getPlayerBoard().getProductionSpaces())
@@ -505,6 +589,7 @@ public class BoardController extends ViewObservable implements SceneController {
         if (flag) {
             temporaryCard.setDisable(false);
             temporaryCard.setVisible(true);
+            notInTurn(true);
             temporaryCard.setImage(new Image(deck.getDeck(colors, production.get(0)).getFirstCard().getImagePath()));
             changeActivePane(playerBoard);
             view = false;
@@ -512,17 +597,19 @@ public class BoardController extends ViewObservable implements SceneController {
             Gui.getInstance().showCommunication("You don't have a card that meets the requirement", CommunicationMessage.ILLEGAL_ACTION);
     }
 
-
+    /**
+     * Disables the confirm button on the production Box if the resources chosen are not enough or they are too much.
+     */
     private void onClickCheckConfirm() {
         int cont = 0, value;
         boolean bool = false;
-        int[] c= {0, 0, 0, 0};
+        int[] c = {0, 0, 0, 0};
         switch (production.get(1)) {
             case 0:
                 int[] a = deck.getDeck(colors, production.get(0)).getFirstCard().getCostCard();
                 for (int i = 0; i < 4; i++) {
-                    a[i] = (a[i]-activePlayerBoard.getPlayerBoard().getResourceDiscount(Resources.transform(i)));
-                    if(a[i]>0) {
+                    a[i] = (a[i] - activePlayerBoard.getPlayerBoard().getResourceDiscount(Resources.transform(i)));
+                    if (a[i] > 0) {
                         bool = isBool(bool, c, a, i);
                     }
                 }
@@ -572,10 +659,12 @@ public class BoardController extends ViewObservable implements SceneController {
         return bool;
     }
 
+    /**
+     * Updates the playerBoard of the player playing on this computer.
+     */
     //playerBoard method
     public void updatePlayerBoard(CompressedPlayerBoard playerBoard) {
         ImageView imageViews;
-
         //views other player boards method
         ((VBox) viewBoards.getChildren().get(1)).getChildren().get(0).setDisable(false);
         ((VBox) viewBoards.getChildren().get(1)).getChildren().get(0).setVisible(true);
@@ -606,7 +695,6 @@ public class BoardController extends ViewObservable implements SceneController {
                 if (spaceProd.getNumbCard() != 0) {
                     for (DevelopmentCard card : spaceProd.getCards()) {
                         imageViews = (ImageView) spacesView[i].getChildren().get(2 - spaceProd.getCards().indexOf(card));
-                        spacesView[i].setDisable(false);
                         imageViews.setImage(new Image(card.getImagePath()));
                     }
                 } else spacesView[i].setDisable(true);
@@ -656,6 +744,9 @@ public class BoardController extends ViewObservable implements SceneController {
         }
     }
 
+    /**
+     * Updates the playerBoards of the other players.
+     */
     public void updatePlayerBoard2(CompressedPlayerBoard playerBoard, int n) {
 
         ImageView imageViews;
@@ -729,6 +820,9 @@ public class BoardController extends ViewObservable implements SceneController {
 
     }
 
+    /**
+     * Updates the special warehouses of the player board.
+     */
     private void updateSpecialWarehouse(LeaderCard card, HBox warehouse, CompressedPlayerBoard playerBoard) {
 
         if (card.getAdvantage().equals(Advantages.WAREHOUSE)) {
@@ -745,6 +839,12 @@ public class BoardController extends ViewObservable implements SceneController {
         }
     }
 
+    /**
+     * When a resource it's dropped on a warehouse position,sends a sorting market or warehouse message.
+     *
+     * @param index Index of teh resource.
+     * @param row   Row of the warehouse.
+     */
     //warehouse
     private void onDropOnWarehouse(int index, int row) {
         if (!movingWarehouse) {
@@ -755,6 +855,11 @@ public class BoardController extends ViewObservable implements SceneController {
         choice.clear();
     }
 
+    /**
+     * Actives the possibility to move a resource between warehouses.
+     *
+     * @param active true for activating.
+     */
     public void activeMovingWarehouse(boolean active) {
         int i;
         ImageView[] warehouses = createImageViewsOfWarehouses();
@@ -786,6 +891,11 @@ public class BoardController extends ViewObservable implements SceneController {
 
     }
 
+    /**
+     * Disables the possibility to move a resource in the warehouses.
+     *
+     * @param active true for disabling.
+     */
     public void notActiveWarehouse(boolean active) {
         firstRow.setDisable(active);
         secondRow.setDisable(active);
@@ -805,19 +915,32 @@ public class BoardController extends ViewObservable implements SceneController {
             }
     }
 
+    /**
+     * Disables the bin.
+     *
+     * @param active true for disabling.
+     */
     private void notActiveBin(boolean active) {
         bin.setDisable(active);
         bin.setVisible(!active);
     }
 
+    /**
+     * Switch the warehouse rows.
+     */
     private void onClickShiftRows(int row1, int row2) {
         new Thread(() -> notifyObserver(obs -> obs.switchRows(row1, row2))).start();
 
     }
 
+    /**
+     * When a card it's dropped on a production space, sends a request to buy this card and position it,where the card was dropped.
+     *
+     * @param index Index of the space of production.
+     */
     private void onDropOnProduction(int index) {
         ArrayList<Integer> pos = new ArrayList<>();
-        for (int j=0; j<4; j++) {
+        for (int j = 0; j < 4; j++) {
             for (int i = 7 + j; i < 19; i = i + 4) {
                 if ((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue() != 0) {
                     production.add((Integer) ((Spinner) productionPane.getChildren().get(i)).getValue());
@@ -830,23 +953,32 @@ public class BoardController extends ViewObservable implements SceneController {
 
         int[] discountedCosts = new int[4];
         // Consider discounted costs for the card. Otherwise IndexOutOfBound...
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             discountedCosts[i] = (deck.getDeck(colors, production.get(0)).getFirstCard().getCostCard())[i] - activePlayerBoard.getPlayerBoard().getResourceDiscount(Resources.transform(i));
-            if(discountedCosts[i] < 0) discountedCosts[i] = 0;
+            if (discountedCosts[i] < 0) discountedCosts[i] = 0;
         }
 
         new Thread(() -> notifyObserver(obs -> obs.getProduction(colors.ordinal(), production.get(0), pos, index, discountedCosts))).start();
         activeSpaceProds(false);
+
         temporaryCard.setDisable(true);
         temporaryCard.setVisible(false);
     }
 
+    /**
+     * Actives the possibility to drag a card on the production spaces.
+     *
+     * @param active true for activating.
+     */
     private void activeSpaceProds(boolean active) {
         spaceProd2.setDisable(!active);
         spaceProd1.setDisable(!active);
         spaceProd0.setDisable(!active);
-      }
+    }
 
+    /**
+     * Initializes the production spaces.
+     */
     private void initializeProductionDrag() {
         Node[] spaceProds = new Node[]{spaceProd0, spaceProd1, spaceProd2};
 
@@ -879,6 +1011,9 @@ public class BoardController extends ViewObservable implements SceneController {
 
     }
 
+    /**
+     * Removes the effect when the drag is exited.
+     */
     private void removeEffectWhenExited(Node[] spaceProds, int i, int finalI) {
         spaceProds[i].setOnDragExited(event -> {
             /* mouse moved away, remove the graphical cues */
@@ -899,6 +1034,9 @@ public class BoardController extends ViewObservable implements SceneController {
         });
     }
 
+    /**
+     * Initializes the warehouses.
+     */
     private void initializeWarehouse() {
         Node[] warehouseRows = new Node[]{firstRow, secondRow, thirdRow, specialWarehouse1, specialWarehouse2, bin};
 
@@ -979,6 +1117,9 @@ public class BoardController extends ViewObservable implements SceneController {
         }
     }
 
+    /**
+     * Creates an array of image views containing all of the warehouses.
+     */
     private ImageView[] createImageViewsOfWarehouses() {
         return new ImageView[]{(ImageView) firstRow.getChildren().get(0),
                 (ImageView) secondRow.getChildren().get(0), (ImageView) secondRow.getChildren().get(1),
@@ -987,14 +1128,21 @@ public class BoardController extends ViewObservable implements SceneController {
                 (ImageView) specialWarehouse2.getChildren().get(0), (ImageView) specialWarehouse2.getChildren().get(1)};
     }
 
+    /**
+     * Checks if the resource is white.
+     * If the there are 2 changes, asks which resource the player wants.
+     *
+     * @param index Index of the resource selected.
+     */
     //on temporary resource white selection
     private void onResourceWhite(int index) {
 
         if (activePlayerBoard.getTemporaryResourceStorage().get(index).equals(Resources.WHITE)) {
-            activePanel.setDisable(true);
+            notInTurn(true);
             chooseResource.setDisable(false);
             choice.add(0, -2);
             choice.add(1, index);
+            notInTurn(true);
             chooseResource.setVisible(true);
             Button[] buttons = new Button[]{servantButton, coinButton, stoneButton, shieldButton};
             for (int i = 0; i < 4; i++)
@@ -1003,6 +1151,9 @@ public class BoardController extends ViewObservable implements SceneController {
         }
     }
 
+    /**
+     * Sends the server an end turn request.
+     */
     //end turn
     private void onEndTurn() {
         new Thread(() -> notifyObserver(ViewObserver::endTurn)).start();
@@ -1012,6 +1163,9 @@ public class BoardController extends ViewObservable implements SceneController {
         clearChoices();
     }
 
+    /**
+     * Clear the tempoaray storage.
+     */
     private void clearTemporary() {
         for (int i = 0; i < 4; i++) {
             ImageView imageViews = (ImageView) resourcesToSort.getChildren().get(i);
@@ -1020,12 +1174,21 @@ public class BoardController extends ViewObservable implements SceneController {
         }
     }
 
-
+    /**
+     * Actives the end turn button.
+     *
+     * @param active True for activating.
+     */
     public void activeEndTurn(boolean active) {
         endTurn.setVisible(active);
         endTurn.setDisable(!active);
     }
 
+    /**
+     * Asks the player to discard or active the leader card selected.
+     *
+     * @param index Index of the leader card.
+     */
     //leader card method
     private void onClickLeaderInactive(int index) {
         choice.add(0, index);
@@ -1035,6 +1198,12 @@ public class BoardController extends ViewObservable implements SceneController {
 
     }
 
+    /**
+     * Updates the faith path for the player number playerNumber.
+     *
+     * @param faithPath    FaithPath to show.
+     * @param playerNumber Player's number.
+     */
     //faith path methods
     public void updateFaithPath(FaithPath faithPath, int playerNumber) {
         int position = faithPath.getPosition(playerNumber);
@@ -1064,6 +1233,15 @@ public class BoardController extends ViewObservable implements SceneController {
         }
     }
 
+    /**
+     * Updates the faith cards for the player number playerNumber.
+     *
+     * @param playerNumber Player's number.
+     * @param faithPath    FaithPath to show.
+     * @param faith1       First faith card.
+     * @param faith2       Second faith card.
+     * @param faith3       Third faith card.
+     */
     private void setFaithCards(ImageView faith1, ImageView faith2, ImageView faith3, FaithPath faithPath, int playerNumber) {
         ImageView[] faith = new ImageView[]{faith1, faith2, faith3};
         for (int i = 0; i < 3; i++) {
@@ -1076,7 +1254,12 @@ public class BoardController extends ViewObservable implements SceneController {
         }
     }
 
-
+    /**
+     * Moves the faith cross along the faith path.
+     *
+     * @param faithMarker Marker to move.
+     * @param position    Position of the marker.
+     */
     private void setFaithMarkerPosition(int position, ImageView faithMarker) {
         //setting x coordinates
 
@@ -1101,44 +1284,77 @@ public class BoardController extends ViewObservable implements SceneController {
         else faithMarker.setLayoutY(76);
     }
 
+    /**
+     * Select a resource.
+     * Asks for payment if the player is doing a special or base production action.
+     * Set the Resource from white to a new resource in the temporary storage.
+     *
+     * @param resources Resource selected.
+     */
     //choose resource methods
     private void onResourceSelection(Resources resources) {
         resourcesToSend.add(resources);
-
-        if(production.get(1) == 11){
-            // Special production, ask payment.
-            askPayment(true);
-        } else if (production.get(0) > 9) {
-            askPayment(true);
-        } else if (choice.get(0) < 0) {
-            ((ImageView) resourcesToSort.getChildren().get(choice.get(1))).setImage(new Image(resourcesToSend.get(0).getImagePath()));
-            activePlayerBoard.setTemporaryResource(choice.get(1), resourcesToSend.get(0));
-        }
         askResource(false);
+
+        if (production.size() > 0) {
+            if (production.get(1) == 11) {
+                // Special production, ask payment.
+                askPayment(true);
+            } else if (production.get(0) > 9) {
+                askPayment(true);
+            }
+        } else {
+            if (choice.size() > 0 && choice.get(0) < 0) {
+                ((ImageView) resourcesToSort.getChildren().get(choice.get(1))).setImage(new Image(resourcesToSend.get(0).getImagePath()));
+                activePlayerBoard.setTemporaryResource(choice.get(1), resourcesToSend.get(0));
+            }
+        }
+
     }
 
+    /**
+     * Show the chooseResource pane.
+     *
+     * @param visible True if the pane is visible and playable.
+     */
     public void askResource(boolean visible) {
         chooseResource.setVisible(visible);
         chooseResource.setDisable(!visible);
-        activePanel.setDisable(visible);
+        notInTurn(true);
     }
 
-    public void askPayment(boolean playable){
+    /**
+     * Show the askForPayment pane.
+     *
+     * @param playable True if the pane is visible and playable.
+     */
+    public void askPayment(boolean playable) {
         productionBox.setVisible(playable);
         productionBox.setDisable(!playable);
-        activePanel.setDisable(playable);
         productionConfirm.setDisable(true);
+        notInTurn(true);
     }
 
+    /**
+     * Gets the resources to send.
+     */
     public ArrayList<Resources> getResourcesToSend() {
         return resourcesToSend;
     }
 
+    /**
+     * Sets the chooseResource text.
+     */
     public void setChooseResourceText(String s) {
         resourceText.setText(s);
     }
 
-
+    /**
+     * Exchange between the player board and the board, if flag is false.
+     * Exchange between the First action and the board, if flag is true.
+     *
+     * @param flag False if we already did the first action.
+     */
     //exchange views
     private void viewBoard(boolean flag) {
         if (flag) {
@@ -1148,15 +1364,16 @@ public class BoardController extends ViewObservable implements SceneController {
             } else changeActivePane(FirstAction);
 
         } else {
-
             if (view) changeActivePane(playerBoard);
             else changeActivePane(Board);
-
         }
 
         view = !view;
     }
 
+    /**
+     * Show the Board.
+     */
     public void showBoard() {
         changeActivePane(Board);
         flag = false;
@@ -1168,10 +1385,16 @@ public class BoardController extends ViewObservable implements SceneController {
         }
     }
 
+    /**
+     * Sets the game to single player.
+     */
     public void setSinglePlayer(boolean singlePlayer) {
         this.singlePlayer = singlePlayer;
     }
 
+    /**
+     * Clears all the choices made by the player.
+     */
     public void clearChoices() {
         resourcesToSend.clear();
         choice.clear();
@@ -1179,6 +1402,11 @@ public class BoardController extends ViewObservable implements SceneController {
         production.clear();
     }
 
+    /**
+     * Change the active pane to the Node node.
+     *
+     * @param node New Active pane.
+     */
     public void changeActivePane(Node node) {
         activePanel.setVisible(false);
         activePanel.setDisable(true);
@@ -1187,14 +1415,29 @@ public class BoardController extends ViewObservable implements SceneController {
         node.setDisable(false);
     }
 
+    /**
+     * Active the bot Actions.
+     *
+     * @param active True if we are in single player.
+     */
     public void activeBotActions(boolean active) {
         botActions.setVisible(active);
     }
 
+    /**
+     * Sets the bot Action token.
+     *
+     * @param image Image to set.
+     */
     public void setBotActions(Image image) {
         botActions.setImage(image);
     }
 
+    /**
+     * Active the market.
+     *
+     * @param active True for activating the market.
+     */
     public void activeMarket(boolean active) {
         pushColumn0Button.setDisable(!active);
         pushColumn1Button.setDisable(!active);
@@ -1205,10 +1448,20 @@ public class BoardController extends ViewObservable implements SceneController {
         pushRow2Button.setDisable(!active);
     }
 
+    /**
+     * Active the decks.
+     *
+     * @param active True for activating the decks.
+     */
     public void activeDecks(boolean active) {
         decks.setDisable(!active);
     }
 
+    /**
+     * Active the productions.
+     *
+     * @param active True for activating the productions.
+     */
     public void activeProductions(boolean active) {
         StackPane[] spaces = new StackPane[]{spaceProd0, spaceProd1, spaceProd2};
         for (int i = 0; i < 3; i++) {
@@ -1229,8 +1482,8 @@ public class BoardController extends ViewObservable implements SceneController {
                     leader[i].setDisable(!active);
                 else
                     leader[i].setDisable(true);
-            } catch (IndexOutOfBoundsException e) {
-
+            } catch (IndexOutOfBoundsException ignored) {
+                leader[i].setDisable(true);
             }
         }
         if (activePlayerBoard.getPlayerBoard().getNumberResources() > 1) {
@@ -1240,6 +1493,11 @@ public class BoardController extends ViewObservable implements SceneController {
         }
     }
 
+    /**
+     * Disables everything if the player is not in turn.
+     *
+     * @param active True to disable everything.
+     */
     public void notInTurn(boolean active) {
         notInTurn = active;
         movingWarehouse = true;
@@ -1258,6 +1516,12 @@ public class BoardController extends ViewObservable implements SceneController {
         shiftRow13.setDisable(active);
     }
 
+    /**
+     * Show communications.
+     *
+     * @param visible       True if ti's visible.
+     * @param communication Communication to sets.
+     */
     //communication
     public void showCommunication(String communication, boolean visible) {
         ((Text) this.communication.getChildren().get(0)).setText(communication);

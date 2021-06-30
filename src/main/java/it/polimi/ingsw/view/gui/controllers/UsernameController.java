@@ -48,6 +48,9 @@ public class UsernameController extends ViewObservable implements SceneControlle
             connectButton.setText("Start...");
     }
 
+    /**
+     * Returns to the menu.
+     */
     private void onBackButtonClick(Event event) {
         connectButton.setDisable(true);
         backButton.setDisable(true);
@@ -56,6 +59,9 @@ public class UsernameController extends ViewObservable implements SceneControlle
         GuiSceneUtils.changeActivePanel(observers, ((Node) event.getSource()).getScene(), "menu.fxml");
     }
 
+    /**
+     * Sends the nickname chosen by the player to the server.
+     */
     private void onConnectButtonClick(Event event) {
         connectButton.setDisable(true);
         backButton.setDisable(true);
@@ -66,12 +72,20 @@ public class UsernameController extends ViewObservable implements SceneControlle
 
     }
 
+    /**
+     * Change the pane to the lobby pane.
+     */
     public void changeToLobby() {
         username.setDisable(true);
         username.setVisible(false);
         lobby.setVisible(true);
     }
 
+    /**
+     * Update the lobby.
+     *
+     * @param players Players in the lobby.
+     */
     public void updateLobby(ArrayList<String> players) {
         ObservableList<Node> lobbyChildren = lobby.getChildren();
         for (int i = 0; i < 5; i++) {

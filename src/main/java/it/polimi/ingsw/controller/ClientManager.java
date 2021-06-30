@@ -251,12 +251,11 @@ public class ClientManager implements ViewObserver, Observer {
      */
     @Override
     public void useBaseProduction(ArrayList<Integer> value, ArrayList<Resources> pass, Resources obtain) {
+        //FIXME: TOGLIERE CODICE DUPLICATO
         int[][] matr = new int[3][4];
         matr[value.get(0)][pass.get(0).ordinal()]=1;
         matr[value.get(1)][pass.get(1).ordinal()]+=1;
         ExchangeResources ex= new ExchangeResources(matr[0], matr[1], matr[2]);
-        System.out.println(ex);
-        System.out.println("value" +value);
         client.sendMessage(new UseProductionBaseMessage(this.nickname, ex, obtain));
     }
 

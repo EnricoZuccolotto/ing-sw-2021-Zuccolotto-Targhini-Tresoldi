@@ -28,8 +28,11 @@ public class WinnerController extends ViewObservable implements SceneController 
     @FXML
     private Button exitButton;
 
+    /**
+     * Sets the winner pane.
+     */
     @FXML
-    public void initialize(){
+    public void initialize() {
         Gui gui = Gui.getInstance();
         Map<String, Integer> victoryPoints = gui.getVictoryPoints();
         ArrayList<Label> labels = new ArrayList<>();
@@ -38,8 +41,8 @@ public class WinnerController extends ViewObservable implements SceneController 
         labels.add(thirdPlaceLabel);
         labels.add(fourthPlaceLabel);
 
-        if(gui.isSinglePlayer()){
-            for(Label label : labels){
+        if (gui.isSinglePlayer()) {
+            for (Label label : labels) {
                 label.setVisible(false);
             }
             standingsLabel.setVisible(false);

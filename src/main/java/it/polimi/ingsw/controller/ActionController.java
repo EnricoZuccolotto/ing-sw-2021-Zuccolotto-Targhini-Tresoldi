@@ -4,11 +4,11 @@ import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.exceptions.IllegalDecoratorException;
 import it.polimi.ingsw.exceptions.InsufficientLevelException;
 import it.polimi.ingsw.exceptions.WinnerException;
-import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
 import it.polimi.ingsw.model.cards.LeaderCard;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.enums.Advantages;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
@@ -69,6 +69,7 @@ public class ActionController implements Serializable {
      */
     public boolean addResourceToWarehouse(HumanPlayer humanPlayer, Resources resource, WarehousePositions position, int receivedResourceIndex) {
         Resources item;
+
         try {
             item = humanPlayer.getTemporaryResourceStorage().get(receivedResourceIndex);
         } catch (IndexOutOfBoundsException exception) {
@@ -488,6 +489,9 @@ public class ActionController implements Serializable {
      * @return if the operation is successful
      */
     public boolean secondAction(ArrayList<Resources> resources, int indexPlayer, HumanPlayer player) {
+        //used to handle the disconnection of a player in a setup turn
+        if (resources == null)
+            return true;
         switch (indexPlayer) {
             case 0: {
                 player.setPrivateCommunication("You can't play in this preparation turn", CommunicationMessage.ILLEGAL_ACTION);

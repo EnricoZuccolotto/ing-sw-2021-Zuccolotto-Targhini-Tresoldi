@@ -25,6 +25,12 @@ public class DragController {
         this.isDraggable.set(isDraggable);
     }
 
+    /**
+     * Creates 3 handlers:
+     * -setAnchor: it sets the anchor;
+     * -updatePositionOnDrag: it moves the window;
+     * -commitOnPositionRelease: when the player finish the drag action, it sets the new layout x and y of this window.
+     */
     private void createHandlers() {
         setAnchor = event -> {
             if (event.isPrimaryButtonDown()) {
@@ -57,10 +63,11 @@ public class DragController {
                 target.setTranslateY(0);
             }
         };
-
-
     }
 
+    /**
+     * Adds the events handlers to the object.
+     */
     public void createDraggableProperty() {
         isDraggable = new SimpleBooleanProperty();
         isDraggable.addListener((observable, oldValue, newValue) -> {

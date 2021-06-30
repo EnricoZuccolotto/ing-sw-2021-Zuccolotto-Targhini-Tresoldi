@@ -39,16 +39,25 @@ public class MenuController extends ViewObservable implements SceneController {
 
     }
 
+    /**
+     * Starts an online game.
+     */
     private void onConnectButtonClick(Event event) {
         setObservers(false);
         GuiSceneUtils.changeActivePanel(observers, ((Node) event.getSource()).getScene(), "connect.fxml");
     }
 
+    /**
+     * Starts a local game.
+     */
     private void onLocal(Event event) {
         setObservers(true);
         GuiSceneUtils.changeActivePanel(observers, ((Node) event.getSource()).getScene(), "username.fxml");
     }
 
+    /**
+     * Sets the observer for the local or online game.
+     */
     private void setObservers(boolean local) {
         Gui view = Gui.getInstance();
         GameController gameController = null;

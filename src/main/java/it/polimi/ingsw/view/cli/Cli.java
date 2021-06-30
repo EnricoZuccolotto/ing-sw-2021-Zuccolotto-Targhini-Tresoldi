@@ -194,10 +194,19 @@ public class Cli extends ViewObservable implements View {
             out.println("Error");
         }
     }
-    public void askPlayersNumber(int number){
+
+    /**
+     * Sends to the model the number of players that are going to play this game.
+     *
+     * @param number Number of player.
+     */
+    public void askPlayersNumber(int number) {
         notifyObserver(obs -> obs.PlayersNumber(number));
     }
 
+    /**
+     * Asks the player to join a game or to set a new one.
+     */
     public void askJoinOrSet() {
         clearCli();
         String join = "JOIN";
@@ -243,13 +252,16 @@ public class Cli extends ViewObservable implements View {
 
     }
 
+    /**
+     * Asks to the player which action he wants to perform.
+     */
     private void askWhichAction() {
-        if(turnState.equals(TurnState.END)){
+        if (turnState.equals(TurnState.END)) {
             return;
         }
         int action;
         Action act;
-        boolean exit=false;
+        boolean exit = false;
         showPlayerBoard(boards.get(playerNumber));
         ArrayList<Action> possibilities = turnState.possibleActions();
         if (boards.get(playerNumber).getPlayerBoard().getLeaderCardsNumber() == 0) {
@@ -262,53 +274,56 @@ public class Cli extends ViewObservable implements View {
                 out.println(possibilities.indexOf(action1) + ". " + action1);
             }
             String question = "Select the action you want to perform:(the number)";
-                try {
-                    action = validateInput(0, possibilities.size() - 1, null, question);
-                    act = possibilities.get(action);
-                    switch (act) {
-                        case ACTIVE_LEADER:
-                            exit=askActiveLeader();
-                            break;
-                        case FOLD_LEADER:
-                            exit=askFoldLeader();
-                            break;
-                        case END_TURN:
-                            notifyObserver(ViewObserver::endTurn);
-                            exit = true;
-                            break;
-                        case GET_RESOURCES_FROM_MARKET:
-                            exit = askGetMarket();
-                            break;
-                        case SORTING_TEMPORARY_STORAGE:
-                            exit = askSortingMarket();
-                            break;
-                        case SORTING_WAREHOUSES:
-                            exit = askWhichSortingAction();
-                            break;
-                        case BUY_DEVELOPMENT_CARD:
-                            exit = askGetProduction();
-                            break;
-                        case USE_PRODUCTIONS:
-                            exit = askUseProduction();
-                            break;
-                    }
-                } catch (ExecutionException e) {
-                    out.println("Error");
+            try {
+                action = validateInput(0, possibilities.size() - 1, null, question);
+                act = possibilities.get(action);
+                switch (act) {
+                    case ACTIVE_LEADER:
+                        exit=askActiveLeader();
+                        break;
+                    case FOLD_LEADER:
+                        exit=askFoldLeader();
+                        break;
+                    case END_TURN:
+                        notifyObserver(ViewObserver::endTurn);
+                        exit = true;
+                        break;
+                    case GET_RESOURCES_FROM_MARKET:
+                        exit = askGetMarket();
+                        break;
+                    case SORTING_TEMPORARY_STORAGE:
+                        exit = askSortingMarket();
+                        break;
+                    case SORTING_WAREHOUSES:
+                        exit = askWhichSortingAction();
+                        break;
+                    case BUY_DEVELOPMENT_CARD:
+                        exit = askGetProduction();
+                        break;
+                    case USE_PRODUCTIONS:
+                        exit = askUseProduction();
+                        break;
                 }
-            } while(!exit);
+            } catch (ExecutionException e) {
+                out.println("Error");
+            }
+        } while (!exit);
         clearCli();
     }
 
+    /**
+     * Asks to the player which production he wants to use.
+     */
     private boolean askUseProduction() {
-        ArrayList<String> s= new ArrayList<>();
-        ArrayList<Integer> jump= new ArrayList<>();
+        ArrayList<String> s = new ArrayList<>();
+        ArrayList<Integer> jump = new ArrayList<>();
         int index;
-        boolean exit=true;
+        boolean exit = true;
         s.add("Normal_Production");
         s.add("Base_Production");
         s.add("Special_Production");
         s.add("Exit");
-        String question="Which production would you like to active? ";
+        String question = "Which production would you like to active? ";
         if (boards.get(playerNumber).getPlayerBoard().getProductionSpaces().size() == 0 || productionDone[0]) {
             jump.add(0);
         }
@@ -325,11 +340,11 @@ public class Cli extends ViewObservable implements View {
             index= validateInput(0, 3, jump, question);
             switch (index){
                 case 0: exit=askUseNormalProduction();
-                        break;
+                    break;
                 case 1: exit=askUseBaseProduction();
-                        break;
+                    break;
                 case 2: exit=askUseSpecialProduction();
-                        break;
+                    break;
                 case 3: return false;
             }
         } catch (ExecutionException e) {
@@ -432,6 +447,9 @@ public class Cli extends ViewObservable implements View {
         return true;
     }
 
+    /**
+     * Asks to the player which sorting action he wants to perform.
+     */
     public boolean askWhichSortingAction() {
         int choice;
         String question = "What do you want to move? \n1.Switch rows \n2.Move resource between warehouses\n3.Exit\n";
@@ -450,6 +468,9 @@ public class Cli extends ViewObservable implements View {
         return true;
     }
 
+    /**
+     * Asks to the player which rows he wants to switch.
+     */
     public boolean askMoveBetweenWarehouses() {
         Resources resources;
         int position, newPosition;
@@ -856,7 +877,13 @@ public class Cli extends ViewObservable implements View {
 
     }
 
-
+    /**
+     * Asks a question and validate the answer.
+     *
+     * @param jumpList Resources that cannot be chosen.
+     * @param question Question to answer.
+     * @return The answer to the question(Resources).
+     */
     private Resources validateResources(String question, List<Resources> jumpList) throws ExecutionException {
         Resources resources = Resources.WHATEVER;
         if (jumpList == null) {
@@ -878,6 +905,15 @@ public class Cli extends ViewObservable implements View {
         return resources;
     }
 
+    /**
+     * Asks a question and validate the answer.
+     *
+     * @param jumpList Resources that cannot be chosen.
+     * @param question Question to answer.
+     * @param maxValue Maximum value.
+     * @param minValue Minimum value.
+     * @return The answer to the question(Resources).
+     */
     private int validateInput(int minValue, int maxValue, List<Integer> jumpList, String question) throws ExecutionException {
         int number = minValue - 1;
 
@@ -905,6 +941,13 @@ public class Cli extends ViewObservable implements View {
         return number;
     }
 
+    /**
+     * Asks the player to select from where he wants to pay the resources.
+     *
+     * @param a                  Cost of the action.
+     * @param doYouWantADiscount is the player board discounted?
+     * @return The position of each resource to pay.
+     */
     private ArrayList<Integer> SelectResources(int[] a, boolean doYouWantADiscount) throws ExecutionException {
         ArrayList<String> s = new ArrayList<>();
         ArrayList<Resources> resource;
@@ -961,13 +1004,16 @@ public class Cli extends ViewObservable implements View {
         return pos;
     }
 
+    /**
+     * Clear the screen of the cli.
+     */
     public void clearCli() {
         out.println("\033[H\033[2J");
         out.flush();
     }
 
     @Override
-    public ClientManager getClientManager(){
+    public ClientManager getClientManager() {
         return clientManager;
     }
 }

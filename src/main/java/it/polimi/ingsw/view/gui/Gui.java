@@ -3,10 +3,10 @@ package it.polimi.ingsw.view.gui;
 import it.polimi.ingsw.controller.ClientManager;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.TurnState;
-import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.FaithPath;
 import it.polimi.ingsw.model.Market;
 import it.polimi.ingsw.model.cards.Decks;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
 import it.polimi.ingsw.observer.ViewObservable;
@@ -40,6 +40,7 @@ public class Gui extends ViewObservable implements View {
     private boolean singlePlayer = false;
     private final Map<String, Integer> victoryPoints = new HashMap<>();
     private boolean winner = false;
+    private TurnState state = TurnState.NOT_IN_TURN;
 
     public static Gui getInstance() {
         if (instance == null)
@@ -105,8 +106,6 @@ public class Gui extends ViewObservable implements View {
                 }
             } while (!exit);
 
-
-
             int finalNumberOfPlayers = numberOfPlayers;
             notifyObserver(obs -> obs.PlayersNumber(finalNumberOfPlayers));
             if (numberOfPlayers != 1)
@@ -126,9 +125,18 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askAction(TurnState state) {
-        Platform.runLater(() -> boardController.clearChoices());
-        Platform.runLater(() ->
-                boardController.setSinglePlayer(singlePlayer));
+
+        if (state == null)
+            state = this.state;
+        else
+            this.state = state;
+        System.out.println(state);
+        Platform.runLater(() -> {
+            boardController.clearChoices();
+            boardController.setSinglePlayer(singlePlayer);
+            boardController.notInTurn(false);
+        });
+
         switch (state) {
             case FIRST_TURN: {
                 Platform.runLater(() -> boardController.notInTurn(true));
@@ -395,6 +403,7 @@ public class Gui extends ViewObservable implements View {
                 break;
             case ILLEGAL_ACTION:
                 Platform.runLater(() -> boardController.showCommunication(communication, true));
+                askAction(state);
                 new Thread(this::communication).start();
                 break;
             case END_GAME:
@@ -407,7 +416,7 @@ public class Gui extends ViewObservable implements View {
 
     private void communication() {
         try {
-            TimeUnit.MILLISECONDS.sleep(2000);
+            TimeUnit.MILLISECONDS.sleep(1500);
         } catch (InterruptedException E) {
             System.exit(3);
         }

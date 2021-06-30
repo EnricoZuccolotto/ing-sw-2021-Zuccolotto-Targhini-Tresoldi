@@ -104,6 +104,7 @@ public class SocketConnection implements Runnable {
      * Handle client disconnection by closing the socket and stopping the thread.
      */
     public void disconnect(){
+        System.out.println("socket connection");
         if(connected){
             try{
                 if(!clientSocket.isClosed()){

@@ -59,6 +59,7 @@ public class SocketServer implements Runnable {
      * @param connection The terminating connection.
      */
     public void onDisconnect(SocketConnection connection){
+        System.out.println("socket server");
         server.onDisconnect(connection);
     }
 }

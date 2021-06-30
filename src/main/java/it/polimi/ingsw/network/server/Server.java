@@ -61,6 +61,7 @@ public class Server {
                     reconnectingPlayer.setPrivateCommunication("The game is restarting", CommunicationMessage.STARTING_GAME);
                     gameController.getInstance().sendGameUpdateToAllPlayers();
                     reconnectingPlayer.sendUpdateToPlayer();
+                    reconnectingPlayer.setState(reconnectingPlayer.getState());
                     if(gameController.getInstance().getActivePlayersCount() == 1){
                         gameController.getRoundController().handle_endTurn();
                     }
@@ -103,6 +104,7 @@ public class Server {
      * @param connection The connection which is terminated.
      */
     public void onDisconnect(SocketConnection connection){
+        System.out.println("sdbsdfb");
         String nickname = fromConnectionToNickname(connection);
         if(nickname == null) return;
         MORLogger.LOGGER.info("Nickname " + nickname + " has disconnected!");
@@ -119,32 +121,13 @@ public class Server {
             gameController.getLobby().removeUser(nickname);
             gameController.sendLobby();
         } else if(currentTurnState.equals(TurnState.FIRST_TURN)){
-            // TODO: Remove code duplicates
             // We are during a setup turn, remove the client from the game.
             // We handle removal through a "false" message: since message handling is thread-safe,
             // we fakely send a first action message in order for the game logic to be consistent.
-            HumanPlayer disconnectedPlayer = gameController.getInstance().getPlayer(nickname);
-            if(gameController.getInstance().getActivePlayersCount() == 1){
-                MORLogger.LOGGER.info("Every player has disconnected, kill the game.");
-                System.exit(0);
-            }
-            if(disconnectedPlayer.getPlayerBoard().getInkwell()){
-                MORLogger.LOGGER.info("The inkwell player has disconnected. The game cannot proceed.");
-                System.exit(0);
-            }
-            disconnectedPlayer.setPlayerState(PlayerDisconnectionState.TERMINAL);
+            killTheGame(nickname);
             onMessage(new FirstActionMessage(nickname, 0, 1), connection);
         } else if (currentTurnState.equals(TurnState.SECOND_TURN)){
-            HumanPlayer disconnectedPlayer = gameController.getInstance().getPlayer(nickname);
-            if(gameController.getInstance().getActivePlayersCount() == 1){
-                MORLogger.LOGGER.info("Every player has disconnected, kill the game.");
-                System.exit(0);
-            }
-            if(disconnectedPlayer.getPlayerBoard().getInkwell()){
-                MORLogger.LOGGER.info("The inkwell player has disconnected. The game cannot proceed.");
-                System.exit(0);
-            }
-            disconnectedPlayer.setPlayerState(PlayerDisconnectionState.TERMINAL);
+            killTheGame(nickname);
             onMessage(new SecondActionMessage(nickname, null), connection);
         }
         else {
@@ -152,7 +135,7 @@ public class Server {
             gameController.getInstance().getPlayer(nickname).setPlayerState(PlayerDisconnectionState.INACTIVE);
 
             // If player was in turn go to a different turn
-            if(gameController.getRoundController().getPlayerInTurn().getName().equals(nickname))
+            if (gameController.getRoundController().getPlayerInTurn().getName().equals(nickname))
                 gameController.getRoundController().nextTurn();
 
             gameController.getInstance().sendPlayerUpdateToAllPlayers();
@@ -160,13 +143,32 @@ public class Server {
     }
 
     /**
+     * Kills the game if there are no active player or if the player with the inkwell disconnected.
+     *
+     * @param nickname Player disconnected.
+     */
+    private void killTheGame(String nickname) {
+        HumanPlayer disconnectedPlayer = gameController.getInstance().getPlayer(nickname);
+        if (gameController.getInstance().getActivePlayersCount() == 1) {
+            MORLogger.LOGGER.info("Every player has disconnected, kill the game.");
+            System.exit(0);
+        }
+        if (disconnectedPlayer.getPlayerBoard().getInkwell()) {
+            MORLogger.LOGGER.info("The inkwell player has disconnected. The game cannot proceed.");
+            System.exit(0);
+        }
+        disconnectedPlayer.setPlayerState(PlayerDisconnectionState.TERMINAL);
+    }
+
+    /**
      * Utility method to reverse access the {@code clients} map by connections.
+     *
      * @param connection The connection you want to get the nickname from.
      * @return The returned nickname.
      */
-    public String fromConnectionToNickname(SocketConnection connection){
-        for(String nickname : clients.keySet()){
-            if(clients.get(nickname).equals(connection))
+    public String fromConnectionToNickname(SocketConnection connection) {
+        for (String nickname : clients.keySet()) {
+            if (clients.get(nickname).equals(connection))
                 return nickname;
         }
         return null;
