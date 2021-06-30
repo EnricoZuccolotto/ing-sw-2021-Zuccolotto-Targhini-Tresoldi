@@ -46,7 +46,7 @@ public class DevelopmentCard extends Card {
      * @return the cost of the card (array int).
      */
     public int[] getCostCard() {
-        return costCard;
+       return costCard.clone();
     }
 
     /**
