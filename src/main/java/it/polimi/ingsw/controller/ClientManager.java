@@ -117,16 +117,33 @@ public class ClientManager implements ViewObserver, Observer {
         client.sendMessage(new LobbySetMessage(this.nickname, playersNumber));
     }
 
+    /**
+     * Send a message to the server with the two leader card to discard
+     *
+     * @param index1 for the first card
+     * @param index2 for the second card
+     */
     @Override
     public void firstAction(int index1, int index2) {
         client.sendMessage(new FirstActionMessage(this.nickname, index1, index2));
     }
 
+    /**
+     * Send a message to the server with the resources you want to get for not been first in turn
+     *
+     * @param resources for the array list of the resources
+     */
     @Override
     public void secondAction(ArrayList<Resources> resources) {
         client.sendMessage(new SecondActionMessage(this.nickname, resources));
     }
 
+    /**
+     * Send a message to the server with the parameter of the market
+     *
+     * @param choice to choose between row or column
+     * @param index for the index
+     */
     @Override
     public void getMarket(int choice, int index) {
         if(choice==2) {
@@ -136,6 +153,13 @@ public class ClientManager implements ViewObserver, Observer {
         }
     }
 
+    /**
+     * Send a message for sort the resources obtained from the market
+     *
+     * @param choice for the resource to sort
+     * @param row for the index of the row in the warehouse
+     * @param index for the index of the resource in the temporary storage
+     */
     @Override
     public void sortingMarket(Resources choice, int row, int index) {
         if (row >= 0 && row <= 3) {
@@ -145,16 +169,38 @@ public class ClientManager implements ViewObserver, Observer {
         }
     }
 
+    /**
+     * Send a message for switch rows in the warehouse
+     *
+     * @param row1 for the first row
+     * @param row2 for the second row
+     */
     @Override
     public void switchRows(int row1, int row2) {
         client.sendMessage(new ShiftWarehouseMessage(this.nickname, WarehousePositions.transform(row1), WarehousePositions.transform(row2)));
     }
 
+    /**
+     * Send a message to move a resource in the warehouse
+     *
+     * @param resources for the type of resource
+     * @param position for the old position
+     * @param newPosition for the new position
+     */
     @Override
     public void moveBetweenWarehouses(Resources resources, int position, int newPosition) {
         client.sendMessage(new moveBetweenWarehouseMessage(this.nickname, resources, WarehousePositions.transform(position), WarehousePositions.transform(newPosition)));
     }
-    //FIXME:eliminiamo i duplicati di codice
+
+    /**
+     * Send a message to the server for getting a Development Card
+     *
+     * @param color for the card color
+     * @param level for the card level
+     * @param pos for the position of the resources (Warehouse, Strongbox or Special Warehouse)
+     * @param index for the index of space production where to put the card
+     * @param a for the actual card cost
+     */
     @Override
     public void getProduction(int color, int level, ArrayList<Integer> pos, int index, int[] a) {
         int[][] matr = new int[3][4];
@@ -172,7 +218,13 @@ public class ClientManager implements ViewObserver, Observer {
         client.sendMessage(new GetProductionCardMessage(this.nickname, ex, Colors.transform(color), level, index));
     }
 
-
+    /**
+     * Send a message to the server for activate the production of a card
+     *
+     * @param index for the Space production index of the card
+     * @param pos for the position of the resources used to pay
+     * @param a for the actual production cost
+     */
     @Override
     public void useNormalProduction(int index, ArrayList<Integer> pos, int[] a) {
         int[][] matr = new int[3][4];
@@ -190,16 +242,32 @@ public class ClientManager implements ViewObserver, Observer {
         client.sendMessage(new UseProductionNormalMessage(this.nickname, ex, index));
     }
 
+    /**
+     * Send a message to the server to active the Base production
+     *
+     * @param value for the list of the position of the resources used to pay (Warehouse, Strongbox, Special Warehouse)
+     * @param pass for the list of the Resources used to pay
+     * @param obtain for the resource obtained
+     */
     @Override
     public void useBaseProduction(ArrayList<Integer> value, ArrayList<Resources> pass, Resources obtain) {
         int[][] matr = new int[3][4];
         matr[value.get(0)][pass.get(0).ordinal()]=1;
         matr[value.get(1)][pass.get(1).ordinal()]+=1;
         ExchangeResources ex= new ExchangeResources(matr[0], matr[1], matr[2]);
-
+        System.out.println(ex);
+        System.out.println("value" +value);
         client.sendMessage(new UseProductionBaseMessage(this.nickname, ex, obtain));
     }
 
+    /**
+     * Send a message for activate the special production
+     *
+     * @param index for the index of the leader card
+     * @param choice for the position of the resource used to pay
+     * @param resource for the resource to get
+     * @param res for the resource used to pay
+     */
     @Override
     public void useSpecialProduction(int index, int choice, Resources resource, Resources res){
         int[][] matr= new int[3][4];

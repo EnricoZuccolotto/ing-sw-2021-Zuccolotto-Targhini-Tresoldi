@@ -149,6 +149,7 @@ public class Gui extends ViewObservable implements View {
                     boardController.activeMarket(true);
                     boardController.activeProductions(true);
                     boardController.notActiveWarehouse(false);
+                    boardController.activeEndTurn(false);
                 });
                 break;
             }

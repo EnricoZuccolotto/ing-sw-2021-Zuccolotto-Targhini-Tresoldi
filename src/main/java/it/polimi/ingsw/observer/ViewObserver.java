@@ -33,91 +33,99 @@ public interface ViewObserver {
     void PlayersNumber(int playersNumber);
 
     /**
-     * Sends a message to the server with the indexes of the leader cards to discard in the first turn.
+     * Send a message to the server with the two leader card to discard
      *
-     * @param index1 Index of the first card.
+     * @param index1 for the first card
+     * @param index2 for the second card
      */
     void firstAction(int index1, int index2);
 
     /**
-     * Sends a message to the server with the resources chosen by the player in the second turn.
+     * Send a message to the server with the resources you want to get for not been first in turn
      *
-     * @param resources Resources chosen.
+     * @param resources for the array list of the resources
      */
     void secondAction(ArrayList<Resources> resources);
 
     /**
-     * Sends a message to get the resource from the market.
+     * Send a message to the server with the parameter of the market
      *
-     * @param choice if choice equals 2,the player requested a column, else the player requested a row.
-     * @param index  Index of the row/column requested.
+     * @param choice to choose between row or column
+     * @param index for the index
      */
     void getMarket(int choice, int index);
 
     /**
-     * Sends a message to sort a resource from the temporary storage to the warehouses
+     * Send a message for sort the resources obtained from the market
      *
-     * @param choice Resource to sort.
-     * @param index  Index of the resource to sort.
-     * @param row    Position in the warehouse.
+     * @param choice for the resource to sort
+     * @param row for the index of the row in the warehouse
+     * @param index for the index of the resource in the temporary storage
      */
     void sortingMarket(Resources choice, int row, int index);
 
     /**
-     * Sends a message to switch the rows in the warehouse.
+     * Send a message for switch rows in the warehouse
      *
-     * @param row1 Row to switch.
-     * @param row2 Row to switch.
+     * @param row1 for the first row
+     * @param row2 for the second row
      */
     void switchRows(int row1, int row2);
 
     /**
-     * Sends a message to move a resource between the warehouses.
+     * Send a message to move a resource in the warehouse
      *
-     * @param resources   Resource to sort.
-     * @param position    Position of the resource.
-     * @param newPosition New position of the resource.
+     * @param resources for the type of resource
+     * @param position for the old position
+     * @param newPosition for the new position
      */
     void moveBetweenWarehouses(Resources resources, int position, int newPosition);
-    //FIXME: non so cosa c'è in a.
 
     /**
-     * Sends a message to get a development card from the decks.
+     * Send a message to the server for getting a Development Card
      *
-     * @param color Color of the card.
-     * @param level Level of the card.
-     * @param index Index of the production space chosen.
+     * @param color for the card color
+     * @param level for the card level
+     * @param pos for the position of the resources (Warehouse, Strongbox or Special Warehouse)
+     * @param index for the index of space production where to put the card
+     * @param a for the actual card cost
      */
     void getProduction(int color, int level, ArrayList<Integer> pos, int index, int[] a);
 
+    /**
+     * Send a message to the server to active the Base production
+     *
+     * @param value for the list of the position of the resources used to pay (Warehouse, Strongbox, Special Warehouse)
+     * @param pass for the list of the Resources used to pay
+     * @param obtain for the resource obtained
+     */
     void useBaseProduction(ArrayList<Integer> value, ArrayList<Resources> pass, Resources obtain);
 
+    /**
+     * Send a message to the server for activate the production of a card
+     *
+     * @param index for the Space production index of the card
+     * @param pos for the position of the resources used to pay
+     * @param a for the actual production cost
+     */
     void useNormalProduction(int index, ArrayList<Integer> pos, int[] a);
 
+    /**
+     * Send a message for activate the special production
+     *
+     * @param index for the index of the leader card
+     * @param choice for the position of the resource used to pay
+     * @param resource for the resource to get
+     * @param res for the resource used to pay
+     */
     void useSpecialProduction(int index, int choice, Resources resource, Resources res);
 
-    /**
-     * Sends a message to active a leader card.
-     *
-     * @param index Index of the leader card to activate.
-     */
     void activeLeader(int index);
 
-    /**
-     * Sends a message to add himself to the lobby.
-     */
     void addPlayerLobby();
 
-    /**
-     * Sends a message to discard a leader card.
-     *
-     * @param index Index of the leader card to discard.
-     */
     void foldLeader(int index);
 
-    /**
-     * Sends a message to end the turn.
-     */
     void endTurn();
 
     void onDisconnect();
