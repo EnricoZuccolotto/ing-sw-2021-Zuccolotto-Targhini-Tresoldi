@@ -268,33 +268,52 @@ public class ClientManager implements ViewObserver, Observer {
      * @param res for the resource used to pay
      */
     @Override
-    public void useSpecialProduction(int index, int choice, Resources resource, Resources res){
-        int[][] matr= new int[3][4];
-        matr[choice][res.ordinal()]=1;
-        ExchangeResources ex= new ExchangeResources(matr[0], matr[1], matr[2]);
+    public void useSpecialProduction(int index, int choice, Resources resource, Resources res) {
+        int[][] matr = new int[3][4];
+        matr[choice][res.ordinal()] = 1;
+        ExchangeResources ex = new ExchangeResources(matr[0], matr[1], matr[2]);
         client.sendMessage(new UseProductionSpecialMessage(this.nickname, ex, resource, index));
     }
 
+    /**
+     * Send a message to end the turn.
+     */
     @Override
     public void endTurn() {
         client.sendMessage(new EndTurnMessage(this.nickname));
     }
 
+    /**
+     * Send a message to active a leader card.
+     *
+     * @param index Index of the leader card.
+     */
     @Override
     public void activeLeader(int index) {
         client.sendMessage(new LeaderMessage(this.nickname, MessageType.ACTIVE_LEADER, index));
     }
 
+    /**
+     * Send a message to fold a leader card.
+     *
+     * @param index Index of the leader card.
+     */
     @Override
     public void foldLeader(int index) {
         client.sendMessage(new LeaderMessage(this.nickname, MessageType.FOLD_LEADER, index));
     }
 
+    /**
+     * Send a message to add himself to the lobby.
+     */
     @Override
     public void addPlayerLobby() {
         client.sendMessage(new LobbyJoinMessage(this.nickname));
     }
 
+    /**
+     * Updates the board.
+     */
     @Override
     public void update(Message message) {
 
@@ -312,9 +331,12 @@ public class ClientManager implements ViewObserver, Observer {
         }
     }
 
+    /**
+     * Handle on disconnection.
+     */
     @Override
-    public void onDisconnect(){
-        if(!local){
+    public void onDisconnect() {
+        if (!local) {
             ((SocketClient) client).disconnect();
         } else {
             System.exit(0);
