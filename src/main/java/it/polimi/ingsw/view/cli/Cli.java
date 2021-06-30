@@ -42,7 +42,6 @@ public class Cli extends ViewObservable implements View {
     private Market market;
     private FaithPath faithPath;
     private ClientManager clientManager;
-    private final boolean[] productionDone = {false, false, false};
 
     /**
      * Default constructor.
@@ -59,7 +58,7 @@ public class Cli extends ViewObservable implements View {
 
 
     @Override
-    public void setNickname(String nickname) {
+    public void setNickname(String nickname){
         this.nickname = nickname;
     }
 
@@ -315,22 +314,27 @@ public class Cli extends ViewObservable implements View {
      * Asks to the player which production he wants to use.
      */
     private boolean askUseProduction() {
-        ArrayList<String> s = new ArrayList<>();
-        ArrayList<Integer> jump = new ArrayList<>();
-        int index;
-        boolean exit = true;
+        ArrayList<String> s= new ArrayList<>();
+        ArrayList<Integer> jump= new ArrayList<>();
+        int index, cont=0;
+        boolean exit=true;
         s.add("Normal_Production");
         s.add("Base_Production");
         s.add("Special_Production");
         s.add("Exit");
-        String question = "Which production would you like to active? ";
-        if (boards.get(playerNumber).getPlayerBoard().getProductionSpaces().size() == 0 || productionDone[0]) {
+        String question="Which production would you like to active? ";
+        for(int i=0; i<3; i++) {
+            if (boards.get(playerNumber).getPlayerBoard().getProductionSpaces().get(i).getNumbCard() == 0) {
+                cont++;
+            }
+        }
+        if (cont==3) {
             jump.add(0);
         }
-        if (boards.get(playerNumber).getPlayerBoard().getNumberResources() < 2 || productionDone[1]) {
+        if (boards.get(playerNumber).getPlayerBoard().getNumberResources() < 2) {
             jump.add(1);
         }
-        if (boards.get(playerNumber).getPlayerBoard().getProductionNumber() == boards.get(playerNumber).getPlayerBoard().getProductionSpaces().size() + 1 || productionDone[2]) {
+        if (boards.get(playerNumber).getPlayerBoard().getProductionNumber() == boards.get(playerNumber).getPlayerBoard().getProductionSpaces().size() + 1) {
             jump.add(2);
         }
         for (String st : s) {
@@ -447,9 +451,6 @@ public class Cli extends ViewObservable implements View {
         return true;
     }
 
-    /**
-     * Asks to the player which sorting action he wants to perform.
-     */
     public boolean askWhichSortingAction() {
         int choice;
         String question = "What do you want to move? \n1.Switch rows \n2.Move resource between warehouses\n3.Exit\n";
