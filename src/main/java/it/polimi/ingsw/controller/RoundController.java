@@ -226,7 +226,7 @@ public class RoundController implements Serializable {
                 if (actionController.useBaseProduction(playerInTurn, 2, message.getOutput(), message.getExchangeResources())) {
                     productions.add(3);
                     nextState(Action.USE_PRODUCTIONS);
-                    productionOutput[message.getOutput().ordinal()] = +1;
+                    productionOutput[message.getOutput().ordinal()] += 1;
                 }
             }
         }
@@ -249,7 +249,7 @@ public class RoundController implements Serializable {
                     int faith = playerInTurn.getPlayerBoard().getProductionResult(message.getIndex())[Resources.FAITH.ordinal()];
                     handle_addFaithPoint(faith, playerInTurn);
                     for (int i = 0; i < 4; i++)
-                        productionOutput[i] = +playerInTurn.getPlayerBoard().getProductionSpaces().get(message.getIndex()).getTop().getProductionResult()[i];
+                        productionOutput[i] += playerInTurn.getPlayerBoard().getProductionSpaces().get(message.getIndex()).getTop().getProductionResult()[i];
                     nextState(Action.USE_PRODUCTIONS);
                 }
             }
@@ -273,7 +273,7 @@ public class RoundController implements Serializable {
                     productions.add(message.getIndex() + 4);
                     handle_addFaithPoint(1, playerInTurn);
                     nextState(Action.USE_PRODUCTIONS);
-                    productionOutput[message.getOutput().ordinal()] = +1;
+                    productionOutput[message.getOutput().ordinal()] += 1;
                 }
             }
         }

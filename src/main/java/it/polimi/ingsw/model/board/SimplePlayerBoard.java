@@ -54,7 +54,7 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         int cont = 0;
         for (SpaceProd spaceProd : productionSpaces)
             if (!(spaceProd.getTop().getLevel() == 0))
-                cont = +1;
+                cont += 1;
         cont++;
         return cont;
     }
