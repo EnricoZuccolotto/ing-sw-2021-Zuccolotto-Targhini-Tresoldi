@@ -43,11 +43,15 @@ public class WinnerController extends ViewObservable implements SceneController 
         labels.add(secondPlaceLabel);
         labels.add(thirdPlaceLabel);
         labels.add(fourthPlaceLabel);
-
-        if (gui.isSinglePlayer()) {
-            for (Label label : labels) {
+        for (Label label : labels) {
+            label.setText("");
+            if(gui.isSinglePlayer()){
                 label.setVisible(false);
             }
+        }
+
+        if (gui.isSinglePlayer()) {
+
             standingsLabel.setVisible(false);
             if(gui.isWinner()){
                 winnerLabel.setText("Congratulations, you are the Winner! Your points are: " + gui.getVictoryPointsForCurrentUser());
@@ -59,7 +63,8 @@ public class WinnerController extends ViewObservable implements SceneController 
             victoryPoints.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
             int index = 0;
             for(String nickname : sortedMap.keySet()){
-                labels.get(index).setText(index + ". " + nickname + " - " + sortedMap.get(nickname) + " points");
+                labels.get(index).setText(index + 1 + ". " + nickname + " - " + sortedMap.get(nickname) + " points.");
+                index++;
             }
             winnerLabel.setVisible(false);
         }

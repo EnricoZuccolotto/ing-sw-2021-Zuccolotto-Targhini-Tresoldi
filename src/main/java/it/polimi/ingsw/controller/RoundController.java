@@ -687,7 +687,6 @@ public class RoundController implements Serializable {
                     }
                 }
                 case PRODUCTION_ACTIONS: {
-
                     if (action.equals(Action.USE_PRODUCTIONS)) {
                         if (productions.size() == playerInTurn.getPlayerBoard().getProductionNumber()) {
                             turnState = TurnState.LAST_LEADER_ACTION;
