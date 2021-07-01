@@ -322,23 +322,8 @@ public class Cli extends ViewObservable implements View {
         s.add("Special_Production");
         s.add("Exit");
         String question="Which production would you like to active? ";
-        for(int i=0; i<3; i++) {
-            if (boards.get(playerNumber).getPlayerBoard().getProductionSpaces().get(i).getNumbCard() == 0) {
-                cont++;
-            }
-        }
-        if (cont==3) {
-            jump.add(0);
-        }
-        if (boards.get(playerNumber).getPlayerBoard().getNumberResources() < 2) {
-            jump.add(1);
-        }
-        if (boards.get(playerNumber).getPlayerBoard().getProductionNumber() == boards.get(playerNumber).getPlayerBoard().getProductionSpaces().size() + 1) {
-            jump.add(2);
-        }
-        for (String st : s) {
-            out.println(s.indexOf(st) + ". " + st);
-        }
+
+
         try {
             index= validateInput(0, 3, jump, question);
             switch (index){
@@ -423,8 +408,9 @@ public class Cli extends ViewObservable implements View {
 
     @Override
     public boolean askSortingMarket() {
-        Resources choice;
+        Resources choice, resource;
         int row;
+        boolean white = false;
         ArrayList<Resources> list = new ArrayList<>(Arrays.asList(Resources.values()));
         list.removeAll(boards.get(playerNumber).getTemporaryResourceStorage());
         String question="Which resource do you want to sort? Choose the resource: ";
@@ -436,14 +422,21 @@ public class Cli extends ViewObservable implements View {
                 list.addAll(Arrays.asList(Resources.values()));
                 list.removeAll(boards.get(playerNumber).getPlayerBoard().getSubstitutableResources());
                 choice = validateResources(question, list);
+                white = true;
             }
             question = "Select a row in the warehouse between 1 and 3, select 4 to discard it or select 0 for the special warehouse (with leader card only) and 5 to exit: ";
             row = validateInput(0, 5, null, question);
             if (row == 5) {
                 return false;
             }
-            Resources finalChoice = choice;
-            notifyObserver(obs -> obs.sortingMarket(finalChoice, row, boards.get(playerNumber).getTemporaryResourceStorage().indexOf(finalChoice)));
+
+            if (white) {
+                resource = Resources.WHITE;
+            } else resource = choice;
+
+            Resources finalChoice = choice, resources = resource;
+
+            notifyObserver(obs -> obs.sortingMarket(finalChoice, row, boards.get(playerNumber).getTemporaryResourceStorage().indexOf(resources)));
         } catch (ExecutionException e) {
             out.println("Error");
         }
@@ -631,7 +624,7 @@ public class Cli extends ViewObservable implements View {
                     if (res.equals(val) && choice == choice2) {
                         temp++;
                     }
-                    if (!(boards.get(playerNumber).getPlayerBoard().getResources(choice, temp).contains(res))) {
+                    if (boards.get(playerNumber).getPlayerBoard().getResources(choice, temp).contains(res)) {
                         flag = true;
                         val = res;
                     } else {
@@ -865,13 +858,16 @@ public class Cli extends ViewObservable implements View {
     private void showEndGame() {
         clearCli();
         int gameSize = 0;
+        ArrayList<CompressedPlayerBoard> notNull = new ArrayList<>();
         for(CompressedPlayerBoard board : boards){
             if(board != null) {
                 gameSize++;
+                notNull.add(board);
             }
+
         }
         if (gameSize > 1) {
-            ArrayList<CompressedPlayerBoard> sorted = (ArrayList<CompressedPlayerBoard>) boards.stream().sorted(Comparator.comparingInt(CompressedPlayerBoard::getPlayerNumber).reversed()).collect(Collectors.toList());
+            ArrayList<CompressedPlayerBoard> sorted = (ArrayList<CompressedPlayerBoard>) notNull.stream().sorted(Comparator.comparingInt(CompressedPlayerBoard::getPlayerNumber).reversed()).collect(Collectors.toList());
             for (int i = 0; i < sorted.size(); i++)
                 out.println((i + 1) + ". " + sorted.get(i).getName() + "  score:" + sorted.get(i).getPlayerBoard().getVP());
         } else {
@@ -995,7 +991,7 @@ public class Cli extends ViewObservable implements View {
             for (int i = 0; i < 4; i++) {
                 while (count != a[i]) {
                     question = "Pick a number for the resource  " + Resources.transform(i) + " (3 to exit): ";
-                    select = validateInput(0, 2, null, question);
+                    select = validateInput(0, 3, null, question);
                     if(select==3) {return null;}
                     resource = boards.get(playerNumber).getPlayerBoard().getResources(select, count);
                     if (resource.contains(Resources.transform(i))) {

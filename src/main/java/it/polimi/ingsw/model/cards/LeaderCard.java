@@ -99,9 +99,11 @@ public class LeaderCard extends Card {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(super.toString());
         stringBuilder.append(" || Requirements: ");
-        if (Resources.toString(costResources).isEmpty())
+        if (Resources.toString(costResources).isEmpty()) {
             stringBuilder.append(Colors.toString(costColor));
-        else stringBuilder.append(Resources.toString(costResources));
+            if (advantage.equals(Advantages.PROD))
+                stringBuilder.append("+Level 2");
+        } else stringBuilder.append(Resources.toString(costResources));
         stringBuilder.append(" || Advantage:");
         stringBuilder.append(advantage.toString(effect));
         stringBuilder.append(" || Active: ");
@@ -111,6 +113,7 @@ public class LeaderCard extends Card {
 
     @Override
     public boolean equals(Object obj) {
+
         if (this == obj)
             return true;
         if (obj == null)

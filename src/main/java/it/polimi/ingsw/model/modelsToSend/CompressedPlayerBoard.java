@@ -100,9 +100,11 @@ public class CompressedPlayerBoard implements Serializable {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Name: ").append(this.getName());
         stringBuilder.append("\n");
-        stringBuilder.append("PlayerNumber: ").append(this.getPlayerNumber());
+        stringBuilder.append("PlayerNumber: ").append((this.getPlayerNumber() + 1));
         stringBuilder.append("\n");
         stringBuilder.append(this.getPlayerBoard().toString(mine));
+        stringBuilder.append("\nSpecial Warehouse:");
+        stringBuilder.append(getPlayerBoard().getExtraResources());
         if (temporaryResourceStorage.size() > 0) {
             stringBuilder.append("\n temporaryResourceStorage=");
             stringBuilder.append(temporaryResourceStorage);
