@@ -314,33 +314,18 @@ public class Cli extends ViewObservable implements View {
      */
     private boolean askUseProduction() {
         ArrayList<String> s= new ArrayList<>();
-        ArrayList<Integer> jump= new ArrayList<>();
-        int index, cont=0;
+        int index;
         boolean exit=true;
         s.add("Normal_Production");
         s.add("Base_Production");
         s.add("Special_Production");
         s.add("Exit");
         String question="Which production would you like to active? ";
-        for(int i=0; i<3; i++) {
-            if (boards.get(playerNumber).getPlayerBoard().getProductionSpaces().get(i).getNumbCard() == 0) {
-                cont++;
-            }
-        }
-        if (cont==3) {
-            jump.add(0);
-        }
-        if (boards.get(playerNumber).getPlayerBoard().getNumberResources() < 2) {
-            jump.add(1);
-        }
-        if (boards.get(playerNumber).getPlayerBoard().getProductionNumber() == boards.get(playerNumber).getPlayerBoard().getProductionSpaces().size() + 1) {
-            jump.add(2);
-        }
         for (String st : s) {
             out.println(s.indexOf(st) + ". " + st);
         }
         try {
-            index= validateInput(0, 3, jump, question);
+            index= validateInput(0, 3, null, question);
             switch (index){
                 case 0: exit=askUseNormalProduction();
                     break;
@@ -631,7 +616,7 @@ public class Cli extends ViewObservable implements View {
                     if (res.equals(val) && choice == choice2) {
                         temp++;
                     }
-                    if (!(boards.get(playerNumber).getPlayerBoard().getResources(choice, temp).contains(res))) {
+                    if (boards.get(playerNumber).getPlayerBoard().getResources(choice, temp).contains(res)) {
                         flag = true;
                         val = res;
                     } else {
@@ -995,7 +980,7 @@ public class Cli extends ViewObservable implements View {
             for (int i = 0; i < 4; i++) {
                 while (count != a[i]) {
                     question = "Pick a number for the resource  " + Resources.transform(i) + " (3 to exit): ";
-                    select = validateInput(0, 2, null, question);
+                    select = validateInput(0, 3, null, question);
                     if(select==3) {return null;}
                     resource = boards.get(playerNumber).getPlayerBoard().getResources(select, count);
                     if (resource.contains(Resources.transform(i))) {

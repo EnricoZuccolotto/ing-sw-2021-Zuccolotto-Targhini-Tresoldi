@@ -1473,10 +1473,10 @@ public class BoardController extends ViewObservable implements SceneController {
                 for (int j = 0; j < 4; j++) {
                     a[j] = activePlayerBoard.getPlayerBoard().getLeaderCard(i).getEffect().get(i);
                 }
-                if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getUncovered() && activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.PROD) && activePlayerBoard.getPlayerBoard().checkResources(a))
+                if (activePlayerBoard.getPlayerBoard().getLeaderCard(i).getUncovered() && activePlayerBoard.getPlayerBoard().getLeaderCard(i).getAdvantage().equals(Advantages.PROD) && activePlayerBoard.getPlayerBoard().checkResources(a)) {
                     leader[i].setDisable(!active);
-                else
-                    leader[i].setDisable(true);
+                }
+                else{ leader[i].setDisable(true); }
             } catch (IndexOutOfBoundsException ignored) {
                 leader[i].setDisable(true);
             }
