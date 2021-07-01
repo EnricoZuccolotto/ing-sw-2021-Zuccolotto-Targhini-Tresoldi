@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * This class handles the computation needed by the clients.
+ */
 public class ClientManager implements ViewObserver, Observer {
 
     private final View view;

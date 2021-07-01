@@ -26,6 +26,9 @@ public class SocketServer implements Runnable {
         this.port = port;
     }
 
+    /**
+     * Runs the listener thread for new connections.
+     */
     @Override
     public void run(){
         try{

@@ -47,6 +47,11 @@ public class NetworkLayerView implements View, Observer {
     }
 
     @Override
+    public void askPlayersNumber(int number) {
+
+    }
+
+    @Override
     public void showLobby(ArrayList<String> players) {
         connection.sendMessage(new LobbyMessage("", players));
     }

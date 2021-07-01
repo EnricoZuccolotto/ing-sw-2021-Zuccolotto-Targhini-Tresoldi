@@ -28,6 +28,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 
+/**
+ * This class contains the Command Line Interface handlers and actions.
+ */
 public class Cli extends ViewObservable implements View {
 
     private final PrintStream out;
@@ -194,11 +197,7 @@ public class Cli extends ViewObservable implements View {
         }
     }
 
-    /**
-     * Sends to the model the number of players that are going to play this game.
-     *
-     * @param number Number of player.
-     */
+    @Override
     public void askPlayersNumber(int number) {
         notifyObserver(obs -> obs.PlayersNumber(number));
     }
@@ -451,6 +450,10 @@ public class Cli extends ViewObservable implements View {
         return true;
     }
 
+    /**
+     * Asks what you want to sort (warehouse-to-warehouse or special-to-normal warehouse)
+     * @return {@code false} if user cancelled the action, {@code true} otherwise.
+     */
     public boolean askWhichSortingAction() {
         int choice;
         String question = "What do you want to move? \n1.Switch rows \n2.Move resource between warehouses\n3.Exit\n";
@@ -854,6 +857,9 @@ public class Cli extends ViewObservable implements View {
         this.market = market;
     }
 
+    /**
+     * Shows the End Game Screen
+     */
     private void showEndGame() {
         clearCli();
         int gameSize = 0;

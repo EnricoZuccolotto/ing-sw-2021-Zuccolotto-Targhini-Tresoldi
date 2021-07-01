@@ -6,6 +6,9 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 
+/**
+ * This class controls the drag events for resources and cards.
+ */
 public class DragController {
     private final Node target;
     private double anchorX;

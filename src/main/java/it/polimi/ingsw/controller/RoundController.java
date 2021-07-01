@@ -131,7 +131,6 @@ public class RoundController implements Serializable {
             }
 
             if (list.contains(Resources.WHITE)) {
-                // TODO: there may be a bug in the white marble decorator
                 int flag = (int) playerInTurn.getPlayerBoard().getSubstitutes().stream().filter(n -> n).count();
                 //exchange white resource with another resource if there is only one exchangeable
                 if (flag == 1) {

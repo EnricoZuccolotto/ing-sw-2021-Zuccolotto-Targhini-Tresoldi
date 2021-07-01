@@ -55,6 +55,9 @@ public class SocketConnection implements Runnable {
         socketConnectionThread.start();
     }
 
+    /**
+     * Starts the reading thread.
+     */
     @Override
     public void run(){
         // REMEMBER: First message exchange: client connects then sends a login request with his username
@@ -76,6 +79,10 @@ public class SocketConnection implements Runnable {
         }
     }
 
+    /**
+     * Check if the client is still connected.
+     * @return {@code true} if there is a connection, {@code false} otherwise.
+     */
     public boolean isConnected(){
        return connected;
     }

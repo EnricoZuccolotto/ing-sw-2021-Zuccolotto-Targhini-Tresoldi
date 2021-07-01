@@ -5,6 +5,9 @@ import it.polimi.ingsw.view.View;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * This message is sent to all players when the lobby updates.
+ */
 public class LobbyMessage extends Message implements ExecutableViewMessage {
     private final ArrayList<String> players;
 

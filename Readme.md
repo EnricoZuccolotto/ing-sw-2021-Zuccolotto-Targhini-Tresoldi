@@ -19,7 +19,7 @@ Il progetto prevede lo sviluppo e l'implementazione del gioco da tavolo Maestri 
 - Comunicazione in rete attraverso Socket;
 - Interfaccia grafica:
   - CLI;
-  - GUI con JavaFX (WIP);
+  - GUI con JavaFX;
 - Funzionalità avanzate:
   - Partita in locale
   - Persistenza
@@ -36,10 +36,27 @@ Per tale report sono state evidenziate solo le classi effettivamente testabili, 
 
 I diagrammi UML sono disponibili a questi link:
 
-- [Comunicazione di rete](UML/ClientServer.png);
-- [Controller](UML/uml_Controller.png);
-- [Model](UML/uml_Model.png)
-- [View](UML/View.png)
+- [Comunicazione di rete](deliveries/UML/ClientServer.png);
+- [Controller](deliveries/UML/uml_Controller.png);
+- [Model](deliveries/UML/uml_Model.png)
+- [View](deliveries/UML/View.png)
+- [Dettagliato](deliveries/UML/ing-sw-2021-zuccolotto-targhini-tresoldi.png)
 
 ### JavaDOC
 La documentazione JavaDOC relativa al progetto può essere consultata [qui](JavaDoc/index.html)
+
+### Esecuzione
+
+I file JAR sono disponibili a questi link:
+
+- [Client](deliveries/JAR/GC45-client.jar);
+- [Server](deliveries/JAR/GC45-server.jar);
+
+Per avviare il JAR è necessario aprire un Prompt dei Comandi e digitare:
+`java -jar [nomefile]`
+
+#### Opzioni
+- Server:
+- Client:
+  - `-g` avvia il client in modalità GUI, senza comandi viene avviato in modalità CLI.
+

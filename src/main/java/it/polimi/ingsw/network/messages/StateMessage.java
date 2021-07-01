@@ -5,6 +5,9 @@ import it.polimi.ingsw.view.View;
 
 import java.util.concurrent.ExecutorService;
 
+/**
+ * This message is sent to each player every time his state is changed.
+ */
 public class StateMessage extends Message implements ExecutableViewMessage {
     private final TurnState state;
 

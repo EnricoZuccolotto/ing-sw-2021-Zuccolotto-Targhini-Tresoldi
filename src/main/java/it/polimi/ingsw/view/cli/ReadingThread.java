@@ -15,6 +15,12 @@ public class ReadingThread implements Callable<String> {
         bufferedReader = new BufferedReader(new InputStreamReader(System.in));
     }
 
+    /**
+     * Reads the line from input
+     * @return The input text
+     * @throws IOException If there is an error loading from stdin
+     * @throws InterruptedException If the thread interrupts abnormally.
+     */
     @Override
     public String call() throws IOException, InterruptedException {
         String input;

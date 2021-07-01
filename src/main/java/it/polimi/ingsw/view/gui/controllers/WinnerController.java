@@ -12,6 +12,9 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * This class handles the winner screen.
+ */
 public class WinnerController extends ViewObservable implements SceneController {
     @FXML
     private Label winnerLabel;

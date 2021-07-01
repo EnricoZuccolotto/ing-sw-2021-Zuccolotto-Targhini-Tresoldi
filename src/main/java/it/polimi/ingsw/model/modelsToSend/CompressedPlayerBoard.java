@@ -27,6 +27,11 @@ public class CompressedPlayerBoard implements Serializable {
         this.playerNumber = player.getPlayerNumber();
     }
 
+    /**
+     * Clones the PlayerBoard.
+     * @param playerBoard Board to be cloned
+     * @return A cloned version of the sent board.
+     */
     private PlayerBoard clone(PlayerBoard playerBoard) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

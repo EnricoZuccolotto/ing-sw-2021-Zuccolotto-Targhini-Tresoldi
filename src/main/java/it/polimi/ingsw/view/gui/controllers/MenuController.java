@@ -12,6 +12,9 @@ import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
+/**
+ * This is the controller of the start screen
+ */
 public class MenuController extends ViewObservable implements SceneController {
     @FXML
     private Button exitButton;

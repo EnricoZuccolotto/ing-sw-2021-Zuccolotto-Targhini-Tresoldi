@@ -14,6 +14,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
+/**
+ * This class controls the connection scene.
+ */
 public class ConnectController extends ViewObservable implements SceneController {
     @FXML
     private Button connectButton;

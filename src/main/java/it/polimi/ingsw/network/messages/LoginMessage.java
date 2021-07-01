@@ -4,6 +4,9 @@ import it.polimi.ingsw.view.View;
 
 import java.util.concurrent.ExecutorService;
 
+/**
+ * This message is sent by the server to communicate if the name or the connection has been accepted.
+ */
 public class LoginMessage extends Message implements ExecutableViewMessage {
     boolean connection, name;
 

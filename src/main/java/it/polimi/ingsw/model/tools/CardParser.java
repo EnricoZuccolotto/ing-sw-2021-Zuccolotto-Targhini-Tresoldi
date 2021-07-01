@@ -148,6 +148,11 @@ public class CardParser {
         return deck;
     }
 
+    /**
+     * Generates an int array from a JSON array
+     * @param jsonArray The array you want to transform
+     * @return An int array containing all the values from the JSON array.
+     */
     static int[] parseIntJsonArray(JsonArray jsonArray) {
         List<Integer> list = new ArrayList<>();
 

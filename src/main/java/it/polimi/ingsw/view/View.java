@@ -32,6 +32,12 @@ public interface View {
     void askPlayersNumber();
 
     /**
+     * Used to create a game of a known size.
+     * @param number The size of the game to create.
+     */
+    void askPlayersNumber(int number);
+
+    /**
      * Asks the server to join a lobby.
      */
     void joinLobby();

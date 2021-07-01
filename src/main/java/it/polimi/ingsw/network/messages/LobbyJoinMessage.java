@@ -3,6 +3,9 @@ package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.GameState;
 
+/**
+ * This message is sent in order to join a lobby.
+ */
 public class LobbyJoinMessage extends Message implements ExecutableMessage {
     /**
      * Default constructor.

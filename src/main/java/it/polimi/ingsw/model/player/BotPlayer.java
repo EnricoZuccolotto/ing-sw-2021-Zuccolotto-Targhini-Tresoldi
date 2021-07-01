@@ -92,7 +92,6 @@ public class BotPlayer extends Player implements Serializable {
                 i++;
         }
         for (i = 1; i < 4; i++) {
-            // FIXME: BUG WHEN LORENZO DISCARDS CARDS
             sum = +currentGameBoard.getDeck(c, i).DeckLength();
         }
         if (sum == 0) {

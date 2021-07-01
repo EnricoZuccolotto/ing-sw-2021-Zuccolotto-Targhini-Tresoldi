@@ -32,7 +32,9 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
-
+/**
+ * This class controls the board scene.
+ */
 public class BoardController extends ViewObservable implements SceneController {
     private final String effect = "-fx-border-color: green;" +
             "-fx-border-radius: 3px;" +
@@ -1284,6 +1286,10 @@ public class BoardController extends ViewObservable implements SceneController {
     private void onResourceSelection(Resources resources) {
         resourcesToSend.add(resources);
         askResource(false);
+
+        Button[] buttons = new Button[]{servantButton, coinButton, stoneButton, shieldButton};
+        for (int i = 0; i < 4; i++)
+            buttons[i].setDisable(false);
 
         if (production.size() > 0) {
             if (production.get(1) == 11) {

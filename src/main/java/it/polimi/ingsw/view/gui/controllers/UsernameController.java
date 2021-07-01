@@ -18,7 +18,9 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
-
+/**
+ * This class controls the username input and the lobby display.
+ */
 public class UsernameController extends ViewObservable implements SceneController {
     private final String s = "WAITING FOR OTHER PLAYERS TO CONNECT...";
     @FXML

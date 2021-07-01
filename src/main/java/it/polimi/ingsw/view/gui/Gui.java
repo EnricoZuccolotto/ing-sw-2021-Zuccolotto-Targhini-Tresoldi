@@ -28,6 +28,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This class contains the Graphical User Interface handlers and actions.
+ */
 public class Gui extends ViewObservable implements View {
     private String nickname = "";
     private int playerNumber = 5;
@@ -42,12 +45,20 @@ public class Gui extends ViewObservable implements View {
     private boolean winner = false;
     private TurnState state = TurnState.NOT_IN_TURN;
 
+    /**
+     * Returns the active GUI instance (GUI is a singleton) or creates a new one.
+     * @return The new or active GUI
+     */
     public static Gui getInstance() {
         if (instance == null)
             instance = new Gui();
         return instance;
     }
 
+    /**
+     * Checks if the game is local.
+     * @return {@code true} if the game is local, {@code false} otherwise.
+     */
     public boolean isLocal() {
         return local;
     }
@@ -114,6 +125,7 @@ public class Gui extends ViewObservable implements View {
         });
     }
 
+    @Override
     public void askPlayersNumber(int number){
         notifyObserver(obs -> obs.PlayersNumber(number));
     }
@@ -354,6 +366,9 @@ public class Gui extends ViewObservable implements View {
         }
     }
 
+    /**
+     * Handles the join or create lobby alert creation.
+     */
     private void askJoinOrSet(){
         Platform.runLater(() -> {
             Alert joinOrSetAlert = new Alert(AlertType.INFORMATION, "Do you want to join a game or set up a new one?", ButtonType.OK, ButtonType.YES);
@@ -414,6 +429,9 @@ public class Gui extends ViewObservable implements View {
         }
     }
 
+    /**
+     * Hides the communication window.
+     */
     private void communication() {
         try {
             TimeUnit.MILLISECONDS.sleep(1500);
@@ -425,10 +443,18 @@ public class Gui extends ViewObservable implements View {
 
     }
 
+    /**
+     * Sets the active {@code BoardController}
+     * @param boardController The controller generated while loading the Board scene.
+     */
     public void setBoardController(BoardController boardController) {
         this.boardController = boardController;
     }
 
+    /**
+     * Sets the active {@code UsernameController}
+     * @param usernameController The controller generated while loading the Lobby/Username scene.
+     */
     public void setUsernameController(UsernameController usernameController) {
         this.usernameController = usernameController;
     }
@@ -437,12 +463,30 @@ public class Gui extends ViewObservable implements View {
         return clientManager;
     }
 
+    /**
+     * Returns the map of victory points for users.
+     * @return A map containing victory points indexed by username.
+     */
     public Map<String, Integer> getVictoryPoints() {
         return victoryPoints;
     }
 
+    /**
+     * Returns if the game is a single player game.
+     * @return {@code true} if the game is single-player, {@code false} otherwise.
+     */
     public boolean isSinglePlayer() { return singlePlayer; }
+
+    /**
+     * Check if a single-player game has ended
+     * @return {@code true} if there is a winner, {@code false} otherwise.
+     */
     public boolean isWinner() { return winner; }
+
+    /**
+     * Gets the victory points for the current user.
+     * @return The amount of victory points for the current user.
+     */
     public int getVictoryPointsForCurrentUser() {
         return compressedPlayerBoard.getPlayerBoard().getVP();
     }

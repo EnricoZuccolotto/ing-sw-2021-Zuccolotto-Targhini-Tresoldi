@@ -3,6 +3,9 @@ package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.GameState;
 
+/**
+ * This message is sent in order to create a lobby.
+ */
 public class LobbySetMessage extends Message implements ExecutableMessage {
     private final int playerNumber;
 
