@@ -314,18 +314,18 @@ public class Cli extends ViewObservable implements View {
      */
     private boolean askUseProduction() {
         ArrayList<String> s= new ArrayList<>();
-        ArrayList<Integer> jump= new ArrayList<>();
-        int index, cont=0;
+        int index;
         boolean exit=true;
         s.add("Normal_Production");
         s.add("Base_Production");
         s.add("Special_Production");
         s.add("Exit");
         String question="Which production would you like to active? ";
-
-
+        for (String st : s) {
+            out.println(s.indexOf(st) + ". " + st);
+        }
         try {
-            index= validateInput(0, 3, jump, question);
+            index= validateInput(0, 3, null, question);
             switch (index){
                 case 0: exit=askUseNormalProduction();
                     break;
