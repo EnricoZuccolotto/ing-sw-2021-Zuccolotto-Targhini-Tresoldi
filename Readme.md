@@ -13,7 +13,7 @@ Prof. Gianpaolo Cugola
 
 Il progetto prevede lo sviluppo e l'implementazione del gioco da tavolo Maestri del Rinascimento. Viene data la possibilità di giocare in maniera distribuita (massimo 4 giocatori) tramite un sistema distribuito client-server.
 
-## Funzionalità finora sviluppate
+## Funzionalità sviluppate
 
 - Regole complete;
 - Comunicazione in rete attraverso Socket;
@@ -36,11 +36,13 @@ Per tale report sono state evidenziate solo le classi effettivamente testabili, 
 
 I diagrammi UML sono disponibili a questi link:
 
-- [Comunicazione di rete](deliveries/UML/ClientServer.png);
-- [Controller](deliveries/UML/uml_Controller.png);
-- [Model](deliveries/UML/uml_Model.png)
-- [View](deliveries/UML/View.png)
-- [Dettagliato](deliveries/UML/ing-sw-2021-zuccolotto-targhini-tresoldi.png)
+- [UML INIZIALE - Comunicazione di rete](deliveries/UML/ClientServer.png);
+- [UML INIZIALE - Controller](deliveries/UML/uml_Controller.png);
+- [UML INIZIALE - Model](deliveries/UML/uml_Model.png)
+- [UML INIZIALE - View](deliveries/UML/View.png)
+  
+
+- [UML FINALE dettagliato](deliveries/UML/ing-sw-2021-zuccolotto-targhini-tresoldi.png)
 
 ### JavaDOC
 La documentazione JavaDOC relativa al progetto può essere consultata [qui](JavaDoc/index.html)
