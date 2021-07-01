@@ -818,7 +818,9 @@ public class Cli extends ViewObservable implements View {
     @Override
     public void showError(String error) {
         clearCli();
+        out.print(ColorsCLI.RED);
         out.println(error);
+        out.print(ColorsCLI.CLEAR);
     }
 
     @Override
@@ -827,7 +829,7 @@ public class Cli extends ViewObservable implements View {
         out.println(market);
         out.print(faithPath);
         out.print(" cards: " + faithPath.getCardsState(0, playerNumber) + ", " + faithPath.getCardsState(1, playerNumber) + ", " + faithPath.getCardsState(2, playerNumber));
-
+        out.print("\n");
         if (playerBoard.getName().equals(nickname)) {
             this.playerNumber = playerBoard.getPlayerNumber();
             this.boards.set(playerNumber, playerBoard);

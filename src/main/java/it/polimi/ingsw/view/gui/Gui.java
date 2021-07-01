@@ -137,12 +137,11 @@ public class Gui extends ViewObservable implements View {
 
     @Override
     public void askAction(TurnState state) {
-
         if (state == null)
             state = this.state;
         else
             this.state = state;
-        System.out.println(state);
+
         Platform.runLater(() -> {
             boardController.clearChoices();
             boardController.setSinglePlayer(singlePlayer);
@@ -205,7 +204,10 @@ public class Gui extends ViewObservable implements View {
                 break;
             }
             case NOT_IN_TURN:
-                Platform.runLater(() -> boardController.notInTurn(true));
+                Platform.runLater(() -> {
+                    boardController.notInTurn(true);
+                    boardController.activeEndTurn(false);
+                });
                 break;
         }
 

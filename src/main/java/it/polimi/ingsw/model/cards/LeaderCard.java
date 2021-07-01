@@ -104,7 +104,8 @@ public class LeaderCard extends Card {
         else stringBuilder.append(Resources.toString(costResources));
         stringBuilder.append(" || Advantage:");
         stringBuilder.append(advantage.toString(effect));
-
+        stringBuilder.append(" || Active: ");
+        stringBuilder.append(getUncovered());
         return stringBuilder.toString();
     }
 

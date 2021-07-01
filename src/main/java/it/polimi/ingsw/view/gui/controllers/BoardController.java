@@ -1374,10 +1374,6 @@ public class BoardController extends ViewObservable implements SceneController {
         flag = false;
         view = true;
 
-        if (!singlePlayer) {
-            viewBoards.setVisible(true);
-            viewBoards.setDisable(false);
-        }
     }
 
     /**
@@ -1385,6 +1381,10 @@ public class BoardController extends ViewObservable implements SceneController {
      */
     public void setSinglePlayer(boolean singlePlayer) {
         this.singlePlayer = singlePlayer;
+        if (!singlePlayer) {
+            viewBoards.setVisible(true);
+            viewBoards.setDisable(false);
+        }
     }
 
     /**

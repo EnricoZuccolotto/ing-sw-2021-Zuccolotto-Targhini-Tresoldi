@@ -51,7 +51,12 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
 
     @Override
     public int getProductionNumber() {
-        return productionSpaces.size() + 1;
+        int cont = 0;
+        for (SpaceProd spaceProd : productionSpaces)
+            if (!(spaceProd.getTop().getLevel() == 0))
+                cont = +1;
+        cont++;
+        return cont;
     }
 
     @Override
@@ -422,6 +427,8 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
             }
         }
         stringBuilder.append(warehouse);
+        stringBuilder.append("\nSpecial Warehouse:");
+        stringBuilder.append(getExtraResources());
         return stringBuilder.toString();
     }
 }
