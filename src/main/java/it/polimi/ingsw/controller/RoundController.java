@@ -109,11 +109,6 @@ public class RoundController implements Serializable {
      * @param message Message that contains all of the information needed to perform this action.
      */
     public void handle_getMarket(MarketRequestMessage message) {
-        // FIXME: Handle these tests
-        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.STONE, 10);
-        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.SHIELD, 10);
-        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.SERVANT, 10);
-        playerInTurn.getPlayerBoard().addStrongboxResource(Resources.COIN, 10);
 
 
         if (isYourTurn(message.getPlayerName())) {

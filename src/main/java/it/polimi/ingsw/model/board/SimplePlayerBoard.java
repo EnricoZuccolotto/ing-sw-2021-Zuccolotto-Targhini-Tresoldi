@@ -423,11 +423,13 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
                 stringBuilder.append(productionSpaces.indexOf(prod));
                 stringBuilder.append(". ");
                 stringBuilder.append(prod.getTop());
-                stringBuilder.append("\n");
                 for (int i = 1; i < prod.getNumbCard(); i++) {
-                    stringBuilder.append("  ");
+                    stringBuilder.append("  |");
                     stringBuilder.append(prod.getCards().get(i).getColor());
+                    stringBuilder.append("  VP:");
+                    stringBuilder.append(prod.getCards().get(i).getVP());
                 }
+                stringBuilder.append("\n");
             }
         }
         stringBuilder.append(warehouse);

@@ -1,28 +1,36 @@
 package it.polimi.ingsw.modelTest;
 
 
-import it.polimi.ingsw.model.tools.CardParser;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.DevelopmentCard;
-
+import it.polimi.ingsw.model.tools.CardParser;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
+/**
+ * Deck's test.
+ */
 public class DeckTest {
+    /**
+     * Tests if the are 48 cards in the deck.
+     * Tests if all of the card have different IDs.
+     * Tests if the card with the Color c and level j are in the deck(c,j).
+     * Tests if the decks are loaded correctly.
+     */
     @Test
-    public void DecksCards(){
-    DevelopmentCard c ;
-    int cont=0;
-    Deck [][]decks;
-    Deck deck;
-    ArrayList<Integer> expected=new ArrayList<>();
-    for(int i=1;i<49;i++)
-        expected.add(i);
+    public void DecksCards() {
+        DevelopmentCard c;
+        int cont = 0;
+        Deck[][] decks;
+        Deck deck;
+        ArrayList<Integer> expected = new ArrayList<>();
+        for (int i = 1; i < 49; i++)
+            expected.add(i);
 
-    decks = CardParser.parseDevCards();
+        decks = CardParser.parseDevCards();
 
         for (int k = 0; k < 4; k++)
             for (int j = 0; j < 3; j++) {
@@ -43,9 +51,9 @@ public class DeckTest {
                     expected.remove((Integer) c.getID());
                     deck.popFirstCard();
                     assertEquals(deck.DeckLength(), 3 - i);
-        }
+                }
 
-    }
+            }
         assertTrue(expected.isEmpty());
         assertEquals(4*3*4,cont);
 }

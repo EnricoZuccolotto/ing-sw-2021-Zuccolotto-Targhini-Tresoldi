@@ -46,7 +46,7 @@ public class Server {
         if ((clients.get(nickname) != null)) {
             connection.sendMessage(new LoginMessage(nickname, true, false));
         } else if(gameController.getGameState().equals(GameState.END)){
-            // TODO: send error
+            connection.sendMessage(new LoginMessage(nickname, false, false));
         } else if (!gameController.getGameState().equals(GameState.LOBBY)) {
             if (currentTurnState.equals(TurnState.FIRST_TURN) || currentTurnState.equals(TurnState.SECOND_TURN)) {
                 // We are in the setup, prevent logins.
@@ -70,7 +70,7 @@ public class Server {
                     }
 
                 } else {
-                    // TODO: send error message.
+                    connection.sendMessage(new LoginMessage(nickname, false, false));
                 }
             }
         } else {

@@ -9,9 +9,13 @@ import it.polimi.ingsw.model.player.HumanPlayer;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
+/**
+ * Bot Player test.
+ */
 public class BotPlayerTest {
-
+    /**
+     * Tests if the bot player correctly discarded 2 Development cards from the deck of the right color.
+     */
     @Test
     public void discardTest() {
         GameBoard g = new GameBoard();
@@ -49,34 +53,42 @@ public class BotPlayerTest {
         }
         assertEquals(0, g.getDeck(Colors.BLUE, 3).DeckLength());
     }
+
+    /**
+     * Tests if the bot player moves forward of 2 step towards the Pope.
+     */
     @Test
     public void BlackCross2Test() {
         GameBoard g = new GameBoard();
-        HumanPlayer h=new HumanPlayer("Luca",true);
+        HumanPlayer h = new HumanPlayer("Luca", true);
         g.addPlayer(h);
         g.init(g);
         BotPlayer b = g.getBot();
-        int i=0;
+        int i = 0;
         while (!(BotActions.BlackCross2.equals(b.getCurrentAction()))) {
             if (BotActions.BlackCross1Shuffle.equals(b.getCurrentAction())) {
                 i++;
             }
-                b.doAction();
-            }
+            b.doAction();
+        }
         if (BotActions.BlackCross2.equals(b.getCurrentAction())) {
             assertEquals(i, g.getPlayerFaithPathPosition(1));
             b.doAction();
-            assertEquals(i+2, g.getPlayerFaithPathPosition(1));
+            assertEquals(i + 2, g.getPlayerFaithPathPosition(1));
         }
     }
+
+    /**
+     * Tests if the bot player moves forward of 1 step towards the Pope and tests if the card are shuffled.
+     */
     @Test
-    public void BlackCross1ShuffleTest(){
+    public void BlackCross1ShuffleTest() {
         GameBoard g = new GameBoard();
-        HumanPlayer h=new HumanPlayer("Luca",true);
+        HumanPlayer h = new HumanPlayer("Luca", true);
         g.addPlayer(h);
         g.init(g);
         BotPlayer b = g.getBot();
-        int i=0;
+        int i = 0;
         while (!(BotActions.BlackCross1Shuffle.equals(b.getCurrentAction()))) {
             if (BotActions.BlackCross2.equals(b.getCurrentAction())) {
                 i = i + 2;

@@ -24,6 +24,7 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class ActionControllerTest {
+
     @Test
     public void GetProduction_CorrectNumberResources() {
         ActionController actionController = new ActionController();

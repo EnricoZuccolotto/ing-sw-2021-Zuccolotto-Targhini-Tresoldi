@@ -866,6 +866,7 @@ public class Cli extends ViewObservable implements View {
             }
 
         }
+        out.println("THE GAME HAS ENDED");
         if (gameSize > 1) {
             ArrayList<CompressedPlayerBoard> sorted = (ArrayList<CompressedPlayerBoard>) notNull.stream().sorted(Comparator.comparingInt(CompressedPlayerBoard::getPlayerNumber).reversed()).collect(Collectors.toList());
             for (int i = 0; i < sorted.size(); i++)

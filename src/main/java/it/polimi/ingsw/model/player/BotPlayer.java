@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.exceptions.WinnerException;
-import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.GameBoard;
+import it.polimi.ingsw.model.communication.CommunicationMessage;
 import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.enums.Colors;
 
@@ -92,7 +92,7 @@ public class BotPlayer extends Player implements Serializable {
                 i++;
         }
         for (i = 1; i < 4; i++) {
-            sum = +currentGameBoard.getDeck(c, i).DeckLength();
+            sum += currentGameBoard.getDeck(c, i).DeckLength();
         }
         if (sum == 0) {
             throw new WinnerException();
