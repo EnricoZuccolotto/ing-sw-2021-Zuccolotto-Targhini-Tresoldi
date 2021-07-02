@@ -365,15 +365,6 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
                 }
                 a[i] = previous;
             }
-        } else if (choice == 2) {
-            for (int i = 0; i < 4; i++) {
-                previous = a[i];
-                a[i]=temp+1;
-                if (checkResourcesSpecialWarehouse(a)) {
-                    list.add(Resources.transform(i));
-                }
-                a[i] = previous;
-            }
         }
         return list;
     }

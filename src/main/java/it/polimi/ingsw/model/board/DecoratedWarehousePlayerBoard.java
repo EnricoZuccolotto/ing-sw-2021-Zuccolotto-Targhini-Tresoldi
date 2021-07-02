@@ -141,4 +141,22 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard implemen
         return new ExchangeResources(ex.getWarehouse(), ex.getStrongbox(), fromSpecial);
     }
 
+    @Override
+    public ArrayList<Resources> getResources(int choice, int temp) {
+        ArrayList<Resources> list = subBoard.getResources(choice, temp);
+        int previous;
+        int[] a = {0, 0, 0, 0};
+        if(choice == 2){
+            for (int i = 0; i < 4; i++) {
+                previous = a[i];
+                a[i]=temp+1;
+                if (checkResourcesSpecialWarehouse(a)) {
+                    list.add(Resources.transform(i));
+                }
+                a[i] = previous;
+            }
+        }
+        return list;
+    }
+
 }
