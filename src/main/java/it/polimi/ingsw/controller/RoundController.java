@@ -309,10 +309,10 @@ public class RoundController implements Serializable {
             playerInTurn.setPrivateCommunication("You cannot do leader action", CommunicationMessage.ILLEGAL_ACTION);
         } else if (isYourTurn(message.getPlayerName())) {
             if (actionController.activateLeader(message.getIndex(), playerInTurn)) {
-                nextState(Action.ACTIVE_LEADER);
+                playerInTurn.sendUpdateToPlayer();
                 clearTemporaryStorage();
                 addOutputProductions();
-                playerInTurn.sendUpdateToPlayer();
+                nextState(Action.ACTIVE_LEADER);
             }
         }
 
@@ -332,10 +332,10 @@ public class RoundController implements Serializable {
         } else if (isYourTurn(message.getPlayerName())) {
             if (actionController.foldLeader(message.getIndex(), playerInTurn)) {
                 handle_addFaithPoint(1, playerInTurn);
-                nextState(Action.ACTIVE_LEADER);
                 clearTemporaryStorage();
                 addOutputProductions();
                 playerInTurn.sendUpdateToPlayer();
+                nextState(Action.ACTIVE_LEADER);
             }
         }
 
