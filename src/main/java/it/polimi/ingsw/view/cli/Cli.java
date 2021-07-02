@@ -557,11 +557,11 @@ public class Cli extends ViewObservable implements View {
             while (!flag) {
                 question = "Choose the level of the card you would like to buy (0 to exit): ";
                 level = validateInput(0, 3, null, question);
+                if (level==0) { return false; }
                 out.println("\nThis are the possible card color: ");
                 for (Colors color: col) {
                     out.println(col.indexOf(color) + ". " + color);
                 }
-                if (level==0) { return false; }
                 question="Select the color of the card you want to buy: ";
                 color1 = validateInput(0, col.size(), jump, question);
                 if (decks.getDeck(col.get(color1), level).DeckLength() == 0) {
@@ -741,11 +741,10 @@ public class Cli extends ViewObservable implements View {
     @Override
     public boolean askActiveLeader() {
         int activeCard;
-        int numCards = boards.get(playerNumber).getPlayerBoard().getLeaderCardsNumber() - 1;
-        String question = "Which card do you want to active? Select 1, between 0 and " + numCards + " (" + (numCards + 1) + ") to exit:";
+        String question = "Which card do you want to active? Select 1, between 0 and 1 (2 to exit):" ;
         try {
-            activeCard = validateInput(0, numCards+1, null, question);
-            if(activeCard==numCards+1) { return false; }
+            activeCard = validateInput(0, 2, null, question);
+            if(activeCard==2) { return false; }
             notifyObserver(obs -> obs.activeLeader(activeCard));
         } catch (ExecutionException e) {
             out.println("Error");
