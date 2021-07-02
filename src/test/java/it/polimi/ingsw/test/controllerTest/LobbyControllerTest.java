@@ -9,7 +9,13 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * Check that the lobby controller is working
+ */
 public class LobbyControllerTest {
+    /**
+     * Check if the lobby correctly sets if the first player asks and fails to set when the second player tries to create another one.
+     */
     @Test
     public void LobbyControllerTest1(){
         LobbyController l=new LobbyController();
@@ -36,6 +42,10 @@ public class LobbyControllerTest {
             assertTrue(true);
         }
     }
+
+    /**
+     * Check if the lobby full checker works.
+     */
     @Test
     public void LobbyControllerTestFull(){
         LobbyController l=new LobbyController();

@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.board;
 
 import it.polimi.ingsw.exceptions.IllegalResourceException;
 import it.polimi.ingsw.model.enums.Resources;
+import it.polimi.ingsw.model.tools.ExchangeResources;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -127,6 +128,17 @@ public class DecoratedWarehousePlayerBoard extends DecoratedPlayerBoard implemen
     @Override
     public int getNumberResources(){
         return quantities.stream().reduce(0, Integer::sum)+subBoard.getNumberResources();
+    }
+
+    @Override
+    public ExchangeResources getExchangeResources() {
+        ExchangeResources ex = subBoard.getExchangeResources();
+        int[] fromSpecial = new int[4];
+        for(int i = 0; i < 4; i++){
+            fromSpecial[i] = quantities.get(i);
+        }
+
+        return new ExchangeResources(ex.getWarehouse(), ex.getStrongbox(), fromSpecial);
     }
 
 }

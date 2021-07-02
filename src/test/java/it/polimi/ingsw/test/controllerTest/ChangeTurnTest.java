@@ -21,7 +21,13 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This class checks if the game can successfully change turns.
+ */
 public class ChangeTurnTest {
+    /**
+     * Check that the game changes state after the first turn.
+     */
     @Test
     public void FirstTurnTest(){
         ArrayList<LeaderCard> expected=new ArrayList<>();
@@ -60,7 +66,9 @@ public class ChangeTurnTest {
         assertEquals("Harry", g.getPlayerInTurn().getName());
 
     }
-
+    /**
+     * Check that the game changes state after the second turn.
+     */
     @Test
     public void SecondTurnTest() {
         GameBoard gb = new GameBoard();
@@ -96,6 +104,9 @@ public class ChangeTurnTest {
         assertEquals(g.getPlayerInTurn().getName(), "Harry");
     }
 
+    /**
+     * Check how that the game changes state if the first action is a Leader action.
+     */
     @Test
     public void FirstActionIsLeader() {
         GameBoard gb = new GameBoard();
@@ -134,6 +145,9 @@ public class ChangeTurnTest {
 
     }
 
+    /**
+     * Check how that the game changes state if the first action is a normal action.
+     */
     @Test
     public void FirstActionIsStd() {
         GameBoard gb = new GameBoard();

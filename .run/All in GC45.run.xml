@@ -3,17 +3,13 @@
     <module name="GC45" />
     <extension name="coverage" sample_coverage="false" track_test_folders="true">
       <pattern>
-        <option name="PATTERN" value="it.polimi.ingsw.test.controllerTest.*" />
-        <option name="ENABLED" value="true" />
-      </pattern>
-      <pattern>
         <option name="PATTERN" value="it.polimi.ingsw.modelTest.*" />
         <option name="ENABLED" value="true" />
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
         <option name="PATTERN" value="it.polimi.ingsw.networkTest.*" />
-        <option name="ENABLED" value="true" />
+        <option name="ENABLED" value="false" />
         <option name="INCLUDE" value="false" />
       </pattern>
       <pattern>
@@ -34,6 +30,15 @@
       <pattern>
         <option name="PATTERN" value="it.polimi.ingsw.test.*" />
         <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="it.polimi.ingsw.test.controllerTest.*" />
+        <option name="ENABLED" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="it.polimi.ingsw.test.*" />
+        <option name="ENABLED" value="false" />
       </pattern>
     </extension>
     <option name="PACKAGE_NAME" value="" />

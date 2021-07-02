@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.SpaceProd;
 import it.polimi.ingsw.model.player.Strongbox;
 import it.polimi.ingsw.model.player.Warehouse;
+import it.polimi.ingsw.model.tools.ExchangeResources;
 
 import java.util.ArrayList;
 
@@ -365,6 +366,12 @@ public interface PlayerBoard {
      * @return The strongbox.
      */
     Strongbox getStrongbox();
+
+    /**
+     * Gets all the current user's resources.
+     * @return All user's resources, from strongbox, warehouse and special warehouse.
+     */
+    ExchangeResources getExchangeResources();
 
     /**
      * Gets the toString of the Board.If the board is not yours, it will cover the inactive leader cards.

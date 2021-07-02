@@ -18,7 +18,13 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
+/**
+ * Check if leader cards are successfully activated
+ */
 public class LeaderTest {
+    /**
+     * Try to activate a single leader and see if the decorator is activated.
+     */
     @Test
     public void activateSingleLeader(){
         GameBoard gb = new GameBoard();
@@ -67,6 +73,9 @@ public class LeaderTest {
         assertNull(playerBoard.getProductions(Resources.SERVANT));
     }
 
+    /**
+     * Try to activate 2 leader cards with the same effect and check if the decorators are updated and not stacked.
+     */
     @Test
     public void activateTwoOfTheSameLeaders(){
         GameBoard gb = new GameBoard();
@@ -121,6 +130,9 @@ public class LeaderTest {
         assertNull(playerBoard.getProductions(Resources.SERVANT));
     }
 
+    /**
+     * Try to activate 2 leader cards with different effects and check if the decorators are stacked and not updated.
+     */
     @Test
     public void activateTwoDifferentLeaders(){
         GameBoard gb = new GameBoard();

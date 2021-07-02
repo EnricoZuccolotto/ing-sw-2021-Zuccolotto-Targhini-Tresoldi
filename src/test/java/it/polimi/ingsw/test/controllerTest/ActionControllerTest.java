@@ -23,8 +23,14 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
+/**
+ * This class tests all possible actions from the controller.
+ */
 public class ActionControllerTest {
 
+    /**
+     * If I ask a production with the correct number of resources it should succeed.
+     */
     @Test
     public void GetProduction_CorrectNumberResources() {
         ActionController actionController = new ActionController();
@@ -56,6 +62,9 @@ public class ActionControllerTest {
         assertEquals(player.getPlayerBoard().getExtraResources().get(3), (Integer) 0);
     }
 
+    /**
+     * If I ask a production with the wrong number of resources it should fail.
+     */
     @Test
     public void GetProduction_WrongNumberResourcesSent() {
         ActionController actionController = new ActionController();
@@ -80,6 +89,9 @@ public class ActionControllerTest {
         assertEquals(0, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
     }
 
+    /**
+     * If I ask a production with the wrong number of resources in my possession it should succeed.
+     */
     @Test
     public void GetProduction_WrongNumberResources() {
         ActionController actionController = new ActionController();
@@ -111,7 +123,9 @@ public class ActionControllerTest {
         assertEquals(0, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
     }
 
-
+    /**
+     * If I try to stack cards of wrong level it should fail.
+     */
     @Test
     public void GetProduction_WrongLevel() {
         ActionController actionController = new ActionController();
@@ -147,6 +161,9 @@ public class ActionControllerTest {
         assertEquals(1, gameBoard.getDeck(Colors.BLUE, 1).DeckLength());
     }
 
+    /**
+     * Test if the game handles a winner correctly
+     */
     @Test
     public void GetProduction_winnerException() {
         ActionController actionController = new ActionController();
@@ -192,6 +209,9 @@ public class ActionControllerTest {
 
     }
 
+    /**
+     * Test if the game can handle a base production request.
+     */
     @Test
     public void useProduction_BaseProduction() {
 
@@ -227,6 +247,9 @@ public class ActionControllerTest {
 
     }
 
+    /**
+     * Test if the game can handle a special production.
+     */
     @Test
     public void useProduction_SpecialProduction() {
 
@@ -271,6 +294,9 @@ public class ActionControllerTest {
 
     }
 
+    /**
+     * Test if the game can handle a normal production.
+     */
     @Test
     public void useProduction_NormalProduction() {
 
@@ -317,6 +343,9 @@ public class ActionControllerTest {
 
     }
 
+    /**
+     * Test if the game can handle a market request.
+     */
     @Test
     public void handle_marketTest() {
         GameBoard gb = new GameBoard();
@@ -376,6 +405,9 @@ public class ActionControllerTest {
         assertEquals(TurnState.LAST_LEADER_ACTION, g.getTurnState());
     }
 
+    /**
+     * Test if the game can successfully apply a single white marble decorator (auto-change the white marble)
+     */
     @Test
     public void handle_marketTest_decorated1() {
         GameBoard gb = new GameBoard();
@@ -455,6 +487,9 @@ public class ActionControllerTest {
       
     }
 
+    /**
+     * Try to handle the first setup action (discard 2 leader cards).
+     */
     @Test
     public void firstActionTest() {
         ActionController actionController = new ActionController();
@@ -518,6 +553,9 @@ public class ActionControllerTest {
 
     }
 
+    /**
+     * Try to handle the second setup action (choose starting resources).
+     */
     @Test
     public void secondActionTest() {
         ActionController actionController = new ActionController();
@@ -555,6 +593,9 @@ public class ActionControllerTest {
         assertTrue(gb.getPlayer("Ron").getPlayerBoard().checkResourcesStrongbox(new int[]{0, 1, 0, 0}));
     }
 
+    /**
+     * Try to discard a leader card correctly.
+     */
     @Test
     public void foldLeaderTest() {
         ActionController actionController = new ActionController();
@@ -587,6 +628,9 @@ public class ActionControllerTest {
 
     }
 
+    /**
+     * Try to move resources around in the warehouse.
+     */
     @Test
     public void moveResourceTestBetweenWarehouses() {
 

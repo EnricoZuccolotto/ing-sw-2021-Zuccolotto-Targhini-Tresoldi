@@ -27,8 +27,9 @@ Il progetto prevede lo sviluppo e l'implementazione del gioco da tavolo Maestri 
 
 ## Report coverage classi di test
 
-Per tale report sono state evidenziate solo le classi effettivamente testabili, quindi vengono per ora escluse le classi di View e comunicazione via rete.
-![coverage_report](/resources/coverage.png)
+![coverage_report](/deliveries/coverage/coverage.png)
+![coverage_report](/deliveries/coverage/model.png)
+![coverage_report](/deliveries/coverage/controller.png)
 
 ## Documentazione
 
@@ -59,6 +60,7 @@ Per avviare il JAR è necessario aprire un Prompt dei Comandi e digitare:
 
 #### Opzioni
 - Server:
+  - `-p [num_porta]` avvia il server sulla porta specificata. Se omesso, la porta di default è 12222.
 - Client:
   - `-g` avvia il client in modalità GUI, senza comandi viene avviato in modalità CLI.
 

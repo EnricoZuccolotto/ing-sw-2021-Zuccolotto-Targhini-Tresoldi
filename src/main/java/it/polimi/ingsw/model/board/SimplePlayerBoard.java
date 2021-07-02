@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.enums.WarehousePositions;
 import it.polimi.ingsw.model.player.SpaceProd;
 import it.polimi.ingsw.model.player.Strongbox;
 import it.polimi.ingsw.model.player.Warehouse;
+import it.polimi.ingsw.model.tools.ExchangeResources;
 import it.polimi.ingsw.view.cli.ColorsCLI;
 
 import java.io.Serializable;
@@ -212,6 +213,9 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         return productionSpaces.get(index).getTop().getProductionResult();
     }
 
+    /**
+     * Check if the player has 7 cards (the game ends).
+     */
     private void checkWinnerNumCards() {
         if (productionSpaces.size() == 3) {
             if (productionSpaces.get(0).getNumbCard() + productionSpaces.get(1).getNumbCard() + productionSpaces.get(2).getNumbCard() == 7)
@@ -374,6 +378,7 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
         return list;
     }
 
+
     @Override
     public boolean checkColorsAndLevel(int[] colors, int level) {
         int tmp;
@@ -398,6 +403,23 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     @Override
     public Strongbox getStrongbox() {
         return strongbox;
+    }
+
+    @Override
+    public ExchangeResources getExchangeResources() {
+        int[] fromWarehouse = new int[4];
+        for(int i = 0; i < 4; i++){
+            fromWarehouse[i] = warehouse.getNumberResource(Resources.transform(i));
+        }
+        int[] fromStrongbox = new int[4];
+        for(int i = 0; i < 4; i++){
+            fromStrongbox[i] = strongbox.getResources(Resources.transform(i));
+        }
+        int[] fromSpecial = new int[4];
+        for(int i = 0; i < 4; i++){
+            fromSpecial[i] = 0;
+        }
+        return new ExchangeResources(fromWarehouse, fromStrongbox, fromSpecial);
     }
 
     @Override

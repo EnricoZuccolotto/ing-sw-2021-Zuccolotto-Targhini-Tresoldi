@@ -15,6 +15,7 @@ import it.polimi.ingsw.model.enums.BotActions;
 import it.polimi.ingsw.model.enums.Colors;
 import it.polimi.ingsw.model.enums.Resources;
 import it.polimi.ingsw.model.modelsToSend.CompressedPlayerBoard;
+import it.polimi.ingsw.model.tools.ExchangeResources;
 import it.polimi.ingsw.observer.ViewObservable;
 import it.polimi.ingsw.observer.ViewObserver;
 import it.polimi.ingsw.view.View;
@@ -956,57 +957,76 @@ public class Cli extends ViewObservable implements View {
      */
     private ArrayList<Integer> SelectResources(int[] a, boolean doYouWantADiscount) throws ExecutionException {
         ArrayList<String> s = new ArrayList<>();
-        ArrayList<Resources> resource;
         ArrayList<Integer> pos = new ArrayList<>();
-        int count = 0, select;
-        String question;
-        s.add("Warehouse");
-        s.add("Strongbox");
-        s.add("SpecialWarehouse");
-        s.add("Exit");
-        out.println("\nNow you have to choose where you want to take each resources from: ");
-        for (String st : s) {
-            out.println(s.indexOf(st) + ". " + st);
-        }
 
-        // Remove discounted resources
-        if(doYouWantADiscount){
-            PlayerBoard myBoard = null;
-            for(CompressedPlayerBoard cpb : boards){
-                if(cpb.getName().equals(nickname)){
-                    myBoard = cpb.getPlayerBoard();
-                    break;
-                }
+        ExchangeResources stuffThatIOwn = boards.get(playerNumber).getPlayerBoard().getExchangeResources();
+        boolean exit = false;
+        do {
+            pos.clear();
+            s.clear();
+            int[][] forValidation = new int[3][4];
+            int count = 0, select;
+            String question;
+            s.add("Warehouse");
+            s.add("Strongbox");
+            s.add("SpecialWarehouse");
+            s.add("Exit");
+            out.println("\nNow you have to choose where you want to take each resources from: ");
+            for (String st : s) {
+                out.println(s.indexOf(st) + ". " + st);
             }
-            for(int i = 0; i < 4; i++){
-                if(myBoard != null){
-                    if(myBoard.isResourceDiscounted(Resources.transform(i)) && a[i] > 0){
-                        a[i] -= myBoard.getResourceDiscount(Resources.transform(i));
-                        if(a[i] < 0) a[i] = 0;
+
+            // Remove discounted resources
+            if(doYouWantADiscount){
+                PlayerBoard myBoard = null;
+                for(CompressedPlayerBoard cpb : boards){
+                    if(cpb.getName().equals(nickname)){
+                        myBoard = cpb.getPlayerBoard();
+                        break;
+                    }
+                }
+                for(int i = 0; i < 4; i++){
+                    if(myBoard != null){
+                        if(myBoard.isResourceDiscounted(Resources.transform(i)) && a[i] > 0){
+                            a[i] -= myBoard.getResourceDiscount(Resources.transform(i));
+                            if(a[i] < 0) a[i] = 0;
+                        }
                     }
                 }
             }
-        }
 
-        try {
-            for (int i = 0; i < 4; i++) {
-                while (count != a[i]) {
-                    question = "Pick a number for the resource  " + Resources.transform(i) + " (3 to exit): ";
-                    select = validateInput(0, 3, null, question);
-                    if(select==3) {return null;}
-                    resource = boards.get(playerNumber).getPlayerBoard().getResources(select, count);
-                    if (resource.contains(Resources.transform(i))) {
+            try {
+                for (int i = 0; i < 4; i++) {
+                    while (count != a[i]) {
+                        question = "Pick a number for the resource  " + Resources.transform(i) + " (3 to exit): ";
+                        select = validateInput(0, 3, null, question);
+                        if(select==3) { return null;}
                         count++;
                         pos.add(select);
-                    } else {
-                        out.println("You don't have this kind of resource here, choose another number");
+                        forValidation[select][i]++;
                     }
+                    count = 0;
                 }
-                count = 0;
+            } catch (ExecutionException e) {
+                out.println("Error");
             }
-        } catch (ExecutionException e) {
-            out.println("Error");
-        }
+
+            // Validation
+            for(int i = 0; i < 4; i++){
+                if(stuffThatIOwn.getWarehouse()[i] < forValidation[0][i]){
+                    exit = false;
+                } else if(stuffThatIOwn.getStrongbox()[i] < forValidation[1][i]) {
+                    exit = false;
+                } else if(stuffThatIOwn.getSpecialWarehouse()[i] < forValidation[2][i]){
+                    exit = false;
+                } else {
+                    exit = true;
+                }
+            }
+            if(!exit){
+                out.println("\nYou have tried to take resources that you don't have. Try again! ");
+            }
+        } while(!exit);
         return pos;
     }
 

@@ -174,6 +174,10 @@ public class NetworkLayerView implements View, Observer {
         return null;
     }
 
+    /**
+     * Resets the connection if it has changed (a player has reconnected after a disconnection)
+     * @param connection The new connection object.
+     */
     public void setConnection(SocketConnection connection){
         this.connection = connection;
     }

@@ -16,7 +16,13 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * This class tests the general methods in the GameController
+ */
 public class GameControllerTest {
+    /**
+     * Checks that a received message is successfully handled.
+     */
  @Test
  public void OnMessageTest() {
 
@@ -88,17 +94,15 @@ public class GameControllerTest {
   assertTrue(true);
  }
 
+    /**
+     * Try to add a new view
+     */
  @Test
  public void addViewTest(){
      NetworkLayerView view = new NetworkLayerView(null);
      GameController gc = new GameController(false);
      gc.addView("prova", view);
      assertEquals(gc.getViewFromMap("prova"), view);
- }
-
- @Test
- public void localViewTest(){
-
  }
 
 }

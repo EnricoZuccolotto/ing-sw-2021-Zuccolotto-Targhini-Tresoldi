@@ -20,7 +20,13 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
+/**
+ * This class tests the round controller.
+ */
 public class RoundControllerTest {
+    /**
+     * Try to discard a leader and see if it works.
+     */
     @Test
     public void Handle_foldLeaderTest(){
         GameBoard gb = new GameBoard();
@@ -55,6 +61,9 @@ public class RoundControllerTest {
         assertEquals(g.getTurnState(), TurnState.NORMAL_ACTION);
     }
 
+    /**
+     * Try to add faith points to the users.
+     */
     @Test
     public void Handle_addFaithPointsTest() {
         GameBoard gb = new GameBoard();
@@ -83,6 +92,9 @@ public class RoundControllerTest {
 
     }
 
+    /**
+     * Check that a multiplayer game has finished.
+     */
     @Test
     public void checkWinnerMultiplayer() {
         GameController gc = new GameController(false);
@@ -126,7 +138,9 @@ public class RoundControllerTest {
 
     }
 
-
+    /**
+     * Check that a singleplayer game has finished.
+     */
     @Test
     public void checkWinnerSinglePlayer(){
         GameController gc = new GameController(false);
@@ -152,6 +166,9 @@ public class RoundControllerTest {
 
     }
 
+    /**
+     * Try to use the productions.
+     */
     @Test
     public void Handle_useProductionTest() {
         GameBoard gb = new GameBoard();
