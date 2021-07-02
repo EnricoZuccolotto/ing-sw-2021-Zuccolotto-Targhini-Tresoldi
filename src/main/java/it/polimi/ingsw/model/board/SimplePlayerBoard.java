@@ -341,27 +341,34 @@ public class SimplePlayerBoard implements PlayerBoard, Serializable {
     @Override
     public ArrayList<Resources> getResources(int choice, int temp){
         ArrayList<Resources> list= new ArrayList<>();
+        int previous;
         int[] a={0, 0, 0, 0};
         if (choice == 0) {
             for (int i = 0; i < 4; i++) {
+                previous = a[i];
                 a[i]=temp+1;
                 if (checkResourcesWarehouse(a)) {
                     list.add(Resources.transform(i));
                 }
+                a[i] = previous;
             }
         } else if (choice == 1) {
             for (int i = 0; i < 4; i++) {
+                previous = a[i];
                 a[i]=temp+1;
                 if (checkResourcesStrongbox(a)) {
                     list.add(Resources.transform(i));
                 }
+                a[i] = previous;
             }
         } else if (choice == 2) {
             for (int i = 0; i < 4; i++) {
+                previous = a[i];
                 a[i]=temp+1;
                 if (checkResourcesSpecialWarehouse(a)) {
                     list.add(Resources.transform(i));
                 }
+                a[i] = previous;
             }
         }
         return list;
